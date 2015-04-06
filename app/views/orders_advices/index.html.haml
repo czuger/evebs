@@ -1,0 +1,24 @@
+#order_advices
+
+  %h1 Orders advices
+
+  #order_advices_bar
+
+  #order_advices_tab
+    %table
+      %tr
+        %th
+          System
+        %th
+          Item
+        %th
+          Min price
+        %th{ colspan: 2 }
+          Benefice (pour 1 batch)
+      - @order_advices.each do |oa|
+        %tr{:class=>cycle("odd", "even")}
+          %td.cell_left_align=oa.system
+          %td.cell_left_align=oa.type
+          %td.cell_right_align="#{oa.min_price} ISK"
+          %td.cell_right_align="#{oa.marge_pcent}%"
+          %td.cell_right_align="#{number_to_human(oa.marge_batch)} ISK"
