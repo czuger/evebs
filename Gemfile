@@ -30,13 +30,16 @@ gem 'capistrano-rails', group: :development
 gem 'nokogiri'
 gem 'constructor'
 gem 'eaal'
+gem 'open-uri-cached'
 
-require 'open-uri'
-require 'open-uri/cached'
+#gem 'open-uri'
+#gem 'open-uri/cached'
 
 gem 'haml-rails'
 
 gem 'quiet_assets'
+
+gem "factory_girl_rails", "~> 4.0", group: [:development, :test ]
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
