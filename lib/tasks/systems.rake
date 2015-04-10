@@ -1,6 +1,6 @@
 namespace :load do
   desc "Feed trade hubs list"
-  task :trade_hubs, [:character_id, :api_key]  do
+  task :trade_hubs do
 
     # Les répertoires dont j'ai besoin
     #systems = [ 30002510, 30002544, 30000142, 30002053 ]
