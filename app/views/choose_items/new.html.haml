@@ -1,2 +1,6 @@
-= form_tag do
+= form_tag '/choose_items' do
+  -# doc is wrong, use 'data-append-to' => '#test_append' instead of append_to
   = autocomplete_field_tag :eve_item_name, '', autocomplete_eve_item_name_lowcase_choose_items_path
+  = submit_tag
+
+  #test_append

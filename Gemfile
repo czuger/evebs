@@ -41,7 +41,7 @@ gem 'haml-rails'
 gem 'quiet_assets'
 
 gem "factory_girl_rails", "~> 4.0", group: [:development, :test ]
-gem 'rails4-autocomplete'
+gem 'rails-jquery-autocomplete'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

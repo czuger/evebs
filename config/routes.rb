@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :choose_items, only: [ :index, :new, :edit, :create ] do
+  resources :choose_items, only: [ :index, :new, :edit, :create, :update ] do
     get :autocomplete_eve_item_name_lowcase, :on => :collection
   end
 

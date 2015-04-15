@@ -1,9 +1,12 @@
 %h1 ChooseItem#edit
 
-- @items.in_groups_of(@per_group_count).each do |group|
-  %table.side_by_side_table
-    - group.each do |item|
-      - if item
-        %tr
-          %td=item.name
+= form_tag choose_item_path(@user.id), method: :put do
+  - @items.in_groups_of(@per_group_count).each do |group|
+    %table.side_by_side_table
+      - group.each do |item|
+        - if item
+          %tr
+            %td=check_box_tag('items_to_keep[]',item.id,true)
+            %td=item.name
 
+  = submit_tag
