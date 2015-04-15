@@ -11,16 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150410082132) do
+ActiveRecord::Schema.define(version: 20150414095303) do
 
   create_table "eve_items", force: true do |t|
     t.integer  "eve_item_id"
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "first_letter"
+    t.string   "name_lowcase"
   end
 
   add_index "eve_items", ["eve_item_id"], name: "index_eve_items_on_eve_item_id"
+  add_index "eve_items", ["first_letter"], name: "index_eve_items_on_first_letter"
 
   create_table "trade_hubs", force: true do |t|
     t.integer  "eve_system_id"

@@ -1,12 +1,16 @@
 Rails.application.routes.draw do
 
+  resources :choose_items, only: [ :index, :new, :edit, :create ] do
+    get :autocomplete_eve_item_name_lowcase, :on => :collection
+  end
+
   get 'orders_advices/index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'orders_advices#index'
+  root 'choose_items#new'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

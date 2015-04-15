@@ -1,0 +1,4 @@
+%h1 ChooseItem#index
+
+- @letters.each do |letter|
+  = link_to( letter.first_letter, edit_choose_item_path( letter.first_letter ) )
