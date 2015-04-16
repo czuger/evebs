@@ -4,10 +4,6 @@ class ChooseItemsController < ApplicationController
 
   # autocomplete :eve_item, :name_lowcase, full: true
 
-  def index
-    @letters = EveItem.select(:first_letter).distinct.sort
-  end
-
   def edit
     @user = User.first
     @items = @user.eve_items.order(:name)
@@ -18,14 +14,18 @@ class ChooseItemsController < ApplicationController
   end
 
   def create
+    @user = User.first
     eve_items = EveItem.where( :id => session[:selected_items] ).to_a
-    User.first.eve_items << eve_items
-    redirect_to :edit_choose_item
+    eve_item_ids = @user.eve_item_ids
+    eve_items.reject!{ |item| eve_item_ids.include?( item.id ) }
+    @user.eve_items << eve_items
+    redirect_to edit_choose_item_path(@user.id)
   end
 
   def update
-    User.first.eve_item_ids = params['items_to_keep']
-    redirect_to :edit_choose_item
+    @user = User.first
+    @user.eve_item_ids = params['items_to_keep']
+    redirect_to edit_choose_item_path(@user.id)
   end
 
   def autocomplete_eve_item_name_lowcase

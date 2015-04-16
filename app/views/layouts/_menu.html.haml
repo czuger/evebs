@@ -1,3 +1,9 @@
 #topbar
   #eve_logo
     Eve business server
+
+#menu
+  = link_to 'Add items', new_choose_item_path
+  |
+  -# TODO : change the user once we have one
+  = link_to 'Edit items list', edit_choose_item_path(1)

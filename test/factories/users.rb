@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :user do
-    name "MyString"
+    name "First"
   end
-
 end
