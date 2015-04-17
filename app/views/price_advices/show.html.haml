@@ -1,0 +1,17 @@
+%h1 PriceAdvices#show
+
+%table
+  - @prices_array.each do |item|
+    %tr
+      %td=item[:trade_hub]
+      %td=item[:eve_item]
+      %td=item[:benef]
+
+%br
+%h2
+  No concurent there
+%table
+  - @no_concurent_array.each do |item|
+    %tr
+      %td=item[:trade_hub]
+      %td=item[:eve_item]
