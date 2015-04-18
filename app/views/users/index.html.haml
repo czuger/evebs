@@ -1,0 +1,27 @@
+%h1 Listing users
+
+%table
+  %tr
+    %th Edit
+    %th Name
+    %th Remove occuped places
+    %th Key user
+    %th Api key
+    %th
+    %th
+    %th
+
+  - @users.each do |user|
+    %tr
+      %td= user.edit
+      %td= user.name
+      %td= user.remove_occuped_places
+      %td= user.key_user_id
+      %td= user.api_key
+      %td= link_to 'Show', user
+      %td= link_to 'Edit', edit_user_path(user)
+      %td= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New User', new_user_path
