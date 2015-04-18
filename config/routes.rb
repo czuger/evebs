@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :users, only: [:edit,:update]
+
   resources :price_advices, only: [:show]
   resources :choose_trade_hubs, only: [:edit, :update]
 

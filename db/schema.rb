@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150418101147) do
+ActiveRecord::Schema.define(version: 20150418135846) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -95,6 +95,9 @@ ActiveRecord::Schema.define(version: 20150418101147) do
 
   create_table "users", force: true do |t|
     t.string   "name"
+    t.boolean  "remove_occuped_places"
+    t.string   "key_user_id"
+    t.string   "api_key"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
