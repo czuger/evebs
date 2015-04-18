@@ -11,7 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150417135716) do
+ActiveRecord::Schema.define(version: 20150418101147) do
+
+  create_table "blueprints", force: true do |t|
+    t.integer  "eve_item_id"
+    t.integer  "nb_runs"
+    t.integer  "prod_qtt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "cpp_blueprint_id"
+  end
+
+  add_index "blueprints", ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id"
+  add_index "blueprints", ["eve_item_id"], name: "index_blueprints_on_eve_item_id"
+
+  create_table "components", force: true do |t|
+    t.integer  "cpp_eve_item_id"
+    t.string   "name"
+    t.float    "cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "components", ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
 
   create_table "eve_items", force: true do |t|
     t.integer  "cpp_eve_item_id"
@@ -33,6 +55,17 @@ ActiveRecord::Schema.define(version: 20150417135716) do
 
   add_index "eve_items_users", ["eve_item_id"], name: "index_eve_items_users_on_eve_item_id"
   add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id"
+
+  create_table "materials", force: true do |t|
+    t.integer  "blueprint_id"
+    t.integer  "component_id"
+    t.integer  "required_qtt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "materials", ["blueprint_id"], name: "index_materials_on_blueprint_id"
+  add_index "materials", ["component_id"], name: "index_materials_on_component_id"
 
   create_table "min_prices", force: true do |t|
     t.integer  "eve_item_id"

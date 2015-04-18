@@ -1,10 +1,10 @@
-namespace :load do
+namespace :data_setup do
   desc "Feed trade hubs list"
-  task :trade_hubs do
+  task :trade_hubs => :environment do
 
     # Les répertoires dont j'ai besoin
     #systems = [ 30002510, 30002544, 30000142, 30002053 ]
-    system_names = %w( Jita Rens Pator Amarr Dodixie Gelfiven Lustrevik Eram Orvolle Stacmon )
+    system_names = %w( Teonusude Hek Jita Rens Pator Amarr Dodixie Gelfiven Lustrevik Eram Orvolle Stacmon )
     api = EAAL::API.new(nil,nil)
     api.scope = "eve"
 

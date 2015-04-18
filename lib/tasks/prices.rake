@@ -5,7 +5,7 @@ require 'pp'
 OpenURI::Cache.cache_path = 'tmp'
 EVE_CENTRAL_FILE_NAME='tmp/api.eve-central.com'
 
-namespace :load do
+namespace :data_compute do
   desc "Feed min prices per trade hubs"
   task :trade_hubs_prices => :environment do
     # First compute used items and trade hubs

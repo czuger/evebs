@@ -7,6 +7,11 @@ class PriceAdvicesController < ApplicationController
       @user.trade_hubs.each do |trade_hub|
         min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', eve_item.id, trade_hub.id ).first
         if min_price_item
+          blueprint = eve_item.blueprint
+          batch_size = blueprint.nb_runs*blueprint.prod_qtt
+          batch_cost = eve_item.cost*blueprint.nb_runs
+          if
+          batch_sell_price = batch_sizemin_price_item ? min_price_item.min_price
           @prices_array << {
             trade_hub: trade_hub.name,
             eve_item: eve_item.name,

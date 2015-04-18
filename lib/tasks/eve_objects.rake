@@ -2,7 +2,7 @@ require 'yaml'
 
 EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
 
-namespace :load do
+namespace :data_setup do
   desc "Feed item objects list"
   task :eve_objects => :environment do
     blueprints=YAML.load_file('lib/tasks/blueprints.yaml')
@@ -14,7 +14,7 @@ namespace :load do
         item_name_object = api.TypeName(:ids => item_id)
         item_name = item_name_object.types.first.typeName
         puts "#{item_id}, #{item_name}"
-        EveItem.find_or_create_by( eve_item_id: item_id, name: item_name )
+        EveItem.find_or_create_by( cpp_eve_item_id: item_id, name: item_name )
       end
     end
   end
