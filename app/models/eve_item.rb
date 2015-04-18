@@ -1,4 +1,7 @@
 class EveItem < ActiveRecord::Base
+
+  include MinPriceRetriever
+
   has_and_belongs_to_many :users
   has_one :blueprint
   has_many :materials, through: :blueprint
@@ -17,6 +20,22 @@ class EveItem < ActiveRecord::Base
       end
     end
     update_attribute(:cost,total_cost)
+  end
+
+  def set_min_price(system)
+    min = get_min_price_from_eve_central(cpp_eve_item_id,system.eve_system_id)
+    min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', id, system.id ).first
+    if min
+      unless min_price_item
+        MinPrice.create!( eve_item: self, trade_hub: system, min_price: min )
+      else
+        min_price_item.update_attribute( :min_price, min )
+      end
+    else
+      if min_price_item
+        min_price_item.destroy
+      end
+    end
   end
 
 end

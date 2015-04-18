@@ -10,12 +10,16 @@ class PriceAdvicesController < ApplicationController
           blueprint = eve_item.blueprint
           batch_size = blueprint.nb_runs*blueprint.prod_qtt
           batch_cost = eve_item.cost*blueprint.nb_runs
-          if
-          batch_sell_price = batch_sizemin_price_item ? min_price_item.min_price
+          batch_sell_price = min_price_item.min_price*batch_size
+          benef = batch_sell_price - batch_cost
+          benef_pcent = ((batch_sell_price*100) / batch_cost).round(0)-100
           @prices_array << {
             trade_hub: trade_hub.name,
             eve_item: eve_item.name,
-            benef: min_price_item ? min_price_item.min_price - eve_item.cost : 'Not sold there'
+            min_price: min_price_item.min_price.round(1),
+            cost: (eve_item.cost/blueprint.prod_qtt).round(1),
+            benef: benef,
+            benef_pcent: benef_pcent
           }
         else
           @no_concurent_array << {

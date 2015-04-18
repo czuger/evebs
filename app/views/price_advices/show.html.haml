@@ -5,7 +5,10 @@
     %tr
       %td=item[:trade_hub]
       %td=item[:eve_item]
-      %td=item[:benef]
+      %td=item[:cost]
+      %td=item[:min_price]
+      %td="#{item[:benef_pcent]}%"
+      %td=number_to_currency(item[:benef], unit: "ISK ", separator: ",", delimiter: " ")
 
 %br
 %h2
