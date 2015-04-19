@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   def get_occuped_places
     if remove_occuped_places
       if( key_user_id && api_key )
+        EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
         api = EAAL::API.new( key_user_id, api_key )
         api.scope = "account"
         characters = api.Characters
@@ -33,7 +34,7 @@ class User < ActiveRecord::Base
           full_orders_list << api.MarketOrders(:characterID => char_id).orders.reject{ |e| e.orderState != '0' }
         end
         full_orders_list.flatten!
-        small_orders_list = full_orders_list.map{ |o| [o.stationID,o.typeID] }
+        small_orders_list = full_orders_list.map{ |o| [o.stationID.to_i,o.typeID.to_i] }
         return small_orders_list
       end
     end
