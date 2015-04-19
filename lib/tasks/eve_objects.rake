@@ -5,14 +5,12 @@ EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
 namespace :data_setup do
   desc "Feed item objects list"
   task :eve_objects => :environment do
-    blueprints=YAML.load_file('lib/tasks/blueprints.yaml')
-    api = EAAL::API.new(nil,nil)
-    api.scope = "eve"
-    blueprints.each do |bp|
-      if bp[1]['activities']['manufacturing']
-        item_id = bp[1]['activities']['manufacturing']['products'].first['typeID']
-        item_name_object = api.TypeName(:ids => item_id)
-        item_name = item_name_object.types.first.typeName
+    blueprints_array=Blueprint.load_blueprint_array
+    eve_item_hash=EveItem.download_items_hash
+    blueprints_array.each do |bp|
+      item_id = bp[:produced_item_id]
+      item_name = eve_item_hash[item_id]
+      if item_name
         puts "About to insert #{item_id}, #{item_name}"
         EveItem.find_or_create_by( cpp_eve_item_id: item_id, name: item_name, name_lowcase: item_name.downcase )
       end

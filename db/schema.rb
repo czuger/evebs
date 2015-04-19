@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150418135846) do
+ActiveRecord::Schema.define(version: 20150419154750) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -40,13 +40,11 @@ ActiveRecord::Schema.define(version: 20150418135846) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "first_letter"
     t.string   "name_lowcase"
     t.float    "cost"
   end
 
   add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id"
-  add_index "eve_items", ["first_letter"], name: "index_eve_items_on_first_letter"
 
   create_table "eve_items_users", force: true do |t|
     t.integer "user_id"
