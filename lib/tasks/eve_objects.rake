@@ -13,14 +13,15 @@ namespace :data_setup do
         item_id = bp[1]['activities']['manufacturing']['products'].first['typeID']
         item_name_object = api.TypeName(:ids => item_id)
         item_name = item_name_object.types.first.typeName
-        puts "#{item_id}, #{item_name}"
-        EveItem.find_or_create_by( cpp_eve_item_id: item_id, name: item_name )
+        puts "About to insert #{item_id}, #{item_name}"
+        EveItem.find_or_create_by( cpp_eve_item_id: item_id, name: item_name, name_lowcase: item_name.downcase )
       end
     end
   end
   desc "Fill name_lowcase"
   task :fill_name_lowcase => :environment do
     EveItem.all.to_a.each do |ei|
+      puts "About to lowercase #{ei.name}"
       ei.update_attribute( :name_lowcase, ei.name.downcase )
     end
   end

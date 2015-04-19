@@ -1,6 +1,7 @@
 namespace :data_setup do
   desc "Feed blueprints informations"
-  task :blueprint_setup => :environment do
+  task :blueprints_setup => :environment do
+    puts 'About to feed the blueprint database'
     blueprints=YAML.load_file('lib/tasks/blueprints.yaml')
     api = EAAL::API.new(nil,nil)
     api.scope = "eve"
