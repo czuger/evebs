@@ -3,6 +3,9 @@ class Blueprint < ActiveRecord::Base
   has_many :materials
   validates :eve_item_id, :nb_runs, :prod_qtt, :cpp_blueprint_id, presence: true
 
+  # We don't process some blueprint, because they leads to issues
+  UNWANTED_BLUEPRINTS = [3927,34189,34497]
+
   def self.load_blueprint_array
     blueprints_array = []
     blueprint_files=YAML.load_file('lib/tasks/blueprints.yaml')
