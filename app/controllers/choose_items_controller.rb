@@ -15,7 +15,13 @@ class ChooseItemsController < ApplicationController
 
   def create
     @user = User.first
-    eve_items = EveItem.where( :id => session[:selected_items] ).to_a
+    choosen_item = params['choosen_item']
+    if choosen_item && !choosen_item.empty?
+      choosed_items_ids = choosen_item.to_i
+    else
+      choosed_items_ids = session[:selected_items]
+    end
+    eve_items = EveItem.where( :id => choosed_items_ids ).to_a
     eve_item_ids = @user.eve_item_ids
     eve_items.reject!{ |item| eve_item_ids.include?( item.id ) }
     @user.eve_items << eve_items
