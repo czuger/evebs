@@ -4,7 +4,7 @@ namespace :data_compute do
     unchecked_items = [ 235 ]
     # Refresh the prices if required
     puts 'Refreshing components costs'
-    Component.all.to_a.each do |component|
+    Component.used_components.each do |component|
       unless unchecked_items.include?( component.id )
         puts "Getting cost for #{component.id}, #{component.cpp_eve_item_id}, #{component.name}"
         component.set_min_price
@@ -14,7 +14,7 @@ namespace :data_compute do
   desc "Recompute the costs for items"
   task :refresh_items_costs => :environment do
     puts 'Recomputing prices'
-    EveItem.all.to_a.each do |ei|
+    EveItem.used_items.each do |ei|
       puts "Recomputing price for #{ei.name}"
       ei.compute_cost
     end

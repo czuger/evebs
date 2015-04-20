@@ -16,4 +16,15 @@ class Component < ActiveRecord::Base
     end
   end
 
+  def self.used_components
+    used_items = EveItem.used_items
+    used_components = []
+    used_items.each do |item|
+      item.components.each do |component|
+        used_components << component unless used_components.include?( component )
+      end
+    end
+    used_components
+  end
+
 end

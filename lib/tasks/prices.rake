@@ -9,6 +9,7 @@ namespace :data_compute do
   desc "Feed min prices per trade hubs"
   task :trade_hubs_prices => :environment do
     # First compute used items and trade hubs
+    puts 'About to recompute all min prices for selected items on all trade hubs'
     used_item, used_trade_hubs = User.get_used_items_and_trade_hubs
     used_trade_hubs.each do |trade_hub|
       puts "Retrieveing min prices for #{trade_hub.name}"

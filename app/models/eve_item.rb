@@ -13,9 +13,17 @@ class EveItem < ActiveRecord::Base
   has_many :materials, through: :blueprint
   has_many :components, through: :materials
 
+  # Itemps containing non ascii characters
+  UNWANTED_ITEMS=[34457,34458,34459,34460,34461,34462,34463,34464,34465,34466,34467,34468,34469,34470,34471,34472,34473,34474,34475,34476,34477,34478,34479,34480]
+
   def self.to_eve_item_id(cpp_eve_item_id)
     eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first
     eve_item ? eve_item.id : nil
+  end
+
+  def self.used_items
+    used_items, dummy = User.get_used_items_and_trade_hubs
+    used_items
   end
 
   def compute_cost
@@ -59,7 +67,7 @@ class EveItem < ActiveRecord::Base
         key = line[0..11]
         value = line[12..-3]
         # types[key.strip]=value.strip if value
-        item_list << [key.to_i,value]
+        item_list << [key.to_i,value] unless UNWANTED_ITEMS.include?(key.to_i)
       end
     end
     item_list.shift(2)
