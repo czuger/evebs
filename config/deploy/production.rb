@@ -43,6 +43,6 @@ after 'deploy:publishing', 'deploy:start_unicorn' do
     if test("[ -f #{deploy_to}/shared/pids/unicorn.pid ]")
       execute "kill `cat #{deploy_to}/shared/pids/unicorn.pid`"
     end
-    execute "cd #{release_path}; bundle exec unicorn_rails -D -c config/unicorn/production.rb -E production"
+    execute "cd #{release_path}; bundle exec unicorn_rails -D -c config/unicorn/production_eve_business_server.rb -E production"
   end
 end

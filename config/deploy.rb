@@ -9,6 +9,7 @@ set :repo_url, 'git:/opt/git/eve_business_server'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, "/var/www/eve_business_server"
+set :keep_releases, 1
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
@@ -38,7 +39,6 @@ set :deploy_to, "/var/www/eve_business_server"
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 # Default value for keep_releases is 5
-# set :keep_releases, 5
 
 namespace :deploy do
 
