@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150419154750) do
+ActiveRecord::Schema.define(version: 20150420030231) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -75,6 +75,17 @@ ActiveRecord::Schema.define(version: 20150419154750) do
 
   add_index "min_prices", ["eve_item_id"], name: "index_min_prices_on_eve_item_id"
   add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id"
+
+  create_table "stations", force: true do |t|
+    t.integer  "trade_hub_id"
+    t.string   "name"
+    t.integer  "cpp_station_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stations", ["cpp_station_id"], name: "index_stations_on_cpp_station_id"
+  add_index "stations", ["trade_hub_id"], name: "index_stations_on_trade_hub_id"
 
   create_table "trade_hubs", force: true do |t|
     t.integer  "eve_system_id"

@@ -34,7 +34,8 @@ class User < ActiveRecord::Base
           full_orders_list << api.MarketOrders(:characterID => char_id).orders.reject{ |e| e.orderState != '0' }
         end
         full_orders_list.flatten!
-        small_orders_list = full_orders_list.map{ |o| [o.stationID.to_i,o.typeID.to_i] }
+        small_orders_list = full_orders_list.map{ |o|
+          [Station.to_trade_hub_id(o.stationID.to_i),EveItem.to_eve_item_id(o.typeID.to_i)] }
         return small_orders_list
       end
     end

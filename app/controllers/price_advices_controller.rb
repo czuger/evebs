@@ -3,8 +3,12 @@ class PriceAdvicesController < ApplicationController
     @user = User.first
     @prices_array = []
     @no_concurent_array = []
+    # This mean we already have an order for that item on that hub
+    # TODO : add a catch there to check for eve api connection errors
+    @fullfilled_orders = @user.get_occuped_places
     @user.eve_items.each do |eve_item|
       @user.trade_hubs.each do |trade_hub|
+        next if @fullfilled_orders.include?([trade_hub.id,eve_item.id])
         min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', eve_item.id, trade_hub.id ).first
         if min_price_item
           blueprint = eve_item.blueprint

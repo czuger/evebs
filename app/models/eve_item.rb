@@ -13,6 +13,11 @@ class EveItem < ActiveRecord::Base
   has_many :materials, through: :blueprint
   has_many :components, through: :materials
 
+  def self.to_eve_item_id(cpp_eve_item_id)
+    eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first
+    eve_item ? eve_item.id : nil
+  end
+
   def compute_cost
     total_cost = 0
     materials.each do |material|
