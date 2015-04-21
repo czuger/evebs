@@ -7,11 +7,13 @@ namespace :data_setup do
     api.scope = "eve"
 
     for system_name in system_names.sort
-      puts "Creating entry for #{system_name}"
-      result = api.CharacterID(:names => system_name)
-      system_id = result.characters.first.characterID.to_i
-      raise "Unable to find system for system_name #{system_name}" if system_id.nil? || system_id == 0
-      TradeHub.find_or_create_by( name: system_name, eve_system_id: system_id )
+      unless TradeHub.find_by_name( system_name )
+        puts "Creating entry for #{system_name}"
+        result = api.CharacterID(:names => system_name)
+        system_id = result.characters.first.characterID.to_i
+        raise "Unable to find system for system_name #{system_name}" if system_id.nil? || system_id == 0
+        TradeHub.find_or_create_by( name: system_name, eve_system_id: system_id )
+      end
     end
   end
 end

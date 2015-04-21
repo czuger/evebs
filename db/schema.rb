@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420030231) do
+ActiveRecord::Schema.define(version: 20150421082146) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -101,6 +101,19 @@ ActiveRecord::Schema.define(version: 20150420030231) do
 
   add_index "trade_hubs_users", ["trade_hub_id"], name: "index_trade_hubs_users_on_trade_hub_id"
   add_index "trade_hubs_users", ["user_id"], name: "index_trade_hubs_users_on_user_id"
+
+  create_table "trade_orders", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "eve_item_id"
+    t.integer  "trade_hub_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "new_order"
+  end
+
+  add_index "trade_orders", ["eve_item_id"], name: "index_trade_orders_on_eve_item_id"
+  add_index "trade_orders", ["trade_hub_id"], name: "index_trade_orders_on_trade_hub_id"
+  add_index "trade_orders", ["user_id"], name: "index_trade_orders_on_user_id"
 
   create_table "users", force: true do |t|
     t.string   "name"

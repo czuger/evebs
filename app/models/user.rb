@@ -20,26 +20,4 @@ class User < ActiveRecord::Base
     [used_item, used_trade_hubs]
   end
 
-  def get_occuped_places
-    if remove_occuped_places
-      if( key_user_id && api_key )
-        EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
-        api = EAAL::API.new( key_user_id, api_key )
-        api.scope = "account"
-        characters = api.Characters
-        characters_ids = characters.characters.map{ |e| e.characterID }
-        full_orders_list = []
-        api.scope = "char"
-        characters_ids.each do |char_id|
-          full_orders_list << api.MarketOrders(:characterID => char_id).orders.reject{ |e| e.orderState != '0' }
-        end
-        full_orders_list.flatten!
-        small_orders_list = full_orders_list.map{ |o|
-          [Station.to_trade_hub_id(o.stationID.to_i),EveItem.to_eve_item_id(o.typeID.to_i)] }
-        return small_orders_list
-      end
-    end
-    [] # if case not checked return an empty array
-  end
-
 end

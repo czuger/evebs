@@ -13,12 +13,14 @@ namespace :data_setup do
       file.readlines.each do |line|
         sl = line.split( "\t" )
         station_id=sl[0]
-        station_name=sl[1][0..-2].strip
-        system_name=station_name.split(' ').first
-        trade_hub=TradeHub.where('name=?',system_name).first
-        if trade_hub
-          puts "About to insert : #{station_id}, #{station_name}, #{trade_hub}"
-          Station.find_or_create_by( trade_hub_id: trade_hub.id, name: station_name, cpp_station_id: station_id )
+        unless Station.find_by_cpp_station_id( station_id )
+          station_name=sl[1][0..-2].strip
+          system_name=station_name.split(' ').first
+          trade_hub=TradeHub.where('name=?',system_name).first
+          if trade_hub
+            puts "About to insert : #{station_id}, #{station_name}, #{trade_hub}"
+            Station.find_or_create_by( trade_hub_id: trade_hub.id, name: station_name, cpp_station_id: station_id )
+          end
         end
       end
     end
