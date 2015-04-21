@@ -7,6 +7,17 @@ class User < ActiveRecord::Base
   has_many :components, through: :materials
   has_many :trade_orders
 
+  def self.from_omniauth(auth)
+    where(provider: auth["provider"], uid: auth["uid"]).first_or_initialize.tap do |user|
+      user.provider = auth.provider
+      user.uid = auth.uid
+      user.name = auth.info.name
+      user.oauth_token = auth.credentials.token
+      user.oauth_expires_at = Time.at(auth.credentials.expires_at)
+      user.save!
+    end
+  end
+
   def self.get_used_items_and_trade_hubs
     used_item = []
     used_trade_hubs = []

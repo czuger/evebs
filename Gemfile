@@ -46,6 +46,9 @@ gem 'quiet_assets'
 gem "factory_girl_rails", "~> 4.0", group: [:development, :test ]
 gem 'rails-jquery-autocomplete'
 
+gem 'omniauth'
+gem 'omniauth-facebook', '1.4.0'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

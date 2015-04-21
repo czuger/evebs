@@ -9,6 +9,10 @@ Rails.application.routes.draw do
     get :autocomplete_eve_item_name_lowcase, :on => :collection
   end
 
+  match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
+  match 'auth/failure', to: redirect('/'), via: [:get, :post]
+  match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
+
   root 'choose_items#edit'
 
 end
