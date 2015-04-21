@@ -3,25 +3,18 @@
     Eve business server
 
 #menu
-  = link_to 'Add items', new_choose_item_path
-  |
-  -# TODO : change the user once we have one
-  = link_to 'Edit items list', edit_choose_item_path(1)
-  |
-  -# TODO : change the user once we have one
-  = link_to 'Chose trade hubs', edit_choose_trade_hub_path(1)
-  |
-  -# TODO : change the user once we have one
-  = link_to 'Advice prices', price_advice_path(1)
-  |
-  -# TODO : change the user once we have one
-  = link_to 'Edit user', edit_user_path(1)
-
-#user-widget
   - if current_user
+    = link_to 'Add items', new_choose_items_path
+    |
+    = link_to 'Edit items list', edit_choose_items_path
+    |
+    = link_to 'Chose trade hubs', edit_choose_trade_hubs_path
+    |
+    = link_to 'Advice prices', price_advices_path
+    |
+    = link_to 'Edit user', edit_user_path
+    |
     Welcome
     = succeed "!" do
       %strong= current_user.name
     = link_to "Sign out", signout_path, id: "sign_out"
-  - else
-    = link_to "Sign in with Facebook", "/auth/facebook", id: "sign_in"

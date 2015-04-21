@@ -1,6 +1,6 @@
 class PriceAdvicesController < ApplicationController
   def show
-    @user = User.first
+    @user = current_user
     @prices_array = []
     @no_concurent_array = []
     # This mean we already have an order for that item on that hub

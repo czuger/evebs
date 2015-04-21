@@ -5,16 +5,21 @@ class ChooseItemsController < ApplicationController
   # autocomplete :eve_item, :name_lowcase, full: true
 
   def edit
-    @user = User.first
-    @items = @user.eve_items.order(:name)
-    @per_group_count = (@items.length/4.0).ceil
+    if current_user
+      @user = current_user
+      @items = @user.eve_items.order(:name)
+      @per_group_count = (@items.length/4.0).ceil
+    else
+      redirect_to new_session_path
+    end
+
   end
 
   def new
   end
 
   def create
-    @user = User.first
+    @user = current_user
     choosen_item = params['choosen_item']
     if choosen_item && !choosen_item.empty?
       choosed_items_ids = choosen_item.to_i
@@ -29,7 +34,7 @@ class ChooseItemsController < ApplicationController
   end
 
   def update
-    @user = User.first
+    @user = current_user
     @user.eve_item_ids = params['items_to_keep']
     redirect_to edit_choose_item_path(@user.id)
   end

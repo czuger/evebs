@@ -1,6 +1,6 @@
-%h1 ChooseTradeHub#edit
+%h1 Check trade hubs you want to monitor
 
-= form_tag choose_trade_hub_path(@user.id), method: :put do
+= form_tag choose_trade_hubs_path(@user.id), method: :put do
   %table
     - @trade_hubs.each do |trade_hub|
       %tr

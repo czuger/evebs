@@ -1,6 +1,6 @@
-%h1 ChooseItem#edit
+%h1 Unselect items you don't want to monitor
 
-= form_tag choose_item_path(@user.id), method: :put do
+= form_tag choose_items_path(@user.id), method: :put do
   - if @items && !@items.empty?
     - @items.in_groups_of(@per_group_count).each do |group|
       %table.side_by_side_table

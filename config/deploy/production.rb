@@ -37,9 +37,6 @@ before 'deploy:publishing', 'deploy:before_publish_tasks' do
   end
 end
 
-# TODO : secret key is not taken when auto deploying with unicorn (only on manual deployment)
-# Find a way to detect generate the key randomly
-# Try export SECRET_KEY_BASE=`bundle exec rake secret`
 # Before publishing
 after 'deploy:publishing', 'deploy:start_unicorn' do
   on 'hw' do
