@@ -47,6 +47,7 @@ after 'deploy:publishing', 'deploy:start_unicorn' do
     if test("[ -f #{deploy_to}/shared/pids/unicorn.pid ]")
       execute "kill `cat #{deploy_to}/shared/pids/unicorn.pid`"
     end
-    execute "cd #{release_path}; bundle exec unicorn_rails -D -c config/unicorn/production_eve_business_server.rb -E production"
+    # Should fix the SECRET_KEY_BASE issue
+    execute "cd #{release_path}; SECRET_KEY_BASE=`bundle exec rake secret` bundle exec unicorn_rails -D -c config/unicorn/production_eve_business_server.rb -E production"
   end
 end
