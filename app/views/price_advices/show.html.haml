@@ -1,20 +1,30 @@
-%h1 PriceAdvices#show
+.order_advice_containers
+  %h2
+    Margin lists
+  %table
+    - @prices_array.each do |item|
+      %tr
+        %td=item[:trade_hub]
+        %td=item[:eve_item]
+        %td=item[:cost]
+        %td=item[:min_price]
+        %td="#{item[:benef_pcent]}%"
+        %td=number_to_currency(item[:benef], unit: "ISK ", separator: ",", delimiter: " ")
 
-%table
-  - @prices_array.each do |item|
-    %tr
-      %td=item[:trade_hub]
-      %td=item[:eve_item]
-      %td=item[:cost]
-      %td=item[:min_price]
-      %td="#{item[:benef_pcent]}%"
-      %td=number_to_currency(item[:benef], unit: "ISK ", separator: ",", delimiter: " ")
+.order_advice_containers
+  %h2
+    Shopping list
+  %table
+    - @item_count.each do |key, value|
+      %tr
+        %td=key
+        %td=value
 
-%br
-%h2
-  No concurent there
-%table
-  - @no_concurent_array.each do |item|
-    %tr
-      %td=item[:trade_hub]
-      %td=item[:eve_item]
+.order_advice_containers
+  %h2
+    No concurent there
+  %table
+    - @no_concurent_array.each do |item|
+      %tr
+        %td=item[:trade_hub]
+        %td=item[:eve_item]
