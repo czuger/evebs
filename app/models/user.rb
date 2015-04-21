@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :blueprints, through: :eve_items
   has_many :materials, through: :blueprints
   has_many :components, through: :materials
+  has_many :trade_orders
 
   def self.get_used_items_and_trade_hubs
     used_item = []
@@ -20,4 +21,7 @@ class User < ActiveRecord::Base
     [used_item, used_trade_hubs]
   end
 
+  def get_occuped_places
+    trade_orders.map{ |to| [to.trade_hub.id,to.eve_item_id] }
+  end
 end
