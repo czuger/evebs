@@ -1,3 +1,5 @@
+require 'time_diff'
+
 class PriceAdvicesController < ApplicationController
   def show
     @user = current_user
@@ -7,6 +9,9 @@ class PriceAdvicesController < ApplicationController
     # TODO : add a catch there to check for eve api connection errors
     @fullfilled_orders = @user.get_occuped_places
     @item_count = {}
+
+    @print_change_warning=print_change_warning
+
     @user.eve_items.each do |eve_item|
       @user.trade_hubs.each do |trade_hub|
         next if @fullfilled_orders.include?([trade_hub.id,eve_item.id])
@@ -42,4 +47,16 @@ class PriceAdvicesController < ApplicationController
     @prices_array.sort_by!{ |h| h[:benef] }
     @prices_array.reverse!
   end
+
+  private
+  def print_change_warning
+    lcic = @user.last_changes_in_choices || Time.new(0)
+    last_check = Time.now.beginning_of_hour
+    if lcic > last_check
+      diff = Time.diff( Time.now, Time.now.end_of_hour, '%N %S' )[:diff]
+      return "Your changes will be computed in #{diff}"
+    end
+    nil
+  end
 end
+

@@ -54,6 +54,7 @@ gem 'omniauth-facebook', '1.4.0'
 
 # Use unicorn as the app server
 gem 'unicorn'
+gem 'time_diff'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

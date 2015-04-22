@@ -29,13 +29,19 @@ class ChooseItemsController < ApplicationController
     eve_items = EveItem.where( :id => choosed_items_ids ).to_a
     eve_item_ids = @user.eve_item_ids
     eve_items.reject!{ |item| eve_item_ids.include?( item.id ) }
-    @user.eve_items << eve_items
+    ActiveRecord::Base.transaction do
+      @user.eve_items << eve_items
+      @user.update_attribute(:last_changes_in_choices,Time.now)
+    end
     redirect_to edit_choose_items_path(@user.id)
   end
 
   def update
     @user = current_user
-    @user.eve_item_ids = params['items_to_keep']
+    ActiveRecord::Base.transaction do
+      @user.eve_item_ids = params['items_to_keep']
+      @user.update_attribute(:last_changes_in_choices,Time.now)
+    end
     redirect_to edit_choose_items_path(@user.id)
   end
 

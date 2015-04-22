@@ -13,10 +13,13 @@ class UsersController < ApplicationController
     respond_to do |format|
       # TODO : replace that with something more secure
       # TODO : never trus full update
-      if @user.update(user_params)
-        format.html { render :edit, notice: 'User was successfully updated.' }
-      else
-        format.html { render :edit }
+      ActiveRecord::Base.transaction do
+        if @user.update(user_params)
+          @user.update_attribute(:last_changes_in_choices,Time.now)
+          format.html { render :edit, notice: 'User was successfully updated.' }
+        else
+          format.html { render :edit }
+        end
       end
     end
   end
