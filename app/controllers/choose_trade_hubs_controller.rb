@@ -8,6 +8,6 @@ class ChooseTradeHubsController < ApplicationController
   def update
     @user = current_user
     @user.trade_hub_ids = params['trade_hubs_ids']
-    redirect_to edit_choose_trade_hub_path(@user.id)
+    redirect_to edit_choose_trade_hubs_path
   end
 end

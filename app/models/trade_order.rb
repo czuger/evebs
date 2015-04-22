@@ -10,7 +10,7 @@ class TradeOrder < ActiveRecord::Base
 
   def self.get_trade_orders(user)
     if user.remove_occuped_places
-      if( user.key_user_id && user.api_key )
+      if( user.key_user_id && !user.key_user_id.empty? && user.api_key && !user.api_key.empty? )
         EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
         api = EAAL::API.new( user.key_user_id, user.api_key )
         api.scope = "account"
@@ -30,7 +30,7 @@ class TradeOrder < ActiveRecord::Base
           to = TradeOrder.find_by_user_id_and_eve_item_id_and_trade_hub_id(user.id, eve_item_id, trade_hub_id)
           if to
             # Si l'ordre existe déja on le renouvelle
-            to.update_attribute( new_order: true )
+            to.update_attributes( { new_order: true } )
           else
             # Sinon on en cree un
             TradeOrder.create!( user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, new_order: true )

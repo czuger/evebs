@@ -30,13 +30,13 @@ class ChooseItemsController < ApplicationController
     eve_item_ids = @user.eve_item_ids
     eve_items.reject!{ |item| eve_item_ids.include?( item.id ) }
     @user.eve_items << eve_items
-    redirect_to edit_choose_item_path(@user.id)
+    redirect_to edit_choose_items_path(@user.id)
   end
 
   def update
     @user = current_user
     @user.eve_item_ids = params['items_to_keep']
-    redirect_to edit_choose_item_path(@user.id)
+    redirect_to edit_choose_items_path(@user.id)
   end
 
   def autocomplete_eve_item_name_lowcase

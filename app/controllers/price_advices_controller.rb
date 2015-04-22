@@ -11,11 +11,12 @@ class PriceAdvicesController < ApplicationController
       @user.trade_hubs.each do |trade_hub|
         next if @fullfilled_orders.include?([trade_hub.id,eve_item.id])
 
-        @item_count[eve_item.name]+=1 if @item_count.has_key?( eve_item.name )
-        @item_count[eve_item.name]=1 unless @item_count.has_key?( eve_item.name )
-
         min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', eve_item.id, trade_hub.id ).first
         if min_price_item
+
+          @item_count[eve_item.name]+=1 if @item_count.has_key?( eve_item.name )
+          @item_count[eve_item.name]=1 unless @item_count.has_key?( eve_item.name )
+
           blueprint = eve_item.blueprint
           batch_size = blueprint.nb_runs*blueprint.prod_qtt
           batch_cost = eve_item.cost*blueprint.nb_runs

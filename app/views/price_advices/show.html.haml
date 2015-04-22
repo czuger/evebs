@@ -2,28 +2,41 @@
   %h2
     Margin lists
   %table
+    %tr
+      %th Trade hub
+      %th Item
+      %th Cost
+      %th Min price
+      %th Margin pcent
+      %th Margin amount
     - @prices_array.each do |item|
-      %tr
+      %tr{ class: cycle( :odd, :even ) }
         %td=item[:trade_hub]
         %td=item[:eve_item]
-        %td=item[:cost]
-        %td=item[:min_price]
-        %td="#{item[:benef_pcent]}%"
-        %td=number_to_currency(item[:benef], unit: "ISK ", separator: ",", delimiter: " ")
+        %td.cell_right_align=print_isk(item[:cost])
+        %td.cell_right_align=print_isk(item[:min_price])
+        %td.cell_center_align="#{item[:benef_pcent]}%"
+        %td.cell_right_align=print_isk(item[:benef])
 
 .order_advice_containers
   %h2
     Shopping list
   %table
+    %tr
+      %th Item
+      %th Amount
     - @item_count.each do |key, value|
       %tr
         %td=key
-        %td=value
+        %td.cell_center_align=value
 
 .order_advice_containers
   %h2
     No concurent there
   %table
+    %tr
+      %th Trade hub
+      %th Item
     - @no_concurent_array.each do |item|
       %tr
         %td=item[:trade_hub]
