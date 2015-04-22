@@ -4,17 +4,14 @@
 
 #menu
   - if current_user
-    = link_to 'Add items', new_choose_items_path
-    |
-    = link_to 'Edit items list', edit_choose_items_path
-    |
-    = link_to 'Chose trade hubs', edit_choose_trade_hubs_path
-    |
-    = link_to 'Advice prices', price_advices_path
-    |
-    = link_to 'Edit user', edit_user_path
-    |
-    Welcome
-    = succeed "!" do
-      %strong= current_user.name
-    = link_to "Sign out", signout_path, id: "sign_out"
+    %ul
+      %li= link_to 'Add items', new_choose_items_path
+      %li= link_to 'Edit items list', edit_choose_items_path
+      %li= link_to 'Chose trade hubs', edit_choose_trade_hubs_path
+      %li= link_to 'Advice prices', price_advices_path
+      %li= link_to 'Edit user', edit_user_path
+      %li
+        -#Welcome
+        -#= succeed "!" do
+        -#  %strong= current_user.name
+        = link_to "Sign out", signout_path, id: "sign_out"

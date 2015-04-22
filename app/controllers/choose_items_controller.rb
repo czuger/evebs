@@ -10,7 +10,7 @@ class ChooseItemsController < ApplicationController
       @items = @user.eve_items.order(:name)
       @per_group_count = (@items.length/4.0).ceil
     else
-      redirect_to new_session_path
+      redirect_to new_sessions_path
     end
 
   end
