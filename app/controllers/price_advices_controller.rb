@@ -65,7 +65,7 @@ class PriceAdvicesController < ApplicationController
     last_check = Time.now.beginning_of_hour
     if lcic > last_check
       diff = Time.diff( Time.now, Time.now.end_of_hour, '%N %S' )[:diff]
-      return "Your changes will be computed in #{diff}"
+      return "You maid recent changes. Some datas can be inacurate. The next data refresh will occur in : #{diff}"
     end
     nil
   end
