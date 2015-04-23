@@ -12,6 +12,7 @@
       %th Min price
       %th Margin pcent
       %th Margin amount
+      %th For
     - @prices_array.each do |item|
       %tr{ class: cycle( :odd, :even ) }
         %td=item[:trade_hub]
@@ -20,6 +21,7 @@
         %td.cell_right_align=print_isk(item[:min_price])
         %td.cell_center_align="#{item[:benef_pcent]}%"
         %td.cell_right_align=print_isk(item[:benef])
+        %td.cell_right_align=item[:batch_size]
 
 .order_advice_containers
   %h2
