@@ -1,4 +1,5 @@
 class ChooseTradeHubsController < ApplicationController
+
   def edit
     @user = current_user
     @trade_hubs = TradeHub.all.to_a

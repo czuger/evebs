@@ -56,6 +56,8 @@ gem 'omniauth-facebook', '1.4.0'
 gem 'unicorn'
 gem 'time_diff'
 
+gem 'simplecov', group: :development
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

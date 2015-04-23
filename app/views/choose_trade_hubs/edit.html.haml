@@ -1,11 +1,13 @@
-%h1 Check trade hubs you want to monitor
+#selection_div
 
-= form_tag choose_trade_hubs_path(@user.id), method: :put do
-  %table
-    - @trade_hubs.each do |trade_hub|
-      %tr
-        %td=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
-        %td=trade_hub.name
+  %h2 Check trade hubs you want to monitor
 
-  = submit_tag
+  = form_tag choose_trade_hubs_path(@user.id), method: :put do
+    %table
+      - @trade_hubs.each do |trade_hub|
+        %tr
+          %td=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
+          %td=trade_hub.name
+
+    = submit_tag
 

@@ -33,7 +33,7 @@ class ChooseItemsController < ApplicationController
       @user.eve_items << eve_items
       @user.update_attribute(:last_changes_in_choices,Time.now)
     end
-    redirect_to edit_choose_items_path(@user.id)
+    redirect_to edit_choose_items_path
   end
 
   def update
@@ -42,7 +42,7 @@ class ChooseItemsController < ApplicationController
       @user.eve_item_ids = params['items_to_keep']
       @user.update_attribute(:last_changes_in_choices,Time.now)
     end
-    redirect_to edit_choose_items_path(@user.id)
+    redirect_to edit_choose_items_path
   end
 
   def autocomplete_eve_item_name_lowcase

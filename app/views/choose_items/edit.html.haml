@@ -1,13 +1,15 @@
-%h1 Unselect items you don't want to monitor
+#selection_div
 
-= form_tag choose_items_path(@user.id), method: :put do
-  - if @items && !@items.empty?
-    - @items.in_groups_of(@per_group_count).each do |group|
-      %table.side_by_side_table
-        - group.each do |item|
-          - if item
-            %tr
-              %td=check_box_tag('items_to_keep[]',item.id,true)
-              %td=item.name
+  %h2 Unselect items you don't want to monitor
 
-  = submit_tag
+  = form_tag choose_items_path(@user.id), method: :put do
+    - if @items && !@items.empty?
+      - @items.in_groups_of(@per_group_count).each do |group|
+        %table.side_by_side_table
+          - group.each do |item|
+            - if item
+              %tr
+                %td=check_box_tag('items_to_keep[]',item.id,true)
+                %td=item.name
+
+    = submit_tag

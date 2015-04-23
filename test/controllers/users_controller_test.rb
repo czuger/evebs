@@ -2,31 +2,8 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   setup do
-    @user = users(:one)
-  end
-
-  test "should get index" do
-    get :index
-    assert_response :success
-    assert_not_nil assigns(:users)
-  end
-
-  test "should get new" do
-    get :new
-    assert_response :success
-  end
-
-  test "should create user" do
-    assert_difference('User.count') do
-      post :create, user: { api_key: @user.api_key, edit: @user.edit, key_user_id: @user.key_user_id, name: @user.name, remove_occuped_places: @user.remove_occuped_places }
-    end
-
-    assert_redirected_to user_path(assigns(:user))
-  end
-
-  test "should show user" do
-    get :show, id: @user
-    assert_response :success
+    @user = create( :user )
+    session[:user_id] = @user.id
   end
 
   test "should get edit" do
@@ -35,15 +12,8 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should update user" do
-    patch :update, id: @user, user: { api_key: @user.api_key, edit: @user.edit, key_user_id: @user.key_user_id, name: @user.name, remove_occuped_places: @user.remove_occuped_places }
-    assert_redirected_to user_path(assigns(:user))
+    patch :update, id: @user, user: { api_key: @user.api_key, key_user_id: @user.key_user_id, name: @user.name, remove_occuped_places: @user.remove_occuped_places }
+    assert_response :success
   end
 
-  test "should destroy user" do
-    assert_difference('User.count', -1) do
-      delete :destroy, id: @user
-    end
-
-    assert_redirected_to users_path
-  end
 end

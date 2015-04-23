@@ -5,8 +5,13 @@ FactoryGirl.define do
   sequence :name do |n|
     "Item id #{n}"
   end
+  sequence :name_lowcase do |n|
+    "item id #{n}"
+  end
   factory :eve_item do
     cpp_eve_item_id
     name
+    name_lowcase
+    cost 5
   end
 end

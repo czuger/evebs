@@ -13,14 +13,11 @@ class PriceAdvicesController < ApplicationController
     @print_change_warning=print_change_warning
 
     @user.trade_hubs.each do |trade_hub|
-      eve_items_ids = @user.eve_item_ids
-      eve_items_ids.reject!{ |i| @fullfilled_orders.include?([trade_hub.id,i]) }
+      eve_items = @user.eve_items.to_a
+      eve_items.reject!{ |i| @fullfilled_orders.include?([trade_hub.id,i.id]) }
 
-      min_price_items = MinPrice.includes(eve_item:[:blueprint]).where( { eve_item_id: eve_items_ids, trade_hub_id: trade_hub.id } )
+      min_price_items = MinPrice.includes(eve_item:[:blueprint]).where( { eve_item_id: eve_items.map{ |i| i.id }, trade_hub_id: trade_hub.id } )
       min_price_items.each do |min_price_item|
-
-        @item_count[min_price_item.eve_item.name]+=1 if @item_count.has_key?( min_price_item.eve_item.name )
-        @item_count[min_price_item.eve_item.name]=1 unless @item_count.has_key?( min_price_item.eve_item.name )
 
         blueprint = min_price_item.eve_item.blueprint
         batch_size = blueprint.nb_runs*blueprint.prod_qtt
@@ -28,7 +25,11 @@ class PriceAdvicesController < ApplicationController
         batch_sell_price = min_price_item.min_price*batch_size
         benef = batch_sell_price - batch_cost
         benef_pcent = ((batch_sell_price*100) / batch_cost).round(0)-100
-        if benef_pcent > @user.min_pcent_for_advice
+        if benef_pcent > ( @user.min_pcent_for_advice || -500 )
+
+          @item_count[min_price_item.eve_item.name]+=1 if @item_count.has_key?( min_price_item.eve_item.name )
+          @item_count[min_price_item.eve_item.name]=1 unless @item_count.has_key?( min_price_item.eve_item.name )
+
           @prices_array << {
             trade_hub: trade_hub.name,
             eve_item: min_price_item.eve_item.name,
@@ -40,6 +41,8 @@ class PriceAdvicesController < ApplicationController
           }
         end
       end
+      no_orders_items = eve_items - min_price_items.map{ |mpi| mpi.eve_item }
+      @no_concurent_array += no_orders_items.map{ |noi| { trade_hub: trade_hub.name, eve_item: noi.name } }
     end
 
     # TODO : need to fix the no concurent issue
