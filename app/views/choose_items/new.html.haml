@@ -1,6 +1,8 @@
 #selection_div
 
-  %h2 Type the name of an item you wan't to monitor
+  %h2
+    %span{ rel: :tooltip, title: :test }
+      Type the name of an item you wan't to monitor
 
   = form_tag '/choose_items' do
     -# doc is wrong, use 'data-append-to' => '#test_append' instead of append_to
