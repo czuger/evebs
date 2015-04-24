@@ -1,5 +1,7 @@
 class ChooseTradeHubsController < ApplicationController
 
+  before_action :require_logged_in!
+
   def edit
     @user = current_user
     @trade_hubs = TradeHub.all.to_a

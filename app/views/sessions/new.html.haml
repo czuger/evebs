@@ -8,14 +8,18 @@
       %span#facebook_icon
       %span
         Sign up using Facebook
-  %hr
-  = link_to "/auth/developer", id: "sign_in" do
+  = link_to :new_identity, class: :sign_in_class do
     %p
       %span
       %span
-        Sign up with a login and password
-  = link_to :new_identity do
-    %p
-      %span
-      %span
-        Create a login and password
+        Create credentials
+  = form_tag "/auth/identity/callback" do
+    %table.sign_in_class
+      %tr
+        %td= label_tag :auth_key, 'Email:'
+        %td= text_field_tag :auth_key, nil, class: :input_class
+      %tr
+        %td= label_tag :password, 'Password:'
+        %td= password_field_tag :password, nil, class: :input_class
+      %tr
+        %td{ colspan: 2}= submit_tag 'Log in'

@@ -1,5 +1,8 @@
 class UsersController < ApplicationController
+
   before_action :set_user, only: [:show, :edit, :update, :destroy]
+
+  before_action :require_logged_in!
 
   # GET /users/1/edit
   def edit

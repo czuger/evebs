@@ -1,6 +1,9 @@
 require 'time_diff'
 
 class PriceAdvicesController < ApplicationController
+
+  before_action :require_logged_in!
+
   def show
     @user = current_user
     @prices_array = []
