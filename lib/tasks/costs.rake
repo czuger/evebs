@@ -1,4 +1,5 @@
 namespace :data_compute do
+
   desc "Recompute the costs for individual components"
   task :refresh_components_costs => :environment do
     unchecked_items = [ 235 ]
@@ -11,6 +12,13 @@ namespace :data_compute do
       end
     end
   end
+
+  desc "Recompute the costs all components (not only used ones)"
+  task :refresh_all_components_costs => :environment do
+    puts 'Refreshing all components costs'
+    Component.set_min_prices_for_all_components
+  end
+
   desc "Recompute the costs for items"
   task :refresh_items_costs => :environment do
     puts 'Recomputing prices'
@@ -20,4 +28,15 @@ namespace :data_compute do
     end
     puts 'End for recomputing cost'
   end
+
+  desc "Recompute the costs all items (not only used ones)"
+  task :refresh_all_items_costs => :environment do
+    puts 'Refreshing all items components costs'
+    EveItem.all.each do |ei|
+      puts "Recomputing price for #{ei.name}"
+      ei.compute_cost
+    end
+    puts 'End for all recomputing cost'
+  end
+
 end

@@ -38,6 +38,12 @@ class EveItem < ActiveRecord::Base
         return
       end
     end
+    if total_cost <= 0
+      puts "Warning !!! #{self.inspect} has no cost"
+      # If we lack a material we set the price to nil and exit
+      update_attribute(:cost,nil)
+      return
+    end
     update_attribute(:cost,total_cost)
   end
 

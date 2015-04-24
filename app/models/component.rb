@@ -2,7 +2,7 @@ class Component < ActiveRecord::Base
   JITA_EVE_SYSTEM_ID=30000142
 
   validates :cpp_eve_item_id, :name, presence: true
-  include MinPriceRetriever
+  extend MinPriceRetriever
 
   has_many :materials
   has_many :blueprints, through: :materials
@@ -25,6 +25,15 @@ class Component < ActiveRecord::Base
       end
     end
     used_components
+  end
+
+  def self.set_min_prices_for_all_components
+    component_ids = Component.all.to_a.map{ |c| c.cpp_eve_item_id }
+    result = MultipleMinPriceRetriever.get_min_prices( JITA_EVE_SYSTEM_ID, component_ids )
+    result.each_pair do |key,value|
+      component = Component.find_by_cpp_eve_item_id( key )
+      component.update_attribute( :cost, value )
+    end
   end
 
 end
