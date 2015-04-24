@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :identities
+
   resource :user, only: [:edit,:update]
 
   resource :price_advices, only: [:show]

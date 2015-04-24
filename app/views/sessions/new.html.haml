@@ -1,14 +1,21 @@
 %head
   = csrf_meta_tags
 
+-# TODO : il y a plusieurs id sign in. Pas bien
 #login_area
   = link_to "/auth/facebook", id: "sign_in" do
     %p
       %span#facebook_icon
       %span
         Sign up using Facebook
+  %hr
   = link_to "/auth/developer", id: "sign_in" do
     %p
       %span
       %span
-        Sign up as developper
+        Sign up with a login and password
+  = link_to :new_identity do
+    %p
+      %span
+      %span
+        Create a login and password

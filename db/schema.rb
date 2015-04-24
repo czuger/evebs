@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150423083440) do
+ActiveRecord::Schema.define(version: 20150424082441) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -53,6 +53,14 @@ ActiveRecord::Schema.define(version: 20150423083440) do
 
   add_index "eve_items_users", ["eve_item_id"], name: "index_eve_items_users_on_eve_item_id"
   add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id"
+
+  create_table "identities", force: true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "password_digest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "materials", force: true do |t|
     t.integer  "blueprint_id"

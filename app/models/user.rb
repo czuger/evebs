@@ -8,15 +8,28 @@ class User < ActiveRecord::Base
   has_many :trade_orders
 
   def self.from_omniauth(auth)
-    where(provider: auth["provider"], uid: auth["uid"]).first_or_initialize.tap do |user|
-      user.provider = auth.provider
-      user.uid = auth.uid
-      user.name = auth.info.name
-      user.oauth_token = auth.credentials.token
-      user.oauth_expires_at = Time.at(auth.credentials.expires_at)
-      user.save!
+    if auth["provider"] == 'identity'
+      find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)
+    else
+      where(provider: auth["provider"], uid: auth["uid"]).first_or_initialize.tap do |user|
+        user.provider = auth.provider
+        user.uid = auth.uid
+        user.name = auth.info.name
+        user.oauth_token = auth.credentials.token
+        user.oauth_expires_at = Time.at(auth.credentials.expires_at)
+        user.save!
+      end
     end
   end
+
+  def self.create_with_omniauth(auth)
+    create! do |user|
+      user.provider = auth['provider']
+      user.uid = auth['uid']
+      user.name = auth['info']['name']
+    end
+  end
+
 
   def self.get_used_items_and_trade_hubs
     used_item = []
