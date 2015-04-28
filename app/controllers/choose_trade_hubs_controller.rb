@@ -6,6 +6,7 @@ class ChooseTradeHubsController < ApplicationController
     @user = current_user
     @trade_hubs = TradeHub.all.to_a
     @user_trade_hubs_ids = @user.trade_hubs.map{ |e| e.id }
+    @per_group_count = (@trade_hubs.length/4.0).ceil
   end
 
   def update

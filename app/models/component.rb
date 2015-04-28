@@ -2,7 +2,7 @@ class Component < ActiveRecord::Base
   JITA_EVE_SYSTEM_ID=30000142
 
   validates :cpp_eve_item_id, :name, presence: true
-  extend MinPriceRetriever
+  include MinPriceRetriever
 
   has_many :materials
   has_many :blueprints, through: :materials

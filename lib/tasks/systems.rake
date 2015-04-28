@@ -2,7 +2,7 @@ namespace :data_setup do
   desc "Feed trade hubs list"
   task :trade_hubs => :environment do
     puts 'About to create trade hubs'
-    system_names = %w( Teonusude Hek Jita Rens Pator Amarr Dodixie Gelfiven Lustrevik Eram Orvolle Stacmon )
+    system_names = %w( Jita Amarr Rens Dodixie Hek Oursulaert Tash-Murkon Agil Sakht Tuomuta Esescama Amarr Dresi Ordion Zinkon Tash-Murkon Prime Berta Ichoriya Motsu Jita Nourvukaiken Sobaseki Torrinos Oursulaert Arnon Halle Orvolle Stacmon Dodixie Boystin Clellinon Sortet Apanake Agil Rens Lustrevik Pator Hek Teonusude XX9-WV G-0Q86 1-SMEB BWF-ZZ E02-IK 4C-B7X 4GQ-XQ LGK-VP TG-Z23 PC9-AY VSIG-K X-M2LR N5Y-4N 4-CM8I )
     api = EAAL::API.new(nil,nil)
     api.scope = "eve"
 
