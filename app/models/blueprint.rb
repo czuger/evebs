@@ -16,10 +16,12 @@ class Blueprint < ActiveRecord::Base
         produced_item_id = manufacturing['products'].first['typeID']
         produced_item_qtt = manufacturing['products'].first['quantity']
         max_production_limit = bp['maxProductionLimit']
+        skills = bp['activities']['manufacturing']['skills']
         blueprints_array << {
             blueprint_id: blueprint_id, produced_item_id: produced_item_id, produced_item_qtt: produced_item_qtt,
             max_production_limit: max_production_limit,
-            materials: manufacturing['materials']
+            materials: manufacturing['materials'],
+            skills_count: skills ? skills.count : 0
         }
       end
     end

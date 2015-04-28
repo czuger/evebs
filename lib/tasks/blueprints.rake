@@ -5,6 +5,7 @@ namespace :data_setup do
     blueprints_array=Blueprint.load_blueprint_array
     eve_item_hash=EveItem.download_items_hash
     blueprints_array.each do |bp|
+      # next if bp[:skills_count] <= 1 # Blueprint shit
       blueprint_id = bp[:blueprint_id]
       unless Blueprint.find_by_cpp_blueprint_id( blueprint_id )
         next if Blueprint::UNWANTED_BLUEPRINTS.include?( blueprint_id.to_i )
@@ -38,4 +39,17 @@ namespace :data_setup do
       end
     end
   end
+
+  desc "Delete unproductable blueprint"
+  task :blueprints_delete_unproductable => :environment do
+    unwanted_names = [ 'Police Pursuit Comet', 'Moracha', ]
+    unwanted_names.each do |name|
+      Blueprint.joins(:eve_item).where( "eve_items.name = '#{name}'" ).each{ |i| i.destroy }
+    end
+    Blueprint.joins(:eve_item).where( "eve_items.name like '%Edition%'" ).each{ |i| i.destroy }
+    Blueprint.joins(:eve_item).where( "eve_items.name like '%Navy%'" ).each{ |i| i.destroy }
+    Blueprint.joins(:eve_item).where( "eve_items.name like '%Ishukone%'" ).each{ |i| i.destroy }
+
+  end
+
 end
