@@ -3,23 +3,33 @@
 
 -# TODO : il y a plusieurs id sign in. Pas bien
 #login_area
-  = link_to "/auth/facebook", id: "sign_in" do
-    %p
-      %span#facebook_icon
-      %span
-        Sign up using Facebook
-  = link_to :new_identity, class: :sign_in_class do
-    %p
-      %span
-      %span
-        Create credentials
   = form_tag "/auth/identity/callback" do
-    %table.sign_in_class
+    %table.sign_in_table
       %tr
-        %td= label_tag :auth_key, 'Email:'
-        %td= text_field_tag :auth_key, nil, class: :input_class
+        %td
+          = link_to "/auth/facebook", id: "sign_in" do
+            %span#facebook_icon
+            %span
+              Sign up using Facebook
       %tr
-        %td= label_tag :password, 'Password:'
-        %td= password_field_tag :password, nil, class: :input_class
+        %td
+          = link_to :new_identity, class: :sign_in_class do
+            %span
+            %span
+              Create credentials
       %tr
-        %td{ colspan: 2}= submit_tag 'Log in'
+        %td
+          %span.sign_in_class
+            %span
+              = label_tag :auth_key, 'Email:'
+            %span
+              = text_field_tag :auth_key, nil, class: :input_class
+      %tr
+        %td
+          %span.sign_in_class
+            %span
+              = label_tag :password, 'Password:'
+            %span
+              = password_field_tag :password, nil, class: :input_class
+      %tr
+        %td{ colspan: 2 }= submit_tag 'Log in'
