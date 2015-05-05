@@ -4,7 +4,7 @@ working_directory '/var/www/eve_business_server/current'
 
 # Unicorn PID file location
 # pid '/path/to/pids/unicorn.pid'
-pid '/var/www/eve_business_server/current/pids/unicorn.pid'
+pid '/var/www/eve_business_server/current/tmp/pids/unicorn.pid'
 
 # Path to logs
 # stderr_path '/path/to/log/unicorn.log'
