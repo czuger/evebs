@@ -6,6 +6,7 @@
     Margin lists
   %table
     %tr
+      %th
       %th Trade hub
       %th Item
       %th Cost
@@ -15,6 +16,7 @@
       %th For
     - @prices_array.each do |item|
       %tr{ class: cycle( :odd, :even ) }
+        %td=check_box_tag :dummy
         %td=item[:trade_hub]
         %td=item[:eve_item]
         %td.cell_right_align=print_isk(item[:cost])
