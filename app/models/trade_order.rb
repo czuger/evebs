@@ -23,7 +23,10 @@ class TradeOrder < ActiveRecord::Base
         end
         full_orders_list.flatten!
         # On considère tous les ordres actuels comme des anciens ordres
-        TradeOrder.update_all( new_order: false )
+        # TradeOrder.update_all( new_order: false )
+        user.trade_orders.each do |trade_order|
+          trade_order.update_attribute( { new_order: false } )
+        end
         full_orders_list.each do |order|
           eve_item_id = EveItem.to_eve_item_id(order.typeID.to_i)
           trade_hub_id =  Station.to_trade_hub_id(order.stationID.to_i)
