@@ -50,6 +50,12 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
+      # Stopping current unicorn daemon
+      if test("[ -f #{deploy_to}/shared/pids/unicorn.pid ]")
+        # execute "kill `cat #{deploy_to}/shared/pids/unicorn.pid`"
+      end
+      # Should fix the SECRET_KEY_BASE issue
+      execute "cd #{release_path}; bundle exec unicorn_rails -D -c config/unicorn/production_eve_business_server.rb -E production"
     end
   end
 
