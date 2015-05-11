@@ -17,4 +17,8 @@ class SessionsController < ApplicationController
     redirect_to root_url
   end
 
+  def failure
+    redirect_to new_sessions_path, alert: "Authentication failed, please try again."
+  end
+
 end

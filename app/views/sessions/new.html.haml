@@ -1,6 +1,9 @@
 %head
   = csrf_meta_tags
 
+-flash.each do |flash|
+  %h2=flash
+
 -# TODO : il y a plusieurs id sign in. Pas bien
 #login_area
   = form_tag "/auth/identity/callback" do
