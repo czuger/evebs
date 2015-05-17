@@ -52,8 +52,8 @@ namespace :deploy do
       # execute :touch, release_path.join('tmp/restart.txt')
       # Stopping current unicorn daemon
       # TODO : don't work
-      if test("[ -f #{deploy_to}/shared/pids/unicorn.pid ]")
-        # execute "kill `cat #{deploy_to}/shared/pids/unicorn.pid`"
+      if test("[ -f #{deploy_to}/shared/tmp/pids/unicorn.pid ]")
+        execute "kill `cat #{deploy_to}/shared/tmp/pids/unicorn.pid`"
       end
       execute "cd #{release_path}; bundle exec unicorn_rails -D -c config/unicorn/production_eve_business_server.rb -E production"
     end

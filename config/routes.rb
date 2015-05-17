@@ -4,7 +4,12 @@ Rails.application.routes.draw do
 
   resource :user, only: [:edit,:update]
 
-  resource :price_advices, only: [:show]
+  namespace :price_advices do
+    get :advice_prices
+    get :show_challenged_prices
+  end
+
+
   resource :choose_trade_hubs, only: [:edit, :update]
 
   resource :choose_items, only: [:new, :edit, :create, :update] do

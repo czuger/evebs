@@ -11,8 +11,14 @@ class PriceAdvicesControllerTest < ActionController::TestCase
     @min_price = create( :min_price, eve_item: @blueprint.eve_item, trade_hub: @trade_hub )
     @user.eve_items << @blueprint.eve_item
   end
+
   test "should show prices for current user" do
-    get :show
+    get :advice_prices
+    assert_response :success
+  end
+
+  test "should show challenged prices" do
+    get :show_challenged_prices
     assert_response :success
   end
 

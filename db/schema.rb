@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150424082441) do
+ActiveRecord::Schema.define(version: 20150517123827) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 20150424082441) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "new_order"
+    t.float    "price"
   end
 
   add_index "trade_orders", ["eve_item_id"], name: "index_trade_orders_on_eve_item_id"
@@ -136,6 +137,7 @@ ActiveRecord::Schema.define(version: 20150424082441) do
     t.datetime "oauth_expires_at"
     t.datetime "last_changes_in_choices"
     t.integer  "min_pcent_for_advice"
+    t.boolean  "watch_my_prices"
   end
 
 end

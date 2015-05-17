@@ -1,0 +1,23 @@
+#print_change_warning
+  = @print_change_warning
+
+.order_advice_containers
+  %h2
+    My orders status
+  %table
+    %tr
+      %th
+      %th Trade hub
+      %th Item
+      %th Min price
+      %th My price
+      %th Diff
+    - @compared_prices.each do |cp|
+      %tr{ class: cycle( :odd, :even ) }
+        %td=check_box_tag :dummy
+        %td=cp[:trade_hub_name]
+        %td=cp[:eve_item_name]
+        %td=cp[:min_price]
+        %td=cp[:my_price]
+        %td
+          = cp[:min_price] - cp[:my_price]

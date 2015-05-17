@@ -5,6 +5,7 @@ class ChooseTradeHubsControllerTest < ActionController::TestCase
   def setup
     user = create( :user )
     session[:user_id] = user.id
+    create( :trade_hub )
   end
 
   test "should get edit" do

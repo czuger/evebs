@@ -1,3 +1,5 @@
+require 'pp'
+
 class TradeOrder < ActiveRecord::Base
   belongs_to :user
   belongs_to :eve_item
@@ -9,7 +11,7 @@ class TradeOrder < ActiveRecord::Base
   # TODO : (for each users)
 
   def self.get_trade_orders(user)
-    if user.remove_occuped_places
+    if user.remove_occuped_places || user.watch_my_prices
       if( user.key_user_id && !user.key_user_id.empty? && user.api_key && !user.api_key.empty? )
         EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
         api = EAAL::API.new( user.key_user_id, user.api_key )
@@ -28,15 +30,16 @@ class TradeOrder < ActiveRecord::Base
           trade_order.update_attributes( { new_order: false } )
         end
         full_orders_list.each do |order|
+          # pp order
           eve_item_id = EveItem.to_eve_item_id(order.typeID.to_i)
           trade_hub_id =  Station.to_trade_hub_id(order.stationID.to_i)
           to = TradeOrder.find_by_user_id_and_eve_item_id_and_trade_hub_id(user.id, eve_item_id, trade_hub_id)
           if to
             # Si l'ordre existe déja on le renouvelle
-            to.update_attributes( { new_order: true } )
+            to.update_attributes( { new_order: true, price: order.price } )
           else
             # Sinon on en cree un
-            TradeOrder.create!( user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, new_order: true )
+            TradeOrder.create!( user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, new_order: true, price: order.price )
           end
         end
         # On supprime tous les ordres marqués comme anciens

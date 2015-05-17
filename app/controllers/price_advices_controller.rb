@@ -4,7 +4,26 @@ class PriceAdvicesController < ApplicationController
 
   before_action :require_logged_in!
 
-  def show
+  def show_challenged_prices
+
+    @user = current_user
+    @print_change_warning=print_change_warning
+
+    @trade_orders = @user.trade_orders
+    @compared_prices = []
+
+    @trade_orders.each do |to|
+      min_price = MinPrice.find_by_eve_item_id_and_trade_hub_id( to.eve_item_id, to.trade_hub_id )
+      @compared_prices << {
+          trade_hub_name: to.trade_hub.name, eve_item_name: to.eve_item.name, my_price: to.price, min_price: min_price.min_price
+      }
+    end
+
+    @compared_prices = @compared_prices.sort_by{ |e| [e[:trade_hub_name], e[:eve_item_name]] }
+
+  end
+
+  def advice_prices
     @user = current_user
     @prices_array = []
     @no_concurent_array = []
@@ -47,16 +66,6 @@ class PriceAdvicesController < ApplicationController
       no_orders_items = eve_items - min_price_items.map{ |mpi| mpi.eve_item }
       @no_concurent_array += no_orders_items.map{ |noi| { trade_hub: trade_hub.name, eve_item: noi.name } }
     end
-
-    # TODO : need to fix the no concurent issue
-      #   else
-      #     @no_concurent_array << {
-      #       trade_hub: trade_hub.name,
-      #       eve_item: min_price_item.eve_item.name
-      #     }
-      #   end
-      # end
-    # end
 
     @prices_array.sort_by!{ |h| h[:benef] }
     @prices_array.reverse!
