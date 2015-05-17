@@ -22,6 +22,6 @@ Rails.application.routes.draw do
   # match 'auth/failure', to: redirect('/'), via: [:get, :post]
   match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
 
-  root 'price_advices#show'
+  root 'price_advices#advice_prices'
 
 end
