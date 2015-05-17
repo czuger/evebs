@@ -1,9 +1,6 @@
 %head
   = csrf_meta_tags
 
--flash.each do |flash|
-  %h2=flash
-
 -# TODO : il y a plusieurs id sign in. Pas bien
 #login_area
   = form_tag "/auth/identity/callback" do
@@ -30,17 +27,23 @@
             Or
       %tr
         %td
-          %span.sign_in_class
-            %span.sign_in_label
-              = label_tag :auth_key, 'Email:'
-            %span.sign_in_input
-              = text_field_tag :auth_key, nil, class: :input_class
+          -flash.each do |flash|
+            %h2=flash.last
       %tr
         %td
           %span.sign_in_class
-            %span.sign_in_label
-              = label_tag :password, 'Password:'
-            %span.sign_in_input
-              = password_field_tag :password, nil, class: :input_class
+            %span
+              = label_tag :auth_key, 'Email:'
+            %span.credential_span_input_class
+              = text_field_tag :auth_key, nil, class: :credential_input_class
       %tr
-        %td= submit_tag 'Sign in', style: { text_align: :center }
+        %td
+          %span.sign_in_class
+            %span
+              = label_tag :password, 'Password:'
+            %span.credential_span_input_class
+              = password_field_tag :password, nil, class: :credential_input_class
+      %tr
+        %td{ colspan: 2 }
+          .log_in_span_input_class
+            = submit_tag 'Log in'
