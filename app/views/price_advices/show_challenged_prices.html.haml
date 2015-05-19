@@ -20,4 +20,4 @@
         %td=cp[:min_price]
         %td=cp[:my_price]
         %td
-          = cp[:min_price] - cp[:my_price]
+          = cp[:min_price] - cp[:my_price] if cp[:min_price] && cp[:my_price]
