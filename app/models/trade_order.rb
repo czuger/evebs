@@ -30,7 +30,7 @@ class TradeOrder < ActiveRecord::Base
           trade_order.update_attributes( { new_order: false } )
         end
         full_orders_list.each do |order|
-          # pp order
+          pp order
           eve_item_id = EveItem.to_eve_item_id(order.typeID.to_i)
           trade_hub_id =  Station.to_trade_hub_id(order.stationID.to_i)
           to = TradeOrder.find_by_user_id_and_eve_item_id_and_trade_hub_id(user.id, eve_item_id, trade_hub_id)
