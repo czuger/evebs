@@ -30,15 +30,17 @@ class TradeOrder < ActiveRecord::Base
           trade_order.update_attributes( { new_order: false } )
         end
         full_orders_list.each do |order|
-          pp order
+          puts "Order received #{order.typeID}, #{order.stationID}, #{order.price}"
           eve_item_id = EveItem.to_eve_item_id(order.typeID.to_i)
           trade_hub_id =  Station.to_trade_hub_id(order.stationID.to_i)
           to = TradeOrder.find_by_user_id_and_eve_item_id_and_trade_hub_id(user.id, eve_item_id, trade_hub_id)
           if to
             # Si l'ordre existe déja on le renouvelle
+            puts "Found #{to.inspect}, updating"
             to.update_attributes( { new_order: true, price: order.price } )
           else
             # Sinon on en cree un
+            puts "Order not found - creating a new one"
             TradeOrder.create!( user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, new_order: true, price: order.price )
           end
         end
