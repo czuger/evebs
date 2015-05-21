@@ -27,7 +27,8 @@ class TradeOrder < ActiveRecord::Base
         # On considère tous les ordres actuels comme des anciens ordres
         # TradeOrder.update_all( new_order: false )
         user.trade_orders.each do |trade_order|
-          trade_order.update_attributes( { new_order: false } )
+          puts "Setting #{trade_order.inspect} - new_order to false"
+          trade_order.update_attribute( :new_order, false )
         end
         full_orders_list.each do |order|
           puts "Order received #{order.typeID}, #{order.stationID}, #{order.price}"
@@ -45,7 +46,7 @@ class TradeOrder < ActiveRecord::Base
           end
         end
         # On supprime tous les ordres marqués comme anciens
-        TradeOrder.delete_all( new_order: false )
+        TradeOrder.destroy_all( new_order: false )
       end
     end
   end
