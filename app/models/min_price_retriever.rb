@@ -12,7 +12,7 @@ module MinPriceRetriever
       `rm -r tmp/api.eve-central.com`
     end
     html_req = "http://api.eve-central.com/api/quicklook?typeid=#{item_id}&usesystem=#{system_id}"
-    # pp html_req
+    puts "About to request #{html_req}"
     xml_result = open( html_req ).read
     dom = Nokogiri::XML( xml_result )
     price_page =  dom.xpath("//sell_orders//price")
