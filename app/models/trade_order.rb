@@ -27,23 +27,26 @@ class TradeOrder < ActiveRecord::Base
         # On considère tous les ordres actuels comme des anciens ordres
         # TradeOrder.update_all( new_order: false )
         user.trade_orders.each do |trade_order|
-          trade_order.update_attributes( { new_order: false } )
+          puts "Setting #{trade_order.inspect} - new_order to false"
+          trade_order.update_attribute( :new_order, false )
         end
         full_orders_list.each do |order|
-          # pp order
+          puts "Order received #{order.typeID}, #{order.stationID}, #{order.price}"
           eve_item_id = EveItem.to_eve_item_id(order.typeID.to_i)
           trade_hub_id =  Station.to_trade_hub_id(order.stationID.to_i)
           to = TradeOrder.find_by_user_id_and_eve_item_id_and_trade_hub_id(user.id, eve_item_id, trade_hub_id)
           if to
             # Si l'ordre existe déja on le renouvelle
+            puts "Found #{to.inspect}, updating"
             to.update_attributes( { new_order: true, price: order.price } )
           else
             # Sinon on en cree un
+            puts "Order not found - creating a new one"
             TradeOrder.create!( user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, new_order: true, price: order.price )
           end
         end
         # On supprime tous les ordres marqués comme anciens
-        TradeOrder.delete_all( new_order: false )
+        TradeOrder.destroy_all( new_order: false )
       end
     end
   end
