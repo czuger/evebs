@@ -9,7 +9,7 @@ set :repo_url, 'git:/opt/git/eve_business_server'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, "/var/www/eve_business_server"
-set :keep_releases, 1
+set :keep_releases, 2
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'db/production.sqlite3' )
