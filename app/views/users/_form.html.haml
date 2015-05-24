@@ -11,12 +11,6 @@
       %td= f.label :name
       %td= f.text_field :name
     %tr
-      %td= f.label :remove_occuped_places
-      %td= f.check_box :remove_occuped_places
-    %tr
-      %td= f.label :watch_my_prices
-      %td= f.check_box :watch_my_prices
-    %tr
       %td= f.label :min_pcent_for_advice
       %td= f.text_field :min_pcent_for_advice, size: 5
     %tr
@@ -25,5 +19,11 @@
     %tr
       %td= f.label :api_key
       %td= f.text_field :api_key, size: 60
+    %tr
+      %td= f.label :remove_occuped_places
+      %td= f.check_box :remove_occuped_places
+    %tr
+      %td= f.label :watch_my_prices
+      %td= f.check_box :watch_my_prices
   .actions
     = f.submit 'Save'
