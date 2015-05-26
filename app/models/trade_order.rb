@@ -42,7 +42,14 @@ class TradeOrder < ActiveRecord::Base
           else
             # Sinon on en cree un
             puts "Order not found - creating a new one"
-            TradeOrder.create!( user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, new_order: true, price: order.price )
+            begin
+              TradeOrder.create!( user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, new_order: true, price: order.price )
+            rescue => exception
+              STDERR.puts( "#{Time.now} - TradeOrder.get_trade_orders - Exception while trying to create a new order" )
+              STDERR.puts( "#{order.inspect}" )
+              STDERR.puts( exception.message )
+              STDERR.puts( exception.backtrace )
+            end
           end
         end
         # On supprime tous les ordres marqués comme anciens
