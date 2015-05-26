@@ -16,7 +16,9 @@ Rails.application.routes.draw do
     get :autocomplete_eve_item_name_lowcase, :on => :collection
   end
 
-  resource :sessions, only: [:new]
+  resource :sessions, only: [:new] do
+    get :screenshots
+  end
   match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
   match 'auth/failure', to: 'sessions#failure', via: [:get, :post]
   # match 'auth/failure', to: redirect('/'), via: [:get, :post]
