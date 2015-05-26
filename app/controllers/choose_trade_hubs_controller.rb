@@ -4,7 +4,7 @@ class ChooseTradeHubsController < ApplicationController
 
   def edit
     @user = current_user
-    @trade_hubs = TradeHub.all.to_a.sort
+    @trade_hubs = TradeHub.all.order(:name).to_a
     @user_trade_hubs_ids = @user.trade_hubs.map{ |e| e.id }
     @per_group_count = (@trade_hubs.length/4.0).ceil
   end
