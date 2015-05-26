@@ -42,25 +42,27 @@ class PriceAdvicesController < ApplicationController
       min_price_items.each do |min_price_item|
 
         blueprint = min_price_item.eve_item.blueprint
-        batch_size = blueprint.nb_runs*blueprint.prod_qtt
-        batch_cost = min_price_item.eve_item.cost*blueprint.nb_runs
-        batch_sell_price = min_price_item.min_price*batch_size
-        benef = batch_sell_price - batch_cost
-        benef_pcent = ((batch_sell_price*100) / batch_cost).round(0)-100
-        if benef_pcent > ( @user.min_pcent_for_advice || -500 )
+        if blueprint
+          batch_size = blueprint.nb_runs*blueprint.prod_qtt
+          batch_cost = min_price_item.eve_item.cost*blueprint.nb_runs
+          batch_sell_price = min_price_item.min_price*batch_size
+          benef = batch_sell_price - batch_cost
+          benef_pcent = ((batch_sell_price*100) / batch_cost).round(0)-100
+          if benef_pcent > ( @user.min_pcent_for_advice || -500 )
 
-          @item_count[min_price_item.eve_item.name]+=1 if @item_count.has_key?( min_price_item.eve_item.name )
-          @item_count[min_price_item.eve_item.name]=1 unless @item_count.has_key?( min_price_item.eve_item.name )
+            @item_count[min_price_item.eve_item.name]+=1 if @item_count.has_key?( min_price_item.eve_item.name )
+            @item_count[min_price_item.eve_item.name]=1 unless @item_count.has_key?( min_price_item.eve_item.name )
 
-          @prices_array << {
-            trade_hub: trade_hub.name,
-            eve_item: min_price_item.eve_item.name,
-            min_price: min_price_item.min_price.round(1),
-            cost: (min_price_item.eve_item.cost/blueprint.prod_qtt).round(1),
-            benef: benef,
-            benef_pcent: benef_pcent,
-            batch_size: batch_size
-          }
+            @prices_array << {
+              trade_hub: trade_hub.name,
+              eve_item: min_price_item.eve_item.name,
+              min_price: min_price_item.min_price.round(1),
+              cost: (min_price_item.eve_item.cost/blueprint.prod_qtt).round(1),
+              benef: benef,
+              benef_pcent: benef_pcent,
+              batch_size: batch_size
+            }
+          end
         end
       end
       no_orders_items = eve_items - min_price_items.map{ |mpi| mpi.eve_item }
