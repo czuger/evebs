@@ -7,10 +7,11 @@
 -#      %td=item_price[:eve_item]
 -#      %td=item_price[:benef]
 
--# TODO : il y a plusieurs id sign in. Pas bien
+#screenshots_link_div
+  = link_to( ">> Screenshots <<", screenshots_sessions_path, id: :screenshots_link )
+
 #login_area
   -# = "Monitor the potential benefit of #{@eve_items_count} items in #{@trade_hubs_count} trade hubs"
-  = link_tag( screenshots_sessions )
   = form_tag "/auth/identity/callback" do
     %table.sign_in_table
       %tr

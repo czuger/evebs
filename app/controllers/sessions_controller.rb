@@ -54,6 +54,8 @@ class SessionsController < ApplicationController
 
   def screenshots
     @picture_names = %w( add_items edit_items_list choose_trade_hubs advice_prices edit_user )
+    @picture_legends = [
+      "Add items", "Edit items list", "Choose trade hubs", "Advice prices", "Edit user" ]
   end
 
 end
