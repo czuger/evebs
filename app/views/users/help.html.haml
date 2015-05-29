@@ -1,0 +1,88 @@
+#help_div
+  %h1
+    Add items
+  %p
+    With that, you can select the items you want to monitor. This is an auto-completion list, so you just have to type a part of the name of an item (example fury cruise).
+    %ul
+      %li
+        If you select an item and then click the add item(s) button, it will add only that item.
+      %li
+        Otherwise it will add the full list of the shown items.
+  %hr
+  %h1
+    Edit item list
+  %p
+    On that tab, you can unselect items in order to remove them from your watching list.
+  %hr
+  %h1
+    Chose trade hubs
+  %p
+    Here I have recorded all the main trade hubs (based on that list http://wiki.eveuniversity.org/Trade_Hubs).
+    You can select the trade hubs where you want to sell (a good idea is to choose the trade hubs near your production spot).
+  %hr
+  %h1
+    Advice prices
+  %p
+    This is the main screen, where you can check what is interesting to sell.
+    First note that the grey banner at the top. As the data are retrieved only each hour the data can be inaccurate. So once you make your first modifications, you will have to wait for a while.
+    Then you have three tables :
+    %p
+      %h2
+        Margin list :
+      This table allow you to focus on items that gives you the best benefits.
+      %ul
+        %li
+          Trade hub : is where you can have this margin.
+        %li
+          Item name : on what item.
+        %li
+          Cost : mean the computed production cost (based on Jita prices).
+        %li
+          Min price : the minimum price recorded on the trade hub shown in the first column.
+        %li
+          Margin pcent : the margin in percent you can expect (between cost and min price).
+        %li
+          Margin amount : the same margin but in ISK.
+        %li
+          For : means the size of the batch (you get that margin For that amount of items).
+    %p
+      %h2
+        Shopping list :
+      This is a summary of all the items that I need to produce. There is a way to remove items you have an offer on (it will be explained later in the Edit user part).
+    %p
+      %h2
+        No concurrent there :
+      Items that are not sold on that trade hub.
+      %br
+      I put them on a separated table, because it is hard to tell what to do with those items.
+      It can be a very high demand or an item that nobody want.
+  %hr
+  %h1
+    Edit user
+  This screen allows you to modify your user account information
+  %ul
+    %li
+      Name : allow you to change your name (Yeah !!)
+    %li
+      Min pcent for advice : this allow you to show only trade that give you at least a benefit of N pcent. In my case I show only benefits of 50%. This is because prices can change, so I strongly advice you to not produce items that give you only a 2% or 3% benefit.
+    %li
+      Key user and Api key are required if you want to use the two following checks.
+    %li
+      Remove occupied places : if you check this box, the Advice price screen will only show you information about items you are not selling in a trade hub. Example if you are already have an order for selling fury cruise missile in Jita, then it will not show you that item for that trade hub. Because you don't really need to sell an item there if you still have not sold your old batch.
+    %li
+      Watch my prices : this make appear an hidden menu entry called Challenged prices that allow you to check if you still have the best price.
+  %hr
+  %h1
+    Challenge prices
+  You have a table that show you :
+  %ul
+    %li
+      The trade hub name.
+    %li
+      The item name.
+    %li
+      The min price.
+    %li
+      Your price.
+    %li
+      The difference between your price and the min price. If it is negative then somebody is cheaper than you.

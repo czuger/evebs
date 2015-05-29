@@ -2,7 +2,9 @@ Rails.application.routes.draw do
 
   resources :identities
 
-  resource :user, only: [:edit,:update]
+  resource :user, only: [:edit,:update] do
+    get :help
+  end
 
   namespace :price_advices do
     get :advice_prices
