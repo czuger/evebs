@@ -1,7 +1,9 @@
 require 'test_helper'
 
 class BlueprintTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+
+  test "Should load blueprint array" do
+    Blueprint.load_blueprint_array
+  end
+
 end
