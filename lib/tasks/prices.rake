@@ -52,7 +52,7 @@ namespace :data_compute do
   desc "Compute min prices"
   task :compute_min_price_for_all_items => :environment do
     puts 'Computing min prices for all items'
-    pp MinPrice.compute_min_price_for_all_items
+    MinPrice.compute_min_price_for_all_items
   end
 
 end

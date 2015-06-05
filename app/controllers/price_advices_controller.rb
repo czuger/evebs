@@ -42,7 +42,7 @@ class PriceAdvicesController < ApplicationController
       min_price_items.each do |min_price_item|
 
         blueprint = min_price_item.eve_item.blueprint
-        if blueprint
+        if min_price_item && blueprint && min_price_item.eve_item && min_price_item.eve_item.cost
           batch_size = blueprint.nb_runs*blueprint.prod_qtt
           batch_cost = min_price_item.eve_item.cost*blueprint.nb_runs
           batch_sell_price = min_price_item.min_price*batch_size
@@ -63,6 +63,16 @@ class PriceAdvicesController < ApplicationController
               batch_size: batch_size
             }
           end
+        else
+          @prices_array << {
+            trade_hub: trade_hub.name,
+            eve_item: min_price_item.eve_item.name,
+            min_price: 'NA',
+            cost: 'NA',
+            benef: 'NA',
+            benef_pcent: 'NA',
+            batch_size: 'NA'
+          }
         end
       end
       no_orders_items = eve_items - min_price_items.map{ |mpi| mpi.eve_item }
