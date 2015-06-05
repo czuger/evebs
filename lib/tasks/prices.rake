@@ -16,7 +16,7 @@ namespace :data_compute do
       puts "Retrieveing min prices for #{trade_hub.name}"
       used_item.each do |eve_item|
         puts "Retrieving min prices for #{eve_item.name}"
-        eve_item.set_min_price(trade_hub)
+        eve_item.compute_min_price_for_system(trade_hub)
       end
     end
   end
@@ -28,7 +28,7 @@ namespace :data_compute do
     TradeHub.all.each do |trade_hub|
       puts "Retrieveing min prices for #{trade_hub.name}"
       eve_item_ids = EveItem.all.map{ |ei| ei.cpp_eve_item_id }
-      min_prices = MultipleMinPriceRetriever.get_min_prices( trade_hub.eve_system_id, eve_item_ids )
+      min_prices = MultiplePriceRetriever.get_prices( trade_hub.eve_system_id, eve_item_ids )
       min_prices.each_pair do |key,min_price|
         if min_price
           eve_item = EveItem.find_by_cpp_eve_item_id( key )
@@ -47,6 +47,12 @@ namespace :data_compute do
   task :get_best_margin => :environment do
     puts 'Finding best margin'
     pp MinPrice.get_best_min_prices
+  end
+
+  desc "Compute min prices"
+  task :compute_min_price_for_all_items => :environment do
+    puts 'Computing min prices for all items'
+    pp MinPrice.compute_min_price_for_all_items
   end
 
 end

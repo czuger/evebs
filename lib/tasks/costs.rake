@@ -16,7 +16,7 @@ namespace :data_compute do
   desc "Recompute the costs all components (not only used ones)"
   task :refresh_all_components_costs => :environment do
     puts 'Refreshing all components costs'
-    Component.set_min_prices_for_all_components
+    Component.set_avg_prices_for_all_components
   end
 
   desc "Recompute the costs for items"

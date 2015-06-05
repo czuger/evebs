@@ -3,6 +3,8 @@ class MinPrice < ActiveRecord::Base
   belongs_to :eve_item
   belongs_to :trade_hub
 
+  include Assert
+
   def self.get_best_min_prices
 
     @prices_array = []
@@ -31,6 +33,24 @@ class MinPrice < ActiveRecord::Base
 
     @prices_array.sort_by!{ |e| e[:benef] }
     @prices_array.last( 10 )
+  end
+
+  def self.compute_min_price_for_all_items
+    TradeHub.all.each do |th|
+      puts "Initializing prices for trade hub : #{th.name}"
+      EveItem.all.each_slice(200) do |items|
+        bunch_of_items = items.map{ |e| e.cpp_eve_item_id }
+        #puts "Initializing prices for items : #{bunch_of_items}"
+        results = MultiplePriceRetriever.get_prices(th.eve_system_id,bunch_of_items)
+        #puts results
+        results.each_pair do |cpp_eve_item_id,min_price|
+          if min_price
+            eve_item = EveItem.find_by_cpp_eve_item_id(cpp_eve_item_id)
+            eve_item.set_min_price_for_system(min_price,th.id)
+          end
+        end
+      end
+    end
   end
 end
 
