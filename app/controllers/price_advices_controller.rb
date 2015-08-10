@@ -48,8 +48,16 @@ class PriceAdvicesController < ApplicationController
           batch_sell_price = min_price_item.min_price*batch_size
           benef = batch_sell_price - batch_cost
           benef_pcent = ((batch_sell_price*100) / batch_cost).round(0)-100
-          if benef_pcent > ( @user.min_pcent_for_advice || -500 )
 
+          record_ok_for_user = true
+          if @user.min_pcent_for_advice && benef_pcent < @user.min_pcent_for_advice
+            record_ok_for_user = false
+          end
+          if @user.min_amount_for_advice && benef < @user.min_amount_for_advice
+            record_ok_for_user = false
+          end
+
+          if record_ok_for_user
             @item_count[min_price_item.eve_item.name]+=1 if @item_count.has_key?( min_price_item.eve_item.name )
             @item_count[min_price_item.eve_item.name]=1 unless @item_count.has_key?( min_price_item.eve_item.name )
 

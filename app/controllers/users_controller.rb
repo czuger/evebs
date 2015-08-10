@@ -17,6 +17,8 @@ class UsersController < ApplicationController
       # TODO : replace that with something more secure
       # TODO : never trus full update
       ActiveRecord::Base.transaction do
+        # Need to remove all white spaces, because the string is formatted as 9 999 999,99
+        params['user']['min_amount_for_advice'].gsub!( ' ', '' ) if params['user']['min_amount_for_advice']
         if @user.update(user_params)
           @user.update_attribute(:last_changes_in_choices,Time.now)
           format.html { render :edit, notice: 'User was successfully updated.' }
@@ -38,6 +40,7 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name, :remove_occuped_places, :key_user_id, :api_key, :min_pcent_for_advice, :watch_my_prices)
+      params.require(:user).permit(:name, :remove_occuped_places, :key_user_id, :api_key, :min_pcent_for_advice,
+                                   :watch_my_prices, :min_amount_for_advice)
     end
 end

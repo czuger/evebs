@@ -60,6 +60,7 @@ gem 'time_diff'
 gem 'simplecov', group: :development
 
 gem 'bootstrap-tooltip-rails'
+gem 'awesome_nested_set'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

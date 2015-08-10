@@ -14,6 +14,9 @@
       %td= f.label :min_pcent_for_advice
       %td= f.text_field :min_pcent_for_advice, size: 5
     %tr
+      %td= f.label :min_amount_for_advice
+      %td= f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ) )
+    %tr
       %td= f.label :key_user_id
       %td= f.text_field :key_user_id
     %tr

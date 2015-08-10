@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150517123827) do
+ActiveRecord::Schema.define(version: 20150810084729) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 20150517123827) do
     t.datetime "last_changes_in_choices"
     t.integer  "min_pcent_for_advice"
     t.boolean  "watch_my_prices"
+    t.float    "min_amount_for_advice"
   end
 
 end

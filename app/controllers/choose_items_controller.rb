@@ -41,7 +41,13 @@ class ChooseItemsController < ApplicationController
   def update
     @user = current_user
     ActiveRecord::Base.transaction do
-      @user.eve_item_ids = params['items_to_keep']
+      if params.has_key?( 'remove_all_items' )
+        # Decided to uncheck all items
+        @user.eve_item_ids = []
+      else
+        # We manually unchecked some items
+        @user.eve_item_ids = params['items_to_keep']
+      end
       @user.update_attribute(:last_changes_in_choices,Time.now)
     end
     redirect_to edit_choose_items_path
@@ -49,7 +55,7 @@ class ChooseItemsController < ApplicationController
 
   def autocomplete_eve_item_name_lowcase
     term = params[:term]
-    items = EveItem.where('LOWER(name_lowcase) LIKE ?', "%#{term}%").order(:name_lowcase).all.limit(10)
+    items = EveItem.where('LOWER(name_lowcase) LIKE ?', "%#{term}%").order(:name_lowcase).all.limit(30)
     session[:selected_items]=items.map{ |e| e.id }
     render :json => items.map { |items| {:id => items.id, :label => items.name, :value => items.name} }
   end
