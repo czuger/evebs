@@ -16,20 +16,22 @@
     %table.sign_in_table
       %tr
         %td
-          = link_to "/auth/facebook", id: "sign_in" do
-            %span#facebook_icon
-            %span
-              Sign up using Facebook
+          %span.sign_in_class
+            = link_to "/auth/facebook", id: "sign_in" do
+              %span#facebook_icon
+              %span
+                Sign up using Facebook
       %tr
         %td
           %span.or_separator
             Or
       %tr
         %td
-          = link_to :new_identity, class: :sign_in_class do
-            %span
-            %span
-              Create credentials
+          %span.sign_in_class
+            = link_to :new_identity do
+              %span
+              %span
+                Create credentials
       %tr
         %td
           %span.or_separator
@@ -54,5 +56,4 @@
               = password_field_tag :password, nil, class: :credential_input_class
       %tr
         %td{ colspan: 2 }
-          .log_in_span_input_class
-            = submit_tag 'Log in'
+          = submit_tag 'Log in', class: :log_in_span_input_class
