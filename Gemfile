@@ -62,6 +62,8 @@ gem 'simplecov', group: :development
 gem 'bootstrap-tooltip-rails'
 gem 'awesome_nested_set'
 
+gem 'will_paginate', '~> 3.0.6'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

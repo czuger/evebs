@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
 
+  get 'sale_records/index'
+
+  resource :sale_records, only: [:index ] do
+    get :items_sums
+    get :station_sums
+    get :stations_items_sums
+  end
+
   resources :identities
 
   resource :user, only: [:edit,:update] do

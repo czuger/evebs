@@ -1,0 +1,23 @@
+%h1 Sale profit per station and per item
+
+%table
+
+  %tr
+    %th
+      Station
+    %th
+      Item
+    %th
+      Profit
+
+  - @item_sums.each do |sum|
+    %tr
+      %td=sum[0][0]
+      %td=sum[0][1]
+      %td.cell_right_align= print_isk( sum[1].round )
+
+  %tr
+    %td= 'Total'
+    %td.cell_right_align{ colspan: 2 }= print_isk( @total )
+
+

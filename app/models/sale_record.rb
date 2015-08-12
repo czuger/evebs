@@ -15,7 +15,9 @@ class SaleRecord < ActiveRecord::Base
 
       if transaction.transactionType == 'sell'
 
-        # puts transaction.inspect
+        puts transaction.inspect
+
+        puts
 
         client = EveClient.get_client( transaction.clientID, transaction.clientName )
 
@@ -47,11 +49,14 @@ class SaleRecord < ActiveRecord::Base
         t.unit_cost = item.cost / blueprint.prod_qtt
         t.unit_sale_profit = t.unit_sale_price - t.unit_cost
         t.total_sale_profit = t.unit_sale_profit * t.quantity
+      else
+        puts "Could not compute profit for #{item}"
       end
       t.user_id = user.id
       t.eve_client_id = client.id
       t.eve_item_id = item.id
       t.station_id = station.id
+      t.transaction_date_time = DateTime.parse( transaction.transactionDateTime )
     end
   end
 

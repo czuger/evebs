@@ -94,17 +94,18 @@ ActiveRecord::Schema.define(version: 20150811133912) do
   add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id"
 
   create_table "sale_records", force: true do |t|
-    t.integer  "user_id",             null: false
-    t.integer  "eve_client_id",       null: false
-    t.integer  "eve_item_id",         null: false
-    t.integer  "station_id",          null: false
-    t.string   "eve_transaction_key", null: false
-    t.integer  "quantity",            null: false
-    t.float    "unit_sale_price",     null: false
-    t.float    "total_sale_price",    null: false
+    t.integer  "user_id",               null: false
+    t.integer  "eve_client_id",         null: false
+    t.integer  "eve_item_id",           null: false
+    t.integer  "station_id",            null: false
+    t.string   "eve_transaction_key",   null: false
+    t.integer  "quantity",              null: false
+    t.float    "unit_sale_price",       null: false
+    t.float    "total_sale_price",      null: false
     t.float    "unit_cost"
     t.float    "unit_sale_profit"
     t.float    "total_sale_profit"
+    t.datetime "transaction_date_time", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

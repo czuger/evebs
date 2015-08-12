@@ -16,6 +16,8 @@ class CreateSaleRecords < ActiveRecord::Migration
       t.float :unit_sale_profit
       t.float :total_sale_profit
 
+      t.datetime :transaction_date_time, null: false
+
       t.timestamps
     end
 
