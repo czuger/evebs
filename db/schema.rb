@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150810084729) do
+ActiveRecord::Schema.define(version: 20150811133912) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -34,6 +34,15 @@ ActiveRecord::Schema.define(version: 20150810084729) do
   end
 
   add_index "components", ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
+
+  create_table "eve_clients", force: true do |t|
+    t.string   "cpp_client_id", null: false
+    t.string   "name",          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "eve_clients", ["cpp_client_id"], name: "index_eve_clients_on_cpp_client_id", unique: true
 
   create_table "eve_items", force: true do |t|
     t.integer  "cpp_eve_item_id"
@@ -83,6 +92,28 @@ ActiveRecord::Schema.define(version: 20150810084729) do
 
   add_index "min_prices", ["eve_item_id"], name: "index_min_prices_on_eve_item_id"
   add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id"
+
+  create_table "sale_records", force: true do |t|
+    t.integer  "user_id",             null: false
+    t.integer  "eve_client_id",       null: false
+    t.integer  "eve_item_id",         null: false
+    t.integer  "station_id",          null: false
+    t.string   "eve_transaction_key", null: false
+    t.integer  "quantity",            null: false
+    t.float    "unit_sale_price",     null: false
+    t.float    "total_sale_price",    null: false
+    t.float    "unit_cost"
+    t.float    "unit_sale_profit"
+    t.float    "total_sale_profit"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sale_records", ["eve_client_id"], name: "index_sale_records_on_eve_client_id"
+  add_index "sale_records", ["eve_item_id"], name: "index_sale_records_on_eve_item_id"
+  add_index "sale_records", ["eve_transaction_key"], name: "index_sale_records_on_eve_transaction_key", unique: true
+  add_index "sale_records", ["station_id"], name: "index_sale_records_on_station_id"
+  add_index "sale_records", ["user_id"], name: "index_sale_records_on_user_id"
 
   create_table "stations", force: true do |t|
     t.integer  "trade_hub_id"
