@@ -15,9 +15,8 @@ class SaleRecord < ActiveRecord::Base
 
       if transaction.transactionType == 'sell'
 
-        puts transaction.inspect
-
-        puts
+        # puts transaction.inspect
+        # puts
 
         client = EveClient.get_client( transaction.clientID, transaction.clientName )
 

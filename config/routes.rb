@@ -1,11 +1,10 @@
 Rails.application.routes.draw do
 
-  get 'sale_records/index'
-
-  resource :sale_records, only: [:index ] do
+  resource :sale_records, only: [:show ] do
     get :items_sums
     get :station_sums
     get :stations_items_sums
+    resources :clients_records, only: [ :index, :show ]
   end
 
   resources :identities
@@ -29,6 +28,7 @@ Rails.application.routes.draw do
   resource :sessions, only: [:new] do
     get :screenshots
   end
+
   match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
   match 'auth/failure', to: 'sessions#failure', via: [:get, :post]
   # match 'auth/failure', to: redirect('/'), via: [:get, :post]

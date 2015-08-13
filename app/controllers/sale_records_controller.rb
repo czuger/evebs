@@ -1,6 +1,6 @@
 class SaleRecordsController < ApplicationController
 
-  def index
+  def show
     @records = SaleRecord.paginate(:page => params[:page], per_page: 15).order( 'transaction_date_time DESC' )
   end
 
@@ -23,6 +23,3 @@ class SaleRecordsController < ApplicationController
   end
 
 end
-
-
-SaleRecord.joins(:station,:eve_item).group('stations.name','eve_items.name').sum(:total_sale_profit)

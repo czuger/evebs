@@ -24,6 +24,11 @@ module EveBusinessServer
       g.test_framework :test_unit, :fixture => true
       g.fixture_replacement :factory_girl
       g.template_engine :haml
+
+      g.assets = false
+      g.helper = false
+      g.stylesheets false
+
     end
   end
 end

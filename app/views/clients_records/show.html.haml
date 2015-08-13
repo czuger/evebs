@@ -1,0 +1,20 @@
+%h1 Sales details for one client
+
+%table
+
+  %tr
+    %th
+      Item
+    %th
+      Profit
+
+  - @item_sums.each do |sum|
+    %tr
+      %td=sum[0]
+      %td.cell_right_align= print_isk( sum[1].round )
+
+  %tr
+    %td= 'Total'
+    %td.cell_right_align= print_isk( @total )
+
+
