@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     get :items_sums
     get :station_sums
     get :stations_items_sums
-    resources :clients_records, only: [ :index, :show ]
+    resources :sales_records_clients, only: [ :index, :show ]
   end
 
   resources :identities

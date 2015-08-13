@@ -1,0 +1,23 @@
+%h1 Sales details for one client
+
+%table
+
+  %tr
+    %th= 'Item'
+    %th= 'Station'
+    %th= 'Profit'
+    %th= 'Date'
+
+  - @item_sums.each do |sum|
+    %tr
+      %td=sum[0]
+      %td=sum[1]
+      %td.cell_right_align= print_isk( sum[2].round )
+      %td=sum[3]
+
+  %tr
+    %td{ colspan: 2 }= 'Total'
+    %td.cell_right_align= print_isk( @total )
+    %td
+
+

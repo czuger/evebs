@@ -1,16 +1,16 @@
-%h1 Sales details for one client
+%h1 Sale profits per clients
 
 %table
 
   %tr
     %th
-      Item
+      Client
     %th
       Profit
 
   - @item_sums.each do |sum|
     %tr
-      %td=sum[0]
+      %td=link_to(sum[0][0], sale_records_sales_records_client_path(sum[0][1]))
       %td.cell_right_align= print_isk( sum[1].round )
 
   %tr
