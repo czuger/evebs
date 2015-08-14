@@ -48,11 +48,11 @@ class EveItem < ActiveRecord::Base
     update_attribute(:cost,total_cost)
   end
 
-  def self.compute_median_price_for_system(system, items)
+  def self.compute_min_price_for_system(system, items)
     # For now, we no more use the min price, but the avg prices
     # Method keep the old name, to avoid huge code refactoring
 
-    prices = get_prices( system.eve_system_id, items.map{ |e| e.cpp_eve_item_id }, 'median' )
+    prices = get_prices( system.eve_system_id, items.map{ |e| e.cpp_eve_item_id }, 'min' )
 
     prices.each do |cpp_item_id,price|
       # We are cheating, the price is avg, but we still use the name min price
