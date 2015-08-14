@@ -6,8 +6,8 @@ OpenURI::Cache.cache_path = 'tmp'
 
 class EveItem < ActiveRecord::Base
 
-  include MinPriceRetriever
   include Assert
+  extend MultiplePriceRetriever
 
   has_and_belongs_to_many :users
   has_one :blueprint
@@ -48,23 +48,27 @@ class EveItem < ActiveRecord::Base
     update_attribute(:cost,total_cost)
   end
 
-  def compute_min_price_for_system(system)
-    min = get_min_price_from_eve_central(cpp_eve_item_id,system.eve_system_id)
-    min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', id, system.id ).first
-    if min
-      set_min_price_for_system(min,system.id)
-    else
-      # We no more destroy the item
-      # if min_price_item
-      #   puts "Destroying min price for item : #{min_price_item.inspect}"
-      #   min_price_item.destroy
-      # end
+  def self.compute_avg_price_for_system(system, items)
+    # For now, we no more use the min price, but the avg prices
+    # Method keep the old name, to avoid huge code refactoring
+
+    prices = get_prices( system.eve_system_id, items.map{ |e| e.cpp_eve_item_id }, 'avg' )
+
+    prices.each do |cpp_item_id,price|
+      # We are cheating, the price is avg, but we still use the name min price
+      if price # Sometime nobody sell this object
+        item = EveItem.find_by_cpp_eve_item_id( cpp_item_id )
+        item.set_min_price_for_system(price,system.id)
+      end
     end
+
   end
 
   def set_min_price_for_system(min_price,system_id)
     assert(min_price, "min_price is nil", self.class, __method__ )
     assert(system_id, "system is nil", self.class, __method__ )
+
+    puts "Updating price for #{name}, price = #{min_price}"
 
     min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', id, system_id ).first
     unless min_price_item
@@ -109,5 +113,26 @@ class EveItem < ActiveRecord::Base
     item_list.pop(3)
     Hash[item_list]
   end
+
+  # Dead code
+  #
+  # def compute_min_price_for_system(system)
+  #   # For now, we no more use the min price, but the avg prices
+  #   # Method keep the old name, to avoid huge code refactoring
+  #
+  #   min = get_min_price_from_eve_central(cpp_eve_item_id,system.eve_system_id)
+  #
+  #   min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', id, system.id ).first
+  #
+  #   if min
+  #     set_min_price_for_system(min,system.id)
+  #   else
+  #     # We no more destroy the item
+  #     # if min_price_item
+  #     #   puts "Destroying min price for item : #{min_price_item.inspect}"
+  #     #   min_price_item.destroy
+  #     # end
+  #   end
+  # end
 
 end
