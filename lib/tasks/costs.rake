@@ -16,7 +16,7 @@ namespace :data_compute do
   desc "Retrieve all avg costs for all materials (not only used ones - avg prices from Jita)"
   task :retrieve_all_components_costs => :environment do
     puts 'Refreshing all components costs'
-    Component.set_avg_prices_for_all_components
+    Component.set_median_prices_for_all_components
   end
 
   # desc "Recompute the costs for items"

@@ -14,7 +14,7 @@ namespace :data_compute do
     used_items, used_trade_hubs = User.get_used_items_and_trade_hubs
     used_trade_hubs.each do |trade_hub|
       puts "Retrieveing min prices for #{trade_hub.name}"
-      EveItem.compute_avg_price_for_system( trade_hub, used_items )
+      EveItem.compute_median_price_for_system( trade_hub, used_items )
     end
   end
 
@@ -26,7 +26,7 @@ namespace :data_compute do
       puts "Retrieveing min prices for #{trade_hub.name}"
       eve_items = EveItem.all
       puts "Retrieveing min prices for #{trade_hub.name}"
-      EveItem.compute_avg_price_for_system( trade_hub, eve_items )
+      EveItem.compute_median_price_for_system( trade_hub, eve_items )
     end
   end
 
