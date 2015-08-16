@@ -17,7 +17,7 @@
         %td=check_box_tag :dummy
         %td=cp[:trade_hub_name]
         %td=cp[:eve_item_name]
-        %td=cp[:min_price]
-        %td=cp[:my_price]
+        %td=print_isk( cp[:min_price].round( 2 ) )
+        %td=print_isk( cp[:my_price] )
         %td
-          = cp[:min_price] - cp[:my_price] if cp[:min_price] && cp[:my_price]
+          = print_isk( ( cp[:min_price] - cp[:my_price] ).round( 2 ) ) if cp[:min_price] && cp[:my_price]
