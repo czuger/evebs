@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150811133912) do
+ActiveRecord::Schema.define(version: 20150815133246) do
 
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20150811133912) do
     t.datetime "updated_at"
     t.string   "name_lowcase"
     t.float    "cost"
+    t.boolean  "epic_blueprint",  default: false
   end
 
   add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id"
@@ -70,6 +71,18 @@ ActiveRecord::Schema.define(version: 20150811133912) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "jita_margins", force: true do |t|
+    t.integer  "eve_item_id"
+    t.float    "margin"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "margin_percent"
+    t.float    "jita_min_price"
+    t.float    "cost"
+  end
+
+  add_index "jita_margins", ["eve_item_id"], name: "index_jita_margins_on_eve_item_id"
 
   create_table "materials", force: true do |t|
     t.integer  "blueprint_id"
@@ -108,6 +121,7 @@ ActiveRecord::Schema.define(version: 20150811133912) do
     t.datetime "transaction_date_time", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "margin_percent"
   end
 
   add_index "sale_records", ["eve_client_id"], name: "index_sale_records_on_eve_client_id"

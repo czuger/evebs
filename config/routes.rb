@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :jita_margins, only: [ :index, :update ]
+
   resource :sale_records, only: [:show ] do
     get :items_sums
     get :station_sums

@@ -10,7 +10,9 @@
       %li= link_to 'Choose trade hubs', edit_choose_trade_hubs_path
       %li= link_to 'Advice prices', price_advices_advice_prices_path
       %li= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
-      %li= link_to 'Sales', sale_records_path if is_cedric_zuger
+      - if is_cedric_zuger
+        %li= link_to 'Sales', sale_records_path
+        %li= link_to 'Best sales', jita_margins_path
       %li= link_to 'Edit user', edit_user_path
       %li= link_to 'Help', help_user_path
       %li
