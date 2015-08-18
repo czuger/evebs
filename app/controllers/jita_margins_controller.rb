@@ -5,7 +5,7 @@ class JitaMarginsController < ApplicationController
   end
 
   def update
-    eve_item = EveItem.find( params[:id])
+    eve_item = EveItem.find( params[:id] )
     eve_item.update_attribute(:epic_blueprint,true)
     redirect_to jita_margins_path
   end

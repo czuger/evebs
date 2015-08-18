@@ -9,7 +9,7 @@ FactoryGirl.define do
     "item id #{n}"
   end
   factory :eve_item do
-    cpp_eve_item_id
+    cpp_eve_item_id 5
     name
     name_lowcase
     cost 5

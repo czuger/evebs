@@ -12,7 +12,7 @@ class JitaMarginsControllerTest < ActionController::TestCase
   end
 
   test "should get update" do
-    put :update, id: @j.id
+    put :update, id: @j.eve_item.id
     assert_redirected_to :jita_margins
   end
 
