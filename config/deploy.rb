@@ -1,4 +1,4 @@
-# config valid only for Capistrano 3.1
+# config valid only for Capistrano 3.4
 lock '3.1.0'
 
 set :application, 'eve_business_server'
@@ -12,7 +12,7 @@ set :deploy_to, "/var/www/eve_business_server"
 set :keep_releases, 2
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'db/production.sqlite3' )
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml' )
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
@@ -43,31 +43,3 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/
 
 # Default value for keep_releases is 5
 
-namespace :deploy do
-
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      # execute :touch, release_path.join('tmp/restart.txt')
-      # Stopping current unicorn daemon
-      # TODO : don't work
-      if test("[ -f #{deploy_to}/shared/tmp/pids/unicorn.pid ]")
-        execute "kill `cat #{deploy_to}/shared/tmp/pids/unicorn.pid`"
-      end
-      execute "cd #{release_path}; bundle exec unicorn_rails -D -c config/unicorn/production_eve_business_server.rb -E production"
-    end
-  end
-
-  after :publishing, :restart
-
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-    end
-  end
-
-end
