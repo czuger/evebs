@@ -1,6 +1,7 @@
 role :app, %w{webapp@hw}
 role :web, %w{webapp@hw}
 role :db,  %w{webapp@hw}
+
 #
 # before 'deploy:publishing', 'deploy:before_publish_tasks' do
 #   on 'hw' do
