@@ -9,9 +9,9 @@ default: &default
   pool: 5
   timeout: 5000
 
-development:
-  <<: *default
-  database: db/development.sqlite3
+#development:
+#  <<: *default
+#  database: db/development.sqlite3
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -27,3 +27,11 @@ production:
 eve:
   <<: *default
   database: work/eve.sqlite3
+
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: eve_business_server_dev
+  pool: 5
+  username: eve_business_server
+  password: 123456

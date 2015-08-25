@@ -6,8 +6,9 @@
     - @trade_hubs.in_groups_of(@per_group_count).each do |trade_hub_group|
       %table.side_by_side_table
         - trade_hub_group.each do |trade_hub|
-          %tr
-            %td=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
-            %td=trade_hub.name
+          - if trade_hub
+            %tr
+              %td=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
+              %td=trade_hub.name
 
     = submit_tag 'Select trade hubs'

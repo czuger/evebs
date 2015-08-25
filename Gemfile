@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.7'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
+gem 'pg'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -26,11 +28,6 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
-gem 'capistrano', '3.1.0', group: :development
-gem 'capistrano-rails', group: :development
-
 gem 'nokogiri'
 gem 'constructor'
 gem 'eaal'
@@ -43,7 +40,6 @@ gem 'haml-rails'
 
 gem 'quiet_assets'
 
-gem "factory_girl_rails", "~> 4.0", group: [:development, :test ]
 gem 'rails-jquery-autocomplete'
 
 gem 'omniauth'
@@ -57,12 +53,21 @@ gem 'omniauth-identity'
 gem 'unicorn'
 gem 'time_diff'
 
-gem 'simplecov', group: :development
-
 gem 'bootstrap-tooltip-rails'
 gem 'awesome_nested_set'
 
 gem 'will_paginate', '~> 3.0.6'
+
+group :development, :test do
+  gem 'capistrano', '~> 3.4.0'
+  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano3-unicorn'
+
+  gem "factory_girl_rails", "~> 4.0"
+
+  gem 'simplecov'
+end
+
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
