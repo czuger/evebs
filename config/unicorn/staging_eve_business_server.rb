@@ -13,7 +13,7 @@ stderr_path '/var/www/eve_business_server_staging/current/log/unicorn.err'
 stdout_path '/var/www/eve_business_server_staging/current/log/unicorn.log'
 
 # Unicorn socket
-listen '/var/www/eve_business_server_staging/current/tmp/sockets/unicorn.pid'
+listen '/var/www/eve_business_server_staging/current/tmp/sockets/unicorn.sock'
 
 # Number of processes
 # worker_processes 4

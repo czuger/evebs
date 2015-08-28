@@ -1,5 +1,5 @@
 # config valid only for Capistrano 3.4
-lock '3.1.0'
+lock '3.4.0'
 
 set :application, 'eve_business_server'
 set :repo_url, 'git:/opt/git/eve_business_server'
@@ -13,6 +13,13 @@ set :keep_releases, 2
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml' )
+
+after 'deploy:publishing', 'deploy:restart'
+namespace :deploy do
+  task :restart do
+    invoke 'unicorn:reload'
+  end
+end
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
