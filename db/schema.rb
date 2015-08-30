@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20150815133246) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "blueprints", force: true do |t|
     t.integer  "eve_item_id"
     t.integer  "nb_runs"
@@ -22,8 +25,8 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.integer  "cpp_blueprint_id"
   end
 
-  add_index "blueprints", ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id"
-  add_index "blueprints", ["eve_item_id"], name: "index_blueprints_on_eve_item_id"
+  add_index "blueprints", ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", using: :btree
+  add_index "blueprints", ["eve_item_id"], name: "index_blueprints_on_eve_item_id", using: :btree
 
   create_table "components", force: true do |t|
     t.integer  "cpp_eve_item_id"
@@ -33,7 +36,7 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.datetime "updated_at"
   end
 
-  add_index "components", ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
+  add_index "components", ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id", using: :btree
 
   create_table "eve_clients", force: true do |t|
     t.string   "cpp_client_id", null: false
@@ -42,7 +45,7 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.datetime "updated_at"
   end
 
-  add_index "eve_clients", ["cpp_client_id"], name: "index_eve_clients_on_cpp_client_id", unique: true
+  add_index "eve_clients", ["cpp_client_id"], name: "index_eve_clients_on_cpp_client_id", unique: true, using: :btree
 
   create_table "eve_items", force: true do |t|
     t.integer  "cpp_eve_item_id"
@@ -54,15 +57,15 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.boolean  "epic_blueprint",  default: false
   end
 
-  add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id"
+  add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id", using: :btree
 
   create_table "eve_items_users", force: true do |t|
     t.integer "user_id"
     t.integer "eve_item_id"
   end
 
-  add_index "eve_items_users", ["eve_item_id"], name: "index_eve_items_users_on_eve_item_id"
-  add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id"
+  add_index "eve_items_users", ["eve_item_id"], name: "index_eve_items_users_on_eve_item_id", using: :btree
+  add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id", using: :btree
 
   create_table "identities", force: true do |t|
     t.string   "name"
@@ -82,7 +85,7 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.float    "cost"
   end
 
-  add_index "jita_margins", ["eve_item_id"], name: "index_jita_margins_on_eve_item_id"
+  add_index "jita_margins", ["eve_item_id"], name: "index_jita_margins_on_eve_item_id", using: :btree
 
   create_table "materials", force: true do |t|
     t.integer  "blueprint_id"
@@ -92,8 +95,8 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.datetime "updated_at"
   end
 
-  add_index "materials", ["blueprint_id"], name: "index_materials_on_blueprint_id"
-  add_index "materials", ["component_id"], name: "index_materials_on_component_id"
+  add_index "materials", ["blueprint_id"], name: "index_materials_on_blueprint_id", using: :btree
+  add_index "materials", ["component_id"], name: "index_materials_on_component_id", using: :btree
 
   create_table "min_prices", force: true do |t|
     t.integer  "eve_item_id"
@@ -103,8 +106,8 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.datetime "updated_at"
   end
 
-  add_index "min_prices", ["eve_item_id"], name: "index_min_prices_on_eve_item_id"
-  add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id"
+  add_index "min_prices", ["eve_item_id"], name: "index_min_prices_on_eve_item_id", using: :btree
+  add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id", using: :btree
 
   create_table "sale_records", force: true do |t|
     t.integer  "user_id",               null: false
@@ -121,14 +124,13 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.datetime "transaction_date_time", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "margin_percent"
   end
 
-  add_index "sale_records", ["eve_client_id"], name: "index_sale_records_on_eve_client_id"
-  add_index "sale_records", ["eve_item_id"], name: "index_sale_records_on_eve_item_id"
-  add_index "sale_records", ["eve_transaction_key"], name: "index_sale_records_on_eve_transaction_key", unique: true
-  add_index "sale_records", ["station_id"], name: "index_sale_records_on_station_id"
-  add_index "sale_records", ["user_id"], name: "index_sale_records_on_user_id"
+  add_index "sale_records", ["eve_client_id"], name: "index_sale_records_on_eve_client_id", using: :btree
+  add_index "sale_records", ["eve_item_id"], name: "index_sale_records_on_eve_item_id", using: :btree
+  add_index "sale_records", ["eve_transaction_key"], name: "index_sale_records_on_eve_transaction_key", unique: true, using: :btree
+  add_index "sale_records", ["station_id"], name: "index_sale_records_on_station_id", using: :btree
+  add_index "sale_records", ["user_id"], name: "index_sale_records_on_user_id", using: :btree
 
   create_table "stations", force: true do |t|
     t.integer  "trade_hub_id"
@@ -138,8 +140,8 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.datetime "updated_at"
   end
 
-  add_index "stations", ["cpp_station_id"], name: "index_stations_on_cpp_station_id"
-  add_index "stations", ["trade_hub_id"], name: "index_stations_on_trade_hub_id"
+  add_index "stations", ["cpp_station_id"], name: "index_stations_on_cpp_station_id", using: :btree
+  add_index "stations", ["trade_hub_id"], name: "index_stations_on_trade_hub_id", using: :btree
 
   create_table "trade_hubs", force: true do |t|
     t.integer  "eve_system_id"
@@ -153,8 +155,8 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.integer "trade_hub_id"
   end
 
-  add_index "trade_hubs_users", ["trade_hub_id"], name: "index_trade_hubs_users_on_trade_hub_id"
-  add_index "trade_hubs_users", ["user_id"], name: "index_trade_hubs_users_on_user_id"
+  add_index "trade_hubs_users", ["trade_hub_id"], name: "index_trade_hubs_users_on_trade_hub_id", using: :btree
+  add_index "trade_hubs_users", ["user_id"], name: "index_trade_hubs_users_on_user_id", using: :btree
 
   create_table "trade_orders", force: true do |t|
     t.integer  "user_id"
@@ -166,9 +168,9 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.float    "price"
   end
 
-  add_index "trade_orders", ["eve_item_id"], name: "index_trade_orders_on_eve_item_id"
-  add_index "trade_orders", ["trade_hub_id"], name: "index_trade_orders_on_trade_hub_id"
-  add_index "trade_orders", ["user_id"], name: "index_trade_orders_on_user_id"
+  add_index "trade_orders", ["eve_item_id"], name: "index_trade_orders_on_eve_item_id", using: :btree
+  add_index "trade_orders", ["trade_hub_id"], name: "index_trade_orders_on_trade_hub_id", using: :btree
+  add_index "trade_orders", ["user_id"], name: "index_trade_orders_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "name"

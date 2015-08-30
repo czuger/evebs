@@ -33,5 +33,5 @@ development:
   encoding: unicode
   database: eve_business_server_dev
   pool: 5
-  username: eve_business_server
+  username: eve_business_server_dev
   password: 123456
