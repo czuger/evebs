@@ -2,7 +2,10 @@ role :app, %w{webapp@hw}
 role :web, %w{webapp@hw}
 role :db,  %w{webapp@hw}
 
-#
+set :unicorn_config_path, "#{deploy_to}/current/config/unicorn/#{fetch(:stage)}_#{fetch(:application)}.rb"
+set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
+
+
 # before 'deploy:publishing', 'deploy:before_publish_tasks' do
 #   on 'hw' do
 #     # Centralized pids management
