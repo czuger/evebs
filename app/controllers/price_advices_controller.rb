@@ -44,7 +44,8 @@ class PriceAdvicesController < ApplicationController
 
     @user.trade_hubs.each do |trade_hub|
       eve_items = @user.eve_items.to_a
-      eve_items.reject!{ |i| @fullfilled_orders.include?([trade_hub.id,i.id]) }
+
+      eve_items.reject!{ |i| @fullfilled_orders.include?([trade_hub.id,i.id]) } if @user.remove_occuped_places
 
       min_price_items = MinPrice.includes(eve_item:[:blueprint]).where( { eve_item_id: eve_items.map{ |i| i.id }, trade_hub_id: trade_hub.id } )
       min_price_items.each do |min_price_item|
