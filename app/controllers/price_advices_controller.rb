@@ -14,8 +14,16 @@ class PriceAdvicesController < ApplicationController
 
     @trade_orders.each do |to|
       min_price = MinPrice.find_by_eve_item_id_and_trade_hub_id( to.eve_item_id, to.trade_hub_id )
+
+      min_price = min_price.min_price if min_price
+
+      prod_qtt = to.eve_item.blueprint.prod_qtt
+      cost = to.eve_item.cost / prod_qtt
+      margin_pcent = cost / min_price if cost && min_price
+
       @compared_prices << {
-          trade_hub_name: to.trade_hub.name, eve_item_name: to.eve_item.name, my_price: to.price, min_price: min_price.min_price
+          trade_hub_name: to.trade_hub.name, eve_item_name: to.eve_item.name, my_price: to.price,
+          min_price: min_price, cost: cost, margin_pcent: margin_pcent
       }
     end
 

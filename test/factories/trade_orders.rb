@@ -1,8 +1,6 @@
 FactoryGirl.define do
   factory :trade_order do
-    user nil
-eve_item nil
-trade_hub nil
+    price 50
   end
 
 end

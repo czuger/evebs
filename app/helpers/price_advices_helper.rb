@@ -1,4 +1,14 @@
 module PriceAdvicesHelper
+
+  def print_pcent(pcent)
+    if pcent
+      pcent = (pcent*100).round(1)
+      "#{pcent} %"
+    else
+      'N/A'
+    end
+  end
+
   def print_isk(amount)
     if amount
       if amount.class != String
@@ -6,6 +16,9 @@ module PriceAdvicesHelper
       else
         amount
       end
+    else
+      'N/A'
     end
   end
+
 end
