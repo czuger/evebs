@@ -28,8 +28,8 @@
     %tr
       %td=record.station.name
       %td=record.eve_item.name
-      %td.cell_right_align=print_isk(record.total_sale_price.round)
-      %td.cell_right_align=print_isk(record.total_sale_profit.round)
+      %td.cell_right_align=print_isk(record.total_sale_price)
+      %td.cell_right_align=print_isk(record.total_sale_profit)
       %td=record.transaction_date_time
 
 = will_paginate @records
