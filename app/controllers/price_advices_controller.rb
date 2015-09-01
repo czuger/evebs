@@ -37,7 +37,7 @@ class PriceAdvicesController < ApplicationController
     @no_concurent_array = []
     # This mean we already have an order for that item on that hub
     # TODO : add a catch there to check for eve api connection errors
-    @fullfilled_orders = @user.get_occuped_places
+    @fullfilled_orders = @user.get_occuped_places if @user.remove_occuped_places
     @item_count = {}
 
     @print_change_warning=print_change_warning
