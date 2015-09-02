@@ -13,5 +13,11 @@ FactoryGirl.define do
     name
     name_lowcase
     cost 5
+    factory :inferno_precision_cruise_missile do
+      cpp_eve_item_id 2637
+      name "Inferno Precision Cruise Missile"
+      name_lowcase "inferno precision cruise missile"
+      cost 1815252.83
+    end
   end
 end

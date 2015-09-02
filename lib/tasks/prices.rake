@@ -3,7 +3,6 @@ require 'open-uri/cached'
 require 'pp'
 
 OpenURI::Cache.cache_path = 'tmp'
-EVE_CENTRAL_FILE_NAME='tmp/api.eve-central.com'
 
 namespace :data_compute do
 

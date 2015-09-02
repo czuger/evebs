@@ -1,5 +1,7 @@
 module MultiplePriceRetriever
 
+  EVE_CENTRAL_FILE_NAME='tmp/api.eve-central.com'
+
   def get_prices( eve_system_id, item_ids, price_kind = 'min' )
 
     # Refresh the eve central API cache each 4 hours

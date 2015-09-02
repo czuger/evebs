@@ -55,6 +55,8 @@ class EveItem < ActiveRecord::Base
     prices = get_prices( system.eve_system_id, items.map{ |e| e.cpp_eve_item_id }, 'min' )
 
     prices.each do |cpp_item_id,price|
+      # item = EveItem.find_by_cpp_eve_item_id( cpp_item_id )
+      # puts "About to update price for #{item.name}"
       # We are cheating, the price is avg, but we still use the name min price
       if price # Sometime nobody sell this object
         item = EveItem.find_by_cpp_eve_item_id( cpp_item_id )

@@ -24,7 +24,7 @@ class Component < ActiveRecord::Base
     component_ids = Component.all.to_a.map{ |c| c.cpp_eve_item_id }
     result = get_prices( JITA_EVE_SYSTEM_ID, component_ids, 'min' )
     result.each_pair do |key,value|
-      puts key, value
+      # puts key, value
       component = Component.find_by_cpp_eve_item_id( key )
       component.update_attribute( :cost, value )
     end
