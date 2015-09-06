@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150815133246) do
+ActiveRecord::Schema.define(version: 20150906171550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "blueprints", force: true do |t|
+  create_table "blueprints", force: :cascade do |t|
     t.integer  "eve_item_id"
     t.integer  "nb_runs"
     t.integer  "prod_qtt"
@@ -28,9 +28,9 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "blueprints", ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", using: :btree
   add_index "blueprints", ["eve_item_id"], name: "index_blueprints_on_eve_item_id", using: :btree
 
-  create_table "components", force: true do |t|
+  create_table "components", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name"
+    t.string   "name",            limit: 255
     t.float    "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -38,28 +38,43 @@ ActiveRecord::Schema.define(version: 20150815133246) do
 
   add_index "components", ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id", using: :btree
 
-  create_table "eve_clients", force: true do |t|
-    t.string   "cpp_client_id", null: false
-    t.string   "name",          null: false
+  create_table "crest_costs", force: :cascade do |t|
+    t.integer  "cpp_item_id",    null: false
+    t.integer  "eve_item_id",    null: false
+    t.float    "adjusted_price"
+    t.float    "average_price"
+    t.float    "cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "crest_costs", ["cpp_item_id"], name: "index_crest_costs_on_cpp_item_id", unique: true, using: :btree
+  add_index "crest_costs", ["eve_item_id"], name: "index_crest_costs_on_eve_item_id", unique: true, using: :btree
+
+  create_table "eve_clients", force: :cascade do |t|
+    t.string   "cpp_client_id", limit: 255, null: false
+    t.string   "name",          limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "eve_clients", ["cpp_client_id"], name: "index_eve_clients_on_cpp_client_id", unique: true, using: :btree
 
-  create_table "eve_items", force: true do |t|
+  create_table "eve_items", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name"
+    t.string   "name",                limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name_lowcase"
+    t.string   "name_lowcase",        limit: 255
     t.float    "cost"
-    t.boolean  "epic_blueprint",  default: false
+    t.boolean  "epic_blueprint",                  default: false
+    t.integer  "cpp_market_group_id"
   end
 
   add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id", using: :btree
+  add_index "eve_items", ["cpp_market_group_id"], name: "index_eve_items_on_cpp_market_group_id", using: :btree
 
-  create_table "eve_items_users", force: true do |t|
+  create_table "eve_items_users", force: :cascade do |t|
     t.integer "user_id"
     t.integer "eve_item_id"
   end
@@ -67,15 +82,15 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "eve_items_users", ["eve_item_id"], name: "index_eve_items_users_on_eve_item_id", using: :btree
   add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id", using: :btree
 
-  create_table "identities", force: true do |t|
-    t.string   "name"
-    t.string   "email"
-    t.string   "password_digest"
+  create_table "identities", force: :cascade do |t|
+    t.string   "name",            limit: 255
+    t.string   "email",           limit: 255
+    t.string   "password_digest", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "jita_margins", force: true do |t|
+  create_table "jita_margins", force: :cascade do |t|
     t.integer  "eve_item_id"
     t.float    "margin"
     t.datetime "created_at"
@@ -87,7 +102,7 @@ ActiveRecord::Schema.define(version: 20150815133246) do
 
   add_index "jita_margins", ["eve_item_id"], name: "index_jita_margins_on_eve_item_id", using: :btree
 
-  create_table "materials", force: true do |t|
+  create_table "materials", force: :cascade do |t|
     t.integer  "blueprint_id"
     t.integer  "component_id"
     t.integer  "required_qtt"
@@ -98,7 +113,7 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "materials", ["blueprint_id"], name: "index_materials_on_blueprint_id", using: :btree
   add_index "materials", ["component_id"], name: "index_materials_on_component_id", using: :btree
 
-  create_table "min_prices", force: true do |t|
+  create_table "min_prices", force: :cascade do |t|
     t.integer  "eve_item_id"
     t.integer  "trade_hub_id"
     t.float    "min_price"
@@ -109,19 +124,19 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "min_prices", ["eve_item_id"], name: "index_min_prices_on_eve_item_id", using: :btree
   add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id", using: :btree
 
-  create_table "sale_records", force: true do |t|
-    t.integer  "user_id",               null: false
-    t.integer  "eve_client_id",         null: false
-    t.integer  "eve_item_id",           null: false
-    t.integer  "station_id",            null: false
-    t.string   "eve_transaction_key",   null: false
-    t.integer  "quantity",              null: false
-    t.float    "unit_sale_price",       null: false
-    t.float    "total_sale_price",      null: false
+  create_table "sale_records", force: :cascade do |t|
+    t.integer  "user_id",                           null: false
+    t.integer  "eve_client_id",                     null: false
+    t.integer  "eve_item_id",                       null: false
+    t.integer  "station_id",                        null: false
+    t.string   "eve_transaction_key",   limit: 255, null: false
+    t.integer  "quantity",                          null: false
+    t.float    "unit_sale_price",                   null: false
+    t.float    "total_sale_price",                  null: false
     t.float    "unit_cost"
     t.float    "unit_sale_profit"
     t.float    "total_sale_profit"
-    t.datetime "transaction_date_time", null: false
+    t.datetime "transaction_date_time",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -132,9 +147,9 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "sale_records", ["station_id"], name: "index_sale_records_on_station_id", using: :btree
   add_index "sale_records", ["user_id"], name: "index_sale_records_on_user_id", using: :btree
 
-  create_table "stations", force: true do |t|
+  create_table "stations", force: :cascade do |t|
     t.integer  "trade_hub_id"
-    t.string   "name"
+    t.string   "name",           limit: 255
     t.integer  "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -143,14 +158,14 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "stations", ["cpp_station_id"], name: "index_stations_on_cpp_station_id", using: :btree
   add_index "stations", ["trade_hub_id"], name: "index_stations_on_trade_hub_id", using: :btree
 
-  create_table "trade_hubs", force: true do |t|
+  create_table "trade_hubs", force: :cascade do |t|
     t.integer  "eve_system_id"
-    t.string   "name"
+    t.string   "name",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "trade_hubs_users", force: true do |t|
+  create_table "trade_hubs_users", force: :cascade do |t|
     t.integer "user_id"
     t.integer "trade_hub_id"
   end
@@ -158,7 +173,7 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "trade_hubs_users", ["trade_hub_id"], name: "index_trade_hubs_users_on_trade_hub_id", using: :btree
   add_index "trade_hubs_users", ["user_id"], name: "index_trade_hubs_users_on_user_id", using: :btree
 
-  create_table "trade_orders", force: true do |t|
+  create_table "trade_orders", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "eve_item_id"
     t.integer  "trade_hub_id"
@@ -172,16 +187,16 @@ ActiveRecord::Schema.define(version: 20150815133246) do
   add_index "trade_orders", ["trade_hub_id"], name: "index_trade_orders_on_trade_hub_id", using: :btree
   add_index "trade_orders", ["user_id"], name: "index_trade_orders_on_user_id", using: :btree
 
-  create_table "users", force: true do |t|
-    t.string   "name"
+  create_table "users", force: :cascade do |t|
+    t.string   "name",                    limit: 255
     t.boolean  "remove_occuped_places"
-    t.string   "key_user_id"
-    t.string   "api_key"
+    t.string   "key_user_id",             limit: 255
+    t.string   "api_key",                 limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "provider"
-    t.string   "uid"
-    t.string   "oauth_token"
+    t.string   "provider",                limit: 255
+    t.string   "uid",                     limit: 255
+    t.string   "oauth_token",             limit: 255
     t.datetime "oauth_expires_at"
     t.datetime "last_changes_in_choices"
     t.integer  "min_pcent_for_advice"
@@ -189,4 +204,5 @@ ActiveRecord::Schema.define(version: 20150815133246) do
     t.float    "min_amount_for_advice"
   end
 
+  add_foreign_key "crest_costs", "eve_items"
 end
