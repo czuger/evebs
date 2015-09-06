@@ -6,6 +6,8 @@ class PriceAdvicesController < ApplicationController
 
   def show_challenged_prices
 
+    # TODO : add a catch there to check for eve api connection errors
+
     @user = current_user
     @print_change_warning=print_change_warning
 
@@ -19,7 +21,7 @@ class PriceAdvicesController < ApplicationController
 
       prod_qtt = to.eve_item.blueprint.prod_qtt
       cost = to.eve_item.cost / prod_qtt
-      margin_pcent = cost / min_price if cost && min_price
+      margin_pcent = ( min_price / cost ) - 1 if cost && min_price
 
       @compared_prices << {
           trade_hub_name: to.trade_hub.name, eve_item_name: to.eve_item.name, my_price: to.price,
