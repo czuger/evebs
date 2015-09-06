@@ -6,8 +6,6 @@ class PriceAdvicesController < ApplicationController
 
   def show_challenged_prices
 
-    # TODO : add a catch there to check for eve api connection errors
-
     @user = current_user
     @print_change_warning=print_change_warning
 
