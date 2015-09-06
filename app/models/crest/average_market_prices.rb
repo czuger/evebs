@@ -14,11 +14,15 @@ class Crest::AverageMarketPrices
 
     ActiveRecord::Base.transaction do
       CrestCost.find_each do |cc|
+        # puts cc.inspect
+        # puts cc.eve_item.inspect
         material_missing = false
         cost = 0
         blueprint = cc.eve_item.blueprint
+        # puts blueprint.inspect
         next unless blueprint
         blueprint.materials.each do |material|
+          # puts "Material = #{material.inspect}"
           component_cpp_eve_item = Component.where(id: material.component_id).pluck( 'cpp_eve_item_id').first
           adjusted_price = CrestCost.where(cpp_item_id: component_cpp_eve_item).pluck( 'adjusted_price' ).first
           if adjusted_price
@@ -29,7 +33,7 @@ class Crest::AverageMarketPrices
             puts "No adjusted_price for #{ei_name}"
             material_missing = true
           end
-          break if material_missing
+          # break if material_missing
         end
         next if material_missing
         cost *= 1.005 # Pator cost
@@ -50,24 +54,21 @@ class Crest::AverageMarketPrices
     parsed_data = JSON.parse( json_result )
 
     ActiveRecord::Base.transaction do
-      File.open( 'tmp/crest_parsed_data.json', 'w' ) do |f|
-        parsed_data['items'].each do |item|
-          cpp_item_id = item['type']['id']
-          eve_item_id = EveItem.where(cpp_eve_item_id: cpp_item_id).pluck('id').first
-          if eve_item_id
-            crest_cost = CrestCost.find_by_cpp_item_id( cpp_item_id )
-            if crest_cost
-              crest_cost.update_attributes(
-                  adjusted_price: item['adjustedPrice'], average_price: item['averagePrice'], eve_item_id: eve_item_id )
-            else
-              CrestCost.create!(
-                  adjusted_price: item['adjustedPrice'], average_price: item['averagePrice'], eve_item_id: eve_item_id, cpp_item_id: cpp_item_id )
-            end
+      parsed_data['items'].each do |item|
+        cpp_item_id = item['type']['id']
+        eve_item_id = EveItem.where(cpp_eve_item_id: cpp_item_id).pluck('id').first
+        if eve_item_id
+          crest_cost = CrestCost.find_by_cpp_item_id( cpp_item_id )
+          if crest_cost
+            crest_cost.update_attributes(
+                adjusted_price: item['adjustedPrice'], average_price: item['averagePrice'], eve_item_id: eve_item_id )
+          else
+            CrestCost.create!(
+                adjusted_price: item['adjustedPrice'], average_price: item['averagePrice'], eve_item_id: eve_item_id, cpp_item_id: cpp_item_id )
           end
         end
       end
     end
-
   end
 
 end
