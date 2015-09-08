@@ -10,13 +10,14 @@ class Crest::EveItemsFromCrest
   def self.update_eve_items
     manage_cache
 
-    html_req = "https://public-crest.eveonline.com/market/types/"
-    # puts html_req
-    json_result = open( html_req ).read
-
-    parsed_data = JSON.parse( json_result )
-
     ActiveRecord::Base.transaction do
+
+      html_req = "https://public-crest.eveonline.com/market/types/"
+      # puts html_req
+      json_result = open( html_req ).read
+
+      parsed_data = JSON.parse( json_result )
+
       parsed_data["items"].each do |item|
         market_group_id = item['marketGroup']['id']
         type_id = item['type']['id']
@@ -31,5 +32,4 @@ class Crest::EveItemsFromCrest
       end
     end
   end
-
 end
