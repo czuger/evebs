@@ -2,7 +2,8 @@ require 'open-uri'
 require 'open-uri/cached'
 require 'pp'
 
-OpenURI::Cache.cache_path = 'tmp'
+# Items list from CREST is not really reliable.
+# Use ItemsInit::ItemsList.initialize_eve_items rather
 
 class Crest::EveItemsFromCrest
   extend Crest::CrestBase

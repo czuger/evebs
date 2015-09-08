@@ -2,8 +2,6 @@ require 'open-uri'
 require 'open-uri/cached'
 require 'pp'
 
-OpenURI::Cache.cache_path = 'tmp'
-
 class Crest::ItemPrices
   extend Crest::CrestBase
 

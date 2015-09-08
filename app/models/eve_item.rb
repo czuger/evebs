@@ -2,8 +2,6 @@ require 'open-uri'
 require 'open-uri/cached'
 require 'pp'
 
-OpenURI::Cache.cache_path = 'tmp'
-
 class EveItem < ActiveRecord::Base
 
   include Assert
@@ -78,24 +76,6 @@ class EveItem < ActiveRecord::Base
     else
       min_price_item.update_attribute( :min_price, min_price )
     end
-  end
-
-  # Required for setting up the database
-  def self.download_items_hash
-    types = {}
-    item_list = []
-    open( 'http://eve-files.com/chribba/typeid.txt' ) do |file|
-      file.readlines.each do |line|
-        # pp line
-        key = line[0..11]
-        value = line[12..-3]
-        # types[key.strip]=value.strip if value
-        item_list << [key.to_i,value] unless UNWANTED_ITEMS.include?(key.to_i)
-      end
-    end
-    item_list.shift(2)
-    item_list.pop(3)
-    Hash[item_list]
   end
 
   # Required for setting up the database

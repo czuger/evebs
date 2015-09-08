@@ -4,6 +4,10 @@ require 'pp'
 
 OpenURI::Cache.cache_path = 'tmp'
 
+# Ajusted prices are not provided for all componenents.
+# Rely on hand made averages rather than those prices
+# At middle term : remove this code
+
 class Crest::AverageMarketPrices
 
   extend Crest::CrestBase
