@@ -5,8 +5,6 @@ class ItemsInit::ItemsList
   def self.initialize_eve_items
     fixture_file = File.open('test/fixtures/eve_items.yml','a') if Rails.env.test?
 
-    puts EveItem.first.inspect
-
     ActiveRecord::Base.transaction do
       list = download_items_list
       list.each do |elem|
@@ -35,13 +33,16 @@ class ItemsInit::ItemsList
         end
 
       end
+    end
 
+    ActiveRecord::Base.transaction do
       Crest::MarketGroups.update_market_group
 
       # Setup blueprint involvement
       has_blueprint
       involved_in_blueprint
     end
+
   end
 
   def self.involved_in_blueprint

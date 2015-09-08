@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150908054811) do
+ActiveRecord::Schema.define(version: 20150906171550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20150908054811) do
 
   create_table "components", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name",            limit: 255
+    t.string   "name"
     t.float    "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -52,8 +52,8 @@ ActiveRecord::Schema.define(version: 20150908054811) do
   add_index "crest_costs", ["eve_item_id"], name: "index_crest_costs_on_eve_item_id", unique: true, using: :btree
 
   create_table "eve_clients", force: :cascade do |t|
-    t.string   "cpp_client_id", limit: 255, null: false
-    t.string   "name",          limit: 255, null: false
+    t.string   "cpp_client_id", null: false
+    t.string   "name",          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -62,14 +62,13 @@ ActiveRecord::Schema.define(version: 20150908054811) do
 
   create_table "eve_items", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name",                  limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name_lowcase",          limit: 255
+    t.string   "name_lowcase"
     t.float    "cost"
-    t.boolean  "epic_blueprint",                    default: false
+    t.boolean  "epic_blueprint",      default: false
     t.integer  "cpp_market_group_id"
-    t.boolean  "involved_in_blueprint",             default: false
   end
 
   add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id", using: :btree
@@ -84,9 +83,9 @@ ActiveRecord::Schema.define(version: 20150908054811) do
   add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
-    t.string   "name",            limit: 255
-    t.string   "email",           limit: 255
-    t.string   "password_digest", limit: 255
+    t.string   "name"
+    t.string   "email"
+    t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -126,18 +125,18 @@ ActiveRecord::Schema.define(version: 20150908054811) do
   add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id", using: :btree
 
   create_table "sale_records", force: :cascade do |t|
-    t.integer  "user_id",                           null: false
-    t.integer  "eve_client_id",                     null: false
-    t.integer  "eve_item_id",                       null: false
-    t.integer  "station_id",                        null: false
-    t.string   "eve_transaction_key",   limit: 255, null: false
-    t.integer  "quantity",                          null: false
-    t.float    "unit_sale_price",                   null: false
-    t.float    "total_sale_price",                  null: false
+    t.integer  "user_id",               null: false
+    t.integer  "eve_client_id",         null: false
+    t.integer  "eve_item_id",           null: false
+    t.integer  "station_id",            null: false
+    t.string   "eve_transaction_key",   null: false
+    t.integer  "quantity",              null: false
+    t.float    "unit_sale_price",       null: false
+    t.float    "total_sale_price",      null: false
     t.float    "unit_cost"
     t.float    "unit_sale_profit"
     t.float    "total_sale_profit"
-    t.datetime "transaction_date_time",             null: false
+    t.datetime "transaction_date_time", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -150,7 +149,7 @@ ActiveRecord::Schema.define(version: 20150908054811) do
 
   create_table "stations", force: :cascade do |t|
     t.integer  "trade_hub_id"
-    t.string   "name",           limit: 255
+    t.string   "name"
     t.integer  "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -161,7 +160,7 @@ ActiveRecord::Schema.define(version: 20150908054811) do
 
   create_table "trade_hubs", force: :cascade do |t|
     t.integer  "eve_system_id"
-    t.string   "name",          limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -189,15 +188,15 @@ ActiveRecord::Schema.define(version: 20150908054811) do
   add_index "trade_orders", ["user_id"], name: "index_trade_orders_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",                    limit: 255
+    t.string   "name"
     t.boolean  "remove_occuped_places"
-    t.string   "key_user_id",             limit: 255
-    t.string   "api_key",                 limit: 255
+    t.string   "key_user_id"
+    t.string   "api_key"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "provider",                limit: 255
-    t.string   "uid",                     limit: 255
-    t.string   "oauth_token",             limit: 255
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "oauth_token"
     t.datetime "oauth_expires_at"
     t.datetime "last_changes_in_choices"
     t.integer  "min_pcent_for_advice"
