@@ -1,16 +1,41 @@
+require "yaml"
+
 class ItemsInit::ItemsList
 
   def self.initialize_eve_items
+    fixture_file = File.open('test/fixtures/eve_items.yml','a') if Rails.env.test?
+
+    puts EveItem.first.inspect
+
     ActiveRecord::Base.transaction do
       list = download_items_list
       list.each do |elem|
-        next if EveItem::UNPROCESSABLE_ITEMS.include?( elem[0].to_i )
-        eve_item = EveItem.to_eve_item_id(elem[0])
-        unless eve_item
-          puts "About to insert #{elem.inspect}"
-          EveItem.find_or_create_by( cpp_eve_item_id: elem[0], name: elem[1], name_lowcase: elem[1].downcase )
+        begin
+          cpp_id = elem[0]
+          name = I18n.transliterate( elem[1] )
+
+          next if EveItem::UNPROCESSABLE_ITEMS.include?( cpp_id.to_i )
+
+          eve_item = EveItem.to_eve_item_id( cpp_id )
+          unless eve_item
+            puts "About to insert #{elem.inspect}"
+            eve_item = EveItem.find_or_create_by( cpp_eve_item_id: cpp_id, name: name, name_lowcase: name.downcase )
+
+            if Rails.env.test?
+              fixture = { "record#{ cpp_id }" => { cpp_eve_item_id: cpp_id, name: name, name_lowcase: name.downcase } }
+              fixture_dump = YAML.dump( fixture )
+              fixture_dump = fixture_dump[ 3..-1 ]
+              fixture_file.puts( fixture_dump )
+            end
+
+          end
+
+        rescue StandardError => e
+          puts "Error with #{elem.inspect}"
         end
+
       end
+
       Crest::MarketGroups.update_market_group
 
       # Setup blueprint involvement
