@@ -4,6 +4,7 @@ class ItemsInit::ItemsList
     ActiveRecord::Base.transaction do
       list = download_items_list
       list.each do |elem|
+        next if EveItem::UNPROCESSABLE_ITEMS.include?( elem[0].to_i )
         eve_item = EveItem.to_eve_item_id(elem[0])
         unless eve_item
           puts "About to insert #{elem.inspect}"
@@ -11,6 +12,26 @@ class ItemsInit::ItemsList
         end
       end
       Crest::MarketGroups.update_market_group
+
+      # Setup blueprint involvement
+      has_blueprint
+      involved_in_blueprint
+    end
+  end
+
+  def self.involved_in_blueprint
+    Blueprint.find_each do |bp|
+      bp.materials.each do |material|
+        comp = material.component
+        eve_item = EveItem.where( cpp_eve_item_id: comp.cpp_eve_item_id, involved_in_blueprint: false ).first
+        eve_item.update_attribute( :involved_in_blueprint, true ) if eve_item
+      end
+    end
+  end
+
+  def self.has_blueprint
+    Blueprint.find_each do |bp|
+      bp.eve_item.update_attribute( :involved_in_blueprint, true )
     end
   end
 

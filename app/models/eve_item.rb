@@ -13,7 +13,8 @@ class EveItem < ActiveRecord::Base
   has_many :components, through: :materials
 
   # Itemps containing non ascii characters
-  UNWANTED_ITEMS=[34457,34458,34459,34460,34461,34462,34463,34464,34465,34466,34467,34468,34469,34470,34471,34472,34473,34474,34475,34476,34477,34478,34479,34480]
+  UNPROCESSABLE_ITEMS=[34457,34458,34459,34460,34461,34462,34463,34464,34465,34466,34467,34468,34469,34470,34471,34472,
+                       34473,34474,34475,34476,34477,34478,34479,34480,30952,32371,32372]
 
   def self.to_eve_item_id(cpp_eve_item_id)
     eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first
@@ -88,7 +89,7 @@ class EveItem < ActiveRecord::Base
         key = line[0..11]
         value = line[12..-3]
         # types[key.strip]=value.strip if value
-        item_list << [key.to_i,value] unless UNWANTED_ITEMS.include?(key.to_i)
+        item_list << [key.to_i,value] unless UNPROCESSABLE_ITEMS.include?(key.to_i)
       end
     end
     item_list.shift(2)

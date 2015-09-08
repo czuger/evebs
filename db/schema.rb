@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150906171550) do
+ActiveRecord::Schema.define(version: 20150908054811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,13 +62,14 @@ ActiveRecord::Schema.define(version: 20150906171550) do
 
   create_table "eve_items", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name",                limit: 255
+    t.string   "name",                  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name_lowcase",        limit: 255
+    t.string   "name_lowcase",          limit: 255
     t.float    "cost"
-    t.boolean  "epic_blueprint",                  default: false
+    t.boolean  "epic_blueprint",                    default: false
     t.integer  "cpp_market_group_id"
+    t.boolean  "involved_in_blueprint",             default: false
   end
 
   add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id", using: :btree

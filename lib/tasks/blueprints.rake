@@ -10,7 +10,7 @@ namespace :data_setup do
       unless Blueprint.find_by_cpp_blueprint_id( blueprint_id )
         next if Blueprint::UNWANTED_BLUEPRINTS.include?( blueprint_id.to_i )
         produced_item_id = bp[:produced_item_id]
-        next if EveItem::UNWANTED_ITEMS.include?( produced_item_id.to_i )
+        next if EveItem::UNPROCESSABLE_ITEMS.include?( produced_item_id.to_i )
         produced_item_qtt = bp[:produced_item_qtt]
         max_production_limit = bp[:max_production_limit]
         puts "Working on blueprint : eve_elueprint_id=#{blueprint_id}, eve_produced_item_id=#{produced_item_id}, qtt=#{produced_item_qtt}, max_run=#{max_production_limit}"
