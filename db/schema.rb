@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150906171550) do
+ActiveRecord::Schema.define(version: 20150910080646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,25 @@ ActiveRecord::Schema.define(version: 20150906171550) do
   add_index "crest_costs", ["cpp_item_id"], name: "index_crest_costs_on_cpp_item_id", unique: true, using: :btree
   add_index "crest_costs", ["eve_item_id"], name: "index_crest_costs_on_eve_item_id", unique: true, using: :btree
 
+  create_table "crest_price_histories", force: :cascade do |t|
+    t.integer  "region_id",               null: false
+    t.integer  "eve_item_id",             null: false
+    t.string   "day_timestamp",           null: false
+    t.datetime "history_date",            null: false
+    t.integer  "order_count",   limit: 8
+    t.integer  "volume",        limit: 8
+    t.float    "low_price"
+    t.float    "avg_price"
+    t.float    "high_price"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "crest_price_histories", ["day_timestamp"], name: "index_crest_price_histories_on_day_timestamp", using: :btree
+  add_index "crest_price_histories", ["eve_item_id"], name: "index_crest_price_histories_on_eve_item_id", using: :btree
+  add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
+  add_index "crest_price_histories", ["region_id"], name: "index_crest_price_histories_on_region_id", using: :btree
+
   create_table "eve_clients", force: :cascade do |t|
     t.string   "cpp_client_id", null: false
     t.string   "name",          null: false
@@ -67,8 +86,9 @@ ActiveRecord::Schema.define(version: 20150906171550) do
     t.datetime "updated_at"
     t.string   "name_lowcase"
     t.float    "cost"
-    t.boolean  "epic_blueprint",      default: false
+    t.boolean  "epic_blueprint",        default: false
     t.integer  "cpp_market_group_id"
+    t.boolean  "involved_in_blueprint", default: false
   end
 
   add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id", using: :btree
@@ -123,6 +143,15 @@ ActiveRecord::Schema.define(version: 20150906171550) do
 
   add_index "min_prices", ["eve_item_id"], name: "index_min_prices_on_eve_item_id", using: :btree
   add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id", using: :btree
+
+  create_table "regions", force: :cascade do |t|
+    t.string   "cpp_region_id", null: false
+    t.string   "name",          null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "regions", ["cpp_region_id"], name: "index_regions_on_cpp_region_id", unique: true, using: :btree
 
   create_table "sale_records", force: :cascade do |t|
     t.integer  "user_id",               null: false
@@ -205,4 +234,6 @@ ActiveRecord::Schema.define(version: 20150906171550) do
   end
 
   add_foreign_key "crest_costs", "eve_items"
+  add_foreign_key "crest_price_histories", "eve_items"
+  add_foreign_key "crest_price_histories", "regions"
 end

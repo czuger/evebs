@@ -3,7 +3,7 @@ require 'test_helper'
 class CrestCostTest < ActiveSupport::TestCase
 
   test "Get crest for morphite in jita" do
-    Crest::ItemPrices.get( 10000002, 16680, )
+    Crest::GetPriceHistory.get( 10000002, 16680, )
   end
 
   test "Test crest cost for inferno fury cruise missile" do

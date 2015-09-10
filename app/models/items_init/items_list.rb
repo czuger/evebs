@@ -37,10 +37,6 @@ class ItemsInit::ItemsList
 
     ActiveRecord::Base.transaction do
       Crest::MarketGroups.update_market_group
-
-      # Setup blueprint involvement
-      has_blueprint
-      involved_in_blueprint
     end
 
   end
