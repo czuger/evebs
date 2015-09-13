@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150911080030) do
+ActiveRecord::Schema.define(version: 20150913092820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -210,7 +210,10 @@ ActiveRecord::Schema.define(version: 20150911080030) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "region_id"
   end
+
+  add_index "trade_hubs", ["region_id"], name: "index_trade_hubs_on_region_id", using: :btree
 
   create_table "trade_hubs_users", force: :cascade do |t|
     t.integer "user_id"
@@ -256,4 +259,5 @@ ActiveRecord::Schema.define(version: 20150911080030) do
   add_foreign_key "crest_price_histories", "regions"
   add_foreign_key "crest_prices_last_month_averages", "eve_items"
   add_foreign_key "crest_prices_last_month_averages", "regions"
+  add_foreign_key "trade_hubs", "regions"
 end

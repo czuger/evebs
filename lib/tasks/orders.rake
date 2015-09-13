@@ -3,7 +3,9 @@ namespace :data_compute do
   task :get_orders => :environment do
     User.all.to_a.each do |user|
       puts "Retrieveing orders for #{user.name}"
-      TradeOrder.get_trade_orders(user)
+      ActiveRecord::Base.transaction do
+        TradeOrder.get_trade_orders(user)
+      end
     end
   end
 end
