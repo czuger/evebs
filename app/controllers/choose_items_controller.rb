@@ -18,6 +18,7 @@ class ChooseItemsController < ApplicationController
   end
 
   def new
+    @message = params[:message]
   end
 
   def create
@@ -35,7 +36,7 @@ class ChooseItemsController < ApplicationController
       @user.eve_items << eve_items
       @user.update_attribute(:last_changes_in_choices,Time.now)
     end
-    redirect_to new_choose_items_path
+    redirect_to new_choose_items_path( message: 'Item(s) added successfully' )
   end
 
   def update

@@ -1,6 +1,12 @@
 #selection_div
 
   %h2
+    - if @message
+      %span.choose_item_message
+        = @message
+      %br
+      %br
+
     -#%span{ rel: :tooltip, title: :test }
     %span
       Type the name of items you want to monitor
