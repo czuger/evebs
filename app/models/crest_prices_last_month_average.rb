@@ -1,2 +1,2 @@
-class CrestPricesLastMonthAverage
+class CrestPricesLastMonthAverage < ActiveRecord::Base
 end

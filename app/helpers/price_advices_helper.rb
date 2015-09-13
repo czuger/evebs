@@ -21,4 +21,16 @@ module PriceAdvicesHelper
     end
   end
 
+  def print_volume(amount)
+    if amount
+      if amount.class != String
+        number_with_delimiter(amount, separator: ",", delimiter: " ",)
+      else
+        amount
+      end
+    else
+      'N/A'
+    end
+  end
+
 end

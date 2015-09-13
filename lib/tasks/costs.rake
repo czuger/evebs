@@ -32,7 +32,7 @@ namespace :data_compute do
   desc "Recompute the costs all items (not only used ones)"
   task :recompute_all_items_costs => :environment do
     puts 'Refreshing all items components costs'
-    EveItem.all.each do |ei|
+    EveItem.where(involved_in_blueprint:true).all.each do |ei|
       puts "Recomputing price for #{ei.name}"
       ei.compute_cost
     end

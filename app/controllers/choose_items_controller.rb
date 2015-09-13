@@ -35,7 +35,7 @@ class ChooseItemsController < ApplicationController
       @user.eve_items << eve_items
       @user.update_attribute(:last_changes_in_choices,Time.now)
     end
-    redirect_to edit_choose_items_path
+    redirect_to new_choose_items_path
   end
 
   def update
@@ -55,7 +55,7 @@ class ChooseItemsController < ApplicationController
 
   def autocomplete_eve_item_name_lowcase
     term = params[:term]
-    items = EveItem.where('LOWER(name_lowcase) LIKE ?', "%#{term}%").order(:name_lowcase).all.limit(30)
+    items = EveItem.where('LOWER(name_lowcase) LIKE ?', "%#{term}%").where(involved_in_blueprint: true).order(:name_lowcase).all.limit(30)
     session[:selected_items]=items.map{ |e| e.id }
     render :json => items.map { |items| {:id => items.id, :label => items.name, :value => items.name} }
   end

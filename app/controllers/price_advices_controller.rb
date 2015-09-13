@@ -41,6 +41,8 @@ class PriceAdvicesController < ApplicationController
     @item_count = {}
 
     @print_change_warning=print_change_warning
+    @monthly_averages = get_montly_items_averages
+    # pp @monthly_averages
 
     @user.trade_hubs.each do |trade_hub|
       eve_items = @user.eve_items.to_a
@@ -70,6 +72,9 @@ class PriceAdvicesController < ApplicationController
             @item_count[min_price_item.eve_item.name]+=1 if @item_count.has_key?( min_price_item.eve_item.name )
             @item_count[min_price_item.eve_item.name]=1 unless @item_count.has_key?( min_price_item.eve_item.name )
 
+            region_item_key = [[trade_hub.region_id],[min_price_item.eve_item_id]]
+            # puts "Region item key = #{region_item_key.inspect}"
+
             @prices_array << {
               trade_hub: trade_hub.name,
               eve_item: min_price_item.eve_item.name,
@@ -77,7 +82,10 @@ class PriceAdvicesController < ApplicationController
               cost: (min_price_item.eve_item.cost/blueprint.prod_qtt).round(1),
               benef: benef,
               benef_pcent: benef_pcent,
-              batch_size: batch_size
+              batch_size: batch_size,
+              monthly_amount: @monthly_averages[region_item_key].volume_sum,
+              monthly_avg_price: @monthly_averages[region_item_key].avg_price_avg,
+              monthly_low_price: @monthly_averages[region_item_key].low_price_avg,
             }
           end
         else
@@ -109,6 +117,10 @@ class PriceAdvicesController < ApplicationController
       return "You did recent changes. Some datas can be inacurate. The next data refresh will occur in : #{diff}"
     end
     nil
+  end
+  def get_montly_items_averages
+    datas = CrestPricesLastMonthAverage.where( eve_item_id: @user.eve_items, region_id: @user.regions.pluck(:id) ).to_a
+    Hash[datas.map{ |e| [[[e.region_id],[e.eve_item_id]],e]}]
   end
 end
 

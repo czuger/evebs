@@ -4,26 +4,43 @@
 .order_advice_containers
   %h2
     Margin lists
+
   %table
+    %tr
+      %td.daily_information Daily information
+      %td.monthly_information Monthly information
+  %table
+    %tr
+      %th{colspan:4}
+      %th.white_borders{colspan:2} Min Margin
+      %th
+      %th{colspan:3} Min
+      %th Avg
     %tr
       %th
       %th Trade hub
       %th Item
-      %th Min Cost
-      %th Min price
-      %th Min Margin pcent
-      %th Min Margin amount
+      %th Amount sold
+      %th pcent
+      %th amount
       %th For
+      %th cost
+      %th price
+      %th price
+      %th price
     - @prices_array.each do |item|
       %tr{ class: cycle( :odd, :even ) }
         %td=check_box_tag :dummy
         %td=item[:trade_hub]
         %td=item[:eve_item]
-        %td.cell_right_align=print_isk(item[:cost])
-        %td.cell_right_align=print_isk(item[:min_price])
-        %td.cell_center_align="#{item[:benef_pcent]}%"
-        %td.cell_right_align=print_isk(item[:benef])
-        %td.cell_right_align=item[:batch_size]
+        %td.cell_right_align.monthly_information=print_volume(item[:monthly_amount])
+        %td.cell_center_align.daily_information="#{item[:benef_pcent]}%"
+        %td.cell_right_align.daily_information=print_isk(item[:benef])
+        %td.cell_right_align.daily_information=item[:batch_size]
+        %td.cell_right_align.daily_information=print_isk(item[:cost])
+        %td.cell_right_align.daily_information=print_isk(item[:min_price])
+        %td.cell_right_align.monthly_information=print_isk(item[:monthly_low_price])
+        %td.cell_right_align.monthly_information=print_isk(item[:monthly_avg_price])
 
 .order_advice_containers
   %h2
