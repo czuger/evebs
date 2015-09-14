@@ -16,6 +16,7 @@
       %th
       %th Min
       %th Min
+      %th
       %th Min
       %th Avg
     %tr
@@ -28,6 +29,7 @@
       %th For
       %th cost
       %th price
+      %th diff
       %th price
       %th price
     - @prices_array.each do |item|
@@ -41,6 +43,7 @@
         %td.cell_right_align.daily_information=item[:batch_size]
         %td.cell_right_align.daily_information=print_isk(item[:cost])
         %td.cell_right_align.daily_information=print_isk(item[:min_price])
+        %td.cell_right_align.daily_information=print_pcent(item[:diff_between_daily_min_and_monthly_min_pcent])
         %td.cell_right_align.monthly_information=print_isk(item[:monthly_low_price])
         %td.cell_right_align.monthly_information=print_isk(item[:monthly_avg_price])
 

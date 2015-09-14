@@ -75,7 +75,7 @@ class PriceAdvicesController < ApplicationController
             region_item_key = [[trade_hub.region_id],[min_price_item.eve_item_id]]
             # puts "Region item key = #{region_item_key.inspect}"
 
-            @prices_array << {
+            price_record = {
               trade_hub: trade_hub.name,
               eve_item: min_price_item.eve_item.name,
               min_price: min_price_item.min_price.round(1),
@@ -83,10 +83,16 @@ class PriceAdvicesController < ApplicationController
               benef: benef,
               benef_pcent: benef_pcent,
               batch_size: batch_size,
-              monthly_amount: @monthly_averages[region_item_key].volume_sum,
-              monthly_avg_price: @monthly_averages[region_item_key].avg_price_avg,
-              monthly_low_price: @monthly_averages[region_item_key].low_price_avg,
             }
+
+            if @monthly_averages
+              price_record[:monthly_amount] = @monthly_averages[region_item_key].volume_sum
+              price_record[:monthly_avg_price] = @monthly_averages[region_item_key].avg_price_avg
+              price_record[:monthly_low_price] = @monthly_averages[region_item_key].low_price_avg
+              price_record[:diff_between_daily_min_and_monthly_min_pcent] = (min_price_item.min_price-@monthly_averages[region_item_key].low_price_avg)/ @monthly_averages[region_item_key].low_price_avg
+            end
+
+            @prices_array << price_record
           end
         else
           @prices_array << {
