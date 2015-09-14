@@ -7,10 +7,10 @@ class Crest::ComputePriceHistoryAvg
       last_month = Date.today - 1.month
 
       sql = "
-      INSERT INTO dev.crest_prices_last_month_averages
+      INSERT INTO crest_prices_last_month_averages
         SELECT region_id, eve_item_id, SUM( order_count ), SUM( volume ), AVG( order_count ), AVG( volume ),
           AVG( low_price ), AVG( avg_price ), AVG( high_price ), now(), now()
-        FROM dev.crest_price_histories
+        FROM crest_price_histories
         WHERE history_date > '#{last_month}' AND
               NOT EXISTS (
                   SELECT region_id, eve_item_id
