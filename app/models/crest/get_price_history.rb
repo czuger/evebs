@@ -6,11 +6,29 @@ class Crest::GetPriceHistory
   include Crest::CrestBase
 
   def initialize( low_level_transactions = false )
+    get_watched_items_and_region_only(low_level_transactions)
 
-    manage_cache
+    # Update monthly averages
+    Crest::ComputePriceHistoryAvg.new
+  end
 
+  def get_watched_items_and_region_only(low_level_transactions)
+    used_items, used_trade_hubs = User.get_used_items_and_trade_hubs
+    regions = used_trade_hubs.map{ |e| e.region }
+    used_items = used_items.map{ |e| [e.id,e.cpp_eve_item_id] }
+    regions.each do |region|
+      puts "About to retrieve price history for #{region.name}"
+      if low_level_transactions
+        get_region_history( region, used_items )
+      else
+        ActiveRecord::Base.transaction{get_region_history( region, used_items )}
+      end
+    end
+  end
+
+  def full_get(low_level_transactions)
     eve_item_ids_involved_in_blueprints = EveItem.where( involved_in_blueprint: true ).pluck( :id, :cpp_eve_item_id )
-    Region.where( id: [ 158, 169, 170, 192 ] ).each do |region|
+    Region.all.each do |region|
       puts "About to retrieve price history for #{region.name}"
       if low_level_transactions
         get_region_history( region, eve_item_ids_involved_in_blueprints )
@@ -18,10 +36,7 @@ class Crest::GetPriceHistory
         ActiveRecord::Base.transaction{get_region_history( region, eve_item_ids_involved_in_blueprints )}
       end
     end
-
   end
-
-  # 406 inserts for type 28999
 
   private
 
