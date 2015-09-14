@@ -14,9 +14,9 @@ class Crest::ComputePriceHistoryAvg
         WHERE history_date > '#{last_month}' AND
               NOT EXISTS (
                   SELECT region_id, eve_item_id
-                  FROM dev.crest_prices_last_month_averages
-                  WHERE dev.crest_prices_last_month_averages.region_id = dev.crest_price_histories.region_id
-                  AND dev.crest_prices_last_month_averages.eve_item_id = dev.crest_price_histories.eve_item_id  )
+                  FROM crest_prices_last_month_averages
+                  WHERE crest_prices_last_month_averages.region_id = crest_price_histories.region_id
+                  AND crest_prices_last_month_averages.eve_item_id = crest_price_histories.eve_item_id  )
         GROUP BY region_id, eve_item_id
       "
       ActiveRecord::Base.connection.execute(sql)
