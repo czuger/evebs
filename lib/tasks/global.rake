@@ -5,5 +5,5 @@ end
 
 namespace :data_compute do
   desc "Full prices recomputation"
-  task :full => [:environment, :retrieve_all_components_costs, :recompute_all_items_costs, :trade_hubs_prices, :get_orders]
+  task :full => [:environment, :retrieve_all_components_costs, :recompute_all_items_costs, :trade_hubs_prices, :get_prices_history_update, :get_orders]
 end
