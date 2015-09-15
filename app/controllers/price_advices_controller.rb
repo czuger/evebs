@@ -52,8 +52,10 @@ class PriceAdvicesController < ApplicationController
       min_price_items = MinPrice.includes(eve_item:[:blueprint]).where( { eve_item_id: eve_items.map{ |i| i.id }, trade_hub_id: trade_hub.id } )
       min_price_items.each do |min_price_item|
 
-        blueprint = min_price_item.eve_item.blueprint
-        if min_price_item && blueprint && min_price_item.eve_item && min_price_item.eve_item.cost
+        if min_price_item && min_price_item.eve_item && min_price_item.eve_item.blueprint && min_price_item.eve_item.cost
+
+          blueprint = min_price_item.eve_item.blueprint
+
           batch_size = blueprint.nb_runs*blueprint.prod_qtt
           batch_cost = min_price_item.eve_item.cost*blueprint.nb_runs
           batch_sell_price = min_price_item.min_price*batch_size
