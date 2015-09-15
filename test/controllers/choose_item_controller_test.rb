@@ -25,7 +25,7 @@ class ChooseItemsControllerTest < ActionController::TestCase
     assert_difference '@user.eve_items.count' do
       get :create, choosen_item: @new_item.id
     end
-    assert_redirected_to edit_choose_items_path
+    assert_redirected_to new_choose_items_path( message: "Item(s) added successfully" )
   end
 
   test "should add only one item if one is selected" do
@@ -34,7 +34,7 @@ class ChooseItemsControllerTest < ActionController::TestCase
     assert_difference '@user.eve_items.count' do
       get :create
     end
-    assert_redirected_to edit_choose_items_path
+    assert_redirected_to new_choose_items_path( message: "Item(s) added successfully" )
   end
 
   test "should remove one item as we keep only the new" do
@@ -51,7 +51,7 @@ class ChooseItemsControllerTest < ActionController::TestCase
     assert_no_difference '@user.reload.eve_items.count' do
       get :create
     end
-    assert_redirected_to edit_choose_items_path
+    assert_redirected_to new_choose_items_path( message: "Item(s) added successfully" )
   end
 
   test "should return an autocomplete set of items" do

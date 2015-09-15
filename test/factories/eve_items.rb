@@ -13,6 +13,7 @@ FactoryGirl.define do
     name
     name_lowcase
     cost 5
+    involved_in_blueprint true
     factory :inferno_fury_cruise_missile do
       cpp_eve_item_id 2621
       name "Inferno Fury Cruise Missile"

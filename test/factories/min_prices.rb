@@ -1,4 +1,5 @@
 FactoryGirl.define do
+
   factory :min_price, :class => 'MinPrice' do
     eve_item nil
     trade_hub nil

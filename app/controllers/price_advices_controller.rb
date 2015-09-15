@@ -85,7 +85,7 @@ class PriceAdvicesController < ApplicationController
               batch_size: batch_size,
             }
 
-            if @monthly_averages
+            if @monthly_averages && @monthly_averages[region_item_key]
               price_record[:monthly_amount] = @monthly_averages[region_item_key].volume_sum
               price_record[:monthly_avg_price] = @monthly_averages[region_item_key].avg_price_avg
               price_record[:monthly_low_price] = @monthly_averages[region_item_key].low_price_avg

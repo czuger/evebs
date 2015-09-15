@@ -10,6 +10,7 @@ class PriceAdvicesControllerTest < ActionController::TestCase
     @blueprint = create( :blueprint )
     @user.eve_items << @blueprint.eve_item
     create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @blueprint.eve_item, new_order: true )
+    @min_price = create( :min_price, eve_item: @blueprint.eve_item, trade_hub: @trade_hub )
   end
 
   test "should show prices for current user" do
@@ -17,13 +18,19 @@ class PriceAdvicesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should show prices for current user with last months averages" do
+    create( :crest_prices_last_month_average, region: @trade_hub.region, eve_item: @blueprint.eve_item )
+    get :advice_prices
+    assert_response :success
+  end
+
   test "should show challenged prices without min prices" do
+    @min_price.destroy
     get :show_challenged_prices
     assert_response :success
   end
 
   test "should show challenged prices with min prices" do
-    create( :min_price, eve_item: @blueprint.eve_item, trade_hub: @trade_hub )
     get :show_challenged_prices
     assert_response :success
   end
