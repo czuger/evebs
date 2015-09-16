@@ -5,6 +5,8 @@ require 'pp'
 class Crest::GetPriceHistory
   include Crest::CrestBase
 
+  # TODO : there are trade hub that have no regions : take care of that - protect region access
+
   def initialize( low_level_transactions = false )
     get_watched_items_and_region_only(low_level_transactions)
 

@@ -3,12 +3,25 @@
   %h2 Check trade hubs you want to monitor
 
   = form_tag choose_trade_hubs_path(@user.id), method: :put do
-    - @trade_hubs.in_groups_of(@per_group_count).each do |trade_hub_group|
-      %table.side_by_side_table
-        - trade_hub_group.each do |trade_hub|
-          - if trade_hub
-            %tr
-              %td=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
-              %td=trade_hub.name
+    %table
+      - @inner_trade_hubs.each do |inner_trade_hub|
+        %tr
+          %td= inner_trade_hub.name
+          %td= inner_trade_hub.region.name
+          %td=check_box_tag('trade_hubs_ids[]',inner_trade_hub.id,@user_trade_hubs_ids.include?(inner_trade_hub.id))
+          - outer_trade_hub = @outer_trade_hubs.shift
+          - if outer_trade_hub
+            %td= outer_trade_hub.name
+            %td= outer_trade_hub.region.name
+            %td=check_box_tag('trade_hubs_ids[]',outer_trade_hub.id,@user_trade_hubs_ids.include?(outer_trade_hub.id))
 
     = submit_tag 'Select trade hubs'
+
+    -#- @trade_hubs.in_groups_of(@per_group_count).each do |trade_hub_group|
+    -#  %table.side_by_side_table
+    -#    - trade_hub_group.each do |trade_hub|
+    -#      - if trade_hub
+    -#        %tr
+    -#          %td=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
+    -#          %td=trade_hub.name
+
