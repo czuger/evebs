@@ -2,18 +2,18 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: eve_business_server
+  database: eve_business_server_dev
   pool: 5
   username: eve_business_server
   password: 123456
-  schema_search_path: :dev
+  #schema_search_path: :dev
 
 
 test:
   adapter: postgresql
   encoding: unicode
-  database: eve_business_server
+  database: eve_business_server_test
   pool: 5
   username: eve_business_server
   password: 123456
-  schema_search_path: :test
+  #schema_search_path: :test
