@@ -10,7 +10,23 @@ class ChooseItemsController < ApplicationController
     if current_user
       @user = current_user
       @items = @user.eve_items.order(:name)
-      @per_group_count = (@items.length/4.0).ceil
+      @groups = {}
+      @no_groups = []
+      if @items && !@items.empty?
+        @items.each do |item|
+          market_group = item.market_group
+          if market_group
+            @groups[market_group.id] = {} unless @groups.has_key?(market_group.id)
+            @groups[market_group.id][:name] = market_group.get_market_group_breadcrumb
+            @groups[market_group.id][:items] = [] unless @groups[market_group.id].has_key?(:items)
+            @groups[market_group.id][:items] << item
+          else
+            @no_groups << item
+          end
+        end
+      end
+
+      # @per_group_count = (@items.length/4.0).ceil
     else
       redirect_to new_sessions_path
     end

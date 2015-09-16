@@ -11,6 +11,7 @@ class EveItem < ActiveRecord::Base
   has_one :blueprint
   has_many :materials, through: :blueprint
   has_many :components, through: :materials
+  belongs_to :market_group
 
   # Itemps containing non ascii characters
   UNPROCESSABLE_ITEMS=[34457,34458,34459,34460,34461,34462,34463,34464,34465,34466,34467,34468,34469,34470,34471,34472,

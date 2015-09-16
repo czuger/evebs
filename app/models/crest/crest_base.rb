@@ -18,7 +18,7 @@ module Crest::CrestBase
   end
 
   def get_parsed_data( rest, debug_request = false )
-    html_req = get_crest_url( :regions )
+    html_req = get_crest_url( rest )
     puts "#{self.class}::#{__method__} html_req = #{html_req}" if debug_request
     json_result = open( html_req ).read
     JSON.parse( json_result )

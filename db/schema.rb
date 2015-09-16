@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150916011814) do
+ActiveRecord::Schema.define(version: 20150916052729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,12 +105,12 @@ ActiveRecord::Schema.define(version: 20150916011814) do
     t.string   "name_lowcase"
     t.float    "cost"
     t.boolean  "epic_blueprint",        default: false
-    t.integer  "cpp_market_group_id"
     t.boolean  "involved_in_blueprint", default: false
+    t.integer  "market_group_id"
   end
 
   add_index "eve_items", ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id", using: :btree
-  add_index "eve_items", ["cpp_market_group_id"], name: "index_eve_items_on_cpp_market_group_id", using: :btree
+  add_index "eve_items", ["market_group_id"], name: "index_eve_items_on_market_group_id", using: :btree
 
   create_table "eve_items_users", force: :cascade do |t|
     t.integer "user_id"
@@ -139,6 +139,25 @@ ActiveRecord::Schema.define(version: 20150916011814) do
   end
 
   add_index "jita_margins", ["eve_item_id"], name: "index_jita_margins_on_eve_item_id", using: :btree
+
+  create_table "market_group_hierarchies", id: false, force: :cascade do |t|
+    t.integer "ancestor_id",   null: false
+    t.integer "descendant_id", null: false
+    t.integer "generations",   null: false
+  end
+
+  add_index "market_group_hierarchies", ["ancestor_id", "descendant_id", "generations"], name: "market_group_anc_desc_idx", unique: true, using: :btree
+  add_index "market_group_hierarchies", ["descendant_id"], name: "market_group_desc_idx", using: :btree
+
+  create_table "market_groups", force: :cascade do |t|
+    t.string   "cpp_market_group_id", null: false
+    t.string   "name",                null: false
+    t.integer  "parent_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  add_index "market_groups", ["cpp_market_group_id"], name: "index_market_groups_on_cpp_market_group_id", unique: true, using: :btree
 
   create_table "materials", force: :cascade do |t|
     t.integer  "blueprint_id"
@@ -260,5 +279,6 @@ ActiveRecord::Schema.define(version: 20150916011814) do
   add_foreign_key "crest_price_histories", "regions"
   add_foreign_key "crest_prices_last_month_averages", "eve_items"
   add_foreign_key "crest_prices_last_month_averages", "regions"
+  add_foreign_key "eve_items", "market_groups"
   add_foreign_key "trade_hubs", "regions"
 end

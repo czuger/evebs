@@ -31,6 +31,7 @@ gem 'nokogiri'
 gem 'constructor'
 gem 'eaal'
 gem 'open-uri-cached'
+gem 'closure_tree'
 
 #gem 'open-uri'
 #gem 'open-uri/cached'

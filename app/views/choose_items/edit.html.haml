@@ -3,14 +3,22 @@
   %h2 Unselect items you don't want to monitor
 
   = form_tag choose_items_path(@user.id), method: :put do
-    - if @items && !@items.empty?
-      - @items.in_groups_of(@per_group_count).each do |group|
-        %table.side_by_side_table
-          - group.each do |item|
-            - if item
-              %tr
-                %td=check_box_tag('items_to_keep[]',item.id,true)
-                %td=item.name
+
+    %table{ border: true }
+      - @groups.each_pair do |key,value|
+        %tr
+          %td{ colspan: 2 }= value[:name]
+        - value[:items].each do |item|
+          %tr
+            %td=item.name
+            %td=check_box_tag('items_to_keep[]',item.id,true)
+      %tr
+        %td{ colspan: 2 } Ungroupped
+      - @no_groups.each do |item|
+        %tr
+          %td=item.name
+          %td=check_box_tag('items_to_keep[]',item.id,true)
+
 
     = submit_tag 'Remove unselected items'
     = submit_tag 'Remove all items', name: :remove_all_items
