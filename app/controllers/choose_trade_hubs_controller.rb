@@ -7,7 +7,7 @@ class ChooseTradeHubsController < ApplicationController
     @inner_trade_hubs = TradeHub.where( inner: true ).where.not( region: nil ).order(:region_id, :name).to_a
     @outer_trade_hubs = TradeHub.where( inner: false ).where.not( region: nil ).order(:region_id, :name).to_a
     @user_trade_hubs_ids = @user.trade_hubs.map{ |e| e.id }
-    # @per_group_count = (@trade_hubs.length/4.0).ceil
+    @per_group_count = (@inner_trade_hubs.length/2.0).ceil
   end
 
   def update
