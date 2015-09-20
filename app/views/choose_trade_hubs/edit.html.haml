@@ -13,19 +13,19 @@
           - if trade_hub
             %td.trade_hub_table_thin_cell_borders= trade_hub.name
             %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-            %td.trade_hub_table_thin_cell_borders=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
+            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
           - else
             %td.trade_hub_table_no_cell_borders{ colspan: 3 }
           - trade_hub = @inner_trade_hubs_2[i]
           - if trade_hub
-            %td.trade_hub_table_thin_cell_borders= trade_hub.name
+            %td.trade_hub_table_thin_cell_borders_left= trade_hub.name
             %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-            %td.trade_hub_table_thin_cell_borders=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
+            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
           - else
             %td.trade_hub_table_no_cell_borders{ colspan: 3 }
           - trade_hub = @outer_trade_hubs[i]
           - if trade_hub
-            %td.trade_hub_table_thin_cell_borders= trade_hub.name
+            %td.trade_hub_table_thin_cell_borders_left= trade_hub.name
             %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
             %td.trade_hub_table_thin_cell_borders=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
           - else

@@ -3,12 +3,14 @@ require 'open-uri/cached'
 require 'pp'
 
 class Crest::GetPriceHistory
+
   include Crest::CrestBase
 
   # TODO : there are trade hub that have no regions : take care of that - protect region access
 
   def initialize( low_level_transactions = false )
     get_watched_items_and_region_only(low_level_transactions)
+    get_jita_components_prices(low_level_transactions)
 
     # Update monthly averages
     Crest::ComputePriceHistoryAvg.new
@@ -17,6 +19,20 @@ class Crest::GetPriceHistory
   def get_watched_items_and_region_only(low_level_transactions)
     used_items, used_trade_hubs = User.get_used_items_and_trade_hubs
     regions = used_trade_hubs.map{ |e| e.region }
+    used_items = used_items.map{ |e| [e.id,e.cpp_eve_item_id] }
+    regions.each do |region|
+      puts "About to retrieve price history for #{region.name}"
+      if low_level_transactions
+        get_region_history( region, used_items )
+      else
+        ActiveRecord::Base.transaction{get_region_history( region, used_items )}
+      end
+    end
+  end
+
+  def get_jita_components_prices(low_level_transactions)
+    regions = [ Region.find_by_cpp_region_id( Component::JITA_REGION_CPP_ID ) ]
+    used_items = EveItem.where( involved_in_blueprint: true ).all
     used_items = used_items.map{ |e| [e.id,e.cpp_eve_item_id] }
     regions.each do |region|
       puts "About to retrieve price history for #{region.name}"

@@ -10,5 +10,5 @@ end
 
 namespace :data_compute do
   desc "Full prices recomputation"
-  task :full_daily => [:environment, :retrieve_all_components_costs, :recompute_all_items_costs, :get_prices_history_update]
+  task :full_daily => [:environment, :costs, :get_prices_history_update ]
 end

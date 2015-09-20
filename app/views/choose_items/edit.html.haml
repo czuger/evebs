@@ -6,19 +6,19 @@
 
     %table{ border: true }
       - @groups.each_pair do |key,value|
-        %tr
+        %tr.market_group
           %td{ colspan: 2 }= value[:name]
         - value[:items].each do |item|
           %tr
             %td=item.name
-            %td=check_box_tag('items_to_keep[]',item.id,true)
-      %tr
+            %td.item_list_check_case=check_box_tag('items_to_keep[]',item.id,true)
+      %tr.market_group
         %td{ colspan: 2 } Ungroupped
       - @no_groups.each do |item|
         %tr
           %td=item.name
-          %td=check_box_tag('items_to_keep[]',item.id,true)
+          %td.item_list_check_case=check_box_tag('items_to_keep[]',item.id,true)
 
 
-    = submit_tag 'Remove unselected items'
-    = submit_tag 'Remove all items', name: :remove_all_items
+    = submit_tag 'Remove unselected items', class: :submit_button_style
+    = submit_tag 'Remove all items', name: :remove_all_items, class: :submit_button_style
