@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
   namespace :price_advices do
     get :advice_prices
+    get :advice_prices_monthly
     get :show_challenged_prices
   end
 

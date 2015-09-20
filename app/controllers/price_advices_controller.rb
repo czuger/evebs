@@ -4,6 +4,8 @@ class PriceAdvicesController < ApplicationController
 
   before_action :require_logged_in!
 
+  include PriceAdviceMonthly
+
   def show_challenged_prices
 
     @user = current_user

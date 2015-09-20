@@ -1,14 +1,14 @@
 namespace :data_setup do
   desc "Full data setup"
-  task :full => [:environment, :trade_hubs, :regions, :load_all_items, :blueprints_setup, :stations]
+  task :full => [:environment, :trade_hubs, :regions, 'price_history:init', :load_all_items, :blueprints_setup, :stations]
 end
 
 namespace :data_compute do
-  desc "Full prices recomputation"
-  task :full => [:environment, :trade_hubs_prices, :get_orders]
-end
+  namespace :full do
+    desc "Full process - hourly"
+    task :hourly => [:environment, 'min_prices:used' , :get_orders, :get_sales]
 
-namespace :data_compute do
-  desc "Full prices recomputation"
-  task :full_daily => [:environment, :costs, :get_prices_history_update ]
+    desc "Full process - daily"
+    task :daily => [:environment, 'get_prices_history:update', :costs]
+  end
 end

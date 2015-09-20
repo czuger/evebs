@@ -1,0 +1,31 @@
+-##print_change_warning
+-#  = @print_change_warning
+
+.order_advice_containers
+  %h2
+    Margin lists
+
+  %table
+    %tr
+      %th
+      %th Trade hub
+      %th Item
+      %th Volume
+      %th Orders
+      %th Cost
+      %th Price
+      %th{ colspan: 3 } Benef
+
+    - @prices_array.each do |item|
+      %tr{ class: cycle( :odd, :even ) }
+        %td=check_box_tag :dummy
+        %td=item[:trade_hub]
+        %td=item[:eve_item]
+        %td.cell_right_align.information_highlight_left=print_volume(item[:volume_avg])
+        %td.cell_right_align.information_highlight_left=print_volume(item[:order_count_avg])
+        %td.cell_right_align.information_highlight_left=print_isk(item[:cost])
+        %td.cell_right_align.information_highlight_left=print_isk(item[:avg_price])
+        %td.cell_right_align.information_highlight_right=print_isk(item[:benef])
+        %td.cell_right_align.information_highlight_right=item[:batch_size]
+        %td.cell_center_align.information_highlight_right=print_pcent(item[:benef_pcent])
+

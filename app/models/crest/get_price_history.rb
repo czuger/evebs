@@ -6,54 +6,58 @@ class Crest::GetPriceHistory
 
   include Crest::CrestBase
 
+  UPDATED_REGIONS = [ 10000043, 10000064, 10000030, 10000042, 10000028, 10000002, 10000032 ]
+
   # TODO : there are trade hub that have no regions : take care of that - protect region access
 
   def initialize( low_level_transactions = false )
-    get_watched_items_and_region_only(low_level_transactions)
-    get_jita_components_prices(low_level_transactions)
-
-    # Update monthly averages
-    Crest::ComputePriceHistoryAvg.new
+    @low_level_transactions = low_level_transactions
   end
 
-  def get_watched_items_and_region_only(low_level_transactions)
+  def get_watched_items_and_region_only()
     used_items, used_trade_hubs = User.get_used_items_and_trade_hubs
     regions = used_trade_hubs.map{ |e| e.region }
     used_items = used_items.map{ |e| [e.id,e.cpp_eve_item_id] }
     regions.each do |region|
       puts "About to retrieve price history for #{region.name}"
-      if low_level_transactions
+      if @low_level_transactions
         get_region_history( region, used_items )
       else
         ActiveRecord::Base.transaction{get_region_history( region, used_items )}
       end
     end
+    # Update monthly averages
+    Crest::ComputePriceHistoryAvg.new
   end
 
-  def get_jita_components_prices(low_level_transactions)
+  def get_jita_components_prices()
     regions = [ Region.find_by_cpp_region_id( Component::JITA_REGION_CPP_ID ) ]
     used_items = EveItem.where( involved_in_blueprint: true ).all
     used_items = used_items.map{ |e| [e.id,e.cpp_eve_item_id] }
     regions.each do |region|
       puts "About to retrieve price history for #{region.name}"
-      if low_level_transactions
+      if @low_level_transactions
         get_region_history( region, used_items )
       else
         ActiveRecord::Base.transaction{get_region_history( region, used_items )}
       end
     end
+    # Update monthly averages
+    Crest::ComputePriceHistoryAvg.new
   end
 
-  def full_get(low_level_transactions)
+  def full_update()
     eve_item_ids_involved_in_blueprints = EveItem.where( involved_in_blueprint: true ).pluck( :id, :cpp_eve_item_id )
-    Region.all.each do |region|
+    Region.where( cpp_region_id: UPDATED_REGIONS ).each do |region|
       puts "About to retrieve price history for #{region.name}"
-      if low_level_transactions
+      if @low_level_transactions
         get_region_history( region, eve_item_ids_involved_in_blueprints )
       else
         ActiveRecord::Base.transaction{get_region_history( region, eve_item_ids_involved_in_blueprints )}
       end
     end
+    # Update monthly averages
+    Crest::ComputePriceHistoryAvg.new
   end
 
   private
