@@ -21,6 +21,13 @@ FactoryGirl.define do
       cost 1815252.83
       blueprint {FactoryGirl.create( :inferno_fury_cruise_blueprint )}
     end
+    factory :mjolnir_fury_cruise_missile do
+      cpp_eve_item_id 24535
+      name "Mjolnir Fury Cruise Missile"
+      name_lowcase "mjolnir fury cruise missile"
+      cost 1815252.83
+      blueprint {FactoryGirl.create( :inferno_fury_cruise_blueprint )}
+    end
     factory :inferno_precision_cruise_missile do
       cpp_eve_item_id 2637
       name "Inferno Precision Cruise Missile"
