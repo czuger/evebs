@@ -3,23 +3,31 @@
     Eve business server (Beta)
 
 #menu
-  - if current_user
-    %ul
-      %li= link_to 'Add items', new_choose_items_path
-      %li= link_to 'Edit items list', edit_choose_items_path
-      %li= link_to 'Choose trade hubs', edit_choose_trade_hubs_path
-      %li= link_to 'Advice prices', price_advices_advice_prices_path
-      %li= link_to 'Advice prices monthly', price_advices_advice_prices_monthly_path
-      %li= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
-      - if is_cedric_zuger
-        %li= link_to 'Sales', sale_records_path
-        %li= link_to 'Best sales', jita_margins_path
-      %li= link_to 'Edit user', edit_user_path( current_user.id )
+  %nav#primary_nav_wrap
+    - if current_user
+      %ul
+        %li
+          = link_to 'Items', '#'
+          %ul
+            %li= link_to 'Add', new_choose_items_path
+            %li= link_to 'Edit', edit_choose_items_path
+        %li
+          = link_to 'Trade hubs', edit_choose_trade_hubs_path
+
+        %li
+          = link_to 'Benefits', '#'
+          %ul
+            %li= link_to 'Daily', price_advices_advice_prices_path
+            %li= link_to 'Monthly', price_advices_advice_prices_monthly_path
+            %li= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
+        - if is_cedric_zuger
+          %li
+            = link_to 'Perso', '#'
+            %ul
+              %li= link_to 'Sales', sale_records_path
+              %li= link_to 'Best sales', jita_margins_path
+        %li= link_to 'User', edit_user_path( current_user.id )
+        %li= link_to 'Help', help_user_path
+        %li= link_to "Sign out", signout_path, id: "sign_out"
+    - else
       %li= link_to 'Help', help_user_path
-      %li
-        -#Welcome
-        -#= succeed "!" do
-        -#  %strong= current_user.name
-        = link_to "Sign out", signout_path, id: "sign_out"
-  - else
-    %li= link_to 'Help', help_user_path
