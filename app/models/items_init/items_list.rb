@@ -34,11 +34,6 @@ class ItemsInit::ItemsList
 
       end
     end
-
-    ActiveRecord::Base.transaction do
-      Crest::MarketGroups.update_market_group
-    end
-
   end
 
   def self.involved_in_blueprint

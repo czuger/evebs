@@ -1,6 +1,6 @@
 namespace :data_setup do
   desc "Full data setup"
-  task :full => [:environment, :trade_hubs, :regions, 'price_history:init', :load_all_items, :blueprints_setup, :stations]
+  task :full => [:environment, :trade_hubs, :regions, 'price_history:init', :load_all_items, :blueprints_setup, :stations, :market_groups]
 end
 
 namespace :data_compute do
