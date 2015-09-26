@@ -49,7 +49,7 @@ class SaleRecord < ActiveRecord::Base
         t.unit_sale_profit = t.unit_sale_price - t.unit_cost
         t.total_sale_profit = t.unit_sale_profit * t.quantity
       else
-        puts "Could not compute profit for #{item}"
+        puts "Could not compute profit for #{item.inspect}"
       end
       t.user_id = user.id
       t.eve_client_id = client.id
