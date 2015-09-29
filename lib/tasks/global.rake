@@ -9,6 +9,6 @@ namespace :data_compute do
     task :hourly => [:environment, 'min_prices:used' , :get_orders, :get_sales]
 
     desc "Full process - daily"
-    task :daily => [:environment, 'get_prices_history:update', :costs]
+    task :daily => [:environment, 'price_history:update:all', :costs]
   end
 end
