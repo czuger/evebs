@@ -3,19 +3,18 @@ module PriceAdviceMonthly
   def advice_prices_monthly
     @user = current_user
     @prices_array = []
-
-    @fullfilled_orders = @user.get_occuped_places if @user.remove_occuped_places
     @item_count = {}
-
     @monthly_averages = get_montly_items_averages
     # pp @monthly_averages
 
     @user.trade_hubs.each do |trade_hub|
 
       eve_items = @user.eve_items
-      eve_items.reject!{ |i| @fullfilled_orders.include?([trade_hub.id,i.id]) } if @user.remove_occuped_places
+      if @user.remove_occuped_places
+        eve_items = eve_items.where.not( id: trade_hub.get_selling_eve_items_ids( @user ) )
+      end
 
-      eve_items.each do |eve_item|
+      eve_items.find_each do |eve_item|
 
         region_item_key = [[trade_hub.region_id],[eve_item.id]]
 

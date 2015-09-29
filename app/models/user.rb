@@ -47,8 +47,9 @@ class User < ActiveRecord::Base
     [used_item, used_trade_hubs]
   end
 
-  def get_occuped_places
-    trade_orders.map{ |to| [to.trade_hub.id,to.eve_item_id] }
-  end
+  # Dead code
+  # def get_occuped_places
+  #   trade_orders.map{ |to| [to.trade_hub.id,to.eve_item_id] }
+  # end
 
 end
