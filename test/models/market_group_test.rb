@@ -8,8 +8,8 @@ class MarketGroupTest < ActiveSupport::TestCase
   end
 
   test "the truth" do
-    Crest::MarketGroups.update_market_group
-    pp MarketGroup.all
+    # Crest::MarketGroups.update_market_group
+    # pp MarketGroup.all
   end
 
 end

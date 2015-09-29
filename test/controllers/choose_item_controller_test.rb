@@ -40,9 +40,8 @@ class ChooseItemsControllerTest < ActionController::TestCase
   test "should remove one item as we keep only the new" do
     @new_item = create( :eve_item )
     @user.eve_items << @new_item
-    assert_difference '@user.eve_items.count', -1 do
-      get :update, items_to_keep: [@new_item.id]
-    end
+    get :update, items_to_keep: [@new_item.id]
+    assert_equal 1, @user.eve_items.count
     assert_redirected_to edit_choose_items_path
   end
 

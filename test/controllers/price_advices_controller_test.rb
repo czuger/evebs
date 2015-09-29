@@ -24,6 +24,14 @@ class PriceAdvicesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should advice monthly prices" do
+    create( :crest_prices_last_month_average, region: @trade_hub.region, eve_item: @blueprint.eve_item )
+    create( :crest_prices_last_month_average, region: @trade_hub.region, eve_item: @user.eve_items.first )
+    get :advice_prices_monthly
+    assert_response :success
+  end
+
+
   test "should show challenged prices without min prices" do
     @min_price.destroy
     get :show_challenged_prices
