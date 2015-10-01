@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     get :show_challenged_prices
   end
 
+  get 'price_advices/:trade_hub_id/show_item_detail/:item_id' => 'price_advices#show_item_detail', as: 'price_advices_show_item_detail'
 
   resource :choose_trade_hubs, only: [:edit, :update]
 

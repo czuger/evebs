@@ -36,7 +36,7 @@
       %tr{ class: cycle( :odd, :even ) }
         %td=check_box_tag :dummy
         %td=item[:trade_hub]
-        %td=item[:eve_item]
+        %td= link_to( item[:eve_item], price_advices_show_item_detail_path( item[:trade_hub_id], item[:eve_item_id] ) )
         %td.cell_right_align.monthly_information=print_volume(item[:monthly_amount])
         %td.cell_center_align.daily_information="#{item[:benef_pcent]}%"
         %td.cell_right_align.daily_information=print_isk(item[:benef])
