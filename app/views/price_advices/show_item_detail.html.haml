@@ -1,0 +1,23 @@
+%br
+%br
+
+%h1= "#{@item.name} (#{@item.id})"
+
+%h2= "Item cost: #{print_isk(@item_cost)}"
+
+%table
+  %tr
+    %th Trade hub
+    %th Current margin
+    %th Current min price
+    %th Avg margin
+    %th Avg price
+    %th Monthly volume
+  - @final_array.each do |line|
+    %tr
+      %td.cell_left_align=line[:trade_hub]
+      %td.cell_right_align=print_pcent(line[:min_price_margin])
+      %td.cell_right_align=print_isk(line[:min_price])
+      %td.cell_right_align=print_pcent(line[:avg_price_margin])
+      %td.cell_right_align=print_isk(line[:avg_price])
+      %td.cell_right_align=print_volume(line[:volume])

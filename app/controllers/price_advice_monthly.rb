@@ -15,15 +15,7 @@ module PriceAdviceMonthly
       end
 
       eve_items.find_each do |eve_item|
-
         region_item_key = [[trade_hub.region_id],[eve_item.id]]
-
-        blueprint = eve_item.blueprint
-
-        batch_size = blueprint.nb_runs*blueprint.prod_qtt if blueprint
-
-        batch_cost = eve_item.cost*blueprint.nb_runs if eve_item.cost
-        item_cost = eve_item.cost/blueprint.prod_qtt if eve_item.cost
 
         avg_price = volume_avg = order_count_avg = benef = benef_pcent = nil
         if @monthly_averages && @monthly_averages[region_item_key]
@@ -32,17 +24,16 @@ module PriceAdviceMonthly
           order_count_avg = @monthly_averages[region_item_key].order_count_avg
         end
 
-        if avg_price && batch_size && batch_cost
-          batch_sell_price = avg_price*batch_size
-          benef = batch_sell_price - batch_cost
-          benef_pcent = ((batch_sell_price*1) / batch_cost)-1
+        if avg_price
+          benef = eve_item.margin( avg_price )
+          benef_pcent = eve_item.pcent_margin( avg_price )
         end
 
         record_ok_for_user = true
         if @user.min_pcent_for_advice && benef_pcent && benef_pcent < @user.min_pcent_for_advice/100.0
           record_ok_for_user = false
         end
-        if @user.min_amount_for_advice && benef_pcent && benef < @user.min_amount_for_advice
+        if @user.min_amount_for_advice && benef && benef < @user.min_amount_for_advice
           record_ok_for_user = false
         end
 
@@ -50,11 +41,13 @@ module PriceAdviceMonthly
           price_record = {
             trade_hub: trade_hub.name,
             eve_item: eve_item.name,
+            trade_hub_id: trade_hub.id,
+            eve_item_id: eve_item.id,
             avg_price: avg_price,
-            cost: item_cost,
+            cost: eve_item.single_unit_cost,
             benef: benef,
             benef_pcent: benef_pcent,
-            batch_size: batch_size,
+            batch_size: eve_item.full_batch_size,
             volume_avg: volume_avg,
             order_count_avg: order_count_avg
           }

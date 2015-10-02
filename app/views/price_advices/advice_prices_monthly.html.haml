@@ -20,7 +20,7 @@
       %tr{ class: cycle( :odd, :even ) }
         %td=check_box_tag :dummy
         %td=item[:trade_hub]
-        %td=item[:eve_item]
+        %td= link_to( item[:eve_item], price_advices_show_item_detail_path( item[:trade_hub_id], item[:eve_item_id] ) )
         %td.cell_right_align.information_highlight_left=print_volume(item[:volume_avg])
         %td.cell_right_align.information_highlight_left=print_volume(item[:order_count_avg])
         %td.cell_right_align.information_highlight_left=print_isk(item[:cost])

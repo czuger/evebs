@@ -47,26 +47,26 @@
         %td.cell_right_align.monthly_information=print_isk(item[:monthly_low_price])
         %td.cell_right_align.monthly_information=print_isk(item[:monthly_avg_price])
 
-.order_advice_containers
-  %h2
-    Shopping list
-  %table
-    %tr
-      %th Item
-      %th Amount
-    - @item_count.each do |key, value|
-      %tr
-        %td=key
-        %td.cell_center_align=value
-
-.order_advice_containers
-  %h2
-    No concurent there
-  %table
-    %tr
-      %th Trade hub
-      %th Item
-    - @no_concurent_array.each do |item|
-      %tr
-        %td=item[:trade_hub]
-        %td=item[:eve_item]
+-#.order_advice_containers
+-#  %h2
+-#    Shopping list
+-#  %table
+-#    %tr
+-#      %th Item
+-#      %th Amount
+-#    - @item_count.each do |key, value|
+-#      %tr
+-#        %td=key
+-#        %td.cell_center_align=value
+-#
+-#.order_advice_containers
+-#  %h2
+-#    No concurent there
+-#  %table
+-#    %tr
+-#      %th Trade hub
+-#      %th Item
+-#    - @no_concurent_array.each do |item|
+-#      %tr
+-#        %td=item[:trade_hub]
+-#        %td=item[:eve_item]

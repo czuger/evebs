@@ -5,7 +5,8 @@
   = form_tag choose_items_path(@user.id), method: :put do
 
     %table{ border: true }
-      - @groups.each_pair do |key,value|
+      - @groups.keys.sort.each do |key|
+        - value = @groups[key]
         %tr.market_group
           %td{ colspan: 2 }= value[:name]
         - value[:items].each do |item|

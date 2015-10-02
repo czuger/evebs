@@ -16,10 +16,11 @@ class ChooseItemsController < ApplicationController
         @items.each do |item|
           market_group = item.market_group
           if market_group
-            @groups[market_group.id] = {} unless @groups.has_key?(market_group.id)
-            @groups[market_group.id][:name] = market_group.get_market_group_breadcrumb
-            @groups[market_group.id][:items] = [] unless @groups[market_group.id].has_key?(:items)
-            @groups[market_group.id][:items] << item
+            name = market_group.get_market_group_breadcrumb
+            @groups[name] = {} unless @groups.has_key?(name)
+            @groups[name][:name] = market_group.get_market_group_breadcrumb
+            @groups[name][:items] = [] unless @groups[name].has_key?(:items)
+            @groups[name][:items] << item
           else
             @no_groups << item
           end
