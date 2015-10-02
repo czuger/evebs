@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resource :shopping_baskets, only: [ :show ]
+
   resources :jita_margins, only: [ :index, :update ]
 
   resource :sale_records, only: [:show ] do
@@ -19,9 +21,10 @@ Rails.application.routes.draw do
     get :advice_prices
     get :advice_prices_monthly
     get :show_challenged_prices
+    post :update_basket
   end
 
-  get 'price_advices/:trade_hub_id/show_item_detail/:item_id' => 'price_advices#show_item_detail', as: 'price_advices_show_item_detail'
+  get 'price_advices/:item_id/show_item_detail/' => 'price_advices#show_item_detail', as: 'price_advices_show_item_detail'
 
   resource :choose_trade_hubs, only: [:edit, :update]
 

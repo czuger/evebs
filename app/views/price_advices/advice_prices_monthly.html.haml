@@ -18,9 +18,10 @@
 
     - @prices_array.each do |item|
       %tr{ class: cycle( :odd, :even ) }
-        %td=check_box_tag :dummy
+        -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
+        %td= shopping_basket_check_box( item )
         %td=item[:trade_hub]
-        %td= link_to( item[:eve_item], price_advices_show_item_detail_path( item[:trade_hub_id], item[:eve_item_id] ) )
+        %td= link_to( item[:eve_item], price_advices_show_item_detail_path( item[:eve_item_id] ) )
         %td.cell_right_align.information_highlight_left=print_volume(item[:volume_avg])
         %td.cell_right_align.information_highlight_left=print_volume(item[:order_count_avg])
         %td.cell_right_align.information_highlight_left=print_isk(item[:cost])

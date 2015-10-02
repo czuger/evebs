@@ -1,7 +1,11 @@
 %br
 %br
 
-%h1= "#{@item.name} (#{@item.id})"
+%h1
+  = @item.name
+  (
+  = link_to( 'Eve central quicklook', "https://eve-central.com/home/quicklook.html?typeid=#{@item.cpp_eve_item_id}", :target => '_blank' )
+  )
 
 %h2= "Item cost: #{print_isk(@item_cost)}"
 

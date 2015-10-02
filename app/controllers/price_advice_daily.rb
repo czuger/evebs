@@ -12,6 +12,7 @@ module PriceAdviceDaily
     @print_change_warning=print_change_warning
     @monthly_averages = get_montly_items_averages
     # pp @monthly_averages
+    @shopping_basket = get_shopping_basket
 
     @user.trade_hubs.each do |trade_hub|
       eve_items = @user.eve_items.to_a

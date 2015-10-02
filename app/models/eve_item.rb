@@ -32,8 +32,7 @@ class EveItem < ActiveRecord::Base
   end
 
   def single_unit_cost
-    cache_blueprint
-    (cost*(1+AVG_INDUSTRY_TAX))/@cached_blueprint.prod_qtt if @cached_blueprint
+    (cost*(1+AVG_INDUSTRY_TAX))/blueprint.prod_qtt if blueprint
   end
 
   def pcent_margin( price )
@@ -45,14 +44,9 @@ class EveItem < ActiveRecord::Base
   end
 
   def full_batch_size
-    cache_blueprint
-    @cached_blueprint.nb_runs*@cached_blueprint.prod_qtt if @cached_blueprint
+    blueprint.nb_runs*blueprint.prod_qtt if blueprint
   end
 
-  private
-  def cache_blueprint
-    @cached_blueprint = blueprint unless @cached_blueprint
-  end
   # Dead code
   #
   # def compute_min_price_for_system(system)

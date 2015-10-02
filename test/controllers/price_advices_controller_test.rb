@@ -10,7 +10,7 @@ class PriceAdvicesControllerTest < ActionController::TestCase
     @blueprint = create( :blueprint )
     @user.eve_items << @blueprint.eve_item
     create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @blueprint.eve_item, new_order: true )
-    @min_price = create( :min_price, eve_item: @blueprint.eve_item, trade_hub: @trade_hub )
+    @min_price = create( :min_price, eve_item: @blueprint.eve_item, trade_hub: @trade_hub  )
   end
 
   test "should show prices for current user" do
@@ -25,8 +25,8 @@ class PriceAdvicesControllerTest < ActionController::TestCase
   end
 
   test "should advice monthly prices" do
-    create( :crest_prices_last_month_average, region: @trade_hub.region, eve_item: @blueprint.eve_item )
-    create( :crest_prices_last_month_average, region: @trade_hub.region, eve_item: @user.eve_items.first )
+    create( :crest_prices_last_month_average, region: @trade_hub.region, eve_item: @blueprint.eve_item, avg_price_avg: 50000000 )
+    create( :crest_prices_last_month_average, region: @trade_hub.region, eve_item: @user.eve_items.first, avg_price_avg: 50000000 )
     get :advice_prices_monthly
     assert_response :success
   end

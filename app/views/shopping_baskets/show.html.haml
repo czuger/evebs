@@ -1,0 +1,16 @@
+%br
+%br
+
+%h1 Items i need to produce
+
+%table
+  %tr
+    %th
+    %th Trade hub
+    %th Item
+  - @basket.each do |basket|
+    %tr
+      %td= shopping_basket_check_box_shopping_basket( basket )
+      %td= basket.trade_hub.name
+      %td= basket.eve_item.name
+

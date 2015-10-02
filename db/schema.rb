@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150916052729) do
+ActiveRecord::Schema.define(version: 20151002143250) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -213,6 +213,18 @@ ActiveRecord::Schema.define(version: 20150916052729) do
   add_index "sale_records", ["station_id"], name: "index_sale_records_on_station_id", using: :btree
   add_index "sale_records", ["user_id"], name: "index_sale_records_on_user_id", using: :btree
 
+  create_table "shopping_baskets", force: :cascade do |t|
+    t.integer  "user_id",      null: false
+    t.integer  "trade_hub_id", null: false
+    t.integer  "eve_item_id",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "shopping_baskets", ["eve_item_id"], name: "index_shopping_baskets_on_eve_item_id", using: :btree
+  add_index "shopping_baskets", ["trade_hub_id"], name: "index_shopping_baskets_on_trade_hub_id", using: :btree
+  add_index "shopping_baskets", ["user_id"], name: "index_shopping_baskets_on_user_id", using: :btree
+
   create_table "stations", force: :cascade do |t|
     t.integer  "trade_hub_id"
     t.string   "name"
@@ -280,5 +292,8 @@ ActiveRecord::Schema.define(version: 20150916052729) do
   add_foreign_key "crest_prices_last_month_averages", "eve_items"
   add_foreign_key "crest_prices_last_month_averages", "regions"
   add_foreign_key "eve_items", "market_groups"
+  add_foreign_key "shopping_baskets", "eve_items"
+  add_foreign_key "shopping_baskets", "trade_hubs"
+  add_foreign_key "shopping_baskets", "users"
   add_foreign_key "trade_hubs", "regions"
 end

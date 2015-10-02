@@ -5,13 +5,16 @@ module PriceAdviceMonthly
     @prices_array = []
     @item_count = {}
     @monthly_averages = get_montly_items_averages
+    @shopping_basket = get_shopping_basket
     # pp @monthly_averages
+
+    user_eve_items = @user.eve_items.includes( :blueprint )
 
     @user.trade_hubs.each do |trade_hub|
 
-      eve_items = @user.eve_items
+      eve_items = user_eve_items
       if @user.remove_occuped_places
-        eve_items = eve_items.where.not( id: trade_hub.get_selling_eve_items_ids( @user ) )
+        eve_items = user_eve_items.where.not( id: trade_hub.get_selling_eve_items_ids( @user ) )
       end
 
       eve_items.find_each do |eve_item|
@@ -24,8 +27,8 @@ module PriceAdviceMonthly
           order_count_avg = @monthly_averages[region_item_key].order_count_avg
         end
 
-        if avg_price
-          benef = eve_item.margin( avg_price )
+        if eve_item && avg_price
+          benef = eve_item.margin( avg_price ) * eve_item.full_batch_size
           benef_pcent = eve_item.pcent_margin( avg_price )
         end
 
@@ -56,9 +59,9 @@ module PriceAdviceMonthly
         end
       end
     end
-
     @prices_array.sort_by!{ |h| (h[:benef] ? h[:benef] : -Float::INFINITY) }
     @prices_array.reverse!
+
   end
 
 end

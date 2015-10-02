@@ -6,6 +6,7 @@ class PriceAdvicesController < ApplicationController
 
   include PriceAdviceMonthly
   include PriceAdviceDaily
+  include ShoppingBasketsModule
 
   def show_challenged_prices
 
@@ -26,7 +27,8 @@ class PriceAdvicesController < ApplicationController
 
       @compared_prices << {
           trade_hub_name: to.trade_hub.name, eve_item_name: to.eve_item.name, my_price: to.price,
-          min_price: min_price, cost: cost, margin_pcent: margin_pcent
+          min_price: min_price, cost: cost, margin_pcent: margin_pcent, eve_item_id: to.eve_item_id,
+          eve_item_cpp_id: to.eve_item.cpp_eve_item_id
       }
     end
 
@@ -68,7 +70,22 @@ class PriceAdvicesController < ApplicationController
     end
   end
 
+  def update_basket
+    user_id, trade_hub_id, eve_item_id = params[:item_code].split('|')
+    checked = params[:checked] == 'true'
+
+    if checked
+      unless ShoppingBasket.find_by_user_id_and_trade_hub_id_and_eve_item_id( user_id, trade_hub_id, eve_item_id )
+        ShoppingBasket.create!( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
+      end
+    else
+      sb = ShoppingBasket.delete_all( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
+    end
+    render nothing: true
+  end
+
   private
+
   def print_change_warning
     lcic = @user.last_changes_in_choices || Time.new(0)
     last_check = Time.now.beginning_of_hour
@@ -78,9 +95,11 @@ class PriceAdvicesController < ApplicationController
     end
     nil
   end
+
   def get_montly_items_averages
     datas = CrestPricesLastMonthAverage.where( eve_item_id: @user.eve_items, region_id: @user.regions.pluck(:id) ).to_a
     Hash[datas.map{ |e| [[[e.region_id],[e.eve_item_id]],e]}]
   end
+
 end
 
