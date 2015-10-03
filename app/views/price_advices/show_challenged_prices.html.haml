@@ -16,13 +16,14 @@
     - @compared_prices.each do |cp|
       %tr{ class: cycle( :odd, :even ) }
         %td=cp[:trade_hub_name]
-        %td
-          %span.in-game-link{ onclick: "CCPEVE.showMarketDetails( #{cp[:eve_item_cpp_id]} )" }
-            = cp[:eve_item_name]
+        %td=cp[:eve_item_name]
         %td.cell_right_align=print_isk( cp[:cost] )
         %td.cell_right_align=print_isk( cp[:min_price] )
         %td.cell_right_align=print_pcent( cp[:margin_pcent] )
         %td.cell_right_align=print_isk( cp[:my_price] )
         %td.cell_right_align
           = print_isk( ( cp[:min_price] - cp[:my_price] ) ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
+        %td
+          %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})" }
+            Show Market Details
 
