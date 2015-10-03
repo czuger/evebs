@@ -1,6 +1,8 @@
 -##print_change_warning
 -#  = @print_change_warning
 
+= ENV['HTTP_EVE_TRUSTED'].inspect
+
 .order_advice_containers
   %h2
     My orders status
@@ -24,6 +26,6 @@
         %td.cell_right_align
           = print_isk( ( cp[:min_price] - cp[:my_price] ) ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
         %td
-          %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})" }
+          %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})" }
             Show Market Details
 
