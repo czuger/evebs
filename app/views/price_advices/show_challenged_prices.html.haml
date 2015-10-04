@@ -18,7 +18,7 @@
     - @compared_prices.each do |cp|
       %tr{ class: cycle( :odd, :even ) }
         %td=cp[:trade_hub_name]
-        %td= link_to( item[:eve_item_name], price_advices_show_item_detail_path( item[:eve_item_id] ) )
+        %td= link_to( cp[:eve_item_name], price_advices_show_item_detail_path( cp[:eve_item_id] ) )
         %td.cell_right_align=print_isk( cp[:cost] )
         %td.cell_right_align=print_isk( cp[:min_price] )
         %td.cell_right_align=print_pcent( cp[:margin_pcent] )
