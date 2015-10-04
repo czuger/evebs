@@ -28,7 +28,7 @@ class PriceAdvicesController < ApplicationController
       @compared_prices << {
           trade_hub_name: to.trade_hub.name, eve_item_name: to.eve_item.name, my_price: to.price,
           min_price: min_price, cost: cost, margin_pcent: margin_pcent, eve_item_id: to.eve_item_id,
-          eve_item_cpp_id: to.eve_item.cpp_eve_item_id
+          eve_item_cpp_id: to.eve_item.cpp_eve_item_id, trade_hub_cpp_id: to.trade_hub.eve_system_id
       }
     end
 
