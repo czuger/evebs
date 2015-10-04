@@ -13,7 +13,7 @@ class PriceAdvicesController < ApplicationController
     @user = current_user
     @print_change_warning=print_change_warning
 
-    @trade_orders = @user.trade_orders
+    @trade_orders = @user.trade_orders.includes( { eve_item: :blueprint }, :trade_hub )
     @compared_prices = []
 
     @trade_orders.each do |to|
@@ -30,6 +30,10 @@ class PriceAdvicesController < ApplicationController
           min_price: min_price, cost: cost, margin_pcent: margin_pcent, eve_item_id: to.eve_item_id,
           eve_item_cpp_id: to.eve_item.cpp_eve_item_id, trade_hub_cpp_id: to.trade_hub.eve_system_id
       }
+
+      set_trade_hubs( to.trade_hub.name )
+      set_items( to.eve_item.name )
+
     end
 
     @compared_prices = @compared_prices.sort_by{ |e| [e[:trade_hub_name], e[:eve_item_name]] }
@@ -99,6 +103,18 @@ class PriceAdvicesController < ApplicationController
   def get_montly_items_averages
     datas = CrestPricesLastMonthAverage.where( eve_item_id: @user.eve_items, region_id: @user.regions.pluck(:id) ).to_a
     Hash[datas.map{ |e| [[[e.region_id],[e.eve_item_id]],e]}]
+  end
+
+  def set_trade_hubs( trade_hub_name )
+    @trade_hubs_names = [] unless @trade_hubs_names
+    @trade_hubs_names << trade_hub_name unless @trade_hubs_names.include?( trade_hub_name )
+    @trade_hubs_names.sort!
+  end
+
+  def set_items( item_name )
+    @item_names = [] unless @item_names
+    @item_names << item_name unless @item_names.include?( item_name )
+    @item_names.sort!
   end
 
 end

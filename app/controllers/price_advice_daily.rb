@@ -15,6 +15,9 @@ module PriceAdviceDaily
     @shopping_basket = get_shopping_basket
 
     @user.trade_hubs.each do |trade_hub|
+
+      set_trade_hubs( trade_hub.name )
+
       eve_items = @user.eve_items.to_a
 
       eve_items.reject!{ |i| @fullfilled_orders.include?([trade_hub.id,i.id]) } if @user.remove_occuped_places
@@ -41,6 +44,10 @@ module PriceAdviceDaily
           end
 
           if record_ok_for_user
+
+            set_trade_hubs( trade_hub.name )
+            set_items( min_price_item.eve_item.name )
+
             @item_count[min_price_item.eve_item.name]+=1 if @item_count.has_key?( min_price_item.eve_item.name )
             @item_count[min_price_item.eve_item.name]=1 unless @item_count.has_key?( min_price_item.eve_item.name )
 
@@ -86,6 +93,7 @@ module PriceAdviceDaily
 
     @prices_array.sort_by!{ |h| h[:benef] }
     @prices_array.reverse!
+
   end
 
 end

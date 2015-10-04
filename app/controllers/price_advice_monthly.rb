@@ -18,6 +18,7 @@ module PriceAdviceMonthly
       end
 
       eve_items.find_each do |eve_item|
+
         region_item_key = [[trade_hub.region_id],[eve_item.id]]
 
         avg_price = volume_avg = order_count_avg = benef = benef_pcent = nil
@@ -41,6 +42,10 @@ module PriceAdviceMonthly
         end
 
         if record_ok_for_user
+
+          set_trade_hubs( trade_hub.name )
+          set_items( eve_item.name )
+
           price_record = {
             trade_hub: trade_hub.name,
             eve_item: eve_item.name,

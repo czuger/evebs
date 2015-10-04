@@ -9,7 +9,7 @@ class ChooseItemsController < ApplicationController
   def edit
     if current_user
       @user = current_user
-      @items = @user.eve_items.order(:name)
+      @items = @user.eve_items.includes(:market_group).order(:name)
       @groups = {}
       @no_groups = []
       if @items && !@items.empty?

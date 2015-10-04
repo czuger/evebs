@@ -18,7 +18,7 @@
     %th Avg price
     %th Monthly volume
   - @final_array.each do |line|
-    %tr
+    %tr{ class: cycle( :odd, :even ) }
       %td.cell_left_align=line[:trade_hub]
       %td.cell_right_align=print_pcent(line[:min_price_margin])
       %td.cell_right_align=print_isk(line[:min_price])
