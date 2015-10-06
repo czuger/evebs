@@ -72,6 +72,10 @@ class PriceAdvicesController < ApplicationController
         volume: (avg_prices_hash[trade_hub.id].volume_sum if avg_prices_hash[trade_hub.id])
       }
     end
+
+    @final_array.sort_by!{ |e| e[:volume] }
+    @final_array.reverse!
+
   end
 
   def update_basket

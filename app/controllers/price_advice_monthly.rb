@@ -3,7 +3,6 @@ module PriceAdviceMonthly
   def advice_prices_monthly
     @user = current_user
     @prices_array = []
-    @item_count = {}
     @monthly_averages = get_montly_items_averages
     @shopping_basket = get_shopping_basket
     # pp @monthly_averages
@@ -25,6 +24,7 @@ module PriceAdviceMonthly
         if @monthly_averages && @monthly_averages[region_item_key]
           avg_price = @monthly_averages[region_item_key].avg_price_avg
           volume_avg = @monthly_averages[region_item_key].volume_avg
+          volume_sum = @monthly_averages[region_item_key].volume_sum
           order_count_avg = @monthly_averages[region_item_key].order_count_avg
         end
 
@@ -57,6 +57,7 @@ module PriceAdviceMonthly
             benef_pcent: benef_pcent,
             batch_size: eve_item.full_batch_size,
             volume_avg: volume_avg,
+            monthly_amount: volume_sum,
             order_count_avg: order_count_avg
           }
 

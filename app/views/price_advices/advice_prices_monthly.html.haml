@@ -30,7 +30,7 @@
         %td= shopping_basket_check_box( item )
         %td.trade_hub_name=item[:trade_hub]
         %td.item_name= link_to( item[:eve_item], price_advices_show_item_detail_path( item[:eve_item_id] ) )
-        %td.cell_right_align.information_highlight_left=print_volume(item[:volume_avg])
+        %td.cell_right_align.information_highlight_left=print_volume(item[:monthly_amount])
         %td.cell_right_align.information_highlight_left=print_volume(item[:order_count_avg])
         %td.cell_right_align.information_highlight_left=print_isk(item[:cost])
         %td.cell_right_align.information_highlight_left=print_isk(item[:avg_price])
