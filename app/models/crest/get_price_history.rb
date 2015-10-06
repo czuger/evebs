@@ -5,8 +5,26 @@ require 'pp'
 class Crest::GetPriceHistory
 
   include Crest::CrestBase
+  
+  MAIN_TRADE_REGIONS = { 10000002 => 'The Forge	', 10000032 => 'Sinq Laison	', 10000043 => 'Domain	', 10000030 => 'Heimatar	', 10000042 => 'Metropolis	' }
 
-  UPDATED_REGIONS = [ 10000043, 10000064, 10000030, 10000042, 10000028, 10000002, 10000032 ]
+  LESSER_TRADE_REGIONS = { 10000069 => 'Black Rise	', 10000012 => 'Curse	', 10000036 => 'Devoid	',
+    10000064 => 'Essence	', 10000058 => 'Fountain	', 10000067 => 'Genesis	', 10000049 => 'Khanid	', 10000065 => 'Kor-Azor	',
+    10000016 => 'Lonetrek	', 10000028 => 'Molden Heath	', 10000048 => 'Placid	', 10000047 => 'Providence	' }
+
+  MARGINAL_TRADE_REGIONS = { 10000055 => 'Branch	', 10000007 => 'Cache	', 10000014 => 'Catch	', 10000051 => 'Cloud Ring	',
+    10000053 => 'Cobalt Edge	', 10000054 => 'Aridia	', 10000035 => 'Deklein	', 10000060 => 'Delve	', 10000001 => 'Derelik	',
+    10000005 => 'Detorid	', 10000039 => 'Esoteria	', 10000027 => 'Etherium Reach	', 10000037 => 'Everyshore	',
+    10000046 => 'Fade	', 10000056 => 'Feythabolis	', 10000029 => 'Geminate	', 10000011 => 'Great Wildlands	',
+    10000025 => 'Immensea	', 10000031 => 'Impass	', 10000009 => 'Insmother	', 10000052 => 'Kador	', 10000013 => 'Malpais	',
+    10000040 => 'Oasa	', 10000062 => 'Omist	', 10000021 => 'Outer Passage	', 10000057 => 'Outer Ring	', 10000059 => 'Paragon Soul	',
+    10000063 => 'Period Basis	', 10000066 => 'Perrigen Falls	', 10000023 => 'Pure Blind	', 10000050 => 'Querious	' }
+
+  UNKNOWN_TRADE_REGIONS = { 10000019=>nil, 11000001=>nil, 11000002=>nil, 11000003=>nil, 11000004=>nil, 11000005=>nil,
+    11000006=>nil, 11000007=>nil, 11000008=>nil, 11000009=>nil, 11000010=>nil, 11000011=>nil, 11000012=>nil, 11000013=>nil,
+    11000014=>nil, 11000015=>nil, 11000016=>nil, 11000017=>nil, 11000018=>nil, 11000019=>nil, 11000020=>nil, 11000021=>nil,
+    11000022=>nil, 11000023=>nil, 11000024=>nil, 11000025=>nil, 11000026=>nil, 11000027=>nil, 11000028=>nil, 11000029=>nil,
+    11000030=>nil, 11000031=>nil, 11000032=>nil, 10000017=>nil, 11000033=>nil }
 
   # TODO : there are trade hub that have no regions : take care of that - protect region access
 
@@ -46,9 +64,9 @@ class Crest::GetPriceHistory
     Crest::ComputePriceHistoryAvg.new
   end
 
-  def full_update()
+  def regionset_update( region_set )
     eve_item_ids_involved_in_blueprints = EveItem.where( involved_in_blueprint: true ).pluck( :id, :cpp_eve_item_id )
-    Region.where( cpp_region_id: UPDATED_REGIONS ).each do |region|
+    Region.where( cpp_region_id: region_set.keys ).each do |region|
       puts "About to retrieve price history for #{region.name}"
       if @low_level_transactions
         get_region_history( region, eve_item_ids_involved_in_blueprints )
