@@ -28,7 +28,7 @@ module PriceAdviceDaily
 
           eve_item = min_price_item.eve_item
 
-          if eve_item && eve_item.min_price
+          if eve_item
             benef = eve_item.margin( eve_item.min_price ) * eve_item.full_batch_size
             benef_pcent = eve_item.pcent_margin( eve_item.min_price )
           end
