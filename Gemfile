@@ -54,7 +54,7 @@ gem 'unicorn'
 gem 'time_diff'
 
 gem 'bootstrap-tooltip-rails'
-gem 'awesome_nested_set'
+# gem 'awesome_nested_set'
 
 gem 'will_paginate', '~> 3.0.6'
 
