@@ -29,12 +29,12 @@ module PriceAdviceDaily
           eve_item = min_price_item.eve_item
 
           if eve_item
-            benef = eve_item.margin( eve_item.min_price ) * eve_item.full_batch_size
-            benef_pcent = eve_item.pcent_margin( eve_item.min_price )
+            benef = eve_item.margin( min_price_item.min_price ) * eve_item.full_batch_size
+            benef_pcent = eve_item.pcent_margin( min_price_item.min_price )
           end
 
           record_ok_for_user = true
-          if @user.min_pcent_for_advice && benef_pcent < @user.min_pcent_for_advice
+          if @user.min_pcent_for_advice && benef_pcent < @user.min_pcent_for_advice/100.0
             record_ok_for_user = false
           end
           if @user.min_amount_for_advice && benef < @user.min_amount_for_advice
@@ -62,8 +62,8 @@ module PriceAdviceDaily
               trade_hub: trade_hub.name,
               eve_item: eve_item.name,
               trade_hub_id: trade_hub.id,
-              eve_item_id: eve_item_id,
-              min_price: eve_item.min_price,
+              eve_item_id: eve_item.id,
+              min_price: min_price_item.min_price,
               cost: eve_item.single_unit_cost,
               benef: benef,
               benef_pcent: benef_pcent,
