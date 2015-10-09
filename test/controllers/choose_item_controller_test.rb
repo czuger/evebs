@@ -35,8 +35,8 @@ class ChooseItemsControllerTest < ActionController::TestCase
   end
 
   test "should add only one item if one is selected" do
-    @new_item = create( :eve_item )
-    session[ :selected_items ] = [ @new_item.id ]
+    @item = create( :dummy_eve_item )
+    session[ :selected_items ] = [ @item.id ]
     assert_difference '@user.eve_items.count' do
       get :create
     end
@@ -44,16 +44,12 @@ class ChooseItemsControllerTest < ActionController::TestCase
   end
 
   test "should remove one item as we keep only the new" do
-    @new_item = create( :eve_item )
-    @user.eve_items << @new_item
-    get :update, items_to_keep: [@new_item.id]
+    get :update, items_to_keep: [@item.id]
     assert_equal 1, @user.eve_items.count
     assert_redirected_to edit_choose_items_path
   end
 
   test "should remove all item" do
-    @new_item = create( :eve_item )
-    @user.eve_items << @new_item
     get :update, remove_all_items: nil
     assert_equal 0, @user.eve_items.count
     assert_redirected_to edit_choose_items_path

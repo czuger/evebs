@@ -11,10 +11,11 @@ FactoryGirl.define do
         pator = create( :rens, region: region )
         rens = create( :pator, region: region )
 
-        inferno = create( :inferno_fury_cruise_missile )
-        mjolnir = create( :mjolnir_fury_cruise_missile )
+        blueprint_and_market_group = create( :inferno_fury_cruise_missile )
+        blueprint_but_no_market_group = create( :mjolnir_fury_cruise_missile )
+        no_market_group_and_no_blueprint = create( :inferno_precision_cruise_missile )
 
-        [ inferno, mjolnir ].each do |item|
+        [ blueprint_and_market_group, blueprint_but_no_market_group, no_market_group_and_no_blueprint ].each do |item|
 
           [ pator, rens ].each do |trade_hub|
             create( :min_price, trade_hub: trade_hub, eve_item: item )

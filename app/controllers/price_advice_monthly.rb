@@ -29,7 +29,9 @@ module PriceAdviceMonthly
         end
 
         if eve_item && avg_price
-          benef = eve_item.margin( avg_price ) * eve_item.full_batch_size
+          full_batch_size = eve_item.full_batch_size
+          margin = eve_item.margin( avg_price )
+          benef = ( full_batch_size * margin if full_batch_size && margin )
           benef_pcent = eve_item.pcent_margin( avg_price )
         end
 

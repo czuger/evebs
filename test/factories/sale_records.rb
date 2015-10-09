@@ -3,7 +3,7 @@ FactoryGirl.define do
 
     user
     eve_client
-    eve_item
+    eve_item { create( :inferno_fury_cruise_missile ) }
     station
 
     eve_transaction_key "MyString"
