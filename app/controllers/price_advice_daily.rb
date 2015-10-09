@@ -80,18 +80,6 @@ module PriceAdviceDaily
 
             @prices_array << price_record
           end
-        else
-          @prices_array << {
-            trade_hub: trade_hub.name,
-            eve_item: min_price_item.eve_item.name,
-            eve_item_id: eve_item.id,
-            trade_hub_id: trade_hub.id,
-            min_price: nil,
-            cost: nil,
-            benef: nil,
-            benef_pcent: nil,
-            batch_size: nil
-          }
         end
       end
       no_orders_items = eve_items - min_price_items.map{ |mpi| mpi.eve_item }
