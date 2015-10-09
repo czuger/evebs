@@ -7,31 +7,24 @@ class ChooseItemsController < ApplicationController
   before_action :require_logged_in!
 
   def edit
-    if current_user
-      @user = current_user
-      @items = @user.eve_items.includes(:market_group).order(:name)
-      @groups = {}
-      @no_groups = []
-      if @items && !@items.empty?
-        @items.each do |item|
-          market_group = item.market_group
-          if market_group
-            name = market_group.get_market_group_breadcrumb
-            @groups[name] = {} unless @groups.has_key?(name)
-            @groups[name][:name] = market_group.get_market_group_breadcrumb
-            @groups[name][:items] = [] unless @groups[name].has_key?(:items)
-            @groups[name][:items] << item
-          else
-            @no_groups << item
-          end
+    @user = current_user
+    @items = @user.eve_items.includes(:market_group).order(:name)
+    @groups = {}
+    @no_groups = []
+    if @items && !@items.empty?
+      @items.each do |item|
+        market_group = item.market_group
+        if market_group
+          name = market_group.get_market_group_breadcrumb
+          @groups[name] = {} unless @groups.has_key?(name)
+          @groups[name][:name] = market_group.get_market_group_breadcrumb
+          @groups[name][:items] = [] unless @groups[name].has_key?(:items)
+          @groups[name][:items] << item
+        else
+          @no_groups << item
         end
       end
-
-      # @per_group_count = (@items.length/4.0).ceil
-    else
-      redirect_to new_sessions_path
     end
-
   end
 
   def new

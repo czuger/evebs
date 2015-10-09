@@ -20,6 +20,7 @@ FactoryGirl.define do
       name_lowcase "inferno fury cruise missile"
       cost 1815252.83
       blueprint {FactoryGirl.create( :inferno_fury_cruise_blueprint )}
+      market_group {FactoryGirl.create( :advanced_high_damage_cruise_missiles_market_group )}
     end
     factory :mjolnir_fury_cruise_missile do
       cpp_eve_item_id 24535

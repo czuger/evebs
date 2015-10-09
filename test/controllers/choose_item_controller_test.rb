@@ -5,8 +5,8 @@ class ChooseItemsControllerTest < ActionController::TestCase
   setup do
     @user = create( :user )
     session[:user_id] = @user.id
-    @item = create( :eve_item )
-    @user.eve_items << @item
+    @item = @user.eve_items.first
+    @user.eve_items << create( :inferno_precision_cruise_missile )
   end
 
   test "should get edit" do
@@ -16,8 +16,14 @@ class ChooseItemsControllerTest < ActionController::TestCase
 
   test "should redirect to new session path if not logged in" do
     session[:user_id] = nil
+    assigns[:current_user] = nil
     get :edit
     assert_redirected_to new_sessions_path
+  end
+
+  test "should get new" do
+    get :new
+    assert_response :success
   end
 
   test "should add to the choosed items if the item does not already exist " do
@@ -45,6 +51,14 @@ class ChooseItemsControllerTest < ActionController::TestCase
     assert_redirected_to edit_choose_items_path
   end
 
+  test "should remove all item" do
+    @new_item = create( :eve_item )
+    @user.eve_items << @new_item
+    get :update, remove_all_items: nil
+    assert_equal 0, @user.eve_items.count
+    assert_redirected_to edit_choose_items_path
+  end
+
   test "should not add to the choosed items if the item already exist " do
     session[ :selected_items ] = [ @item.id ]
     assert_no_difference '@user.reload.eve_items.count' do
@@ -54,7 +68,7 @@ class ChooseItemsControllerTest < ActionController::TestCase
   end
 
   test "should return an autocomplete set of items" do
-    r = get :autocomplete_eve_item_name_lowcase, term: 'item'
+    r = get :autocomplete_eve_item_name_lowcase, term: 'inferno'
     assert_response :success
     assert_includes session[:selected_items], @item.id
   end
