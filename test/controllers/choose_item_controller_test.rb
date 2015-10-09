@@ -3,10 +3,10 @@ require 'test_helper'
 class ChooseItemsControllerTest < ActionController::TestCase
 
   setup do
-    @user = create( :user )
+    @heimatar = create( :heimatar )
+    @user = create( :user, last_changes_in_choices: Time.now - 120, region: @heimatar )
     session[:user_id] = @user.id
-    @item = @user.eve_items.first
-    @user.eve_items << create( :inferno_precision_cruise_missile )
+    @item = EveItem.find_by_cpp_eve_item_id( 2621 )
   end
 
   test "should get edit" do
@@ -27,7 +27,7 @@ class ChooseItemsControllerTest < ActionController::TestCase
   end
 
   test "should add to the choosed items if the item does not already exist " do
-    @new_item = create( :eve_item )
+    @new_item = create( :inferno_precision_cruise_missile )
     assert_difference '@user.eve_items.count' do
       get :create, choosen_item: @new_item.id
     end

@@ -73,7 +73,7 @@ class PriceAdvicesController < ApplicationController
       }
     end
 
-    @final_array.sort_by!{ |e| e[:volume] }
+    @final_array.sort_by!{ |e| nvl( e[:volume] ) }
     @final_array.reverse!
 
   end
@@ -121,5 +121,9 @@ class PriceAdvicesController < ApplicationController
     @item_names.sort!
   end
 
+  # If a number does not exist : then assigns it to minus infinity
+  def nvl( number )
+    number ? number : -Float::INFINITY
+  end
 end
 
