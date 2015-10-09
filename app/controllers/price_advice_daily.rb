@@ -84,11 +84,11 @@ module PriceAdviceDaily
           @prices_array << {
             trade_hub: trade_hub.name,
             eve_item: min_price_item.eve_item.name,
-            min_price: 'NA',
-            cost: 'NA',
-            benef: 'NA',
-            benef_pcent: 'NA',
-            batch_size: 'NA'
+            min_price: nil,
+            cost: nil,
+            benef: nil,
+            benef_pcent: nil,
+            batch_size: nil
           }
         end
       end
