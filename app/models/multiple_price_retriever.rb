@@ -4,8 +4,8 @@ module MultiplePriceRetriever
 
   def get_prices( eve_system_id, item_ids, price_kind = 'min' )
 
-    # Refresh the eve central API cache each 4 hours
-    if File.exist?( EVE_CENTRAL_FILE_NAME ) && Time.now - File.ctime( EVE_CENTRAL_FILE_NAME ) > (3600)
+    # Refresh the eve central API cache each 1 hours
+    if File.exist?( EVE_CENTRAL_FILE_NAME ) && Time.now - File.ctime( EVE_CENTRAL_FILE_NAME ) >= (3600-(60*5))
       `rm -r tmp/api.eve-central.com`
     end
 
