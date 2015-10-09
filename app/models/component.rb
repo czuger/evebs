@@ -29,11 +29,16 @@ class Component < ActiveRecord::Base
 
     Component.all.each do |component|
       component_as_eve_item = EveItem.find_by_cpp_eve_item_id( component.cpp_eve_item_id )
-      price_set = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita_region.id, component_as_eve_item.id )
-      if price_set
-        puts "Updating component price for #{component_as_eve_item.name}"
-        component.update_attribute( :cost, price_set.avg_price_avg )
+      if component_as_eve_item
+        price_set = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita_region.id, component_as_eve_item.id )
+        if price_set
+          puts "Updating component price for #{component_as_eve_item.name}"
+          component.update_attribute( :cost, price_set.avg_price_avg )
+        end
+      else
+        puts "Unable to find EveItem for #{component_as_eve_item.inspect}"
       end
+
     end
 
   end
