@@ -96,7 +96,7 @@ module PriceAdviceDaily
       @no_concurent_array += no_orders_items.map{ |noi| { trade_hub: trade_hub.name, eve_item: noi.name } }
     end
 
-    @prices_array.sort_by!{ |h| h[:benef] }
+    @prices_array.sort_by!{ |h| nvl( h[:benef] ) }
     @prices_array.reverse!
 
   end
