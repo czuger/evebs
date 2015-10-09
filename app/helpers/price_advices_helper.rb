@@ -44,7 +44,7 @@ module PriceAdvicesHelper
       when :isk
         number_to_currency(amount.round(1), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
       when :pcent
-        "#{amount} %"
+        "#{(amount * 100).round(1)} %"
       else
 
     end

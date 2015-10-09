@@ -4,9 +4,16 @@ class PriceAdvicesController < ApplicationController
 
   before_action :require_logged_in!
 
-  include PriceAdviceMonthly
-  include PriceAdviceDaily
+  include PriceAdvicesMarginModule
   include ShoppingBasketsModule
+
+  def advice_prices_monthly
+    advice_prices_margins( :monthly )
+  end
+
+  def advice_prices
+    advice_prices_margins( :daily )
+  end
 
   def show_challenged_prices
 
