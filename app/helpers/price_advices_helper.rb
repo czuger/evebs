@@ -19,35 +19,34 @@ module PriceAdvicesHelper
 
 
   def print_pcent(pcent)
-    if pcent
-      pcent = (pcent*100).round(1)
-      "#{pcent} %"
-    else
-      'N/A'
-    end
+    protected_print_routine( pcent, :pcent )
   end
 
   def print_isk(amount)
-    if amount
-      if amount.class != String
-        number_to_currency(amount.round(1), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
-      else
-        amount
-      end
-    else
-      'N/A'
-    end
+    protected_print_routine( amount, :isk )
   end
 
   def print_volume(amount)
-    if amount
-      if amount.class != String
+    protected_print_routine( amount, :volume )
+  end
+
+  private
+
+  def protected_print_routine( amount, kind )
+    raise "#{self.class}##{__method__} : amount should not be String" if amount.class == String
+    amount ? print_routine( amount, kind ) : 'N/A'
+  end
+
+  def print_routine( amount, kind )
+    case kind
+      when :volume
         number_with_delimiter(amount, separator: ",", delimiter: " ",)
+      when :isk
+        number_to_currency(amount.round(1), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
+      when :pcent
+        "#{amount} %"
       else
-        amount
-      end
-    else
-      'N/A'
+
     end
   end
 
