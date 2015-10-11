@@ -17,11 +17,17 @@
     %th Avg margin
     %th Avg price
     %th Monthly regional volume
-  - @final_array.each do |line|
-    %tr{ class: cycle( :odd, :even ) }
-      %td.cell_left_align=line[:trade_hub]
-      %td.cell_right_align=print_pcent(line[:min_price_margin])
-      %td.cell_right_align=print_isk(line[:min_price])
-      %td.cell_right_align=print_pcent(line[:avg_price_margin])
-      %td.cell_right_align=print_isk(line[:avg_price])
-      %td.cell_right_align=print_volume(line[:volume])
+    - @region_array_sorted_keys.each do |cp|
+      - region_array_data = @region_array[ cp[ 1 ] ][ :region_data ]
+      - trade_hubs = @region_array[ cp[ 1 ] ][ :trades_hubs_data ]
+      - region_printed = false
+      - trade_hubs.each do |trade_hub|
+        %tr{ class: cycle( :odd, :even ) }
+          %td= trade_hub[ :trade_hub ]
+          %td.cell_right_align= print_pcent( trade_hub[ :min_price_margin ] )
+          %td.cell_right_align= print_isk( trade_hub[ :min_price ] )
+          - unless region_printed
+            %td.cell_right_align{ rowspan: trade_hubs.count }= print_pcent( region_array_data[ :avg_price_margin ] )
+            %td.cell_right_align{ rowspan: trade_hubs.count }= print_isk( region_array_data[ :avg_price ] )
+            %td.cell_right_align{ rowspan: trade_hubs.count }= print_volume( region_array_data[ :volume ] )
+            - region_printed = true
