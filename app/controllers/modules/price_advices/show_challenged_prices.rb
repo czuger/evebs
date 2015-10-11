@@ -1,4 +1,4 @@
-class Modules::PriceAdvices::ShowChallengedPrices
+module Modules::PriceAdvices::ShowChallengedPrices
 
   def show_challenged_prices
 

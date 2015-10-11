@@ -1,4 +1,4 @@
-class Modules::PriceAdvices::ShowItemDetail
+module Modules::PriceAdvices::ShowItemDetail
 
   def show_item_detail
     @item = EveItem.find( params[ :item_id ] )
