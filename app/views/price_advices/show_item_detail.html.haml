@@ -22,12 +22,13 @@
       - trade_hubs = @region_array[ cp[ 1 ] ][ :trades_hubs_data ]
       - region_printed = false
       - trade_hubs.each do |trade_hub|
-        %tr{ class: cycle( :odd, :even ) }
-          %td= trade_hub[ :trade_hub ]
-          %td.cell_right_align= print_pcent( trade_hub[ :min_price_margin ] )
-          %td.cell_right_align= print_isk( trade_hub[ :min_price ] )
+        - row_class = cycle( :odd, :even )
+        %tr
+          %td{ class: [ row_class, :boxed_cell_left ] }= trade_hub[ :trade_hub ]
+          %td{ class: [ row_class, :cell_right_align, :boxed_cell_middle ] }= print_pcent( trade_hub[ :min_price_margin ] )
+          %td{ class: [ row_class, :cell_right_align, :boxed_cell_right  ] }= print_isk( trade_hub[ :min_price ] )
           - unless region_printed
-            %td.cell_right_align{ rowspan: trade_hubs.count }= print_pcent( region_array_data[ :avg_price_margin ] )
-            %td.cell_right_align{ rowspan: trade_hubs.count }= print_isk( region_array_data[ :avg_price ] )
-            %td.cell_right_align{ rowspan: trade_hubs.count }= print_volume( region_array_data[ :volume ] )
+            %td.cell_right_align.boxed_cell_left{ rowspan: trade_hubs.count }= print_pcent( region_array_data[ :avg_price_margin ] )
+            %td.cell_right_align.boxed_cell_middle{ rowspan: trade_hubs.count }= print_isk( region_array_data[ :avg_price ] )
+            %td.cell_right_align.boxed_cell_right{ rowspan: trade_hubs.count }= print_volume( region_array_data[ :volume ] )
             - region_printed = true
