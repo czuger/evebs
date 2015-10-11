@@ -1,4 +1,4 @@
-module PriceAdvicesMarginModule
+module Modules::PriceAdvices::MarginModule
 
   def advice_prices_margins( margin_type )
 
