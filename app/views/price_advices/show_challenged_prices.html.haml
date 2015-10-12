@@ -21,6 +21,7 @@
       %th Min price margin
       %th My price
       %th Diff
+      %th{ colspan: 2 }
     - @compared_prices.each do |cp|
       %tr{ class: cycle( :odd, :even ) }
         %td.trade_hub_name=cp[:trade_hub_name]
