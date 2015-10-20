@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
 
+  resource :help, only: [] do
+    get :items
+    get :add_item
+  end
+
   resource :shopping_baskets, only: [ :show ]
 
   resources :jita_margins, only: [ :index, :update ]
