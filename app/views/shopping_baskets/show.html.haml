@@ -1,16 +1,16 @@
-%br
-%br
+.order_advice_containers
 
-%h1 Items i need to produce
+  %h2
+    My selected (trade hubs/items)
 
-%table
-  %tr
-    %th
-    %th Trade hub
-    %th Item
-  - @basket.each do |basket|
+  %table
     %tr
-      %td= shopping_basket_check_box_shopping_basket( basket )
-      %td= basket.trade_hub.name
-      %td= basket.eve_item.name
+      %th
+      %th Trade hub
+      %th Item
+    - @basket.each do |basket|
+      %tr{ class: cycle( :odd, :even ) }
+        %td= shopping_basket_check_box_shopping_basket( basket )
+        %td= basket.trade_hub.name
+        %td= basket.eve_item.name
 

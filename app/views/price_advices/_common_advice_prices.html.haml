@@ -1,14 +1,14 @@
 .order_advice_containers
 
   - if @trade_hubs_names && @item_names
-    Trade hubs
-    = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'} )
-    %br
-    Items
-    = select( 'select', 'items', @item_names, {include_blank: 'All'} )
+    .order_advice_selector_div
+      Trade hubs
+      = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'} )
+    .order_advice_selector_div
+      Items
+      = select( 'select', 'items', @item_names, {include_blank: 'All'} )
 
-  %h2
-    Margin lists
+  %h2= "Price advices : #{margin_type}"
 
   %table
     %tr
