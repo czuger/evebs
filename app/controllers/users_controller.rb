@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
-  before_action :require_logged_in!, except: [ :help ]
+  before_action :require_logged_in!, except: [ :helps ]
 
   # GET /users/1/edit
   def edit

@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
 
-  resource :help, only: [] do
+  resource :helps, only: [] do
+
+    get :home
+
     get :items
-    get :add_item
+    get :items_add_new
+
   end
 
   resource :shopping_baskets, only: [ :show ]
