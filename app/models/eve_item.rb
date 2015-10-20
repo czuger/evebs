@@ -32,7 +32,7 @@ class EveItem < ActiveRecord::Base
   end
 
   def single_unit_cost
-    (cost*(1+AVG_INDUSTRY_TAX))/blueprint.prod_qtt if blueprint
+    (cost*(1+AVG_INDUSTRY_TAX))/blueprint.prod_qtt if cost && blueprint
   end
 
   def pcent_margin( price )
