@@ -22,8 +22,10 @@ namespace :deploy do
   end
 
   task :update_version_number do
+    on roles( :app ) do
+      execute( "sed -i \"s/CHANGE_TO_VERSION_NUMBER/`wc -l ${fetch(:repo_url)}/revisions.log | awk '{ print $1 }'`/g\" app/views/layouts/_menu.html.haml" )
+    end
   end
-
 end
 
 # Default branch is :master
