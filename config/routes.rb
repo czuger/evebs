@@ -1,14 +1,5 @@
 Rails.application.routes.draw do
 
-  resource :helps, only: [] do
-
-    get :home
-
-    get :items
-    get :items_add_new
-
-  end
-
   resource :shopping_baskets, only: [ :show ]
 
   resources :jita_margins, only: [ :index, :update ]
@@ -21,8 +12,6 @@ Rails.application.routes.draw do
   end
 
   resources :identities
-
-  get 'user/help' => 'users#help', as: 'help_user'
 
   resources :users, only: [:edit,:update]
 
