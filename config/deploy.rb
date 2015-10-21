@@ -14,11 +14,16 @@ set :keep_releases, 2
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml' )
 
-after 'deploy:publishing', 'deploy:restart'
+after 'deploy:publishing', 'deploy:restart', 'deploy:update_version_number'
+
 namespace :deploy do
   task :restart do
     invoke 'unicorn:reload'
   end
+
+  task :update_version_number do
+  end
+
 end
 
 # Default branch is :master
