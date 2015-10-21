@@ -14,19 +14,23 @@ set :keep_releases, 2
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml' )
 
-after 'deploy:publishing', 'deploy:restart', 'deploy:update_version_number'
+after 'deploy:publishing', 'deploy:restart'
 
 namespace :deploy do
+
   task :restart do
     invoke 'unicorn:reload'
   end
 
   task :update_version_number do
     on roles( :app ) do
-      execute( "sed -i \"s/CHANGE_TO_VERSION_NUMBER/`wc -l ${fetch(:repo_url)}/revisions.log | awk '{ print $1 }'`/g\" app/views/layouts/_menu.html.haml" )
+      execute( "sed -i \"s/CHANGE_TO_VERSION_NUMBER/`wc -l #{fetch(:deploy_to)}/revisions.log | awk '{ print $1 }'`/g\" #{fetch(:release_path)}/app/views/layouts/_menu.html.haml" )
     end
   end
+
 end
+
+after 'deploy:publishing', 'deploy:update_version_number'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
