@@ -13,8 +13,6 @@ Rails.application.routes.draw do
 
   resources :identities
 
-  get 'user/help' => 'users#help', as: 'help_user'
-
   resources :users, only: [:edit,:update]
 
   namespace :price_advices do
