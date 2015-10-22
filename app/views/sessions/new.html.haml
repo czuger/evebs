@@ -7,10 +7,21 @@
 -#      %td=item_price[:eve_item]
 -#      %td=item_price[:benef]
 
-#screenshots_area
-  = inline_svg( 'front_pictures/svg/delivery36.svg', class: :screenshot_box )
-  = inline_svg( 'front_pictures/svg/facebook30.svg', class: :screenshot_box )
-  = inline_svg( 'front_pictures/svg/seo15.svg', class: :screenshot_box )
+#icons_area
+  .icons_overbox
+    = inline_svg( 'front_pictures/svg/delivery36.svg', class: :icons_box )
+    .icon_legend
+      Choose an item
+
+  .icons_overbox
+    = inline_svg( 'front_pictures/svg/facebook30.svg', class: :icons_box )
+    .icon_legend
+      Choose a place
+
+  .icons_overbox
+    = inline_svg( 'front_pictures/svg/seo15.svg', class: :icons_box )
+    .icon_legend
+      Get the benefits
 
 -# TODO : add : 'Choose an item', 'Choose a place', 'Watch the benefits'
 
