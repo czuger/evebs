@@ -13,7 +13,10 @@ Rails.application.routes.draw do
 
   resources :identities
 
-  resources :users, only: [:edit,:update]
+  resources :users, only: [:edit, :update] do
+    get :edit_password
+    put :change_password
+  end
 
   namespace :price_advices do
     get :advice_prices
