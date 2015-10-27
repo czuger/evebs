@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :components, through: :materials
   has_many :trade_orders
 
+  belongs_to :identity, foreign_key: :uid
+
   def self.from_omniauth(auth)
     if auth["provider"] == 'identity'
       find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)

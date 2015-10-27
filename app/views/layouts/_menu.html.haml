@@ -28,7 +28,11 @@
         -#    %ul
         -#      %li= link_to 'Sales', sale_records_path
         -#      %li= link_to 'Best sales', jita_margins_path
-        %li= link_to 'User', edit_user_path( current_user.id )
+        %li
+          = link_to 'User', edit_user_path( :dummy )
+          %ul
+            %li= link_to 'Edit', edit_user_path( :dummy )
+            %li= link_to 'Change password', user_edit_password_path( :dummy )
         %li= link_to 'Help', '/help.pdf', target: '_blank'
         %li= link_to "Sign out", signout_path, id: "sign_out"
     - else

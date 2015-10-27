@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   resources :users, only: [:edit, :update] do
     get :edit_password
-    put :change_password
+    post :change_password
   end
 
   namespace :price_advices do

@@ -35,9 +35,11 @@ class UsersController < ApplicationController
   def change_password
     @user = current_user
     @identity = Identity.find( @user.uid )
-    @identity.password = param['new_password']
-    @identity.password_confirmation = param['new_password_confirmation']
-    @identity.save
+    @identity.password = params['new_password']
+    @identity.password_confirmation = params['new_password_confirmation']
+    result = @identity.save
+    flash[:errors] = @identity.errors unless result
+    redirect_to  user_edit_password_path
   end
 
   private
