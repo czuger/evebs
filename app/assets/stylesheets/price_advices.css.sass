@@ -2,6 +2,8 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+@import "colors"
+
 .order_advice_containers
   float: left
   margin-left: 10px
@@ -19,9 +21,9 @@ td, th
   font-weight: normal
 
 th
-  background-color: black
   // background-image: linear-gradient(to bottom, #333, #111)
-  color: #ececec
+  background-color: $common_background_color
+  color: $common_text_color
   text-align: center
 
 .cell_left_align
