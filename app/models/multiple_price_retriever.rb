@@ -13,7 +13,16 @@ module MultiplePriceRetriever
     item_ids.each_slice(200) do |id_slice|
       html_req = "http://api.eve-central.com/api/marketstat/json?typeid=#{id_slice.join(',')}&usesystem=#{eve_system_id}"
       # puts html_req
-      json_result = open( html_req ).read
+
+      begin
+        json_result = open( html_req ).read
+      rescue StandardError => e
+        puts "Error caught in #{self.class}##{__method__} at #{Time.now}"
+        p e.message
+        p e.backtrace
+        p e.inspect
+      end
+
       parsed_data = JSON.parse( json_result ).map{ |e| [ e['sell']['forQuery']['types'].first, (e['sell'][ price_kind ]<=0 ? nil : e['sell'][ price_kind ]) ] }
       final_hash.merge!( Hash[ parsed_data ] )
     end
