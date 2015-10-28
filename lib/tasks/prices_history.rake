@@ -2,6 +2,7 @@ namespace :data_compute do
   namespace :price_history do
     namespace :update do
 
+
       desc "Update price history (Jita + marked by users)"
       task :all => :environment do
         puts 'About to update price history'
@@ -15,6 +16,20 @@ namespace :data_compute do
         puts 'About to prices history'
         gph = Crest::GetPriceHistory.new
         gph.get_watched_items_and_region_only
+      end
+
+      desc "Update prices history (weekly)"
+      task :weekly => :environment do
+        puts 'About update prices history (weekly)'
+        Crest::GetPriceHistory.new(true).regionset_update( Crest::GetPriceHistory::MAIN_TRADE_REGIONS )
+        Crest::GetPriceHistory.new(true).regionset_update( Crest::GetPriceHistory::LESSER_TRADE_REGIONS )
+      end
+
+      desc "Update prices history (monthly)"
+      task :monthly => :environment do
+        puts 'About update prices history (monthly)'
+        Crest::GetPriceHistory.new(true).regionset_update( Crest::GetPriceHistory::MARGINAL_TRADE_REGIONS )
+        Crest::GetPriceHistory.new(true).regionset_update( Crest::GetPriceHistory::UNKNOWN_TRADE_REGIONS )
       end
 
       desc "Update prices history for main trade regions"
