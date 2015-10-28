@@ -17,10 +17,18 @@ module MultiplePriceRetriever
       begin
         json_result = open( html_req ).read
       rescue StandardError => e
-        puts "Error caught in #{self.class}##{__method__} at #{Time.now}"
-        p e.message
-        p e.backtrace
-        p e.inspect
+        puts '*'*200
+        puts 'Error !!!'
+        puts '*'*200
+        puts "Caught in MultiplePriceRetriever##{__method__} at #{Time.now}"
+        puts
+        puts e.message
+        puts
+        puts e.backtrace
+        puts '*'*200
+        puts 'End of error desc'
+        puts '*'*200
+        exit
       end
 
       parsed_data = JSON.parse( json_result ).map{ |e| [ e['sell']['forQuery']['types'].first, (e['sell'][ price_kind ]<=0 ? nil : e['sell'][ price_kind ]) ] }
