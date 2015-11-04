@@ -38,7 +38,12 @@ class UsersController < ApplicationController
     @identity.password = params['new_password']
     @identity.password_confirmation = params['new_password_confirmation']
     result = @identity.save
-    flash[:errors] = @identity.errors unless result
+    unless result
+      flash[:errors] = @identity.errors
+    else
+      flash[:success] = true
+    end
+
     redirect_to  user_edit_password_path
   end
 
