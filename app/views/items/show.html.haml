@@ -6,7 +6,11 @@
     = link_to( 'Eve central quicklook', "https://eve-central.com/home/quicklook.html?typeid=#{@item.cpp_eve_item_id}", :target => '_blank' )
     )
 
-  %h2= "Item cost: #{print_isk(@item_cost)}"
+  %h2
+    = "Item cost: #{print_isk(@item_cost)}"
+    (
+    = link_to( 'Detail', item_cost_path( @item ) )
+    )
 
   %table
     %tr

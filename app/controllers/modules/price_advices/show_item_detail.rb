@@ -1,7 +1,7 @@
 module Modules::PriceAdvices::ShowItemDetail
 
-  def show_item_detail
-    @item = EveItem.find( params[ :item_id ] )
+  def show
+    @item = EveItem.find( params[ :id ] )
 
     current_min_price_hash = {}
     current_min_prices = MinPrice.where( eve_item_id: @item.id )
