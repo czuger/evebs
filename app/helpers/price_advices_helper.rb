@@ -25,6 +25,8 @@ module PriceAdvicesHelper
       classes_array << "cell_#{cell_align}_align"
     end
 
+    classes_array << :boxed_cell_middle_left_border if cell_position == :middle_middle
+
     unless region_printed
       classes_array << :boxed_cell_middle_start
     end
