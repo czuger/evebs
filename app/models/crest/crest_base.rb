@@ -24,4 +24,26 @@ module Crest::CrestBase
     JSON.parse( json_result )
   end
 
+  def get_multipage_data( rest, debug_request = false )
+
+    next_url = get_crest_url( rest )
+    items = []
+    begin
+
+      puts "Fetching : #{next_url}" if debug_request
+
+      json_result = open( next_url ).read
+      parsed_json = JSON.parse( json_result )
+
+      next_url = nil
+
+      items += parsed_json['items']
+      next_url_hash = parsed_json['next']
+      next_url = next_url_hash['href'] if next_url_hash
+
+    end while next_url
+
+    puts "items.count = #{items.count}"
+  end
+
 end

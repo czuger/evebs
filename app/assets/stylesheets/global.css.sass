@@ -1,3 +1,5 @@
+@import "colors"
+
 body
   //background-color: black
   font-family: "freight-sans-pro",sans-serif
@@ -18,9 +20,9 @@ h2
   float: left
 
 .submit_button_style
-  background-color: #1B1B1B
-  background-image: linear-gradient(to bottom, #333, #111)
-  color: #999
+  // background-image: linear-gradient(to bottom, #333, #111)
+  background-color: $common_background_color
+  color: $common_text_color
   text-align: center
   vertical-align: middle
   padding: 5px 10px
@@ -35,3 +37,9 @@ a
 .in-game-link
   text-decoration: underline
   color: #ff5600
+
+#error_explanation
+  color: red
+
+#success_message
+  color: green

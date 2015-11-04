@@ -29,6 +29,24 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit_password
+  end
+
+  def change_password
+    @user = current_user
+    @identity = Identity.find( @user.uid )
+    @identity.password = params['new_password']
+    @identity.password_confirmation = params['new_password_confirmation']
+    result = @identity.save
+    unless result
+      flash[:errors] = @identity.errors
+    else
+      flash[:success] = true
+    end
+
+    redirect_to  user_edit_password_path
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -40,4 +58,5 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :remove_occuped_places, :key_user_id, :api_key, :min_pcent_for_advice,
                                    :watch_my_prices, :min_amount_for_advice)
     end
+
 end

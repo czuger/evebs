@@ -8,6 +8,8 @@ FactoryGirl.define do
     min_pcent_for_advice 10
     min_amount_for_advice 10000000
 
+    identity
+
     transient do
       region nil
     end
