@@ -53,7 +53,7 @@ class TradeOrder < ActiveRecord::Base
           end
           # On supprime tous les ordres marqués comme anciens
           TradeOrder.destroy_all( new_order: false )
-        rescue 'EAAL::Exception::HTTPError' => exception
+        rescue EAAL::Exception::HTTPError => exception
           STDERR.puts Time.now
           STDERR.puts user.inspect
           STDERR.puts exception.message
