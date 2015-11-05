@@ -6,7 +6,7 @@ namespace :data_setup do
   desc "Feed item objects list"
   task :load_all_items => :environment do
     puts 'About to fill the objects list'
-    ItemsInit::ItemsList.initialize_eve_items
+    Crest::EveItemsFromCrest.new
   end
   desc "Fill name_lowcase"
   task :fill_name_lowcase => :environment do

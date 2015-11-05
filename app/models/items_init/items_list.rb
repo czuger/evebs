@@ -3,6 +3,9 @@ require "yaml"
 class ItemsInit::ItemsList
 
   def self.initialize_eve_items
+
+    raise 'Do not use this method anymore'
+
     fixture_file = File.open('test/fixtures/eve_items.yml','a') if Rails.env.test?
 
     ActiveRecord::Base.transaction do

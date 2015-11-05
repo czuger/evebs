@@ -14,12 +14,14 @@ set :keep_releases, 2
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml' )
 
-after 'deploy:publishing', 'deploy:restart'
-
 namespace :deploy do
 
-  task :restart do
-    invoke 'unicorn:reload'
+  task :custom_restart do
+    puts 'About to stop unicorn'
+    invoke 'unicorn:stop'
+    puts 'About to start unicorn'
+    invoke 'unicorn:start'
+    puts 'End starting unicorn'
   end
 
   task :update_version_number do
@@ -31,6 +33,7 @@ namespace :deploy do
 end
 
 after 'deploy:publishing', 'deploy:update_version_number'
+after 'deploy:publishing', 'deploy:custom_restart'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }

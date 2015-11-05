@@ -43,7 +43,10 @@ module Crest::CrestBase
 
     end while next_url
 
-    puts "items.count = #{items.count}"
+    puts "items.count = #{items.count}" if debug_request
+
+    items
+
   end
 
 end
