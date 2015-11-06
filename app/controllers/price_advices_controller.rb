@@ -6,8 +6,8 @@ class PriceAdvicesController < ApplicationController
 
   include Modules::PriceAdvices::MarginModule
   include Modules::PriceAdvices::ShoppingBasketsModule
-  include Modules::PriceAdvices::ShowItemDetail
   include Modules::PriceAdvices::ShowChallengedPrices
+  include Modules::Nvl
 
   def advice_prices_monthly
     advice_prices_margins( :monthly )
@@ -60,9 +60,5 @@ class PriceAdvicesController < ApplicationController
     @item_names.sort!
   end
 
-  # If a number does not exist : then assigns it to minus infinity
-  def nvl( number )
-    number ? number : -Float::INFINITY
-  end
 end
 
