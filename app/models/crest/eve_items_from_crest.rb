@@ -11,6 +11,8 @@ class Crest::EveItemsFromCrest
 
   def initialize
 
+    # TODO : il faut mettre a jour la liste des groupes avant
+
     ActiveRecord::Base.transaction do
 
       items = get_multipage_data( 'market/types', true )
@@ -26,17 +28,25 @@ class Crest::EveItemsFromCrest
         if ALLOWED_GROUPS.include?( market_group_id )
           items_hash[ cpp_type_id ] = [ market_group_id, cpp_type_id, name ]
         end
-
       end
+      items = nil # we do not require items anymore, so we delete it in order to allow the garbage collector to free it
 
       # Purge nonexisting items
-      EveItem.all.each do |eve_item|
-        unless items_hash.has_key?( eve_item.cpp_eve_item_id )
-          puts "Deleting #{eve_item.name}"
-          CrestPricesLastMonthAverage.delete_all( ['eve_item_id = ?', eve_item.id] )
-          eve_item.destroy
-        end
+      # Get all items ids
+      cpp_eve_items_ids = EveItem.all.pluck( :cpp_eve_item_id ).to_a
+      # Remove items we will keep
+      cpp_eve_items_ids.reject!{ |e| items_hash.has_key?( e ) }
+      # Get the name of the items we will delete
+      to_delete_items_name = EveItem.where( cpp_eve_item_id: cpp_eve_items_ids ).pluck( :name ).to_a
+      to_delete_items_name.each do |name|
+        puts "About to delete #{name}"
       end
+      to_delete_items_name = nil # Mark space as unused
+
+      to_delete_items_ids = EveItem.where( cpp_eve_item_id: cpp_eve_items_ids ).pluck( :id ).to_a
+      CrestPriceHistory.delete_all( eve_item_id: to_delete_items_ids )
+      CrestPricesLastMonthAverage.delete_all( eve_item_id: to_delete_items_ids )
+      EveItem.delete_all( id: to_delete_items_ids )
 
       # Add new items
       items_hash.each do |key, item_array|
