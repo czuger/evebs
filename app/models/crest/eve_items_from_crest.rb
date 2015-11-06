@@ -66,7 +66,7 @@ class Crest::EveItemsFromCrest
             eve_item.update_attributes( market_group_id: eve_market_group_id, name: name, name_lowcase: lcase_name )
           else
             puts "Creating an entry for #{name}"
-            EveItem.create!( cpp_eve_item_id: type_id, name: name, name_lowcase: lcase_name, market_group_id: eve_market_group_id )
+            EveItem.create!( cpp_eve_item_id: cpp_type_id, name: name, name_lowcase: lcase_name, market_group_id: eve_market_group_id )
           end
         end
 
