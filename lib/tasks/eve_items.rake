@@ -4,7 +4,7 @@ EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
 
 namespace :data_setup do
   desc "Feed item objects list"
-  task :load_all_items => :environment do
+  task :update_all_items => :environment do
     puts 'About to fill the objects list'
     Crest::EveItemsFromCrest.new
   end
