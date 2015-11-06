@@ -12,61 +12,65 @@ class Crest::EveItemsFromCrest
   def initialize
 
     # TODO : il faut mettre a jour la liste des groupes avant
+    # Crest::MarketGroups.fill_market_group_table
 
+    items = get_multipage_data( 'market/types', true )
+    items_hash = {}
+
+    items.each do |e|
+
+      market_group_id = e['marketGroup']['id']
+      cpp_type_id = e['type']['id']
+      name = e['type']['name']
+      lcase_name = name.downcase
+
+      if ALLOWED_GROUPS.include?( market_group_id )
+        items_hash[ cpp_type_id ] = [ market_group_id, cpp_type_id, name ]
+      end
+    end
+    items = nil # we do not require items anymore, so we delete it in order to allow the garbage collector to free it
+
+    # Purge nonexisting items
+    # Get all items ids
+    cpp_eve_items_ids = EveItem.all.pluck( :cpp_eve_item_id ).to_a
+    # Remove items we will keep
+    cpp_eve_items_ids.reject!{ |e| items_hash.has_key?( e ) }
+    # Get the name of the items we will delete
+    to_delete_items_name = EveItem.where( cpp_eve_item_id: cpp_eve_items_ids ).pluck( :name ).to_a
+    to_delete_items_name.each do |name|
+      puts "About to delete #{name}"
+    end
+    to_delete_items_name = nil # Mark space as unused
+
+    to_delete_items_ids = EveItem.where( cpp_eve_item_id: cpp_eve_items_ids ).pluck( :id ).to_a
     ActiveRecord::Base.transaction do
-
-      items = get_multipage_data( 'market/types', true )
-      items_hash = {}
-
-      items.each do |e|
-
-        market_group_id = e['marketGroup']['id']
-        cpp_type_id = e['type']['id']
-        name = e['type']['name']
-        lcase_name = name.downcase
-
-        if ALLOWED_GROUPS.include?( market_group_id )
-          items_hash[ cpp_type_id ] = [ market_group_id, cpp_type_id, name ]
-        end
-      end
-      items = nil # we do not require items anymore, so we delete it in order to allow the garbage collector to free it
-
-      # Purge nonexisting items
-      # Get all items ids
-      cpp_eve_items_ids = EveItem.all.pluck( :cpp_eve_item_id ).to_a
-      # Remove items we will keep
-      cpp_eve_items_ids.reject!{ |e| items_hash.has_key?( e ) }
-      # Get the name of the items we will delete
-      to_delete_items_name = EveItem.where( cpp_eve_item_id: cpp_eve_items_ids ).pluck( :name ).to_a
-      to_delete_items_name.each do |name|
-        puts "About to delete #{name}"
-      end
-      to_delete_items_name = nil # Mark space as unused
-
-      to_delete_items_ids = EveItem.where( cpp_eve_item_id: cpp_eve_items_ids ).pluck( :id ).to_a
       CrestPriceHistory.delete_all( eve_item_id: to_delete_items_ids )
       CrestPricesLastMonthAverage.delete_all( eve_item_id: to_delete_items_ids )
       EveItem.delete_all( id: to_delete_items_ids )
+    end
 
-      # Add new items
-      items_hash.each do |key, item_array|
+    # Add new items
+    items_hash.each do |key, item_array|
 
-        market_group_id = item_array[0]
-        cpp_type_id = item_array[1]
-        name = item_array[2]
-        lcase_name = name.downcase
+      cpp_market_group_id = item_array[0]
+      cpp_type_id = item_array[1]
+      name = item_array[2]
+      lcase_name = name.downcase
 
+      eve_market_group_id = MarketGroup.where( cpp_market_group_id: cpp_market_group_id ).pluck( :id ).first
+      if eve_market_group_id
         eve_item = EveItem.find_by_cpp_eve_item_id( cpp_type_id )
-
         if eve_item
           puts "Updating #{eve_item.name}"
-          eve_item.update_attributes( market_group_id: market_group_id, name: name, name_lowcase: lcase_name )
+          eve_item.update_attributes( market_group_id: eve_market_group_id, name: name, name_lowcase: lcase_name )
         else
           puts "Creating an entry for #{name}"
-          EveItem.create!( cpp_eve_item_id: type_id, name: name, name_lowcase: lcase_name, market_group_id: market_group_id )
+          EveItem.create!( cpp_eve_item_id: type_id, name: name, name_lowcase: lcase_name, market_group_id: eve_market_group_id )
         end
       end
+
     end
+
   end
 
   def print_all_groups

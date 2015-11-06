@@ -28,11 +28,11 @@ class Crest::MarketGroups
   end
 
   def self.fill_market_group_table
-    parsed_data = get_parsed_data( 'market/groups' )
+    parsed_data = get_multipage_data( 'market/groups', true )
 
     ActiveRecord::Base.transaction do
       # Feed the table
-      parsed_data["items"].each do |item|
+      parsed_data.each do |item|
         cpp_market_group_id = item['href'].match( /(\d+)/ )[1]
         name = item['name']
         puts "Processing market group #{name}"
@@ -53,7 +53,7 @@ class Crest::MarketGroups
 
       puts "Start linking parent"
       # Then link parents and childrens
-      parsed_data["items"].each do |item|
+      parsed_data.each do |item|
         cpp_market_group_id = item['href'].match( /(\d+)/ )[1]
         if item['parentGroup']
           cpp_parent_group_id = item['parentGroup']['href'].match( /(\d+)/ )[1]
