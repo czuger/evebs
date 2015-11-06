@@ -49,26 +49,28 @@ class Crest::EveItemsFromCrest
       EveItem.delete_all( id: to_delete_items_ids )
     end
 
-    # Add new items
-    items_hash.each do |key, item_array|
+    ActiveRecord::Base.transaction do
+      # Add new items
+      items_hash.each do |key, item_array|
 
-      cpp_market_group_id = item_array[0]
-      cpp_type_id = item_array[1]
-      name = item_array[2]
-      lcase_name = name.downcase
+        cpp_market_group_id = item_array[0]
+        cpp_type_id = item_array[1]
+        name = item_array[2]
+        lcase_name = name.downcase
 
-      eve_market_group_id = MarketGroup.where( cpp_market_group_id: cpp_market_group_id ).pluck( :id ).first
-      if eve_market_group_id
-        eve_item = EveItem.find_by_cpp_eve_item_id( cpp_type_id )
-        if eve_item
-          puts "Updating #{eve_item.name}"
-          eve_item.update_attributes( market_group_id: eve_market_group_id, name: name, name_lowcase: lcase_name )
-        else
-          puts "Creating an entry for #{name}"
-          EveItem.create!( cpp_eve_item_id: type_id, name: name, name_lowcase: lcase_name, market_group_id: eve_market_group_id )
+        eve_market_group_id = MarketGroup.where( cpp_market_group_id: cpp_market_group_id ).pluck( :id ).first
+        if eve_market_group_id
+          eve_item = EveItem.find_by_cpp_eve_item_id( cpp_type_id )
+          if eve_item
+            puts "Updating #{eve_item.name}"
+            eve_item.update_attributes( market_group_id: eve_market_group_id, name: name, name_lowcase: lcase_name )
+          else
+            puts "Creating an entry for #{name}"
+            EveItem.create!( cpp_eve_item_id: type_id, name: name, name_lowcase: lcase_name, market_group_id: eve_market_group_id )
+          end
         end
-      end
 
+      end
     end
 
   end
