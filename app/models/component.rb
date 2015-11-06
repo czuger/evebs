@@ -36,7 +36,7 @@ class Component < ActiveRecord::Base
           component.update_attribute( :cost, price_set.avg_price_avg )
         end
       else
-        puts "Unable to find EveItem for #{component_as_eve_item.inspect}"
+        puts "Unable to find EveItem for #{component.inspect}"
       end
 
     end
