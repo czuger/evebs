@@ -11,7 +11,7 @@
           %td{ colspan: 2 }= value[:name]
         - value[:items].each do |item|
           %tr
-            %td= link_to( item.name, item( item.id ) )
+            %td= link_to( item.name, item_path( item.id ) )
             %td.item_list_check_case=check_box_tag('items_to_keep[]',item.id,true)
       %tr.market_group
         %td{ colspan: 2 } Ungroupped

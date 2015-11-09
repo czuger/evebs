@@ -68,6 +68,7 @@ group :development, :test do
   gem "factory_girl_rails", "~> 4.0"
 
   gem 'simplecov'
+  gem 'simplecov-html'
 
   gem 'spring'
   gem "bullet"

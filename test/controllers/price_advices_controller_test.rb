@@ -39,18 +39,6 @@ class PriceAdvicesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should show item detail" do
-    get :show_item_detail, item_id: @eve_item.id
-    assert_response :success
-  end
-
-  test "should show item detail of an item that has no CrestPricesLastMonthAverage information" do
-    # We create a region with no CrestPricesLastMonthAverage informations
-    @domain = create( :domain, items: EveItem.all )
-    get :show_item_detail, item_id: @eve_item.id
-    assert_response :success
-  end
-
   test "update basket" do
     get :update_basket, item_code: "#{@user.id}|#{@trade_hub.id}|#{@eve_item.id}", checked: 'true'
     assert_response :success
