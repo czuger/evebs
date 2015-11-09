@@ -15,7 +15,7 @@ class UsersController < ApplicationController
     @user = current_user
     respond_to do |format|
       # TODO : replace that with something more secure
-      # TODO : never trus full update
+      # TODO : never trust full update
       ActiveRecord::Base.transaction do
         # Need to remove all white spaces, because the string is formatted as 9 999 999,99
         params['user']['min_amount_for_advice'].gsub!( ' ', '' ) if params['user']['min_amount_for_advice']
