@@ -10,7 +10,7 @@ class EveItem < ActiveRecord::Base
   extend MultiplePriceRetriever
 
   has_and_belongs_to_many :users
-  has_one :blueprint
+  has_one :blueprint, dependent: :destroy
   has_many :materials, through: :blueprint
   has_many :components, through: :materials
   belongs_to :market_group

@@ -51,7 +51,15 @@ class ItemsInit::ItemsList
 
   def self.has_blueprint
     Blueprint.find_each do |bp|
-      bp.eve_item.update_attribute( :involved_in_blueprint, true )
+      item = bp.eve_item
+      if item
+        bp.eve_item.update_attribute( :involved_in_blueprint, true )
+      else
+        puts 'Unable to find an item for blueprint :'
+        pp bp
+        exit( -1 )
+      end
+
     end
   end
 

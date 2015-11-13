@@ -1,4 +1,20 @@
 namespace :data_setup do
+
+  namespace :blueprint do
+
+    desc 'Recompute items involved in blueprints'
+    task :recompute_items_involved => :environment do
+      ItemsInit::ItemsList.has_blueprint
+      ItemsInit::ItemsList.involved_in_blueprint
+    end
+
+    desc 'Cleanup blueprints with no items'
+    task :cleanup_blueprints => :environment do
+      Blueprint.delete_all( 'eve_item_id IS NULL')
+    end
+
+  end
+
   desc "Feed blueprints informations"
   task :blueprints_setup => :environment do
     puts 'About to feed the blueprint database'
