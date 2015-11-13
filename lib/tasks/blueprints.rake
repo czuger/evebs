@@ -10,7 +10,14 @@ namespace :data_setup do
 
     desc 'Cleanup blueprints with no items'
     task :cleanup_blueprints => :environment do
-      Blueprint.delete_all( 'eve_item_id IS NULL')
+      blueprints_destroyed = 0
+      Blueprint.all.each do |bp|
+        unless bp.eve_item
+          bp.destroy
+          blueprints_destroyed+=1
+        end
+      end
+      puts "Blueprint destroyed = #{blueprints_destroyed}"
     end
 
   end
