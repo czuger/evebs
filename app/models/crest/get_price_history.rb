@@ -87,10 +87,10 @@ class Crest::GetPriceHistory
       rescue OpenURI::HTTPError
         # Nevermind if we can't read
       rescue StandardError => e
-        p e.inspect
-        p e.message
-        p e.backtrace
-        exit
+        puts e.inspect
+        puts e.message
+        puts e.backtrace
+        # exit # if we fail a read, then we go next
       end
     end
   end
