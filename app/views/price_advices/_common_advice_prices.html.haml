@@ -13,7 +13,11 @@
   %table
     %tr
       %th
-      %th Trade hub
+      %th
+        - if margin_type == :monthly
+          Region
+        - else
+          Trade hub
       %th Item
       %th Volume
       %th Cost
@@ -26,7 +30,10 @@
       %tr{ class: cycle( :odd, :even ) }
         -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
         %td= shopping_basket_check_box( item )
-        %td.trade_hub_name=item[:trade_hub]
+        - if margin_type == :monthly
+          %td.trade_hub_name=item[:region_name]
+        - else
+          %td.trade_hub_name=item[:trade_hub]
         %td.item_name= link_to( item[:eve_item], item_path( item[:eve_item_id] ) )
         %td.cell_right_align.information_highlight_left=print_volume(item[:monthly_amount])
         %td.cell_right_align.information_highlight_left=print_isk(item[:cost])
