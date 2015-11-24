@@ -31,6 +31,10 @@
     - total_for_one_item = total_for_batch / @item.blueprint.prod_qtt
     %tr{ class: cycle( :odd, :even ) }
       %td{ colspan: 3 }
+        Batch size
+      %td.cell_right_align= print_volume( @item.blueprint.prod_qtt )
+    %tr{ class: cycle( :odd, :even ) }
+      %td{ colspan: 3 }
         Total for one item
       %td.cell_right_align= print_isk( total_for_one_item )
     %tr{ class: cycle( :odd, :even ) }
