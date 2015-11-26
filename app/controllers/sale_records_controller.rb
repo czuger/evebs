@@ -1,5 +1,7 @@
 class SaleRecordsController < ApplicationController
 
+  before_action :require_logged_in!, :log_client_activity
+
   def show
     @records = SaleRecord.paginate(:page => params[:page], per_page: 15).order( 'transaction_date_time DESC' )
   end

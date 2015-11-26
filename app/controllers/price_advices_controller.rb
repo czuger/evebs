@@ -2,7 +2,7 @@ require 'time_diff'
 
 class PriceAdvicesController < ApplicationController
 
-  before_action :require_logged_in!
+  before_action :require_logged_in!, :log_client_activity
 
   include Modules::PriceAdvices::MarginModule
   include Modules::PriceAdvices::ShoppingBasketsModule

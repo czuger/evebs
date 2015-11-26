@@ -1,6 +1,6 @@
 class JitaMarginsController < ApplicationController
 
-  before_action :require_logged_in!
+  before_action :require_logged_in!, :log_client_activity
 
   def index
     @margins = JitaMargin.joins(:eve_item).where.not('eve_items.epic_blueprint' => true).paginate(:page => params[:page], per_page: 20).order( 'margin_percent DESC' )

@@ -2,6 +2,8 @@ require 'pp'
 
 class SessionsController < ApplicationController
 
+  before_action :log_client_activity
+
   def new
     # @prices_array=[]
     # user = User.find_by_name('PUBLIC_USER')

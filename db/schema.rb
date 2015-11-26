@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120100321) do
+ActiveRecord::Schema.define(version: 20151126154339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -268,6 +268,13 @@ ActiveRecord::Schema.define(version: 20151120100321) do
   add_index "trade_orders", ["eve_item_id"], name: "index_trade_orders_on_eve_item_id", using: :btree
   add_index "trade_orders", ["trade_hub_id"], name: "index_trade_orders_on_trade_hub_id", using: :btree
   add_index "trade_orders", ["user_id"], name: "index_trade_orders_on_user_id", using: :btree
+
+  create_table "user_activity_logs", force: :cascade do |t|
+    t.string   "ip"
+    t.string   "action"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "name"

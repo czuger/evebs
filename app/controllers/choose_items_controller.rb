@@ -4,7 +4,7 @@ class ChooseItemsController < ApplicationController
 
   # autocomplete :eve_item, :name_lowcase, full: true
 
-  before_action :require_logged_in!
+  before_action :require_logged_in!, :log_client_activity
 
   def edit
     @user = current_user

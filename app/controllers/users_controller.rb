@@ -4,6 +4,8 @@ class UsersController < ApplicationController
 
   before_action :require_logged_in!, except: [ :helps ]
 
+  before_action :log_client_activity
+
   # GET /users/1/edit
   def edit
     @user = current_user

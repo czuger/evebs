@@ -1,5 +1,7 @@
 class SalesRecordsClientsController < ApplicationController
 
+  before_action :require_logged_in!, :log_client_activity
+
   def show
     @item_sums = SaleRecord.where('eve_clients.id=?',params[:id]).joins(:eve_client,:eve_item,:station).pluck(
       'eve_items.name', 'stations.name', :total_sale_profit, :transaction_date_time)

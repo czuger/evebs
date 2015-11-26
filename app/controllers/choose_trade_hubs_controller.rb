@@ -1,6 +1,6 @@
 class ChooseTradeHubsController < ApplicationController
 
-  before_action :require_logged_in!
+  before_action :require_logged_in!, :log_client_activity
 
   def edit
     @user = current_user

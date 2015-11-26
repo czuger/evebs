@@ -7,6 +7,12 @@ class ApplicationController < ActionController::Base
     redirect_to new_sessions_path unless current_user
   end
 
+  def log_client_activity
+    ip = request.remote_ip
+    action = action_name
+    UserActivityLog.create!( ip: ip, action: action )
+  end
+
   private
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
