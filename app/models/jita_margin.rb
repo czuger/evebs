@@ -19,9 +19,6 @@ class JitaMargin < ActiveRecord::Base
         jita_margin.update_attributes( margin: margin, jita_min_price: min_price.min_price, cost: unit_cost,
           margin_percent: margin_percent )
       end
-
     end
-
   end
-
 end
