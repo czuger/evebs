@@ -10,7 +10,8 @@ class ApplicationController < ActionController::Base
   def log_client_activity
     ip = request.remote_ip
     action = controller_name + '#' + action_name
-    UserActivityLog.create!( ip: ip, action: action )
+    user = current_user.name if current_user
+    UserActivityLog.create!( ip: ip, action: action, user: user )
   end
 
   private
