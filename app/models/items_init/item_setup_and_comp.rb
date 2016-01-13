@@ -25,7 +25,7 @@ module ItemsInit::ItemSetupAndComp
     assert(min_price, "min_price is nil", self.class, __method__ )
     assert(system_id, "system is nil", self.class, __method__ )
 
-    puts "Updating price for #{name}, price = #{min_price}"
+    # puts "Updating price for #{name}, price = #{min_price}"
 
     min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', id, system_id ).first
     unless min_price_item
