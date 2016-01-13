@@ -11,26 +11,33 @@ class SaleRecord < ActiveRecord::Base
 
     api = EAAL::API.new( '3808229', 'BHgPtSRlWR3cMsSadewgfE8UAAf2jhvT4Vvdo5f4JMyLTemqOzPMVMtch4Ww9ZJj' )
     api.scope = 'char'
-    api.WalletTransactions( characterID: '1866432960' ).transactions.sort_by{ |e| e.transactionID }.each do |transaction|
+    begin
+      api.WalletTransactions( characterID: '1866432960' ).transactions.sort_by{ |e| e.transactionID }.each do |transaction|
 
-      if transaction.transactionType == 'sell'
+        if transaction.transactionType == 'sell'
 
-        # puts transaction.inspect
-        # puts
+          # puts transaction.inspect
+          # puts
 
-        client = EveClient.get_client( transaction.clientID, transaction.clientName )
+          client = EveClient.get_client( transaction.clientID, transaction.clientName )
 
-        item = EveItem.find_by_cpp_eve_item_id( transaction.typeID )
-        puts "Can't find item #{transaction.typeID}, #{transaction.typeName}" unless item
+          item = EveItem.find_by_cpp_eve_item_id( transaction.typeID )
+          puts "Can't find item #{transaction.typeID}, #{transaction.typeName}" unless item
 
-        station = Station.find_by_cpp_station_id( transaction.stationID )
-        puts "Can't find item #{transaction.stationID}, #{transaction.stationName}" unless station
+          station = Station.find_by_cpp_station_id( transaction.stationID )
+          puts "Can't find item #{transaction.stationID}, #{transaction.stationName}" unless station
 
-        if item && station
-          store_transaction( transaction, User.first, client, item, station )
+          if item && station
+            store_transaction( transaction, User.first, client, item, station )
+          end
+
         end
-
       end
+    rescue StandardError => exception
+      STDERR.puts Time.now
+      STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
+      STDERR.puts exception.message
+      # STDERR.puts exception.backtrace
     end
     nil
   end
