@@ -35,9 +35,8 @@ class SaleRecord < ActiveRecord::Base
       end
     rescue StandardError => exception
       STDERR.puts Time.now
-      STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
       STDERR.puts exception.message
-      # STDERR.puts exception.backtrace
+      STDERR.puts exception.backtrace
     end
     nil
   end
