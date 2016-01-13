@@ -58,6 +58,11 @@ class TradeOrder < ActiveRecord::Base
          STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
          STDERR.puts exception.message
          # STDERR.puts exception.backtrace
+        rescue EAAL::Exception => exception
+          STDERR.puts Time.now
+          STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
+          STDERR.puts exception.message
+          STDERR.puts exception.backtrace
         end
       end
     end
