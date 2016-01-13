@@ -9,7 +9,7 @@ class SaleRecord < ActiveRecord::Base
 
     # delete_all
 
-    api = EAAL::API.new( '3808229', 'BHgPtSRlWR3cMsSadewgfE8UAAf2jhvT4Vvdo5f4JMyLTemqOzPMVMtch4Ww9ZJj' )
+    api = EAAL::API.new( '3808229', 'SNvU2rwG8Rjeg36vJwR7AWoMymfAW7TGNh2hLeKLZRAtGYrRzywIFuntLeTF2Qg7' )
     api.scope = 'char'
     begin
       api.WalletTransactions( characterID: '1866432960' ).transactions.sort_by{ |e| e.transactionID }.each do |transaction|
