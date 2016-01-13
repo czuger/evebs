@@ -53,15 +53,11 @@ class TradeOrder < ActiveRecord::Base
           end
           # On supprime tous les ordres marqués comme anciens
           TradeOrder.destroy_all( new_order: false )
-        rescue EAAL::Exception => exception
-          STDERR.puts Time.now
-          STDERR.puts "In #{self.class}##{__method__} for #{user.inspect}"
-          STDERR.puts exception.message
-        rescue => exception
+        rescue StandardError => exception
          STDERR.puts Time.now
          STDERR.puts "In #{self.class}##{__method__} for #{user.inspect}"
          STDERR.puts exception.message
-         STDERR.puts exception.backtrace
+         # STDERR.puts exception.backtrace
         end
       end
     end
