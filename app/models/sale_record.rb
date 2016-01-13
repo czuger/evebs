@@ -33,7 +33,7 @@ class SaleRecord < ActiveRecord::Base
 
         end
       end
-    rescue StandardError => exception
+    rescue StandardError, EAAL::Exception => exception
       STDERR.puts Time.now
       STDERR.puts exception.message
       STDERR.puts exception.backtrace
