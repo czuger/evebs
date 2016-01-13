@@ -34,9 +34,11 @@ class SaleRecord < ActiveRecord::Base
         end
       end
     rescue StandardError, EAAL::Exception => exception
+      STDERR.puts '#'*50
       STDERR.puts Time.now
       STDERR.puts exception.message
       STDERR.puts exception.backtrace
+      STDERR.puts '#'*50
     end
     nil
   end
