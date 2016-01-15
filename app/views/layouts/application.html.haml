@@ -5,6 +5,10 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
+    %meta{ name: :description, content: 'Eve business server is a tool that show potential earnings in Eve Online' }/
   %body
     = render partial: 'layouts/menu'
     = yield
+
+
+    name="description" content="Une description de la page"
