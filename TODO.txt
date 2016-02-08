@@ -1,0 +1,7 @@
+- Use the current jita_margin screen
+- Create one and use the epic blueprint (hide for non admin)
+- Show that as a front screen
+- Message :
+    Industrial and traders, you can raise your earnings with low effort.
+    ( mettre les examples)
+    More inside ...
