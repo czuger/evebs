@@ -1,6 +1,6 @@
 #selection_div_new_item
 
-  %h2
+  %h3
     - if @message
       %span.choose_item_message
         = @message
@@ -14,6 +14,6 @@
   = form_tag '/choose_items' do
     -# doc is wrong, use 'data-append-to' => '#test_append' instead of append_to
     = autocomplete_field_tag :eve_item_name, '', autocomplete_eve_item_name_lowcase_choose_items_path, :id_element => '#choosen_item'
-    = submit_tag 'Add the item(s)', class: [:submit_button_style, :add_item_button]
+    = submit_tag 'Add the item(s)', class: 'btn btn-default'
 
     = hidden_field_tag 'choosen_item'

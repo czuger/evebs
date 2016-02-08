@@ -4,16 +4,14 @@
 .order_advice_containers
 
   - if @trade_hubs_names && @item_names
-    .order_advice_selector_div
-      Trade hubs
-      = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'} )
-    .order_advice_selector_div
-      Items
-      = select( 'select', 'items', @item_names, {include_blank: 'All'} )
+    = label_tag 'select_trade_hubs', 'Trade hubs'
+    = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
+    = label_tag 'select_items', 'Items'
+    = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
 
-  %h2
+  %h3
     My orders status
-  %table
+  %table.table
     %tr
       %th Trade hub
       %th Item
@@ -34,9 +32,9 @@
         %td.cell_right_align
           = print_isk( ( cp[:min_price] - cp[:my_price] ) ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
         %td
-          %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})" }
+          %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})", class: 'btn btn-default' }
             Show Market Details
         %td
-          %button{ onclick: "CCPEVE.setDestination(#{cp[:trade_hub_cpp_id]})" }
+          %button{ onclick: "CCPEVE.setDestination(#{cp[:trade_hub_cpp_id]})" , class: 'btn btn-default' }
             Set Destination
 

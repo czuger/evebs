@@ -1,4 +1,4 @@
-module GetFullOrderList
+module TradeOrders::GetFullOrderList
 
   private
 

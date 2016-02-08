@@ -1,9 +1,12 @@
 .order_advice_containers
 
-  %h2
-    My selected (trade hubs/items)
+  %h3
+    My selected items
 
-  %table
+  %h4
+    You find there all the items you checked in Earnings Monthly and Daily
+
+  %table.table
     %tr
       %th
       %th Trade hub
@@ -13,4 +16,3 @@
         %td= shopping_basket_check_box_shopping_basket( basket )
         %td= basket.trade_hub.name
         %td= basket.eve_item.name
-

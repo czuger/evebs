@@ -6,28 +6,27 @@
         - @user.errors.full_messages.each do |msg|
           %li= msg
 
-  %table
-    %tr
-      %td= f.label :name
-      %td= f.text_field :name
-    %tr
-      %td= f.label :min_pcent_for_advice
-      %td= f.text_field :min_pcent_for_advice, size: 5
-    %tr
-      %td= f.label :min_amount_for_advice
-      %td= f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ) )
-    %tr
-      %td= f.label :key_user_id
-      %td= f.text_field :key_user_id
-    %tr
-      %td= f.label :api_key
-      %td= f.text_field :api_key, size: 60
-    %tr
-      %td= f.label :remove_occuped_places
-      %td= f.check_box :remove_occuped_places
-    %tr
-      %td= f.label :watch_my_prices
-      %td= f.check_box :watch_my_prices
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control'
+  .form-group
+    = f.label :min_pcent_for_advice
+    = f.text_field :min_pcent_for_advice, size: 5, class: 'form-control'
+  .form-group
+    = f.label :min_amount_for_advice
+    = f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ), class: 'form-control' )
+  .form-group
+    = f.label :key_user_id
+    = f.text_field :key_user_id, class: 'form-control'
+  .form-group
+    = f.label :api_key
+    = f.text_field :api_key, size: 60, class: 'form-control'
+  .form-group
+    = f.label :remove_occuped_places
+    = f.check_box :remove_occuped_places
+  .form-group
+    = f.label :watch_my_prices
+    = f.check_box :watch_my_prices
 
   .actions
-    = f.submit 'Save', class: :submit_button_style
+    = f.submit 'Save', class: 'btn btn-default'

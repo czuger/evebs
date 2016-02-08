@@ -1,25 +1,30 @@
-#topbar
-  #eve_logo
-    Eve business server (Beta) - version 0.1-CHANGE_TO_VERSION_NUMBER
+-##topbar
+-#  #eve_logo
+-#    Eve business server (Beta) - version 0.1-CHANGE_TO_VERSION_NUMBER
 
-#menu
-  %nav#primary_nav_wrap
+%nav.navbar.navbar-default
+  %div{ class: 'container-fluid' }
     - if current_user
-      %ul
-        %li
-          = link_to 'Items', edit_choose_items_path
-          %ul
+      %ul.nav.navbar-nav
+        %li.dropdown
+          -# link_to 'Items', edit_choose_items_path do #,  do # edit_choose_items_path, do
+            %span.caret
+          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+            Items
+            %span.caret
+          %ul.dropdown-menu
             %li= link_to 'Add', new_choose_items_path
-
             %li= link_to 'Edit', edit_choose_items_path
         %li
           = link_to 'Trade hubs', edit_choose_trade_hubs_path
 
         %li
-          = link_to 'Earnings', price_advices_advice_prices_monthly_path
-          %ul
+          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+            Earnings
+            %span.caret
+          %ul.dropdown-menu
             %li= link_to 'Daily', price_advices_advice_prices_path
-            %li= link_to 'Monthly', price_advices_advice_prices_monthly_path
+            %li.active= link_to 'Monthly', price_advices_advice_prices_monthly_path
             %li= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
             %li= link_to 'Basket', shopping_baskets_path
         -#- if is_cedric_zuger
@@ -29,11 +34,14 @@
         -#      %li= link_to 'Sales', sale_records_path
         -#      %li= link_to 'Best sales', jita_margins_path
         %li
-          = link_to 'User', edit_user_path( :dummy )
-          %ul
+          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+            User
+            %span.caret
+          %ul.dropdown-menu
             %li= link_to 'Edit', edit_user_path( :dummy )
             %li= link_to 'Change password', user_edit_password_path( :dummy )
         %li= link_to 'Help', '/help.pdf', target: '_blank'
         %li= link_to "Sign out", signout_path, id: "sign_out"
     - else
-      %li= link_to 'Help', '/help.pdf', target: '_blank'
+      %ul.nav.navbar-nav
+        %li= link_to 'Help', '/help.pdf', target: '_blank'

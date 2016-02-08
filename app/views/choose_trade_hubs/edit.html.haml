@@ -1,9 +1,11 @@
 #selection_div
 
-  %h2 Check trade hubs you want to monitor
+  %h3 Check trade hubs you want to monitor
 
   = form_tag choose_trade_hubs_path(@user.id), method: :put do
-    %table{ border: 1 }
+    = submit_tag 'Update trade hubs list', class: 'btn btn-default'
+    %hr
+    %table.table
       %tr
         %th{ colspan: 6 } Empire regions
         %th{ colspan: 3 } Outer regions
@@ -11,28 +13,27 @@
         %tr
           - trade_hub = @inner_trade_hubs_1[i]
           - if trade_hub
+            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
             %td.trade_hub_table_thin_cell_borders= trade_hub.name
             %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
           - else
             %td.trade_hub_table_no_cell_borders{ colspan: 3 }
           - trade_hub = @inner_trade_hubs_2[i]
           - if trade_hub
+            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
             %td.trade_hub_table_thin_cell_borders_left= trade_hub.name
             %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
           - else
             %td.trade_hub_table_no_cell_borders{ colspan: 3 }
           - trade_hub = @outer_trade_hubs[i]
           - if trade_hub
+            %td.trade_hub_table_thin_cell_borders=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
             %td.trade_hub_table_thin_cell_borders_left= trade_hub.name
             %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-            %td.trade_hub_table_thin_cell_borders=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
           - else
             %td.trade_hub_table_no_cell_borders{ colspan: 3 }
 
-
-    = submit_tag 'Update trade hubs list', class: :submit_button_style
+    = submit_tag 'Update trade hubs list', class: 'btn btn-default'
 
     -#- @trade_hubs.in_groups_of(@per_group_count).each do |trade_hub_group|
     -#  %table.side_by_side_table

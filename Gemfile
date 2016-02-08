@@ -7,7 +7,7 @@ gem 'sqlite3'
 gem 'pg'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
@@ -44,6 +44,7 @@ gem 'rails-jquery-autocomplete'
 
 gem 'omniauth'
 gem 'omniauth-facebook', '1.4.0'
+gem "omniauth-google-oauth2"
 gem 'omniauth-identity'
 
 # Use ActiveModel has_secure_password
@@ -59,6 +60,8 @@ gem 'bootstrap-tooltip-rails'
 gem 'will_paginate', '~> 3.0.6'
 
 gem 'inline_svg'
+
+gem 'bootstrap-sass', '~> 3.3.6'
 
 group :development, :test do
   gem 'capistrano', '~> 3.4.0'

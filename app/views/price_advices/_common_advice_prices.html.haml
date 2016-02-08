@@ -1,45 +1,41 @@
-.order_advice_containers
+- if @trade_hubs_names && @item_names
+  = label_tag 'select_trade_hubs', 'Trade hubs'
+  = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
+  = label_tag 'select_items', 'Items'
+  = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
 
-  - if @trade_hubs_names && @item_names
-    .order_advice_selector_div
-      Trade hubs
-      = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'} )
-    .order_advice_selector_div
-      Items
-      = select( 'select', 'items', @item_names, {include_blank: 'All'} )
+%h3= "Price advices : #{margin_type}"
 
-  %h2= "Price advices : #{margin_type}"
+%table.table
+  %tr
+    %th
+    %th
+      - if margin_type == :monthly
+        Region
+      - else
+        Trade hub
+    %th Item
+    %th Volume
+    %th Cost
+    %th Price
+    %th{ colspan: 3 } Earnings
+    - if margin_type == :daily
+      %th Daily/monthly
 
-  %table
-    %tr
-      %th
-      %th
-        - if margin_type == :monthly
-          Region
-        - else
-          Trade hub
-      %th Item
-      %th Volume
-      %th Cost
-      %th Price
-      %th{ colspan: 3 } Earnings
+  - @prices_array.each do |item|
+    %tr{ class: cycle( :odd, :even ) }
+      -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
+      %td= shopping_basket_check_box( item )
+      - if margin_type == :monthly
+        %td.trade_hub_name=item[:region_name]
+      - else
+        %td.trade_hub_name=item[:trade_hub]
+      %td.item_name= link_to( item[:eve_item], item_path( item[:eve_item_id] ) )
+      %td.cell_right_align.information_highlight_left=print_volume(item[:monthly_amount])
+      %td.cell_right_align.information_highlight_left=print_isk(item[:cost])
+      %td.cell_right_align.information_highlight_left=print_isk(item[:price])
+      %td.cell_right_align.information_highlight_right=print_pcent(item[:benef_pcent])
+      %td.cell_right_align.information_highlight_right=print_isk(item[:benef])
+      %td.cell_right_align.information_highlight_right=item[:batch_size]
       - if margin_type == :daily
-        %th Daily/monthly
-
-    - @prices_array.each do |item|
-      %tr{ class: cycle( :odd, :even ) }
-        -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
-        %td= shopping_basket_check_box( item )
-        - if margin_type == :monthly
-          %td.trade_hub_name=item[:region_name]
-        - else
-          %td.trade_hub_name=item[:trade_hub]
-        %td.item_name= link_to( item[:eve_item], item_path( item[:eve_item_id] ) )
-        %td.cell_right_align.information_highlight_left=print_volume(item[:monthly_amount])
-        %td.cell_right_align.information_highlight_left=print_isk(item[:cost])
-        %td.cell_right_align.information_highlight_left=print_isk(item[:price])
-        %td.cell_right_align.information_highlight_right=print_pcent(item[:benef_pcent])
-        %td.cell_right_align.information_highlight_right=print_isk(item[:benef])
-        %td.cell_right_align.information_highlight_right=item[:batch_size]
-        - if margin_type == :daily
-          %td.cell_right_align.information_highlight_left=print_pcent( item[:daily_monthly_diff] )
+        %td.cell_right_align.information_highlight_left=print_pcent( item[:daily_monthly_diff] )

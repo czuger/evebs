@@ -9,7 +9,7 @@ class TradeOrder < ActiveRecord::Base
 
   validates :user_id, :eve_item_id, :trade_hub_id, :new_order, presence: true
 
-  include GetFullOrderList
+  include TradeOrders::GetFullOrderList
 
   # TODO : create the rake task
   # TODO : (for each users)

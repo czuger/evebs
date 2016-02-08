@@ -13,7 +13,7 @@ module PriceAdvicesHelper
     id = [ @user.id, basket.trade_hub_id, basket.eve_item_id ]
     check_box_tag(
       "eve_item_#{id.join('_')}", id.join( '|' ), true,
-      { class: [:shopping_basket_checkbox, :delete_on_change] }
+      { class: [:shopping_basket_checkbox, :delete_on_change], 'data-toggle' => :tooltip, title: 'Uncheck to remove item' }
     )
   end
 

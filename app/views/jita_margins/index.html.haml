@@ -1,6 +1,6 @@
 %h1 Best margins in Jita
 
-%table
+%table.table
   %tr
     %th
       Item
@@ -21,5 +21,3 @@
       %td.cell_right_align= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}" )
       %td.cell_right_align= print_isk( margin.cost )
       %td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put )
-
-= will_paginate @margins
