@@ -7,6 +7,8 @@ class JitaMargin < ActiveRecord::Base
     jita = TradeHub.find_by_eve_system_id( Component::JITA_EVE_SYSTEM_ID )
     EveItem.find_each do |item|
 
+      next if item.epic_blueprint
+
       min_price = MinPrice.find_by_eve_item_id_and_trade_hub_id( item.id, jita.id )
 
       if min_price && item.blueprint && item.cost
