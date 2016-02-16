@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160216021331) do
+ActiveRecord::Schema.define(version: 20160216195833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,6 +137,7 @@ ActiveRecord::Schema.define(version: 20160216021331) do
     t.float    "margin_percent"
     t.float    "jita_min_price"
     t.float    "cost"
+    t.integer  "mens_volume",    default: 0, null: false
   end
 
   add_index "jita_margins", ["eve_item_id"], name: "index_jita_margins_on_eve_item_id", using: :btree
