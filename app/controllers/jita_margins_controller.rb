@@ -4,7 +4,7 @@ class JitaMarginsController < ApplicationController
   before_action :require_logged_in!, except: [ :index ]
 
   def index
-    @margins = JitaMargin.joins(:eve_item).includes( :eve_item ).where.not('eve_items.epic_blueprint' => true).order( 'margin DESC' ).limit( 10 )
+    @margins = JitaMargin.joins(:eve_item).includes( :eve_item ).where.not('eve_items.epic_blueprint' => true).order( 'margin DESC' ).limit( 5 )
   end
 
   def update

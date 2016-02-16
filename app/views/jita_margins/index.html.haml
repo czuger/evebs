@@ -4,27 +4,30 @@
       Increase your benefits with the lowest effort
 
   %h3
-    Best margins in Jita
+    Best benefits in Jita
 
   %table.table
     %tr
       %thead
         %th
           Item
-        %th
+        %th.text-right
           Margin
-        %th
+        %th.text-right
           Margin percent
-        %th
+        %th.text-right
           Jita min price
-        %th
+        %th.text-right
           Cost
         %th
     - @margins.each do |margin|
       %tr
         %td= link_to( margin.eve_item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{margin.eve_item.cpp_eve_item_id}" )
-        %td.cell_right_align= print_isk( margin.margin )
-        %td.cell_right_align= margin.margin_percent.round if margin && margin.margin_percent
-        %td.cell_right_align= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}" )
-        %td.cell_right_align= print_isk( margin.cost )
+        %td.text-right= print_isk( margin.margin )
+        %td.text-right= margin.margin_percent.round if margin && margin.margin_percent
+        %td.text-right= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}" )
+        %td.text-right= print_isk( margin.cost )
         %td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
+
+  .text-center
+    = button_to "More inside", price_advices_advice_prices_path, id: "sign_in", method: :get, class: 'btn-lg btn-warning'
