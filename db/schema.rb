@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160127082642) do
+ActiveRecord::Schema.define(version: 20160216021331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -293,7 +293,7 @@ ActiveRecord::Schema.define(version: 20160127082642) do
     t.integer  "min_pcent_for_advice"
     t.boolean  "watch_my_prices"
     t.float    "min_amount_for_advice"
-    t.string   "selected_character_id"
+    t.boolean  "admin",                   default: false, null: false
   end
 
   add_foreign_key "blueprints", "eve_items"
