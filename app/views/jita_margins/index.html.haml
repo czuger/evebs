@@ -33,4 +33,5 @@
         %td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
 
   .text-center
-    = button_to "More inside", price_advices_advice_prices_path, id: "sign_in", method: :get, class: 'btn-lg btn-warning'
+    = button_to "Sign in for custom results *", price_advices_advice_prices_path, id: "sign_in", method: :get, class: 'btn-lg btn-warning'
+    * select your items, trade hubs, etc ...

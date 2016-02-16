@@ -15,7 +15,7 @@ class JitaMargin < ActiveRecord::Base
         # puts item.inspect
         unit_cost = item.cost / item.blueprint.prod_qtt
         margin = min_price.min_price - unit_cost
-        margin_percent = min_price.min_price * 100 / unit_cost
+        margin_percent = min_price.min_price / unit_cost
         cplma = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita.region_id, item.cpp_eve_item_id )
         sum_volume = cplma ? cplma.volume_sum : -1
 
