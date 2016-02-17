@@ -23,7 +23,7 @@ class JitaMargin < ActiveRecord::Base
         margin_percent = ( min_price.min_price / unit_cost ) - 1
 
         cplma = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita.region_id, item.cpp_eve_item_id )
-        sum_volume = cplma ? cplma.volume_sum : -1
+        sum_volume = cplma ? cplma.order_count_sum : -1
 
         jita_margin = JitaMargin.find_or_create_by!( eve_item_id: item.id )
         jita_margin.update_attributes( margin: margin * batch_size,
