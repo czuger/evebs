@@ -27,7 +27,7 @@ namespace :data_compute do
     task :jita => :environment do
       # First compute used items and trade hubs
       puts '*'*100
-      puts 'About to recompute all avg prices for all items on all trade hubs'
+      puts 'About to recompute all avg prices for all items on jita'
       puts '*'*100
       used_items = EveItem.all
       used_trade_hubs = [ TradeHub.find_by_eve_system_id( Component::JITA_EVE_SYSTEM_ID ) ]
