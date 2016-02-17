@@ -12,16 +12,22 @@ class JitaMargin < ActiveRecord::Base
       min_price = MinPrice.find_by_eve_item_id_and_trade_hub_id( item.id, jita.id )
 
       if min_price && item.blueprint && item.cost
+        bp = item.blueprint
         # puts item.inspect
-        unit_cost = item.cost / item.blueprint.prod_qtt
+        batch_size = item.full_batch_size
+        unit_cost = item.cost / bp.prod_qtt
         margin = min_price.min_price - unit_cost
-        margin_percent = min_price.min_price / unit_cost
+        margin_percent = ( min_price.min_price / unit_cost ) - 1
+
         cplma = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita.region_id, item.cpp_eve_item_id )
         sum_volume = cplma ? cplma.volume_sum : -1
 
         jita_margin = JitaMargin.find_or_create_by!( eve_item_id: item.id )
-        jita_margin.update_attributes( margin: margin, jita_min_price: min_price.min_price, cost: unit_cost,
-          margin_percent: margin_percent, mens_volume: sum_volume )
+        result = jita_margin.update_attributes( margin: margin * batch_size,
+          jita_min_price: min_price.min_price, cost: unit_cost,
+          margin_percent: margin_percent, mens_volume: sum_volume, batch_size: batch_size )
+
+        dummy = true
       end
     end
   end

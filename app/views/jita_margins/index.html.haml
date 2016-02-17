@@ -12,26 +12,27 @@
         %th
           Item
         %th.text-right
-          Margin
+          Benefit (full batch)
         %th.text-right
-          Volume
+          Volume sold
         %th.text-right
           Margin percent
         %th.text-right
-          Jita min price
+          Jita min price (unit)
         %th.text-right
-          Cost
+          Cost (unit)
         %th
     - @margins.each do |margin|
       %tr
-        %td= link_to( margin.eve_item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{margin.eve_item.cpp_eve_item_id}" )
+        %td= link_to( margin.eve_item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{margin.eve_item.cpp_eve_item_id}", target: '_blank' )
         %td.text-right= print_isk( margin.margin )
-        %td.text-right= margin.mens_volume
-        %td.text-right= print_pcent( margin.margin_percent.round ) if margin && margin.margin_percent
-        %td.text-right= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}" )
+        %td.text-right= print_volume( margin.mens_volume )
+        %td.text-right= print_pcent( margin.margin_percent ) if margin && margin.margin_percent
+        %td.text-right= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}&usesystem=30000142", target: '_blank' )
         %td.text-right= print_isk( margin.cost )
         %td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
 
   .text-center
-    = button_to "Sign in for custom results *", price_advices_advice_prices_path, id: "sign_in", method: :get, class: 'btn-lg btn-warning'
-    * select your items, trade hubs, and more ...
+    = button_to "Sign in for custom results", '/sessions/new', id: "sign_in", method: :get, class: 'btn-lg btn-warning'
+    %h4
+      select your items, trade hubs, and more ...

@@ -44,7 +44,7 @@ gem 'rails-jquery-autocomplete'
 
 gem 'omniauth'
 gem 'omniauth-facebook', '1.4.0'
-gem "omniauth-google-oauth2"
+gem "omniauth-google-oauth2", :git => 'https://github.com/zquestz/omniauth-google-oauth2', :branch => 'master'
 gem 'omniauth-identity'
 
 # Use ActiveModel has_secure_password
