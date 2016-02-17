@@ -10,7 +10,7 @@ class JitaMargin < ActiveRecord::Base
 
       next if item.epic_blueprint
 
-      puts "Computing margin for #{item.name}"
+      # puts "Computing margin for #{item.name}"
 
       min_price = MinPrice.find_by_eve_item_id_and_trade_hub_id( item.id, jita.id )
 
