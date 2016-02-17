@@ -1,5 +1,6 @@
 module ItemsInit::ItemSetupAndCompSelf
 
+  # This is the currently used engine for retrieving prices
   def compute_min_price_for_system(trade_hub, items)
     # For now, we no more use the min price, but the avg prices
     # Method keep the old name, to avoid huge code refactoring
