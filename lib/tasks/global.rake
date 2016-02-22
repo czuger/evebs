@@ -6,7 +6,7 @@ end
 namespace :data_compute do
   namespace :full do
     desc "Full process - hourly"
-    task :hourly => [:environment, 'min_prices:used' , :get_orders, :get_sales]
+    task :hourly => [:environment, 'min_prices:used' , :get_orders, :get_sales, :jita_margins]
 
     desc "Full process - daily"
     task :daily => [:environment, 'price_history:update:all', :costs]
