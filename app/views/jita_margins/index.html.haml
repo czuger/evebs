@@ -14,22 +14,22 @@
         %th.text-right
           Benefit (full batch)
         %th.text-right
-          Volume sold
+          Sold this month
         %th.text-right
-          Margin percent
+          Cost (unit)
         %th.text-right
           Jita min price (unit)
         %th.text-right
-          Cost (unit)
+          Percent benefit
         %th
     - @margins.each do |margin|
       %tr
         %td= link_to( margin.eve_item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{margin.eve_item.cpp_eve_item_id}", target: '_blank' )
         %td.text-right= print_isk( margin.margin )
         %td.text-right= print_volume( margin.mens_volume )
-        %td.text-right= print_pcent( margin.margin_percent ) if margin && margin.margin_percent
-        %td.text-right= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}&usesystem=30000142", target: '_blank' )
         %td.text-right= print_isk( margin.cost )
+        %td.text-right= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}&usesystem=30000142", target: '_blank' )
+        %td.text-right= print_pcent( margin.margin_percent ) if margin && margin.margin_percent
         %td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
 
   .text-center

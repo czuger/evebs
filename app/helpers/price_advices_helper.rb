@@ -62,7 +62,7 @@ module PriceAdvicesHelper
       when :volume
         number_with_delimiter(amount, separator: ",", delimiter: " ",)
       when :isk
-        number_to_currency(amount.round(1), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
+        number_to_currency(amount.round(2), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
       when :pcent
         number_with_delimiter((amount * 100).round( 2 ), separator: ",", delimiter: " ",) + ' %'
       else
