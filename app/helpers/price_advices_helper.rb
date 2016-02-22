@@ -66,7 +66,6 @@ module PriceAdvicesHelper
       when :pcent
         "#{(amount * 100).round(1)} %"
       else
-
     end
   end
 
