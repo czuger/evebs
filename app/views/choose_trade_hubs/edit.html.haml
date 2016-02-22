@@ -1,45 +1,30 @@
-#selection_div
+.container
 
   %h3 Check trade hubs you want to monitor
 
   = form_tag choose_trade_hubs_path(@user.id), method: :put do
     = submit_tag 'Update trade hubs list', class: 'btn btn-default'
+
     %hr
-    %table.table
-      %tr
-        %th{ colspan: 6 } Empire regions
-        %th{ colspan: 3 } Outer regions
-      - (0 .. @max_size ).each do |i|
-        %tr
-          - trade_hub = @inner_trade_hubs_1[i]
-          - if trade_hub
-            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
-            %td.trade_hub_table_thin_cell_borders= trade_hub.name
-            %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-          - else
-            %td.trade_hub_table_no_cell_borders{ colspan: 3 }
-          - trade_hub = @inner_trade_hubs_2[i]
-          - if trade_hub
-            %td.trade_hub_table_thin_cell_borders_right=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
-            %td.trade_hub_table_thin_cell_borders_left= trade_hub.name
-            %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-          - else
-            %td.trade_hub_table_no_cell_borders{ colspan: 3 }
-          - trade_hub = @outer_trade_hubs[i]
-          - if trade_hub
-            %td.trade_hub_table_thin_cell_borders=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
-            %td.trade_hub_table_thin_cell_borders_left= trade_hub.name
-            %td.trade_hub_table_thin_cell_borders= trade_hub.region.name
-          - else
-            %td.trade_hub_table_no_cell_borders{ colspan: 3 }
+
+    .row
+      - @inner_trade_hubs.in_groups(2, false).each do |group|
+        .col-md-4
+          %table.table.table-bordered
+            %tbody
+              - group.each do |trade_hub|
+                %tr
+                  %td= check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
+                  %td= trade_hub.name
+                  %td= "(#{trade_hub.region.name})"
+
+      .col-md-4
+        %table.table.table-bordered
+          %tbody
+            - @outer_trade_hubs.each do |trade_hub|
+              %tr
+                %td= check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
+                %td= trade_hub.name
+                %td= "(#{trade_hub.region.name})"
 
     = submit_tag 'Update trade hubs list', class: 'btn btn-default'
-
-    -#- @trade_hubs.in_groups_of(@per_group_count).each do |trade_hub_group|
-    -#  %table.side_by_side_table
-    -#    - trade_hub_group.each do |trade_hub|
-    -#      - if trade_hub
-    -#        %tr
-    -#          %td=check_box_tag('trade_hubs_ids[]',trade_hub.id,@user_trade_hubs_ids.include?(trade_hub.id))
-    -#          %td=trade_hub.name
-

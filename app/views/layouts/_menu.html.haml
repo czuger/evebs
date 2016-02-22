@@ -13,9 +13,9 @@
             Items
             %span.caret
           %ul.dropdown-menu
-            %li= link_to 'Add', new_choose_items_path
-            %li= link_to 'Edit', edit_choose_items_path
-        %li
+            %li{ class: active_link( new_choose_items_path ) }= link_to 'Add', new_choose_items_path
+            %li{ class: active_link( edit_choose_items_path ) }= link_to 'Edit', edit_choose_items_path
+        %li{ class: active_link( edit_choose_trade_hubs_path ) }
           = link_to 'Trade hubs', edit_choose_trade_hubs_path
 
         %li
@@ -23,10 +23,10 @@
             Earnings
             %span.caret
           %ul.dropdown-menu
-            %li= link_to 'Daily', price_advices_advice_prices_path
-            %li.active= link_to 'Monthly', price_advices_advice_prices_monthly_path
-            %li= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
-            %li= link_to 'Basket', shopping_baskets_path
+            %li{ class: active_link( price_advices_advice_prices_path ) }= link_to 'Daily', price_advices_advice_prices_path
+            %li{ class: active_link( price_advices_advice_prices_monthly_path ) }= link_to 'Monthly', price_advices_advice_prices_monthly_path
+            %li{ class: active_link( price_advices_show_challenged_prices_path ) }= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
+            %li{ class: active_link( shopping_baskets_path ) }= link_to 'Basket', shopping_baskets_path
         -#- if is_cedric_zuger
         -#  %li
         -#    = link_to 'Perso', '#'
@@ -38,8 +38,8 @@
             User
             %span.caret
           %ul.dropdown-menu
-            %li= link_to 'Edit', edit_user_path( :dummy )
-            %li= link_to 'Change password', user_edit_password_path( :dummy )
+            %li{ class: active_link( edit_user_path( :dummy ) ) }= link_to 'Edit', edit_user_path( :dummy )
+            %li{ class: active_link( user_edit_password_path( :dummy ) ) }= link_to 'Change password', user_edit_password_path( :dummy )
         %li= link_to 'Help', '/help.pdf', target: '_blank'
         %li= link_to "Sign out", signout_path, id: "sign_out"
     - else

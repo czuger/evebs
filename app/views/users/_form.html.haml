@@ -6,27 +6,37 @@
         - @user.errors.full_messages.each do |msg|
           %li= msg
 
-  .form-group
-    = f.label :name
-    = f.text_field :name, class: 'form-control'
-  .form-group
-    = f.label :min_pcent_for_advice
-    = f.text_field :min_pcent_for_advice, size: 5, class: 'form-control'
-  .form-group
-    = f.label :min_amount_for_advice
-    = f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ), class: 'form-control' )
-  .form-group
-    = f.label :key_user_id
-    = f.text_field :key_user_id, class: 'form-control'
-  .form-group
-    = f.label :api_key
-    = f.text_field :api_key, size: 60, class: 'form-control'
-  .form-group
-    = f.label :remove_occuped_places
-    = f.check_box :remove_occuped_places
-  .form-group
-    = f.label :watch_my_prices
-    = f.check_box :watch_my_prices
+  .row
+    .col-md-9
+      .form-group
+        = f.label :name
+        = f.text_field :name, class: 'form-control'
+      .form-group
+        = f.label :key_user_id
+        = f.text_field :key_user_id, class: 'form-control'
+      .form-group
+        = f.label :api_key
+        = f.text_field :api_key, size: 60, class: 'form-control'
 
-  .actions
-    = f.submit 'Save', class: 'btn btn-default'
+    .col-md-3
+      .form-group
+        = f.label :min_pcent_for_advice
+        = f.text_field :min_pcent_for_advice, size: 5, class: 'form-control'
+      .form-group
+        = f.label :min_amount_for_advice
+        = f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ), class: 'form-control' )
+
+      .form-group
+        = f.check_box :remove_occuped_places
+        = f.label :remove_occuped_places
+
+      .form-group
+        = f.check_box :watch_my_prices
+        = f.label :watch_my_prices
+
+  .row
+    .col-md-12.text-center
+      .actions
+        = f.submit 'Save', class: 'btn btn-default'
+
+

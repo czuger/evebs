@@ -4,10 +4,11 @@
 .order_advice_containers
 
   - if @trade_hubs_names && @item_names
-    = label_tag 'select_trade_hubs', 'Trade hubs'
-    = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
-    = label_tag 'select_items', 'Items'
-    = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
+    .col-md-6
+      = label_tag 'select_trade_hubs', 'Trade hubs'
+      = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
+      = label_tag 'select_items', 'Items'
+      = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
 
   %h3
     My orders status
@@ -25,11 +26,11 @@
       %tr{ class: cycle( :odd, :even ) }
         %td.trade_hub_name=cp[:trade_hub_name]
         %td.item_name= link_to( cp[:eve_item_name], price_advices_show_item_detail_path( cp[:eve_item_id] ) )
-        %td.cell_right_align=print_isk( cp[:cost] )
-        %td.cell_right_align=print_isk( cp[:min_price] )
-        %td.cell_right_align=print_pcent( cp[:margin_pcent] )
-        %td.cell_right_align=print_isk( cp[:my_price] )
-        %td.cell_right_align
+        %td.text-right=print_isk( cp[:cost] )
+        %td.text-right=print_isk( cp[:min_price] )
+        %td.text-right=print_pcent( cp[:margin_pcent] )
+        %td.text-right=print_isk( cp[:my_price] )
+        %td.text-right
           = print_isk( ( cp[:min_price] - cp[:my_price] ) ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
         %td
           %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})", class: 'btn btn-default' }
