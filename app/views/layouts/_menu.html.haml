@@ -3,7 +3,7 @@
 -#    Eve business server (Beta) - version 0.1-CHANGE_TO_VERSION_NUMBER
 
 %nav.navbar.navbar-default
-  %div{ class: 'container-fluid' }
+  .container-fluid
     -#.navbar-header
     -#  %a.navbar-brand{ href: '#' }
     -#    Eve business server (Beta) - version 0.2-CHANGE_TO_VERSION_NUMBER
@@ -50,6 +50,7 @@
         %li= link_to "Sign in", '/sessions/new', id: "sign_in"
     %ul.nav.navbar-nav
       %li= link_to 'Help', '/help.pdf', target: '_blank'
-    .navbar-text.navbar-right.small
-      version 0.2-CHANGE_TO_VERSION_NUMBER
+    .navbar-collapse
+      %p.nav.navbar-text.navbar-right.small
+        version 0.2-CHANGE_TO_VERSION_NUMBER
 
