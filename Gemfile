@@ -57,6 +57,8 @@ gem 'time_diff'
 gem 'bootstrap-tooltip-rails'
 # gem 'awesome_nested_set'
 
+gem 'actionpack-page_caching'
+
 gem 'will_paginate', '~> 3.0.6'
 
 gem 'inline_svg'

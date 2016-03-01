@@ -3,10 +3,12 @@ class JitaMarginsController < ApplicationController
   before_action :log_client_activity
   before_action :require_logged_in!, except: [ :index ]
 
+  caches_page :index
+
   def index
     # TODO : download prod database and try localy
     @margins = JitaMargin.joins(:eve_item).includes( :eve_item ).where.not('eve_items.epic_blueprint' => true)
-      .where( 'margin_percent > 0.4' ).where( 'mens_volume > 0' )
+      .where( 'margin_percent > 0.4' ).where( 'mens_volume > 1000' )
       .order( 'margin DESC' ).limit( 5 )
   end
 
