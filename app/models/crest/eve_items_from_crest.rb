@@ -46,7 +46,7 @@ class Crest::EveItemsFromCrest
     ActiveRecord::Base.transaction do
       CrestPriceHistory.delete_all( eve_item_id: to_delete_items_ids )
       CrestPricesLastMonthAverage.delete_all( eve_item_id: to_delete_items_ids )
-      EveItem.delete_all( id: to_delete_items_ids )
+      EveItem.destroy_all( id: to_delete_items_ids )
     end
 
     ActiveRecord::Base.transaction do
