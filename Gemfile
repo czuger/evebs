@@ -65,6 +65,8 @@ gem 'inline_svg'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 
+gem 'spreadsheet'
+
 group :development, :test do
   gem 'capistrano', '~> 3.4.0'
   gem 'capistrano-rails', '~> 1.1'

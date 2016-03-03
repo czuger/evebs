@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160217105428) do
+ActiveRecord::Schema.define(version: 20160303141811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 20160217105428) do
   add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
   add_index "crest_price_histories", ["region_id"], name: "index_crest_price_histories_on_region_id", using: :btree
 
-  create_table "crest_prices_last_month_averages", id: false, force: :cascade do |t|
+  create_table "crest_prices_last_month_averages", force: :cascade do |t|
     t.integer  "region_id",                 null: false
     t.integer  "eve_item_id",               null: false
     t.integer  "order_count_sum", limit: 8
