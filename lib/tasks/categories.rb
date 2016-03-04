@@ -10,7 +10,7 @@ namespace :data_setup do
       data2 = s.cell(line, 3)
     end
 
-    blueprints_array=Blueprint.load_blueprint_array
+    blueprints_array=Blueprint.blueprints_array
     eve_item_hash=EveItem.download_items_hash
     blueprints_array.each do |bp|
       item_id = bp[:produced_item_id]

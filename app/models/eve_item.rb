@@ -8,7 +8,7 @@ class EveItem < ActiveRecord::Base
   include ItemsInit::ItemSetupAndComp
   extend ItemsInit::ItemSetupAndCompSelf
   extend MultiplePriceRetriever
-  extend Setup::EveItem
+  extend Setup::UpdateEveItems
 
   has_and_belongs_to_many :users
   has_one :blueprint, dependent: :destroy
@@ -49,26 +49,5 @@ class EveItem < ActiveRecord::Base
   def full_batch_size
     blueprint.nb_runs*blueprint.prod_qtt if blueprint
   end
-
-  # Dead code
-  #
-  # def compute_min_price_for_system(system)
-  #   # For now, we no more use the min price, but the avg prices
-  #   # Method keep the old name, to avoid huge code refactoring
-  #
-  #   min = get_min_price_from_eve_central(cpp_eve_item_id,system.eve_system_id)
-  #
-  #   min_price_item = MinPrice.where( 'eve_item_id = ? AND trade_hub_id = ?', id, system.id ).first
-  #
-  #   if min
-  #     set_min_price_for_system(min,system.id)
-  #   else
-  #     # We no more destroy the item
-  #     # if min_price_item
-  #     #   puts "Destroying min price for item : #{min_price_item.inspect}"
-  #     #   min_price_item.destroy
-  #     # end
-  #   end
-  # end
 
 end

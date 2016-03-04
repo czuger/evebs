@@ -26,7 +26,7 @@ namespace :data_setup do
   task :blueprints_setup => :environment do
     puts 'About to feed the blueprint database'
     ActiveRecord::Base.transaction do
-      blueprints_array=Blueprint.load_blueprint_array
+      blueprints_array=Blueprint.blueprints_array
       blueprints_array.each do |bp|
         # next if bp[:skills_count] <= 1 # Blueprint shit
         blueprint_id = bp[:blueprint_id]

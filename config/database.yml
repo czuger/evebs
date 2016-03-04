@@ -15,3 +15,9 @@ test:
   username: eve_business_server
   password: 123456
   #schema_search_path: :test
+
+cpp_original_data:
+  adapter: sqlite3
+  database: work/eve.db
+  pool: 5
+  timeout: 5000

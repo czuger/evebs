@@ -6,7 +6,7 @@ namespace :data_setup do
   desc "Feed item objects list"
   task :update_all_items => :environment do
     puts 'About to fill the objects list'
-    EveItem.update_eve_item_list
+    EveItem.update_eve_items_list
   end
   desc "Fill name_lowcase"
   task :fill_name_lowcase => :environment do

@@ -18,3 +18,6 @@
 vendor/bundle
 
 sqlite.sqlite3
+
+*.bz2
+*.db
