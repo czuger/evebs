@@ -5,24 +5,24 @@ namespace :db do
       desc 'Dump all database from prod to dev'
       task :full => :environment do
 
-        unless File.exists?( '/tmp/production.sql' )
+        unless File.exists?( 'tmp/production.sql' )
           `ssh hw [ -e /tmp/production.sql.gz ]`
           unless $?.to_i == 0 # file exist
             # Dump and compress it
           end
           # Get the remote file
           puts 'Retrieving prod dump'
-          `scp hw:/tmp/production.sql.gz /tmp/`
+          `scp hw:/tmp/production.sql.gz tmp/`
           puts 'Unzipping prod dump'
-          `gunzip /tmp/production.sql.gz`
+          `gunzip tmp/production.sql.gz`
         end
 
         puts 'Modifying prod dump'
-        `sed -i.bak '/SET search_path = production, pg_catalog;/d' /tmp/production.sql`
-        `sed -i.bak '/CREATE SCHEMA production;/d' /tmp/production.sql`
-        `sed -i.bak '/ALTER SCHEMA production OWNER TO eve_business_server;/d' /tmp/production.sql`
+        `sed -i.bak '/SET search_path = production, pg_catalog;/d' tmp/production.sql`
+        `sed -i.bak '/CREATE SCHEMA production;/d' tmp/production.sql`
+        `sed -i.bak '/ALTER SCHEMA production OWNER TO eve_business_server;/d' tmp/production.sql`
 
-        File.unlink( '/tmp/production.sql.bak' )
+        File.unlink( 'tmp/production.sql.bak' )
 
         puts 'Dropping database'
         `psql -U eve_business_server -c 'DROP DATABASE eve_business_server_dev'`
@@ -30,7 +30,7 @@ namespace :db do
         `psql -U eve_business_server -c 'CREATE DATABASE eve_business_server_dev'`
 
         puts 'Creating database'
-        `psql -U eve_business_server eve_business_server_dev < /tmp/production.sql`
+        `psql -U eve_business_server eve_business_server_dev < tmp/production.sql`
       end
 
 

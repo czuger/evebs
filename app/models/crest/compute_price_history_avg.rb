@@ -37,7 +37,7 @@ class Crest::ComputePriceHistoryAvg
           AVG( order_count ) order_count_avg, AVG( volume ) volume_avg,
           AVG( low_price ) low_price_avg, AVG( avg_price ) avg_price_avg, AVG( high_price ) high_price_avg
           FROM crest_price_histories
-          WHERE history_date > '2015-08-11'
+          WHERE history_date > '#{last_month}'
           GROUP BY region_id, eve_item_id ) sub
         WHERE crest_prices_last_month_averages.region_id = sub.region_id
         AND crest_prices_last_month_averages.eve_item_id = sub.eve_item_id;

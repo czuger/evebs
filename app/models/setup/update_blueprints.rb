@@ -27,7 +27,6 @@ module Setup::UpdateBlueprints
 
         blueprints_array << blueprint_hash
       end
-
     end
     blueprints_array
   end

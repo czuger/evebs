@@ -7,8 +7,8 @@ class JitaMarginsController < ApplicationController
 
   def index
     # TODO : download prod database and try localy
-    @margins = JitaMargin.joins(:eve_item).includes( :eve_item ).where.not('eve_items.epic_blueprint' => true)
-      .where( 'margin_percent > 0.4' ).where( 'mens_volume > 1000000' )
+    @margins = JitaMargin.includes( :eve_item )
+      .where( 'margin_percent > 0.4' ).where( 'mens_volume > ( batch_size * 15 )' )
       .order( 'margin DESC' ).limit( 5 )
   end
 
