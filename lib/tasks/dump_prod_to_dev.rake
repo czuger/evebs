@@ -33,7 +33,6 @@ namespace :db do
         `psql -U eve_business_server eve_business_server_dev < tmp/production.sql`
       end
 
-
       desc "Dump user table from prod to dev"
       task :users => :environment do
 
