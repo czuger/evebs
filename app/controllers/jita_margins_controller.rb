@@ -3,7 +3,8 @@ class JitaMarginsController < ApplicationController
   before_action :log_client_activity
   before_action :require_logged_in!, except: [ :index ]
 
-  caches_page :index
+  # Todo, need a special page when logged otherwise, the logged menu is cached.
+  # caches_page :index
 
   def index
     # TODO : download prod database and try localy

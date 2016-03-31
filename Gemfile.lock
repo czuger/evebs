@@ -127,6 +127,8 @@ GEM
     jquery-turbolinks (2.1.0)
       railties (>= 3.1.0)
       turbolinks
+    jquery-ui-rails (5.0.5)
+      railties (>= 3.2.16)
     json (1.8.3)
     jwt (0.1.13)
       multi_json (>= 1.5)
@@ -287,6 +289,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   jquery-turbolinks
+  jquery-ui-rails
   nokogiri
   omniauth
   omniauth-facebook (= 1.4.0)

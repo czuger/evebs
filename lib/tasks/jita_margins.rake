@@ -14,8 +14,7 @@ namespace :data_compute do
     puts '*'*100
 
     # At the end we need to clear the cache (the front page)
-    File.unlink( 'public/index.html' )
-
+    File.unlink( 'public/index.html' ) if File.exists?( 'public/index.html' )
   end
 end
 
