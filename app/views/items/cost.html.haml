@@ -1,6 +1,7 @@
 %h3
-  Production cost for
-  = @item.name
+  Production cost estimation for
+  %span.text-info
+    = @item.name
   (
   = print_isk( @item.single_unit_cost )
   )

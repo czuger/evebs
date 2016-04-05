@@ -1,19 +1,16 @@
 .container
 
   %h3
-    - if @message
-      %span.choose_item_message
-        = @message
-      %br
-      %br
+    Type the name of items you want to monitor
 
-    -#%span{ rel: :tooltip, title: :test }
-    %span
-      Type the name of items you want to monitor
-
-  = form_tag '/choose_items' do
     -# doc is wrong, use 'data-append-to' => '#test_append' instead of append_to
-    = autocomplete_field_tag :eve_item_name, '', autocomplete_eve_item_name_lowcase_choose_items_path, :id_element => '#choosen_item'
-    = submit_tag 'Add the item(s)', class: 'btn btn-default'
+    -#= form_tag '/choose_items' do
+    .row
+      .col-md-9
+        .form-group
+          %input#add-items-autocomplete.form-control{ placeholder: 'Add item' }
 
-    = hidden_field_tag 'choosen_item'
+      .col-md-3
+        = submit_tag 'Add the item(s)', class: 'btn btn-default'
+
+= hidden_field_tag 'choosen_item'

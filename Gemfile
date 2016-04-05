@@ -41,7 +41,7 @@ gem 'haml-rails'
 
 gem 'quiet_assets'
 
-gem 'rails-jquery-autocomplete'
+# gem 'rails-jquery-autocomplete'
 
 gem 'omniauth'
 gem 'omniauth-facebook', '1.4.0'

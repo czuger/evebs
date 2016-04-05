@@ -1,4 +1,4 @@
-$ ->
+$(document).ready ->
   $( '#select_trade_hubs' ).change ->
     selected_value = $(this).val()
     $('.trade_hub_name').parent().show()

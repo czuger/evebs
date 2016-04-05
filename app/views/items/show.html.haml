@@ -1,23 +1,23 @@
 %h3
-  = @item.name
+  = link_to( @item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{@item.cpp_eve_item_id}", :target => '_blank' )
   (
   = link_to( 'Eve central quicklook', "https://eve-central.com/home/quicklook.html?typeid=#{@item.cpp_eve_item_id}", :target => '_blank' )
   )
 
-%h4
-  = "Item cost: #{print_isk(@item_cost)}"
-  (
-  = link_to( 'Detail', item_cost_path( @item ) )
-  )
+-#%h4
+-#  = "Item cost: #{print_isk(@item_cost)}"
+-#  (
+-#  = link_to( 'Detail', item_cost_path( @item ) )
+-#  )
 
-%table.table
+%table.table.table-bordered
   %tr
     %th Trade hub
-    %th Current margin
-    %th Current min price
-    %th Avg margin
-    %th Avg price
-    %th Monthly regional volume
+    %th.text-right Current margin
+    %th.text-right Current min price
+    %th.text-right Avg margin
+    %th.text-right Avg price
+    %th.text-right Monthly regional volume
     - @region_array_sorted_keys.each_with_index do |cp, row_index|
       - region_array_data = @region_array[ cp[ 1 ] ][ :region_data ]
       - trade_hubs = @region_array[ cp[ 1 ] ][ :trades_hubs_data ]
@@ -27,10 +27,10 @@
         - row_class = cycle( :odd, :even )
         %tr
           %td{ class: cell_classes( region_printed, :left, nil, row_class, last_row ) }= trade_hub[ :trade_hub ]
-          %td{ class: cell_classes( region_printed, :middle, :right, row_class, last_row ) }= print_pcent( trade_hub[ :min_price_margin ] )
-          %td{ class: cell_classes( region_printed, :middle_middle, :right, row_class, last_row ) }= print_isk( trade_hub[ :min_price ] )
+          %td.text-right{ class: cell_classes( region_printed, :middle, :right, row_class, last_row ) }= print_pcent( trade_hub[ :min_price_margin ] )
+          %td.text-right{ class: cell_classes( region_printed, :middle_middle, :right, row_class, last_row ) }= print_isk( trade_hub[ :min_price ] )
           - unless region_printed
-            %td.vcenter{ rowspan: trade_hubs.count }= print_pcent( region_array_data[ :avg_price_margin ] )
-            %td.vcenter{ rowspan: trade_hubs.count }= print_isk( region_array_data[ :avg_price ] )
-            %td.vcenter{ rowspan: trade_hubs.count }= print_volume( region_array_data[ :volume ] )
+            %td.vcenter.text-right{ rowspan: trade_hubs.count }= print_pcent( region_array_data[ :avg_price_margin ] )
+            %td.vcenter.text-right{ rowspan: trade_hubs.count }= print_isk( region_array_data[ :avg_price ] )
+            %td.vcenter.text-right{ rowspan: trade_hubs.count }= print_volume( region_array_data[ :volume ] )
             - region_printed = true

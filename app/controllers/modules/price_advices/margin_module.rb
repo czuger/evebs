@@ -64,6 +64,7 @@ module Modules::PriceAdvices::MarginModule
             benef_pcent: benef_pcent,
             batch_size: eve_item.full_batch_size,
             monthly_amount: volume_sum,
+            id: eve_item.id
           }
 
           if margin_type == :daily
