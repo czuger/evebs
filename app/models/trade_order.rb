@@ -39,23 +39,32 @@ class TradeOrder < ActiveRecord::Base
           get_full_order_list( full_orders_list )
           # On supprime tous les ordres marqués comme anciens
           TradeOrder.destroy_all( new_order: false )
-        rescue EAAL::Exception => exception
-          STDERR.puts '#'*50
-          STDERR.puts EAAL::Exception
-          STDERR.puts Time.now
-          STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
-          STDERR.puts exception.message
-          STDERR.puts '#'*50
-          user.api_key_errors.create!( error_message: exception.class + '#' + exception.message )
-          # user.update_attributes( key_user_id: nil, api_key: nil )
+
         rescue StandardError => exception
+
           STDERR.puts '#'*50
-          STDERR.puts StandardError
+
+          if exception.class.to_s =~ /EveAPIException/
+            STDERR.puts 'EveAPIException'
+
+            user.api_key_errors.create!( error_message: exception.inspect )
+            user.update_attributes( remove_occuped_places: false, watch_my_prices: false )
+            puts 'Algo will stop checking orders for this user'
+            puts
+
+          else
+            STDERR.puts StandardError
+            standard_error = true
+          end
+
           STDERR.puts Time.now
-          STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
+          STDERR.puts "In TradeOrder##{__method__} for #{user.name}-#{user.id}"
           STDERR.puts exception.message
+
+          # STDERR.puts exception.inspect
+          STDERR.puts exception.backtrace if standard_error
           STDERR.puts '#'*50
-          STDERR.puts exception.backtrace
+
         end
       end
     else
