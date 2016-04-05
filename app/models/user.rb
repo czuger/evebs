@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_many :materials, through: :blueprints
   has_many :components, through: :materials
   has_many :trade_orders
+  has_many :api_key_errors
 
   belongs_to :identity, foreign_key: :uid
 

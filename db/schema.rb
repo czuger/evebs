@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303141811) do
+ActiveRecord::Schema.define(version: 20160405080556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "api_key_errors", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "error_message"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "api_key_errors", ["user_id"], name: "index_api_key_errors_on_user_id", using: :btree
 
   create_table "blueprints", force: :cascade do |t|
     t.integer  "eve_item_id"
@@ -298,6 +307,7 @@ ActiveRecord::Schema.define(version: 20160303141811) do
     t.boolean  "admin",                               default: false, null: false
   end
 
+  add_foreign_key "api_key_errors", "users"
   add_foreign_key "blueprints", "eve_items"
   add_foreign_key "crest_costs", "eve_items"
   add_foreign_key "crest_price_histories", "eve_items"

@@ -46,7 +46,8 @@ class TradeOrder < ActiveRecord::Base
           STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
           STDERR.puts exception.message
           STDERR.puts '#'*50
-          user.update_attributes( key_user_id: nil, api_key: nil )
+          user.api_key_errors.create!( error_message: exception.class + '#' + exception.message )
+          # user.update_attributes( key_user_id: nil, api_key: nil )
         rescue StandardError => exception
           STDERR.puts '#'*50
           STDERR.puts StandardError
