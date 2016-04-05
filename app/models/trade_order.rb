@@ -39,20 +39,22 @@ class TradeOrder < ActiveRecord::Base
           get_full_order_list( full_orders_list )
           # On supprime tous les ordres marqués comme anciens
           TradeOrder.destroy_all( new_order: false )
-        rescue StandardError => exception
-          STDERR.puts '#'*50
-          STDERR.puts Time.now
-          STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
-          STDERR.puts exception.message
-          STDERR.puts '#'*50
-         # STDERR.puts exception.backtrace
         rescue EAAL::Exception => exception
           STDERR.puts '#'*50
+          STDERR.puts EAAL::Exception
           STDERR.puts Time.now
           STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
           STDERR.puts exception.message
-          STDERR.puts exception.backtrace
           STDERR.puts '#'*50
+          user.update_attributes( key_user_id: nil, api_key: nil )
+        rescue StandardError => exception
+          STDERR.puts '#'*50
+          STDERR.puts StandardError
+          STDERR.puts Time.now
+          STDERR.puts "In #{self.class}##{__method__} for #{user.name}-#{user.id}"
+          STDERR.puts exception.message
+          STDERR.puts '#'*50
+          STDERR.puts exception.backtrace
         end
       end
     else
