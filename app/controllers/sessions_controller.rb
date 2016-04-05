@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
     user = User.from_omniauth(env["omniauth.auth"])
     raise "User can't be found : #{user}" unless user
     session[:user_id] = user.id
-    redirect_to root_url
+    redirect_to price_advices_advice_prices_url
   end
 
   def destroy
