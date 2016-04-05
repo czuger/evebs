@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160405080556) do
+ActiveRecord::Schema.define(version: 20160405090537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20160405080556) do
     t.string   "error_message"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.string   "user_message"
   end
 
   add_index "api_key_errors", ["user_id"], name: "index_api_key_errors_on_user_id", using: :btree

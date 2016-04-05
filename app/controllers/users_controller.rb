@@ -23,8 +23,10 @@ class UsersController < ApplicationController
         params['user']['min_amount_for_advice'].gsub!( ' ', '' ) if params['user']['min_amount_for_advice']
         if @user.update(user_params)
           @user.update_attribute(:last_changes_in_choices,Time.now)
-          format.html { render :edit, notice: 'User was successfully updated.' }
+          flash.now[ :notice ] = 'User updated successfully.'
+          format.html { render :edit }
         else
+          flash.now[ :alert ] = @user.errors
           format.html { render :edit }
         end
       end
@@ -35,18 +37,20 @@ class UsersController < ApplicationController
   end
 
   def change_password
+
     @user = current_user
     @identity = Identity.find( @user.uid )
     @identity.password = params['new_password']
     @identity.password_confirmation = params['new_password_confirmation']
     result = @identity.save
+
     unless result
-      flash[:errors] = @identity.errors
+      flash[ :alert ] = @identity.errors
     else
-      flash[:success] = true
+      flash[ :notice ] = 'Password changed successfully.'
     end
 
-    redirect_to  user_edit_password_path
+    redirect_to user_edit_password_path
   end
 
   private

@@ -47,7 +47,7 @@ class TradeOrder < ActiveRecord::Base
           if exception.class.to_s =~ /EveAPIException/
             STDERR.puts 'EveAPIException'
 
-            user.api_key_errors.create!( error_message: exception.inspect )
+            user.api_key_errors.create!( error_message: exception.inspect, user_message: exception.message )
             user.update_attributes( remove_occuped_places: false, watch_my_prices: false )
             puts 'Algo will stop checking orders for this user'
             puts

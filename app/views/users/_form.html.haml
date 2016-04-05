@@ -1,10 +1,12 @@
 = form_for @user do |f|
-  - if @user.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@user.errors.count, "error")} prohibited this user from being saved:"
+  - if flash.alert && flash.alert.any?
+    %div.bg-danger.save_message_box_failure
+      = "#{pluralize(flash.alert.count, "error")} prohibited this password from being changed:"
       %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
+        - flash.alert.each do |msg|
+          %li= msg.join( ' : ' )
+  - elsif flash.notice
+    %p.bg-success.save_message_box_success= flash.notice
 
   .row
     .col-md-9
@@ -38,5 +40,20 @@
     .col-md-12.text-center
       .actions
         = f.submit 'Save', class: 'btn btn-default'
+
+%hr
+
+- unless @user.api_key_errors.empty?
+  %table.table
+    %thead
+      %tr.danger
+        %th= 'Last 5 API errors'
+        %th= 'Date'
+    %tbody
+      - @user.api_key_errors.order( 'created_at DESC' ).limit( 5 ).each do |error|
+        %tr.danger
+          %td= error.user_message
+          %td= error.created_at
+
 
 
