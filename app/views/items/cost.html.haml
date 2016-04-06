@@ -1,49 +1,50 @@
-%h3
-  Production cost estimation for
-  %span.text-info
-    = @item.name
-  (
-  = print_isk( @item.single_unit_cost )
-  )
+.container
 
-- total_for_batch = 0
-%table.table
-  %tr
-    %th Item
-    %th Average cost overt the last 30 days in Jita
-    %th Required quantity
-    %th Total cost
-  - @item.materials.includes( :component ).each do |material|
-    - component = material.component
-    - if component
-      %tr{ class: cycle( :odd, :even ) }
-        %td= component.name
-        %td.cell_right_align= print_isk( component.cost )
-        %td.cell_right_align= print_volume( material.required_qtt )
-        - total = component.cost * material.required_qtt
-        - total_for_batch += total
-        %td.cell_right_align= print_isk( total )
-  %tr{ class: cycle( :odd, :even ) }
-    %td{ colspan: 3 }
-      Total for batch
-    %td.cell_right_align= print_isk( total_for_batch )
-  - total_for_one_item = total_for_batch / @item.blueprint.prod_qtt
-  %tr{ class: cycle( :odd, :even ) }
-    %td{ colspan: 3 }
-      Batch size
-    %td.cell_right_align= print_volume( @item.blueprint.prod_qtt )
-  %tr{ class: cycle( :odd, :even ) }
-    %td{ colspan: 3 }
-      Total for one item
-    %td.cell_right_align= print_isk( total_for_one_item )
-  %tr{ class: cycle( :odd, :even ) }
-    %td{ colspan: 3 }
-      Industry taxes
-    %td.cell_right_align= print_pcent( 0.11 )
-  %tr{ class: cycle( :odd, :even ) }
-    %td{ colspan: 3 }
-      Final cost
-    %td.cell_right_align= print_isk( total_for_one_item * 1.11 )
+  %h3
+    Production cost estimation for
+    = link_to( @item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{@item.cpp_eve_item_id}", :target => '_blank' )
+    (
+    = print_isk( @item.single_unit_cost )
+    )
+
+  - total_for_batch = 0
+  %table.table
+    %tr
+      %th Item
+      %th.text-right Average cost overt the last 30 days in Jita
+      %th.text-right Required quantity
+      %th.text-right Total cost
+    - @item.materials.includes( :component ).each do |material|
+      - component = material.component
+      - if component
+        %tr{ class: cycle( :odd, :even ) }
+          %td= component.name
+          %td.text-right= print_isk( component.cost )
+          %td.text-right= print_volume( material.required_qtt )
+          - total = component.cost * material.required_qtt
+          - total_for_batch += total
+          %td.text-right= print_isk( total )
+    %tr{ class: cycle( :odd, :even ) }
+      %td{ colspan: 3 }
+        Total for batch
+      %td.text-right= print_isk( total_for_batch )
+    - total_for_one_item = total_for_batch / @item.blueprint.prod_qtt
+    %tr{ class: cycle( :odd, :even ) }
+      %td{ colspan: 3 }
+        Batch size
+      %td.text-right= print_volume( @item.blueprint.prod_qtt )
+    %tr{ class: cycle( :odd, :even ) }
+      %td{ colspan: 3 }
+        Total for one item
+      %td.text-right= print_isk( total_for_one_item )
+    %tr{ class: cycle( :odd, :even ) }
+      %td{ colspan: 3 }
+        Industry taxes
+      %td.text-right= print_pcent( 0.11 )
+    %tr{ class: cycle( :odd, :even ) }
+      %td{ colspan: 3 }
+        Final cost
+      %td.text-right= print_isk( total_for_one_item * 1.11 )
 
 
 

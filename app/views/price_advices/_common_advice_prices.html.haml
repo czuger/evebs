@@ -22,7 +22,7 @@
         %th.text-right Volume
         %th.text-right Cost
         %th.text-right Price
-        %th.text-center{ colspan: 3 } Earnings
+        %th.text-center{ colspan: 3 } Margin
         - if margin_type == :daily
           %th.text-right Daily/monthly
 
@@ -36,8 +36,8 @@
             %td.trade_hub_name=item[:trade_hub]
           %td.item_name= link_to( item[:eve_item], item_path( item[:eve_item_id] ) )
           %td.text-right.information_highlight_left=print_volume(item[:monthly_amount])
-          %td.text-right.information_highlight_left=print_isk(item[:cost])
-          %td.text-right.information_highlight_left= link_to( print_isk(item[:price]), item_cost_path( item[:id] ), target: '_blank' )
+          %td.text-right.information_highlight_left= link_to( print_isk(item[:cost]), item_cost_path( item[:id] ), target: '_blank' )
+          %td.text-right.information_highlight_left= link_to( print_isk(item[:price]), "https://eve-central.com/home/quicklook.html?typeid=#{item[:cpp_eve_item_id]}&usesystem=#{item[:cpp_system_id]}", target: '_blank' )
           %td.text-right.information_highlight_right=print_pcent(item[:benef_pcent])
           %td.text-right.information_highlight_right=print_isk(item[:benef])
           %td.text-right.information_highlight_right=item[:batch_size]

@@ -11,7 +11,7 @@ module Modules::PriceAdvices::MarginModule
 
     user_eve_items = @user.eve_items.includes( :blueprint )
 
-    @user.trade_hubs.includes( :region ).each do |trade_hub|
+    @user.trade_hubs.includes( region: :trade_hubs ).each do |trade_hub|
 
       eve_items = user_eve_items
       if @user.remove_occuped_places
@@ -52,12 +52,16 @@ module Modules::PriceAdvices::MarginModule
           set_trade_hubs( trade_hub.name )
           set_items( eve_item.name )
 
+          region = trade_hub.region
+
           price_record = {
-            trade_hub: trade_hub.name,
-            region_name: trade_hub.region.name,
+            trade_hub: "#{trade_hub.name} (#{region.name})",
+            region_name: "#{region.name } (#{region.trade_hubs.map{ |e| e.name }.join( ', ' )})",
             eve_item: eve_item.name,
             trade_hub_id: trade_hub.id,
             eve_item_id: eve_item.id,
+            cpp_eve_item_id: eve_item.cpp_eve_item_id,
+            cpp_system_id: trade_hub.eve_system_id,
             cost: eve_item.single_unit_cost,
             price: price,
             benef: benef,

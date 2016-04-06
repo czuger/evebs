@@ -17,7 +17,7 @@ Rails.application.routes.draw do
 
   resources :identities
 
-  resources :users, only: [:edit, :update] do
+  resource :users, only: [:edit, :update] do
     get :edit_password
     post :change_password
   end

@@ -8,7 +8,7 @@ module Modules::PriceAdvices::ShowItemDetail
     current_min_price_hash = Hash[ current_min_prices.map{ |e| [ e.trade_hub_id, e.min_price ] } ] if current_min_prices
 
     avg_prices_hash = {}
-    last_month_averages = CrestPricesLastMonthAverage.where( eve_item_id: @item.id )
+    last_month_averages = CrestPricesLastMonthAverage.includes( :region ).where( eve_item_id: @item.id )
     if last_month_averages
       last_month_averages.each do |last_month_average|
         last_month_average.region.trade_hub_ids.each do |trade_hub_id|
@@ -23,7 +23,7 @@ module Modules::PriceAdvices::ShowItemDetail
 
     @region_array = {}
 
-    TradeHub.where( id: trade_hubs_ids ).order( :name ).each do |trade_hub|
+    TradeHub.includes( :region ).where( id: trade_hubs_ids ).order( :name ).each do |trade_hub|
 
       unless @region_array.has_key?( trade_hub.region_id )
 
@@ -41,7 +41,7 @@ module Modules::PriceAdvices::ShowItemDetail
       end
 
       @region_array[ trade_hub.region_id ][ :trades_hubs_data ] << {
-        trade_hub: trade_hub.name,
+        trade_hub: "#{trade_hub.name} (#{trade_hub.region.name})",
         min_price_margin: @item.pcent_margin( current_min_price_hash[trade_hub.id] ),
         min_price: current_min_price_hash[trade_hub.id],
       }

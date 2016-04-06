@@ -50,7 +50,7 @@ class UsersController < ApplicationController
       flash[ :notice ] = 'Password changed successfully.'
     end
 
-    redirect_to user_edit_password_path
+    redirect_to edit_password_users_path
   end
 
   private
