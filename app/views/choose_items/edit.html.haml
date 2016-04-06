@@ -1,5 +1,7 @@
 .container
 
+  = render partial: 'shared/errors'
+
   %h3 Unselect items you don't want to monitor
 
   = form_tag choose_items_path(@user.id), method: :put do

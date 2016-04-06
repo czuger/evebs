@@ -1,5 +1,7 @@
 .container
 
+  = render partial: 'shared/errors'
+
   %h3 Check trade hubs you want to monitor
 
   = form_tag choose_trade_hubs_path(@user.id), method: :put do

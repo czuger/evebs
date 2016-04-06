@@ -42,25 +42,38 @@ class ChooseItemsController < ApplicationController
     eve_items = EveItem.where( :id => choosed_items_ids ).to_a
     eve_item_ids = @user.eve_item_ids
     eve_items.reject!{ |item| eve_item_ids.include?( item.id ) }
-    ActiveRecord::Base.transaction do
-      @user.eve_items << eve_items
-      @user.update_attribute(:last_changes_in_choices,Time.now)
+
+    begin
+      ActiveRecord::Base.transaction do
+        @user.eve_items << eve_items
+        @user.update_attribute(:last_changes_in_choices,Time.now)
+      end
+    rescue ActiveRecord::RecordInvalid => _
+      flash.alert = @user.errors
+      error = true
     end
-    redirect_to new_choose_items_path( message: 'Item(s) added successfully' )
+    flash.notice = 'Item(s) added successfully' unless error
+    redirect_to new_choose_items_path
   end
 
   def update
     @user = current_user
-    ActiveRecord::Base.transaction do
-      if params.has_key?( 'remove_all_items' )
-        # Decided to uncheck all items
-        @user.eve_item_ids = []
-      else
-        # We manually unchecked some items
-        @user.eve_item_ids = params['items_to_keep']
+    begin
+      ActiveRecord::Base.transaction do
+        if params.has_key?( 'remove_all_items' )
+          # Decided to uncheck all items
+          @user.eve_item_ids = []
+        else
+          # We manually unchecked some items
+          @user.eve_item_ids = params['items_to_keep']
+        end
+        @user.update_attribute(:last_changes_in_choices,Time.now)
       end
-      @user.update_attribute(:last_changes_in_choices,Time.now)
+    rescue ActiveRecord::RecordInvalid => _
+      flash.alert = @user.errors
+      error = true
     end
+    flash.notice = 'Item(s) updated successfully' unless error
     redirect_to edit_choose_items_path
   end
 

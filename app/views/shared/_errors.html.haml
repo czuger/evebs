@@ -1,0 +1,8 @@
+- if flash.alert && flash.alert.any?
+  %div.bg-danger.save_message_box_failure
+    = "#{pluralize(flash.alert.count, "error")} prohibited this password from being changed:"
+    %ul
+      - flash.alert.each do |msg|
+        %li= msg.join( ' : ' )
+- elsif flash.notice
+  %p.bg-success.save_message_box_success= flash.notice

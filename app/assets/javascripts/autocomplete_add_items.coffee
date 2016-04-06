@@ -8,8 +8,14 @@ $(document).ready ->
     minLength: 2
     appendTo: '#autocomplete_result'
     select: (event, ui) ->
-      console.log if ui.item then 'Selected: ' + ui.item.value + ' aka ' + ui.item.id else 'Nothing selected, input was ' + @value
+      # console.log if ui.item then 'Selected: ' + ui.item.value + ' aka ' + ui.item.id else 'Nothing selected, input was ' + @value
+      $( '#choosen_item' ).val( ui.item.id )
+      $( '#add-items-autocomplete' ).val( ui.item.value )
       return false
     focus: () ->
-      console.log( 'Got focus' )
-      return false
+      # console.log( 'Got focus' )
+      event.preventDefault()
+    messages: {
+      noResults: '',
+      results: () ->
+    }

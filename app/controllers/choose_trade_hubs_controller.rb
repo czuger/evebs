@@ -11,10 +11,16 @@ class ChooseTradeHubsController < ApplicationController
 
   def update
     @user = current_user
-    ActiveRecord::Base.transaction do
-      @user.trade_hub_ids = params['trade_hubs_ids']
-      @user.update_attribute(:last_changes_in_choices,Time.now)
+    begin
+      ActiveRecord::Base.transaction do
+        @user.trade_hub_ids = params['trade_hubs_ids']
+        @user.update_attribute(:last_changes_in_choices,Time.now)
+      end
+    rescue ActiveRecord::RecordInvalid => _
+      flash.alert = @user.errors
+      error = true
     end
+    flash.notice = 'Trade hubs list updated successfully' unless error
     redirect_to edit_choose_trade_hubs_path
   end
 end
