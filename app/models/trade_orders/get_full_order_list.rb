@@ -3,7 +3,7 @@ module TradeOrders::GetFullOrderList
   private
 
   # Get the full order list for one
-  def get_full_order_list( full_orders_list )
+  def get_full_order_list( user, full_orders_list )
 
     full_orders_list.each do |order|
       puts "Order received #{order.typeID}, #{order.stationID}, #{order.price}"

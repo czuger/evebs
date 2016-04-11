@@ -9,7 +9,7 @@ class TradeOrder < ActiveRecord::Base
 
   validates :user_id, :eve_item_id, :trade_hub_id, :new_order, presence: true
 
-  include TradeOrders::GetFullOrderList
+  extend TradeOrders::GetFullOrderList
 
   # TODO : create the rake task
   # TODO : (for each users)
@@ -36,7 +36,7 @@ class TradeOrder < ActiveRecord::Base
             puts "Setting #{trade_order.inspect} - new_order to false"
             trade_order.update_attribute( :new_order, false )
           end
-          get_full_order_list( full_orders_list )
+          get_full_order_list( user, full_orders_list )
           # On supprime tous les ordres marqués comme anciens
           TradeOrder.destroy_all( new_order: false )
 
