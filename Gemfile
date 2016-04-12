@@ -44,9 +44,10 @@ gem 'quiet_assets'
 # gem 'rails-jquery-autocomplete'
 
 gem 'omniauth'
-gem 'omniauth-facebook', '1.4.0'
+gem 'omniauth-facebook'
 gem "omniauth-google-oauth2"
 gem 'omniauth-identity'
+gem 'omniauth-crest'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
