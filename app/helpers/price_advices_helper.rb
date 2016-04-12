@@ -17,6 +17,17 @@ module PriceAdvicesHelper
     )
   end
 
+  def challenged_prices_highlight_class_low_margin( margin )
+    return :danger if margin && margin <= 0
+    :warning if margin && margin < 0.2
+  end
+
+  def challenged_prices_highlight_class_my_price_to_min_price_delta( delta )
+    puts delta
+    return :danger if delta && delta < -20
+    :warning if delta && delta < 0
+  end
+
   def cell_classes( region_printed, cell_position, cell_align, row_class, last_row )
     classes_array = []
     if cell_position == :left

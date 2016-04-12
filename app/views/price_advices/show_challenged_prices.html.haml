@@ -29,10 +29,11 @@
             %td.item_name= link_to( cp[:eve_item_name], price_advices_show_item_detail_path( cp[:eve_item_id] ) )
             %td.text-right=print_isk( cp[:cost] )
             %td.text-right=print_isk( cp[:min_price] )
-            %td.text-right=print_pcent( cp[:margin_pcent] )
+            %td.text-right{ class: challenged_prices_highlight_class_low_margin( cp[:margin_pcent] ) }=print_pcent( cp[:margin_pcent] )
             %td.text-right=print_isk( cp[:my_price] )
-            %td.text-right
-              = print_isk( ( cp[:min_price] - cp[:my_price] ) ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
+            - delta = ( cp[:min_price] - cp[:my_price] ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
+            %td.text-right{ class: challenged_prices_highlight_class_my_price_to_min_price_delta( delta ) }
+              = print_isk( delta ) if delta
             %td.text-center
               %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})", class: 'btn btn-default' }
                 Show Market Details
