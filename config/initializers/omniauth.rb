@@ -7,6 +7,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 
   provider :google_oauth2, '435800437430-kmgtgdlbr5jo53smnhiafe3cvvtbgglo.apps.googleusercontent.com', 'gjogipms3ECXLLSFv95VZZ48'
 
+  provider :crest, '360a9dffb6fb4ade98945d9512c90f09', 'REyPAbCHUOw6fFanCDcdh4bz6jUpIk1tVWik22vA'
+
   provider :identity, on_failed_registration: lambda { |env|
     IdentitiesController.action(:new).call(env)
   }

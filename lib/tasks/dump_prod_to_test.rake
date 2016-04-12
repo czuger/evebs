@@ -1,8 +1,8 @@
 namespace :db do
   namespace :dump do
-    namespace :prod_to_test do
+    namespace :prod_to_staging do
 
-      desc 'Dump full database from prod to test'
+      desc 'Dump full database from prod to staging'
       task :full => :environment do
 
         `ssh hw [ -e /tmp/production_to_staging.sql ]`

@@ -8,6 +8,8 @@
       = form_tag "/auth/identity/callback", class: 'form-signin' do
 
         %h3.form-signin-heading Sign In with
+        %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-eve-sso{ :href => '/auth/crest', method: 'get' }
+          %span EVE SSO
         %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-facebook{ :href => '/auth/facebook', method: 'get' }
           %span Facebook
         %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-google{ :href => '/auth/google_oauth2', method: 'get' }
