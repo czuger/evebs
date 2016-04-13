@@ -33,6 +33,7 @@ gem 'constructor'
 gem 'eaal'
 gem 'open-uri-cached'
 gem 'closure_tree'
+gem 'crypt'
 
 #gem 'open-uri'
 #gem 'open-uri/cached'

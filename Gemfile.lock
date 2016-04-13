@@ -78,6 +78,7 @@ GEM
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.1)
     constructor (2.0.0)
+    crypt (2.2.1)
     docile (1.1.5)
     eaal (0.1.16)
       faraday (>= 0.8.4)
@@ -282,6 +283,7 @@ DEPENDENCIES
   capistrano3-unicorn
   closure_tree
   constructor
+  crypt
   eaal
   factory_girl_rails (~> 4.0)
   haml-rails
