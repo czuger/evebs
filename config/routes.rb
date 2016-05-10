@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
-  get 'admin_tools/show'
+  resource :admin_tools, only: [ :show ] do
+    get :denied
+  end
 
   resources :items, only: [ :show ] do
     get :cost

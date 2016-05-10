@@ -7,6 +7,10 @@ class ApplicationController < ActionController::Base
     redirect_to new_sessions_path unless current_user
   end
 
+  def require_admin!
+    redirect_to denied_admin_tools_path unless current_user.admin
+  end
+
   def log_client_activity
     ip = request.remote_ip
     action = controller_name + '#' + action_name
