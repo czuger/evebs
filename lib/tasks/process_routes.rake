@@ -1,4 +1,5 @@
 namespace :routes do
+
   desc "Print a nginx regexp for your routes"
   task :to_nginx_regexp => :environment do
     root_routes = []
@@ -13,4 +14,5 @@ namespace :routes do
     routes_regexp = "location ~ (#{routes_regexp})"
     puts routes_regexp
   end
+
 end

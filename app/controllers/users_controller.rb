@@ -39,7 +39,7 @@ class UsersController < ApplicationController
   def change_password
 
     @user = current_user
-    @identity = Identity.find( @user.uid )
+    @identity = Identity.find_by( id: @user.uid )
     @identity.password = params['new_password']
     @identity.password_confirmation = params['new_password_confirmation']
     result = @identity.save

@@ -8,7 +8,7 @@ class JitaMarginsController < ApplicationController
   def index
     # TODO : download prod database and try localy
     @margins = JitaMargin.includes( :eve_item )
-      .where( 'margin_percent > 0.4' ).where( 'mens_volume > ( batch_size * 15 )' )
+      .where( 'margin_percent > 0.4' ).where( 'mens_volume > ( batch_size * 300 )' )
       .order( 'margin DESC' ).limit( 5 )
   end
 

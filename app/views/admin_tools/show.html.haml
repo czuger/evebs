@@ -1,0 +1,35 @@
+.container
+  %h3 Users log
+
+  %br
+
+  .row
+    Account numbers :
+    = @accounts_counts
+
+  %br
+
+  .row
+    .col-md-6
+      %table.table.table-striped
+        %thead
+          %tr
+            %th{ colspan: 2 }
+              Total connections
+        %tbody
+          - @user_log.each do |log|
+            %tr
+              %td= log[ 0 ]
+              %td= log[ 1 ]
+
+    .col-md-6
+      %table.table.table-striped
+        %thead
+          %tr
+            %th{ colspan: 2 }
+              Last 7 days
+        %tbody
+          - @user_log_last_days.each do |log|
+            %tr
+              %td= log[ 0 ]
+              %td= log[ 1 ]
