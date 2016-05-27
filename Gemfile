@@ -83,7 +83,7 @@ group :development, :test do
   gem 'spring'
   gem "bullet"
 
-  gem 'caddie', path: '../caddie'
+  # gem 'caddie', path: '../caddie'
 end
 
 
