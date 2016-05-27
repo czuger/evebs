@@ -3,7 +3,7 @@ require 'json'
 module Crest::CrestBase
 
   CREST_TMP_DIR='tmp/public-crest.eveonline.com'
-  CREST_BASE_URL='https://public-crest.eveonline.com/'
+  CREST_BASE_URL='https://crest-tq.eveonline.com/'
 
   def manage_cache
     # EAAL::Cache handle the cache for us

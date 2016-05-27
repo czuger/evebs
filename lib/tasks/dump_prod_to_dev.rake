@@ -6,9 +6,14 @@ namespace :db do
       task :full => :environment do
 
         unless File.exists?( 'tmp/production.sql' )
+          puts 'No local dump, retrieving ...'
           `ssh hw [ -e /tmp/production.sql.gz ]`
           unless $?.to_i == 0 # file exist
             # Dump and compress it
+            puts 'No remote dump, pg_dump'
+            `ssh hw pg_dump -Ox -U eve_business_server -n production eve_business_server -f /tmp/production.sql`
+            puts 'Zipping remote dump'
+            `ssh hw gzip /tmp/production.sql`
           end
           # Get the remote file
           puts 'Retrieving prod dump'
@@ -26,10 +31,11 @@ namespace :db do
 
         puts 'Dropping database'
         `psql -U eve_business_server -c 'DROP DATABASE eve_business_server_dev'`
+
         puts 'Creating database'
         `psql -U eve_business_server -c 'CREATE DATABASE eve_business_server_dev'`
 
-        puts 'Creating database'
+        puts 'Inserting datas'
         `psql -U eve_business_server eve_business_server_dev < tmp/production.sql`
       end
 

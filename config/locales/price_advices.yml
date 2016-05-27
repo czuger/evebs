@@ -1,0 +1,11 @@
+en:
+  price_advices:
+    advice_prices_monthly:
+      tooltip:
+        volume: Volume sold in the last 30 days
+        price: Average price in the region on the last 30 days
+        cost: Cost estimation based on the average last 30 days component prices in Jita (click to see detail)
+    advice_prices:
+      tooltip:
+        price: The last minimal price from Eve Central (click to go to Eve Central)
+

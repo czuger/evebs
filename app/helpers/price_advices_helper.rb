@@ -1,5 +1,22 @@
 module PriceAdvicesHelper
 
+  def tooltip_price( margin_type )
+    return t( 'price_advices.advice_prices.tooltip.price' ) if margin_type == :daily
+    t( 'price_advices.advice_prices_monthly.tooltip.price' )
+  end
+
+  def trade_hubs_or_regions( margin_type )
+    return @trade_hubs_names if margin_type == :daily
+    @regions_names
+  end
+
+  def eve_central_quicklook_link( margin_type, item )
+    if margin_type == :daily
+      return link_to( print_isk(item[:price]), "https://eve-central.com/home/quicklook.html?typeid=#{item[:cpp_eve_item_id]}&usesystem=#{item[:cpp_system_id]}", target: '_blank' )
+    end
+    print_isk(item[:price])
+  end
+
   def shopping_basket_check_box( item )
     id = [ @user.id, item[:trade_hub_id], item[:eve_item_id] ]
     check_box_tag(

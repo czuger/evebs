@@ -51,13 +51,15 @@ module Modules::PriceAdvices::MarginModule
 
           region = trade_hub.region
           trade_hub_name = "#{trade_hub.name} (#{region.name})"
+          region_name = "#{region.name } (#{region.trade_hubs.map{ |e| e.name }.join( ', ' )})"
 
           set_trade_hubs( trade_hub_name )
+          set_regions_names( region_name )
           set_items( eve_item.name )
 
           price_record = {
             trade_hub: trade_hub_name,
-            region_name: "#{region.name } (#{region.trade_hubs.map{ |e| e.name }.join( ', ' )})",
+            region_name: region_name,
             eve_item: eve_item.name,
             trade_hub_id: trade_hub.id,
             eve_item_id: eve_item.id,

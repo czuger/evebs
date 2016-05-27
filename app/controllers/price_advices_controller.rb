@@ -48,6 +48,12 @@ class PriceAdvicesController < ApplicationController
     Hash[datas.map{ |e| [[[e.region_id],[e.eve_item_id]],e]}]
   end
 
+  def set_regions_names( region_name )
+    @regions_names = [] unless @regions_names
+    @regions_names << region_name unless @regions_names.include?( region_name )
+    @regions_names.sort!
+  end
+
   def set_trade_hubs( trade_hub_name )
     @trade_hubs_names = [] unless @trade_hubs_names
     @trade_hubs_names << trade_hub_name unless @trade_hubs_names.include?( trade_hub_name )

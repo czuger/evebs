@@ -4,7 +4,7 @@
     .row
       .col-md-4
         = label_tag 'select_trade_hubs', 'Trade hubs'
-        = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
+        = select( 'select', 'trade_hubs', trade_hubs_or_regions( margin_type ), {include_blank: 'All'}, class: 'form-control' )
         = label_tag 'select_items', 'Items'
         = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
 
@@ -21,9 +21,9 @@
             - else
               Trade hub
           %th Item
-          %th.text-right Volume
-          %th.text-right Cost
-          %th.text-right Price
+          %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) } Volume
+          %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.cost' ) } Cost
+          %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) } Price
           %th.text-center{ colspan: 3 } Margin
           - if margin_type == :daily
             %th.text-right Daily/monthly
@@ -39,7 +39,7 @@
             %td.item_name= link_to( item[:eve_item], item_path( item[:eve_item_id] ) )
             %td.text-right.information_highlight_left=print_volume(item[:monthly_amount])
             %td.text-right.information_highlight_left= link_to( print_isk(item[:cost]), item_cost_path( item[:id] ), target: '_blank' )
-            %td.text-right.information_highlight_left= link_to( print_isk(item[:price]), "https://eve-central.com/home/quicklook.html?typeid=#{item[:cpp_eve_item_id]}&usesystem=#{item[:cpp_system_id]}", target: '_blank' )
+            %td.text-right.information_highlight_left= eve_central_quicklook_link( margin_type, item )
             %td.text-right.information_highlight_right=print_pcent(item[:benef_pcent])
             %td.text-right.information_highlight_right=print_isk(item[:benef])
             %td.text-right.information_highlight_right=item[:batch_size]

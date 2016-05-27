@@ -1,3 +1,3 @@
-#$(document).ready ->
-#  $('[data-toggle="tooltip"]').tooltip()
-#  return
+$(document).ready ->
+  $('[data-toggle="tooltip"]').tooltip()
+  return

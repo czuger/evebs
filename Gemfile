@@ -12,14 +12,14 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 # gem 'coffee-rails', '~> 4.0.0'
-gem 'opal'
-gem 'opal-jquery'
+# gem 'opal'
+# gem 'opal-jquery'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer',  platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-gem "jquery-ui-rails"
+# gem "jquery-ui-rails"
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 gem 'jquery-turbolinks'
@@ -57,18 +57,18 @@ gem 'omniauth-crest'
 gem 'unicorn'
 gem 'time_diff'
 
-gem 'bootstrap-tooltip-rails'
+# gem 'bootstrap-tooltip-rails'
 # gem 'awesome_nested_set'
 
 gem 'actionpack-page_caching'
 
 gem 'will_paginate', '~> 3.0.6'
 
-gem 'inline_svg'
+# gem 'inline_svg'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 
-gem 'spreadsheet'
+# gem 'spreadsheet'
 
 group :development, :test do
   gem 'capistrano', '~> 3.4.0'
@@ -83,7 +83,15 @@ group :development, :test do
   gem 'spring'
   gem "bullet"
 
+  gem 'caddie', path: '../caddie'
 end
+
+
+group :production, :staging do
+  gem 'caddie'
+end
+
+
 
 
 # Use Capistrano for deployment
