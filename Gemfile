@@ -82,16 +82,10 @@ group :development, :test do
 
   gem 'spring'
   gem "bullet"
-
-  # gem 'caddie', path: '../caddie'
 end
 
-group :production, :staging do
-  gem 'caddie'
-end
-
-
-
+# gem 'caddie', path: '../caddie'
+gem 'caddie'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
