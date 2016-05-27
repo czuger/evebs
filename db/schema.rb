@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160405090537) do
+ActiveRecord::Schema.define(version: 20160527091718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,23 @@ ActiveRecord::Schema.define(version: 20160405090537) do
 
   add_index "blueprints", ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", using: :btree
   add_index "blueprints", ["eve_item_id"], name: "index_blueprints_on_eve_item_id", using: :btree
+
+  create_table "caddie_crest_price_history_updates", force: :cascade do |t|
+    t.integer  "eve_item_id"
+    t.integer  "region_id"
+    t.date     "max_update"
+    t.date     "max_eve_item_create"
+    t.date     "max_region_create"
+    t.date     "max_date"
+    t.integer  "nb_days"
+    t.string   "process_queue"
+    t.integer  "process_queue_priority"
+    t.date     "next_process_date"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "caddie_crest_price_history_updates", ["eve_item_id", "region_id"], name: "index_caddie_cphu_on_eve_item_id_and_region_id", unique: true, using: :btree
 
   create_table "components", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
@@ -80,6 +97,32 @@ ActiveRecord::Schema.define(version: 20160405090537) do
   add_index "crest_price_histories", ["history_date"], name: "index_crest_price_histories_on_history_date", using: :btree
   add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
   add_index "crest_price_histories", ["region_id"], name: "index_crest_price_histories_on_region_id", using: :btree
+
+  create_table "crest_price_histories_daily_used", id: false, force: :cascade do |t|
+    t.integer  "eve_item_id"
+    t.integer  "region_id"
+    t.datetime "max"
+    t.datetime "items_created_at"
+    t.datetime "regions_created_at"
+  end
+
+  create_table "crest_price_histories_frequently_used", id: false, force: :cascade do |t|
+    t.integer  "eve_item_id"
+    t.integer  "region_id"
+    t.datetime "updated_at"
+    t.datetime "items_created_at"
+    t.datetime "regions_created_at"
+  end
+
+  create_table "crest_price_histories_never_used", id: false, force: :cascade do |t|
+    t.integer "eve_items_id"
+    t.integer "regions_id"
+  end
+
+  create_table "crest_price_histories_rarely_used", id: false, force: :cascade do |t|
+    t.integer "eve_items_id"
+    t.integer "regions_id"
+  end
 
   create_table "crest_prices_last_month_averages", force: :cascade do |t|
     t.integer  "region_id",                 null: false
@@ -310,6 +353,8 @@ ActiveRecord::Schema.define(version: 20160405090537) do
 
   add_foreign_key "api_key_errors", "users"
   add_foreign_key "blueprints", "eve_items"
+  add_foreign_key "caddie_crest_price_history_updates", "eve_items"
+  add_foreign_key "caddie_crest_price_history_updates", "regions"
   add_foreign_key "crest_costs", "eve_items"
   add_foreign_key "crest_price_histories", "eve_items"
   add_foreign_key "crest_price_histories", "regions"

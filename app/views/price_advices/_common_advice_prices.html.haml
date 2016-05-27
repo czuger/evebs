@@ -24,7 +24,7 @@
           %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) } Volume
           %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.cost' ) } Cost
           %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) } Price
-          %th.text-center{ colspan: 3 } Margin
+          %th.text-center{ colspan: 3, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') } Margin
           - if margin_type == :daily
             %th.text-right Daily/monthly
 
