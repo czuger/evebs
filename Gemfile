@@ -86,7 +86,6 @@ group :development, :test do
   # gem 'caddie', path: '../caddie'
 end
 
-
 group :production, :staging do
   gem 'caddie'
 end
