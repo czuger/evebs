@@ -85,7 +85,7 @@ group :development, :test do
 end
 
 # gem 'caddie', '0.0.4', path: '../caddie'
-gem 'caddie', '0.0.4'
+gem 'caddie', '0.0.5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
