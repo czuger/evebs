@@ -9,4 +9,5 @@ en:
     advice_prices:
       tooltip:
         price: The last minimal price from Eve Central (click to go to Eve Central)
+        daily_monthly: This is the difference between the price of the day and the monthly average price
 

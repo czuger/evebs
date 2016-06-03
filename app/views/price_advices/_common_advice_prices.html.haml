@@ -26,7 +26,7 @@
           %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) } Price
           %th.text-center{ colspan: 3, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') } Margin
           - if margin_type == :daily
-            %th.text-right Daily/monthly
+            %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) } Daily/monthly
 
         - @prices_array.each do |item|
           %tr{ class: cycle( :active, nil ) }
