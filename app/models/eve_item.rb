@@ -8,7 +8,7 @@ class EveItem < ActiveRecord::Base
   include ItemsInit::ItemSetupAndComp
   extend ItemsInit::ItemSetupAndCompSelf
   extend MultiplePriceRetriever
-  extend Setup::UpdateEveItems
+  # extend Setup::UpdateEveItems
 
   has_and_belongs_to_many :users
   has_one :blueprint, dependent: :destroy

@@ -9,6 +9,6 @@ namespace :data_compute do
     task :hourly => [:environment, 'min_prices:used' , :get_orders, :get_sales, :jita_margins]
 
     desc "Full process - daily"
-    task :daily => [:environment, 'price_history:update:all', :costs]
+    task :daily => [:environment, 'caddie:feed_crest_price_histories', :costs]
   end
 end

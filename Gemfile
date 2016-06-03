@@ -84,8 +84,8 @@ group :development, :test do
   gem "bullet"
 end
 
-# gem 'caddie', '0.0.4', path: '../caddie'
-gem 'caddie', '0.0.5'
+# gem 'caddie', '0.0.6', path: '../caddie'
+gem 'caddie', '0.0.6'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
