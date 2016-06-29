@@ -7,24 +7,8 @@ class ChooseItemsController < ApplicationController
   before_action :require_logged_in!, :log_client_activity
 
   def edit
-    @user = current_user
-    @items = @user.eve_items.includes(:market_group).order(:name)
-    @groups = {}
-    @no_groups = []
-    if @items && !@items.empty?
-      @items.each do |item|
-        market_group = item.market_group
-        if market_group
-          name = market_group.get_market_group_breadcrumb
-          @groups[name] = {} unless @groups.has_key?(name)
-          @groups[name][:name] = market_group.get_market_group_breadcrumb
-          @groups[name][:items] = [] unless @groups[name].has_key?(:items)
-          @groups[name][:items] << item
-        else
-          @no_groups << item
-        end
-      end
-    end
+    # @user = current_user
+    # @items = @user.eve_items.includes(:market_group).order(:name)
   end
 
   def new
