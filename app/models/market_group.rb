@@ -14,35 +14,53 @@ class MarketGroup < ActiveRecord::Base
   end
 
   def self.build_items_tree
-    File.open( 'public/items_tree.json', 'w' ) do |file|
+    File.open( 'tmp/items_tree.rb', 'w' ) do |file|
       arr = []
-      # i = 0
+      items_hash = {}
       self.roots.each do |children|
         next if EVE_ITEM_NOT_SHOWED_GROUPS.include?( children.id )
-        arr << build_items_tree_sub( children )
-        # break if i >= 2
-        # i += 1
+        arr << build_items_tree_sub( children, items_hash )
       end
-      file.puts( arr.to_json )
-      # PP.pp( arr.to_json, file )
-      # pp arr
+
+      file.puts( '$items_hash=' )
+      PP.pp( items_hash, file )
+      file.puts( ';' )
+      file.puts
+
+      file.puts( '$items_tree=' )
+      PP.pp( arr, file )
+      file.puts( ';' )
+      file.puts
     end
+
+    File.open( 'tmp/items_tree.rb', 'r' ) do |file|
+      File.open( 'app/models/items_tree.rb', 'w' ) do |final_file|
+        file.each_line do |line|
+          line = line.gsub( /"ITEM_HASH_(\d+)"/, '$items_hash[ \1 ]' )
+          final_file.puts( line )
+        end
+      end
+    end
+
   end
 
-  private
-
-  def self.build_items_tree_sub( node )
-    result = { text: "#{node.name}-#{node.id}",  }
+  def self.build_items_tree_sub( node, items_hash )
+    result = { text: "#{node.name}", internal_node_id: node.id, item: false, 'showCheckbox': false }
     if node.leaf?
       # puts node.ancestors.map{ |e| e.name }.join( '-' )
-      items = EveItem.where( market_group_id: node.id, involved_in_blueprint: true ).pluck( :name ).map{ |e| { text: e } }
+      items = EveItem.where( market_group_id: node.id, involved_in_blueprint: true ).pluck( :name, :id )
+                .map{ |e| { text: e[0], internal_node_id: e[1], item: true, 'showCheckbox': true } }
       # pp items
+      items.each do |item|
+        items_hash[ item[ :internal_node_id ] ] = item
+      end
+
       return false if items.empty?
-      result[ :nodes ] = items
+      result[ :nodes ] = items.map{ |e| "ITEM_HASH_#{e[ :internal_node_id ]}" }
     else
       nodes = []
       node.children.each do |child|
-        sub_nodes = build_items_tree_sub( child )
+        sub_nodes = build_items_tree_sub( child, items_hash )
         nodes << sub_nodes if sub_nodes
       end
       return false if nodes.empty?

@@ -39,6 +39,8 @@ Rails.application.routes.draw do
 
   resource :choose_items, only: [:new, :edit, :create, :update] do
     get :autocomplete_eve_item_name_lowcase, :on => :collection
+    get :items_tree
+    post :select_items
   end
 
   resource :sessions, only: [:new] do

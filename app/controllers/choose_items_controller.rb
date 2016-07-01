@@ -1,4 +1,5 @@
 require 'pp'
+require_relative '../models/items_tree'
 
 class ChooseItemsController < ApplicationController
 
@@ -7,8 +8,33 @@ class ChooseItemsController < ApplicationController
   before_action :require_logged_in!, :log_client_activity
 
   def edit
-    # @user = current_user
-    # @items = @user.eve_items.includes(:market_group).order(:name)
+    @user = current_user
+    @user.eve_item_ids.each do |e|
+      if $items_hash[ e ]
+        $items_hash[ e ][:state] ||= {}
+        $items_hash[ e ][:state][:checked] = true
+        # TODO : le virer de la gestion globale, créer un array a part et le fournir au json qui doit se demerder (shit)
+        # Ou alors le coler sur la session, mais j'aime pas trop cette solution ...
+      end
+    end
+  end
+
+  # TODO : add a limit in order to prevent to many items
+  def select_items
+    @user = current_user
+
+    if params[ :item ] == 'true'
+      ActiveRecord::Base.transaction do
+        item = EveItem.find( params[ :id ] )
+        if params[ :check_state ] == 'true'
+          @user.eve_items << item
+        else
+          @user.eve_items.delete( item )
+        end
+        @user.update_attribute(:last_changes_in_choices,Time.now)
+      end
+    end
+    render nothing: true
   end
 
   def new

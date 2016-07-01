@@ -1,16 +1,38 @@
-getTree = ->
-# Some logic to retrieve, or generate tree structure
-  $.get '/items_tree.json', ( json_data ) ->
-    console.log( json_data )
-    # data = JSON.parse( json_data )
-    # console.log( data )
-    $('#tree').treeview data: json_data, showCheckbox: true, levels: 0
-    # $('#tree').treeview('collapseAll', { silent: true })
+selectItem = ( node, check_state ) ->
+  console.log( node, check_state )
+  $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }, ( data ) ->
+    console.log( data )
 
+getTree = ->
+
+  json_data = JSON.parse( $( '#items_tree' ).val() )
+  console.log( json_data )
+  tree = $('#tree').treeview data: json_data, levels: 0, showCheckbox: true
+  tree.on 'nodeChecked ', (ev, node) ->
+    selectItem( node, true )
+  .on 'nodeUnchecked ', (ev, node) ->
+    selectItem( node, false )
+
+# Some logic to retrieve, or generate tree structure
+#  $.get '/items_tree.json', ( json_data ) ->
+#    # console.log( json_data )
+#    # data = JSON.parse( json_data )
+#    # console.log( data )
+#    tree =
+#    # $('#tree').treeview('collapseAll', { silent: true })
+#    tree.on 'nodeChecked ', (ev, node) ->
+#      console.log( node )
+#      return unless node.nodes
+#      for child in node.nodes
+#        $(this).treeview(true).checkNode(child.nodeId) if child
+#    .on 'nodeUnchecked ', (ev, node) ->
+#      return unless node.nodes
+#      for child in node.nodes
+#        $(this).treeview(true).uncheckNode(child.nodeId) if child
 
 $(document).ready ->
   # TODO : only if in edit view, use an hidden
-  console.log( 'getting tree')
+  # console.log( 'getting tree')
   getTree()
 
 # ---

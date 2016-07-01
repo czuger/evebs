@@ -277,7 +277,7 @@
 			// where provided we should preserve states
 			node.state = node.state || {};
 
-			console.log( node );
+			// console.log( node );
 
 			// set checked state; unless set always false
 			if (!node.state.hasOwnProperty('checked')) {
@@ -569,12 +569,17 @@
 			// Add check / unchecked icon
 			if (_this.options.showCheckbox) {
 
+				console.log( node );
+				console.log( node.showCheckbox );
+
 				var classList = ['check-icon'];
-				if (node.state.checked) {
-					classList.push(_this.options.checkedIcon); 
-				}
-				else {
-					classList.push(_this.options.uncheckedIcon);
+				if (node.showCheckbox){
+					if (node.state.checked) {
+						classList.push(_this.options.checkedIcon);
+					}
+					else {
+						classList.push(_this.options.uncheckedIcon);
+					}
 				}
 
 				treeItem
