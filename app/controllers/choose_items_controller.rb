@@ -7,6 +7,14 @@ class ChooseItemsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
 
+  # TODO : the final plan
+  # - Repartir sur le mode json (static uniquement) dans public - array uniquement
+  # - ajouter une liste de id selected
+  # - surcharger nodeExpanded
+  #  - dans cette methode : lister tous les nodes, si le node id est dans la liste des ids selectionnés,
+  #  - verifier son statut : s'il est uncheck -> le checker
+  #  - idem pour uncheck
+  #  - attention il faudra prévoir une variable global un genre de lock pour pas aller renvoyer tous les ordres de check unchecks au serveur.
   def edit
     @user = current_user
     @user.eve_item_ids.each do |e|

@@ -569,8 +569,8 @@
 			// Add check / unchecked icon
 			if (_this.options.showCheckbox) {
 
-				console.log( node );
-				console.log( node.showCheckbox );
+				// console.log( node );
+				// console.log( node.showCheckbox );
 
 				var classList = ['check-icon'];
 				if (node.showCheckbox){

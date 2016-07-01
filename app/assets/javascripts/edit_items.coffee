@@ -1,17 +1,21 @@
 selectItem = ( node, check_state ) ->
-  console.log( node, check_state )
-  $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }, ( data ) ->
-    console.log( data )
+#  console.log( node, check_state )
+  $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }
+#    console.log( data )
 
 getTree = ->
 
   json_data = JSON.parse( $( '#items_tree' ).val() )
-  console.log( json_data )
+#  console.log( json_data )
   tree = $('#tree').treeview data: json_data, levels: 0, showCheckbox: true
+  console.log( $('#tree').data('treeview') )
   tree.on 'nodeChecked ', (ev, node) ->
     selectItem( node, true )
   .on 'nodeUnchecked ', (ev, node) ->
     selectItem( node, false )
+  .on 'nodeExpanded ', (ev, node) ->
+    console.log( node.nodes )
+
 
 # Some logic to retrieve, or generate tree structure
 #  $.get '/items_tree.json', ( json_data ) ->
