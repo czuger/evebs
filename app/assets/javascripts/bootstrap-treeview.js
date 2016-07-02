@@ -277,7 +277,7 @@
 			// where provided we should preserve states
 			node.state = node.state || {};
 
-			// console.log( node );
+			//console.log( node );
 
 			// set checked state; unless set always false
 			if (!node.state.hasOwnProperty('checked')) {

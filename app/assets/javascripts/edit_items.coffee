@@ -5,16 +5,37 @@ selectItem = ( node, check_state ) ->
 
 getTree = ->
 
-  json_data = JSON.parse( $( '#items_tree' ).val() )
-#  console.log( json_data )
-  tree = $('#tree').treeview data: json_data, levels: 0, showCheckbox: true
-  console.log( $('#tree').data('treeview') )
-  tree.on 'nodeChecked ', (ev, node) ->
-    selectItem( node, true )
-  .on 'nodeUnchecked ', (ev, node) ->
-    selectItem( node, false )
-  .on 'nodeExpanded ', (ev, node) ->
-    console.log( node.nodes )
+  $.get '/items_tree.json', ( json_data ) ->
+    # console.log( json_data  )
+    tree = $('#tree').treeview data: json_data, levels: 0, showCheckbox: true
+    tree.on 'nodeChecked ', (ev, node) ->
+      selectItem( node, true )
+    .on 'nodeUnchecked ', (ev, node) ->
+      selectItem( node, false )
+    .on 'nodeExpanded ', (ev, node) ->
+      console.log( node.nodes )
+      item_ids = JSON.parse( $( '#item_ids' ).val() )
+      for children in node.nodes
+        console.log( children )
+        children_id = children.internal_node_id
+        for item_id in item_ids
+          if children_id == item_id
+            console.log( 'check node' )
+            $('#tree').treeview('checkNode', [ children.nodeId, { silent: false } ] );
+            # children.selected = true
+# TODO : need to update item_ids
+
+#
+#  json_data = JSON.parse( $( '#items_tree' ).val() )
+##  console.log( json_data )
+#  tree = $('#tree').treeview data: json_data, levels: 0, showCheckbox: true
+#  console.log( $('#tree').data('treeview') )
+#  tree.on 'nodeChecked ', (ev, node) ->
+#    selectItem( node, true )
+#  .on 'nodeUnchecked ', (ev, node) ->
+#    selectItem( node, false )
+#  .on 'nodeExpanded ', (ev, node) ->
+#    console.log( node.nodes )
 
 
 # Some logic to retrieve, or generate tree structure

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.6'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 gem 'pg'
@@ -34,6 +34,8 @@ gem 'eaal'
 gem 'open-uri-cached'
 gem 'closure_tree'
 gem 'crypt'
+
+gem 'coffee-rails'
 
 #gem 'open-uri'
 #gem 'open-uri/cached'

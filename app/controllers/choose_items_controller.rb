@@ -1,5 +1,4 @@
 require 'pp'
-require_relative '../models/items_tree'
 
 class ChooseItemsController < ApplicationController
 
@@ -17,14 +16,7 @@ class ChooseItemsController < ApplicationController
   #  - attention il faudra prévoir une variable global un genre de lock pour pas aller renvoyer tous les ordres de check unchecks au serveur.
   def edit
     @user = current_user
-    @user.eve_item_ids.each do |e|
-      if $items_hash[ e ]
-        $items_hash[ e ][:state] ||= {}
-        $items_hash[ e ][:state][:checked] = true
-        # TODO : le virer de la gestion globale, créer un array a part et le fournir au json qui doit se demerder (shit)
-        # Ou alors le coler sur la session, mais j'aime pas trop cette solution ...
-      end
-    end
+    @item_ids = @user.eve_item_ids
   end
 
   # TODO : add a limit in order to prevent to many items
@@ -35,6 +27,7 @@ class ChooseItemsController < ApplicationController
       ActiveRecord::Base.transaction do
         item = EveItem.find( params[ :id ] )
         if params[ :check_state ] == 'true'
+          # TODO : Need to check if the item does not already exist
           @user.eve_items << item
         else
           @user.eve_items.delete( item )

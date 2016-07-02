@@ -7,6 +7,8 @@
   #tree
 
   = hidden_field_tag :items_tree, $items_tree.to_json
+  = hidden_field_tag :item_ids, @item_ids.to_json
+
   -# = hidden_field_tag :choose_items_edit, :true
     
   -#= form_tag choose_items_path(@user.id), method: :put do
