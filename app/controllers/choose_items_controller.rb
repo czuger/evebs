@@ -16,7 +16,7 @@ class ChooseItemsController < ApplicationController
   #  - attention il faudra prévoir une variable global un genre de lock pour pas aller renvoyer tous les ordres de check unchecks au serveur.
   def edit
     @user = current_user
-    @item_ids = @user.eve_item_ids
+    @item_ids = @user.eve_item_ids.uniq
   end
 
   # TODO : add a limit in order to prevent to many items
