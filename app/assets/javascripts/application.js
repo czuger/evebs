@@ -16,9 +16,9 @@
 //= require turbolinks
 //= require bootstrap-sprockets
 
+//= require_tree .
+
 // Do not put that before bootstrap-sprocket
 //= require highcharts/highcharts
 //= require highcharts/highcharts-more
 //= require highcharts/highstock
-
-//= require_tree .
