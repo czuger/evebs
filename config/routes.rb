@@ -37,8 +37,7 @@ Rails.application.routes.draw do
 
   resource :choose_trade_hubs, only: [:edit, :update]
 
-  resource :choose_items, only: [:new, :edit, :create, :update] do
-    get :autocomplete_eve_item_name_lowcase, :on => :collection
+  resource :choose_items, only: [ :edit ] do
     get :items_tree
     post :select_items
   end

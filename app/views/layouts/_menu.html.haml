@@ -10,14 +10,9 @@
     - if current_user
       %ul.nav.navbar-nav
         %li.dropdown
-          -# link_to 'Items', edit_choose_items_path do #,  do # edit_choose_items_path, do
-            %span.caret
-          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-            Items
-            %span.caret
-          %ul.dropdown-menu
-            %li{ class: active_link( new_choose_items_path ) }= link_to 'Add', new_choose_items_path
-            %li{ class: active_link( edit_choose_items_path ) }= link_to 'Edit', edit_choose_items_path
+        %li{ class: active_link( edit_choose_items_path ) }
+          = link_to 'Items', edit_choose_items_path
+
         %li{ class: active_link( edit_choose_trade_hubs_path ) }
           = link_to 'Trade hubs', edit_choose_trade_hubs_path
 

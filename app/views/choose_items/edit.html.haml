@@ -2,40 +2,10 @@
 
   = render partial: 'shared/errors'
 
-  %h3 Unselect items you don't want to monitor
+  %h3 Select items you want to monitor
 
   #tree
 
   = hidden_field_tag :items_tree, $items_tree.to_json
   = hidden_field_tag :item_ids, @item_ids.to_json
   = hidden_field_tag :choose_items_edit, true
-
-  -# = hidden_field_tag :choose_items_edit, :true
-    
-  -#= form_tag choose_items_path(@user.id), method: :put do
-  -#
-  -#  = submit_tag 'Remove unselected items', class: 'btn btn-default'
-  -#  = submit_tag 'Remove all items', name: :remove_all_items, class: 'btn btn-default'
-  -#
-  -#  %hr
-  -#
-  -#
-  -#  %table.table
-  -#    - @groups.keys.sort.each do |key|
-  -#      - value = @groups[key]
-  -#      %tr
-  -#        %td{ colspan: 2 }= value[:name]
-  -#      - value[:items].each do |item|
-  -#        %tr
-  -#          %td.item_list_check_case=check_box_tag('items_to_keep[]',item.id,true)
-  -#          %td= link_to( item.name, item_path( item.id ) )
-  -#    - unless @no_groups.empty?
-  -#      %tr
-  -#        %td{ colspan: 2 } Ungroupped
-  -#      - @no_groups.each do |item|
-  -#        %tr
-  -#          %td.item_list_check_case=check_box_tag('items_to_keep[]',item.id,true)
-  -#          %td=item.name
-  -#
-  -#  = submit_tag 'Remove unselected items', class: 'btn btn-default'
-  -#  = submit_tag 'Remove all items', name: :remove_all_items, class: 'btn btn-default'
