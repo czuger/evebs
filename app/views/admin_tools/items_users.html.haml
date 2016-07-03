@@ -1,0 +1,17 @@
+.container
+  %h3 Items_users
+
+  .row
+    .col-md-6
+      %table.table.table-striped
+        %thead
+          %tr
+            %th
+              User
+            %th
+              Nb items selected
+        %tbody
+          - @users_log.each do |log|
+            %tr
+              %td= log[ 'name' ]
+              %td= log[ 'count' ]

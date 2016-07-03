@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     get :denied
     get :activity
     get :min_prices_timings
+    get :items_users
   end
 
   resources :items, only: [ :show ] do

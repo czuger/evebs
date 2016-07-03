@@ -5,17 +5,21 @@ class AdminToolsController < ApplicationController
   def show
     @accounts_counts = User.count
 
-    @user_log = {}
-    @user_log_last_days = {}
+    request = 'SELECT "user", count( * ) cnt FROM user_activity_logs GROUP BY "user" ORDER BY count( * ) DESC'
+    @users_log = UserActivityLog.connection.select_all( request ).to_a
+    @users_log.sort_by!{ |x| x['cnt'].to_i }
+    @users_log.reverse!
 
-    UserActivityLog.where.not( user: nil ).each do |ual|
+    request = 'SELECT "user", count( * ) cnt FROM user_activity_logs WHERE created_at > current_date - interval \'7 days\' GROUP BY "user" ORDER BY count( * ) DESC'
+    @users_log_last_days = UserActivityLog.connection.select_all( request ).to_a
+    @users_log_last_days.sort_by!{ |x| x['cnt'].to_i }
+    @users_log_last_days.reverse!
+  end
 
-      @user_log[ ual.user ] = 0 unless @user_log[ ual.user ]
-      @user_log[ ual.user ] += 1
-
-      @user_log_last_days[ ual.user ] = 0 unless @user_log_last_days[ ual.user ]
-      @user_log_last_days[ ual.user ] += 1 if ual.updated_at > Time.now - ( 60*60*7)
-    end
+  def items_users
+    request = 'SELECT "name", count( * ) FROM users, eve_items_users WHERE "users"."id" = user_id
+      GROUP BY "name" ORDER BY count( * ) DESC'
+    @users_log = UserActivityLog.connection.select_all( request ).to_a
   end
 
   def min_prices_timings
