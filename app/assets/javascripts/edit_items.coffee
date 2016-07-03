@@ -44,9 +44,11 @@ getTree = ->
       root.checking_items = false
 
 
-# $(document).ready ->
+$(document).ready ->
+  getTree()
+
 # $(document).on('page:load', getTree)
-$(document).on('turbolinks:load', getTree )
+# $(document).on('turbolinks:load', getTree )
   # TODO : only if in edit view, use an hidden
   # console.log( 'getting tree')
 
