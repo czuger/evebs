@@ -5,6 +5,8 @@ selectItem = ( node, check_state ) ->
 
 getTree = ->
 
+  console.log( 'Edit item.coffee' )
+
   return unless $( '#choose_items_edit' ).val() == 'true'
 
   $.get '/items_tree.json', ( json_data ) ->
