@@ -18,6 +18,34 @@ class AdminToolsController < ApplicationController
     end
   end
 
+  def min_prices_timings
+    results = MinPricesLog.where( 'retrieve_start > ?', Time.now.to_date - 5 ).order( :retrieve_start )
+      .pluck( :retrieve_start, :duration, :updated_items_count )
+
+    times = results.map{|e| e[0].hour }
+    duration = results.map{|e| e[1] }
+    updated_items_count = results.map{|e| e[2] }
+
+    @chart1 = LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(text: 'Min prices timings')
+      f.xAxis(categories: times )
+      f.series(name: 'Durations', yAxis: 0, data: duration, type: :spline )
+
+      f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
+      f.chart({defaultSeriesType: "column"})
+    end
+
+    @chart2 = LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(text: 'Min prices timings')
+      f.xAxis(categories: times )
+      f.series(name: 'Updated items count', yAxis: 0, data: updated_items_count, type: :spline )
+
+      f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
+      f.chart({defaultSeriesType: "column"})
+    end
+
+  end
+
   def activity
     total_request = "
       SELECT to_char(date_trunc('month', (created_at)), 'YYYY-MM'), count( * )
@@ -32,7 +60,7 @@ class AdminToolsController < ApplicationController
     @chart = LazyHighCharts::HighChart.new('graph') do |f|
       f.title(text: "Connections")
       f.xAxis(categories: total_categories )
-      f.series(name: "Total", yAxis: 0, data: total_data, type: :spline  )
+      f.series(name: "Total", yAxis: 0, data: total_data, type: :spline )
 
       f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
       f.chart({defaultSeriesType: "column"})
@@ -44,3 +72,4 @@ class AdminToolsController < ApplicationController
   end
 
 end
+

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resource :admin_tools, only: [ :show ] do
     get :denied
     get :activity
+    get :min_prices_timings
   end
 
   resources :items, only: [ :show ] do

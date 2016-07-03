@@ -20,6 +20,7 @@ module ItemsInit::ItemSetupAndCompSelf
     end
     puts "#{update_price_count} items updated for #{trade_hub.name}"
 
+    update_price_count
   end
 
   # Required for setting up the database

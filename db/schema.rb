@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527091718) do
+ActiveRecord::Schema.define(version: 20160703142622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -210,6 +210,16 @@ ActiveRecord::Schema.define(version: 20160527091718) do
 
   add_index "min_prices", ["eve_item_id"], name: "index_min_prices_on_eve_item_id", using: :btree
   add_index "min_prices", ["trade_hub_id"], name: "index_min_prices_on_trade_hub_id", using: :btree
+
+  create_table "min_prices_logs", force: :cascade do |t|
+    t.string   "random_hash"
+    t.datetime "retrieve_start"
+    t.datetime "retrieve_end"
+    t.integer  "duration"
+    t.integer  "updated_items_count"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
 
   create_table "regions", force: :cascade do |t|
     t.string   "cpp_region_id", null: false
