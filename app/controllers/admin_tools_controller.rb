@@ -40,7 +40,7 @@ class AdminToolsController < ApplicationController
     end
 
     @chart2 = LazyHighCharts::HighChart.new('graph') do |f|
-      f.title(text: 'Min prices timings')
+      f.title(text: 'Updated items count')
       f.xAxis(categories: times )
       f.series(name: 'Updated items count', yAxis: 0, data: updated_items_count, type: :spline )
 
