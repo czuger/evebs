@@ -52,6 +52,8 @@ gem "omniauth-google-oauth2"
 gem 'omniauth-identity'
 gem 'omniauth-crest'
 
+gem 'lazy_high_charts'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

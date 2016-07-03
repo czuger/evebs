@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   resource :admin_tools, only: [ :show ] do
     get :denied
+    get :activity
   end
 
   resources :items, only: [ :show ] do
