@@ -40,15 +40,15 @@
             %li{ class: active_link( edit_password_users_path ) }= link_to 'Change password', edit_password_users_path
         -#%li= link_to 'Help', '/help.pdf', target: '_blank'
         %li= link_to "Sign out", signout_path, id: "sign_out"
-        - if current_user.admin
-          %li
-            = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-              Admin
-              %span.caret
-            %ul.dropdown-menu
-              %li{ class: active_link( admin_tools_path ) }= link_to 'Raw datas', admin_tools_path
-              %li{ class: active_link( activity_admin_tools_path ) }= link_to 'Activity graph', activity_admin_tools_path
-              %li{ class: active_link( min_prices_timings_admin_tools_path ) }= link_to 'Min prices timings', min_prices_timings_admin_tools_path
+        -#- if current_user.admin
+        -#  %li
+        -#    = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+        -#      Admin
+        -#      %span.caret
+        -#    %ul.dropdown-menu
+        -#      %li{ class: active_link( admin_tools_path ) }= link_to 'Raw datas', admin_tools_path
+        -#      %li{ class: active_link( activity_admin_tools_path ) }= link_to 'Activity graph', activity_admin_tools_path
+        -#      %li{ class: active_link( min_prices_timings_admin_tools_path ) }= link_to 'Min prices timings', min_prices_timings_admin_tools_path
               -#%li{ class: active_link( items_users_admin_tools_path ) }= link_to 'Items users', items_users_admin_tools_path
 
     - else
