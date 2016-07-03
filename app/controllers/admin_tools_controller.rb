@@ -33,7 +33,7 @@ class AdminToolsController < ApplicationController
     @chart1 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title(text: 'Min prices timings')
       f.xAxis(categories: times )
-      f.series(name: 'Durations', yAxis: 0, data: duration, type: :spline )
+      f.series(name: 'Durations (en secondes)', yAxis: 0, data: duration, type: :spline )
 
       f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
       f.chart({defaultSeriesType: "column"})
