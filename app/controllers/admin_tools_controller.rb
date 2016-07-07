@@ -22,6 +22,31 @@ class AdminToolsController < ApplicationController
     @users_log = UserActivityLog.connection.select_all( request ).to_a
   end
 
+  def crest_price_history_update
+    timeline = Caddie::CrestPriceHistoryUpdateLog.order( :feed_date ).pluck( :feed_date )
+    update_serie = Caddie::CrestPriceHistoryUpdateLog.order( :feed_date ).pluck( :update_planning_time )
+    feeding_time = Caddie::CrestPriceHistoryUpdateLog.order( :feed_date ).pluck( :feeding_time )
+
+    @chart1 = LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(text: 'Feeding time')
+      f.xAxis(categories: timeline )
+      f.series(name: 'Duration (en secondes)', yAxis: 0, data: feeding_time )
+
+      f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
+      # f.chart({defaultSeriesType: "column"})
+    end
+
+    @chart2 = LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(text: 'Planning preprocess time')
+      f.xAxis(categories: timeline )
+      f.series(name: 'Duration (en secondes)', yAxis: 0, data: update_serie )
+
+      f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
+      # f.chart({defaultSeriesType: "column"})
+    end
+
+  end
+
   def min_prices_timings
     results = MinPricesLog.where( 'retrieve_start > ?', Time.now.to_date - 5 ).order( :retrieve_start )
       .pluck( :retrieve_start, :duration, :updated_items_count )

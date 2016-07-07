@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     get :activity
     get :min_prices_timings
     get :items_users
+    get :crest_price_history_update
   end
 
   resources :items, only: [ :show ] do

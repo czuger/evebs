@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160703142622) do
+ActiveRecord::Schema.define(version: 20160707154715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,16 @@ ActiveRecord::Schema.define(version: 20160703142622) do
 
   add_index "blueprints", ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", using: :btree
   add_index "blueprints", ["eve_item_id"], name: "index_blueprints_on_eve_item_id", using: :btree
+
+  create_table "caddie_crest_price_history_update_logs", force: :cascade do |t|
+    t.date     "feed_date"
+    t.integer  "update_planning_time"
+    t.integer  "feeding_time"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "caddie_crest_price_history_update_logs", ["feed_date"], name: "index_caddie_crest_price_history_update_logs_on_feed_date", unique: true, using: :btree
 
   create_table "caddie_crest_price_history_updates", force: :cascade do |t|
     t.integer  "eve_item_id"
