@@ -33,19 +33,19 @@ class AdminToolsController < ApplicationController
     @chart1 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title(text: 'Min prices timings')
       f.xAxis(categories: times )
-      f.series(name: 'Durations (en secondes)', yAxis: 0, data: duration, type: :spline )
+      f.series(name: 'Durations (en secondes)', yAxis: 0, data: duration )
 
       f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
-      f.chart({defaultSeriesType: "column"})
+      # f.chart({defaultSeriesType: "column"})
     end
 
     @chart2 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title(text: 'Updated items count')
       f.xAxis(categories: times )
-      f.series(name: 'Updated items count', yAxis: 0, data: updated_items_count, type: :spline )
+      f.series(name: 'Updated items count', yAxis: 0, data: updated_items_count )
 
       f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
-      f.chart({defaultSeriesType: "column"})
+      # f.chart({defaultSeriesType: "column"})
     end
 
   end
@@ -61,13 +61,25 @@ class AdminToolsController < ApplicationController
     total_data = total_result.rows.map{ |e| e[ 1 ].to_i }
     total_categories = total_result.rows.map{ |e| e[ 0 ] }
 
+    empty_connection_request = "
+    SELECT to_char(date_trunc('month', (created_at)), 'YYYY-MM'), count( * )
+    FROM user_activity_logs
+    WHERE \"user\" IS NULL
+    GROUP BY to_char(date_trunc('month', (created_at)), 'YYYY-MM')
+    ORDER BY to_char(date_trunc('month', (created_at)), 'YYYY-MM')"
+
+    empty_result = UserActivityLog.connection.select_all( empty_connection_request )
+    empty_data = empty_result.rows.map{ |e| e[ 1 ].to_i }
+    empty_categories = empty_result.rows.map{ |e| e[ 0 ] }
+
     @chart = LazyHighCharts::HighChart.new('graph') do |f|
       f.title(text: "Connections")
       f.xAxis(categories: total_categories )
-      f.series(name: "Total", yAxis: 0, data: total_data, type: :spline )
+      f.series(name: "Total", yAxis: 0, data: total_data )
+      f.series(name: 'Unconnected', yAxis: 0, data: empty_data )
 
       f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
-      f.chart({defaultSeriesType: "column"})
+      # f.chart({defaultSeriesType: "column"})
     end
 
   end

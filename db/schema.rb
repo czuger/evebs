@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20160703142622) do
     t.date     "next_process_date"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "thread_slice_id"
   end
 
   add_index "caddie_crest_price_history_updates", ["eve_item_id", "region_id"], name: "index_caddie_cphu_on_eve_item_id_and_region_id", unique: true, using: :btree
@@ -97,6 +98,32 @@ ActiveRecord::Schema.define(version: 20160703142622) do
   add_index "crest_price_histories", ["history_date"], name: "index_crest_price_histories_on_history_date", using: :btree
   add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
   add_index "crest_price_histories", ["region_id"], name: "index_crest_price_histories_on_region_id", using: :btree
+
+  create_table "crest_price_histories_daily_used", id: false, force: :cascade do |t|
+    t.integer  "eve_item_id"
+    t.integer  "region_id"
+    t.datetime "max"
+    t.datetime "items_created_at"
+    t.datetime "regions_created_at"
+  end
+
+  create_table "crest_price_histories_frequently_used", id: false, force: :cascade do |t|
+    t.integer  "eve_item_id"
+    t.integer  "region_id"
+    t.datetime "updated_at"
+    t.datetime "items_created_at"
+    t.datetime "regions_created_at"
+  end
+
+  create_table "crest_price_histories_never_used", id: false, force: :cascade do |t|
+    t.integer "eve_items_id"
+    t.integer "regions_id"
+  end
+
+  create_table "crest_price_histories_rarely_used", id: false, force: :cascade do |t|
+    t.integer "eve_items_id"
+    t.integer "regions_id"
+  end
 
   create_table "crest_prices_last_month_averages", force: :cascade do |t|
     t.integer  "region_id",                 null: false
