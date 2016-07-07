@@ -9,7 +9,12 @@ getTree = ->
 
   return unless $( '#choose_items_edit' ).val() == 'true'
 
+  waitingDialog.show()
+
   $.get '/items_tree.json', ( json_data ) ->
+
+    waitingDialog.hide()
+
     tree = $('#tree').treeview data: json_data, levels: 0, showCheckbox: true
     root.item_ids = JSON.parse( $( '#item_ids' ).val() )
 
