@@ -22,4 +22,4 @@ OmniAuth.config.on_failure = Proc.new { |env|
   OmniAuth::FailureEndpoint.new(env).redirect_to_failure
 }
 
-OmniAuth.config.full_host = 'https://evebs.net'
+OmniAuth.config.full_host = 'https://staging.evebs.net'
