@@ -5,8 +5,6 @@ selectItem = ( node, check_state ) ->
 
 getTree = ->
 
-  console.log( 'Edit item.coffee' )
-
   return unless $( '#choose_items_edit' ).val() == 'true'
 
   waitingDialog.show()
