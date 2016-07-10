@@ -39,7 +39,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.3)
-    autoprefixer-rails (6.3.6.2)
+    autoprefixer-rails (6.3.7)
       execjs
     bcrypt (3.1.11)
     bcrypt-ruby (3.1.5)
@@ -51,7 +51,7 @@ GEM
     bullet (5.1.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    caddie (0.0.8)
+    caddie (0.0.9)
       pg (~> 0.18, >= 0.18.4)
       rails (~> 4.2, >= 4.2.6)
     capistrano (3.4.1)
@@ -219,9 +219,9 @@ GEM
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
     sexp_processor (4.7.0)
-    simplecov (0.11.2)
+    simplecov (0.12.0)
       docile (~> 1.1.0)
-      json (~> 1.8)
+      json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     spring (1.7.2)
@@ -265,7 +265,7 @@ DEPENDENCIES
   actionpack-page_caching
   bootstrap-sass (~> 3.3.6)
   bullet
-  caddie (= 0.0.8)
+  caddie (= 0.0.9)
   capistrano (~> 3.4.0)
   capistrano-rails (~> 1.1)
   capistrano3-unicorn

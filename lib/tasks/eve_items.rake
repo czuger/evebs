@@ -1,6 +1,7 @@
 require 'yaml'
 
-EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
+# TODO : remove the caching everywhere, it fill the disk on prod.
+# EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
 
 namespace :data_setup do
   desc "Feed item objects list"

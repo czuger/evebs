@@ -2,7 +2,7 @@ require 'open-uri'
 require 'open-uri/cached'
 require 'pp'
 
-OpenURI::Cache.cache_path = 'tmp'
+# OpenURI::Cache.cache_path = 'tmp'
 
 # Ajusted prices are not provided for all componenents.
 # Rely on hand made averages rather than those prices
