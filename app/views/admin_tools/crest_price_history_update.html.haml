@@ -1,6 +1,11 @@
 .container-fluid
   %h3 Crest price history timing
 
-  = high_chart( 'activity_chart_1', @chart1 )
-  = high_chart( 'activity_chart_2', @chart2 )
+  .row
+    .col-md-6
+      = high_chart( 'activity_chart_1', @charts[0] )
+      = high_chart( 'activity_chart_2', @charts[1] )
+    .col-md-6
+      = high_chart( 'activity_chart_3', @charts[2] )
+      = high_chart( 'activity_chart_4', @charts[3] )
 

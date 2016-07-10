@@ -33,7 +33,7 @@
         %td.text-right= print_isk( margin.cost )
         %td.text-right= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}&usesystem=30000142", target: '_blank' )
         %td.text-right= print_pcent( margin.margin_percent ) if margin && margin.margin_percent
-        %td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
+        -#%td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
 
   .text-center
     = button_to "Sign in for custom results", '/sessions/new', id: "sign_in", method: :get, class: 'btn-lg btn-warning'

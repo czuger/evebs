@@ -23,28 +23,26 @@ class AdminToolsController < ApplicationController
   end
 
   def crest_price_history_update
-    timeline = Caddie::CrestPriceHistoryUpdateLog.order( :feed_date ).pluck( :feed_date )
-    update_serie = Caddie::CrestPriceHistoryUpdateLog.order( :feed_date ).pluck( :update_planning_time )
-    feeding_time = Caddie::CrestPriceHistoryUpdateLog.order( :feed_date ).pluck( :feeding_time )
+    datas = Caddie::CrestPriceHistoryUpdateLog.order( :feed_date ).to_a
+    timeline = datas.map{ |e| e.feed_date }
 
-    @chart1 = LazyHighCharts::HighChart.new('graph') do |f|
-      f.title(text: 'Feeding time')
-      f.xAxis(categories: timeline )
-      f.series(name: 'Duration (en secondes)', yAxis: 0, data: feeding_time )
+    charts_titles = [ [ 'Feeding time', 'Duration (in seconds)', :feeding_time ],
+      [ 'Planning preprocess time', 'Duration (in seconds)', :update_planning_time ],
+      [ 'Insertions', 'Insertions', :total_inserts ], [ 'Connections per seconds', 'Co/s', :co_seconds ] ]
 
-      f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
-      # f.chart({defaultSeriesType: "column"})
+    @charts = []
+
+    charts_titles.each do |title_array|
+      chart = LazyHighCharts::HighChart.new('graph') do |f|
+        f.title(text: title_array[0])
+        f.xAxis(categories: timeline )
+        f.series(name: title_array[1], yAxis: 0, data: datas.map{ |e| e.send( title_array[2] ) } )
+
+        f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
+        # f.chart({defaultSeriesType: "column"})
+      end
+      @charts << chart
     end
-
-    @chart2 = LazyHighCharts::HighChart.new('graph') do |f|
-      f.title(text: 'Planning preprocess time')
-      f.xAxis(categories: timeline )
-      f.series(name: 'Duration (en secondes)', yAxis: 0, data: update_serie )
-
-      f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
-      # f.chart({defaultSeriesType: "column"})
-    end
-
   end
 
   def min_prices_timings

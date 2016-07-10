@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160707154715) do
+ActiveRecord::Schema.define(version: 20160710164657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,8 @@ ActiveRecord::Schema.define(version: 20160707154715) do
     t.integer  "feeding_time"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "total_inserts"
+    t.float    "co_seconds"
   end
 
   add_index "caddie_crest_price_history_update_logs", ["feed_date"], name: "index_caddie_crest_price_history_update_logs_on_feed_date", unique: true, using: :btree
