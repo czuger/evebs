@@ -18,7 +18,7 @@ class TradeOrder < ActiveRecord::Base
     if user.remove_occuped_places || user.watch_my_prices
       puts "About to retrieveing orders for #{user.name}"
       if( user.key_user_id && !user.key_user_id.empty? && user.api_key && !user.api_key.empty? )
-        EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
+        # EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )
         api = EAAL::API.new( user.key_user_id, user.api_key )
         api.scope = "account"
         begin

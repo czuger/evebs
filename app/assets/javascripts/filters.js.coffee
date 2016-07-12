@@ -1,4 +1,7 @@
 $(document).ready ->
+
+  console.log( 'Filters on' )
+
   $( '#select_trade_hubs' ).change ->
     selected_value = $(this).val()
     $('.trade_hub_name').parent().show()
