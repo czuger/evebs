@@ -1,4 +1,4 @@
-$(document).ready ->
+set_fb = ->
 
   railsEnv = $('body').data( 'rails-env' )
 
@@ -25,3 +25,5 @@ $(document).ready ->
         FB.getLoginStatus (response) ->
           FB.logout() if response.authResponse
         true
+
+$(document).on('turbolinks:load', set_fb )

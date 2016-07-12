@@ -1,4 +1,4 @@
-jQuery(document).ready(function(){
+document.addEventListener("turbolinks:load", function() {
 
 	var railsEnv = $('body').data( 'rails-env' );
 

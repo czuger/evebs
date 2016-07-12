@@ -1,6 +1,6 @@
-$(document).ready ->
+set_filters = ->
 
-  console.log( 'Filters on' )
+#  console.log( 'Filters on' )
 
   $( '#select_trade_hubs' ).change ->
     selected_value = $(this).val()
@@ -22,3 +22,5 @@ $(document).ready ->
       .filter ->
         $( this ).children().html() != selected_value
       .parent().hide()
+
+$(document).on( 'turbolinks:load', set_filters )
