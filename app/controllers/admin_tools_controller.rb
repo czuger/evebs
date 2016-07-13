@@ -49,7 +49,7 @@ class AdminToolsController < ApplicationController
     results = MinPricesLog.where( 'retrieve_start > ?', Time.now.to_date - 5 ).order( :retrieve_start )
       .pluck( :retrieve_start, :duration, :updated_items_count )
 
-    times = results.map{|e| e[0].hour }
+    times = results.map{|e| e[0].strftime( '%d|%H' ) }
     duration = results.map{|e| e[1] }
     updated_items_count = results.map{|e| e[2] }
 
