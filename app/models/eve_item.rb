@@ -4,11 +4,11 @@ require 'pp'
 
 class EveItem < ActiveRecord::Base
 
-  # include Assert
-  # include ItemsInit::ItemSetupAndComp
-  # extend ItemsInit::ItemSetupAndCompSelf
-  # extend MultiplePriceRetriever
-  # extend Setup::UpdateEveItems
+  include Assert
+  include ItemsInit::ItemSetupAndComp
+  extend ItemsInit::ItemSetupAndCompSelf
+  extend MultiplePriceRetriever
+  extend Setup::UpdateEveItems
 
   has_and_belongs_to_many :users
   has_one :blueprint, dependent: :destroy
