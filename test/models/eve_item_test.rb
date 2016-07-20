@@ -1,7 +1,7 @@
 require 'test_helper'
 
 require 'open-uri'
-require 'open-uri/cached'
+# require 'open-uri/cached'
 require 'pp'
 
 class EveItemTest < ActiveSupport::TestCase

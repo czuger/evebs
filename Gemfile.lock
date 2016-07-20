@@ -167,7 +167,6 @@ GEM
     omniauth-oauth2 (1.4.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    open-uri-cached (0.0.5)
     pg (0.18.4)
     pkg-config (1.1.7)
     quiet_assets (1.1.0)
@@ -282,7 +281,6 @@ DEPENDENCIES
   omniauth-facebook
   omniauth-google-oauth2
   omniauth-identity
-  open-uri-cached
   pg
   quiet_assets
   rails (= 4.2.6)

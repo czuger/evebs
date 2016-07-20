@@ -1,5 +1,5 @@
 require 'open-uri'
-require 'open-uri/cached'
+# require 'open-uri/cached'
 require 'pp'
 
 # Items list from CREST is not really reliable.

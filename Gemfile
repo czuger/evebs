@@ -31,7 +31,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'nokogiri'
 gem 'constructor'
 gem 'eaal'
-gem 'open-uri-cached'
+# gem 'open-uri-cached'
 gem 'closure_tree'
 gem 'crypt'
 

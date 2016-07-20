@@ -1,4 +1,4 @@
 require 'open-uri'
-require 'open-uri/cached'
+# require 'open-uri/cached'
 
-OpenURI::Cache.cache_path = 'tmp'
+# OpenURI::Cache.cache_path = 'tmp'

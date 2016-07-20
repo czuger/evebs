@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     get :denied
     get :activity
     get :min_prices_timings
+    get :min_prices_timings_overview
     get :items_users
     get :crest_price_history_update
   end

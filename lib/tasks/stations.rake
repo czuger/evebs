@@ -1,8 +1,8 @@
 require 'open-uri'
-require 'open-uri/cached'
+# # require 'open-uri/cached'
 require 'pp'
 
-OpenURI::Cache.cache_path = 'tmp'
+# OpenURI::Cache.cache_path = 'tmp'
 
 namespace :data_setup do
   desc "Feed station_list"

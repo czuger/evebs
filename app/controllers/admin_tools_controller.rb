@@ -45,6 +45,47 @@ class AdminToolsController < ApplicationController
     end
   end
 
+  def min_prices_timings_overview
+    request = "SELECT to_char(date_trunc('day', (retrieve_start)), 'YYYY-MM-DD') update_day, count( * ) daily_runs,
+      sum( duration ) total_duration, sum( updated_items_count ) total_updated_items
+      FROM min_prices_logs
+      GROUP BY to_char(date_trunc('day', (retrieve_start)), 'YYYY-MM-DD')
+      ORDER BY to_char(date_trunc('day', (retrieve_start)), 'YYYY-MM-DD')"
+
+    timeline = []
+    daily_runs = []
+    total_duration = []
+    total_updated_items = []
+
+    overview = MinPricesLog.connection.select_all( request )
+    overview.each do |row|
+      puts row.inspect
+      timeline << row['update_day']
+      daily_runs << row['daily_runs'].to_i
+      total_duration << row['total_duration'].to_i
+      total_updated_items << row['total_updated_items'].to_i
+    end
+
+    charts_titles = [ [ 'Total duration', 'Duration (in seconds)', total_duration ],
+                      [ 'Total updated items', 'Updated items', total_updated_items ],
+                      [ 'Daily runs', 'Runs', daily_runs ] ]
+
+    @charts = []
+
+    charts_titles.each do |title_array|
+      chart = LazyHighCharts::HighChart.new('graph') do |f|
+        f.title(text: title_array[0])
+        f.xAxis(categories: timeline )
+        f.series(name: title_array[1], yAxis: 0, data: title_array[2] )
+
+        f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
+        # f.chart({defaultSeriesType: "column"})
+      end
+      @charts << chart
+    end
+
+  end
+
   def min_prices_timings
     results = MinPricesLog.where( 'retrieve_start > ?', Time.now.to_date - 5 ).order( :retrieve_start )
       .pluck( :retrieve_start, :duration, :updated_items_count )
@@ -70,7 +111,6 @@ class AdminToolsController < ApplicationController
       f.legend(align: 'right', verticalAlign: 'top', y: 75, x: -50, layout: 'vertical')
       # f.chart({defaultSeriesType: "column"})
     end
-
   end
 
   def activity

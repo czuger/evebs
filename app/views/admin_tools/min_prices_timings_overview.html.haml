@@ -1,0 +1,9 @@
+.container-fluid
+  %h3 Min prices timings overview
+
+  - i = 0
+  - @charts.each do |chart|
+    .row
+      = high_chart( "chart_#{i}", chart )
+      - i += 1
+
