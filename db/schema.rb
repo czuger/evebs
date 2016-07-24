@@ -111,32 +111,6 @@ ActiveRecord::Schema.define(version: 20160710164657) do
   add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
   add_index "crest_price_histories", ["region_id"], name: "index_crest_price_histories_on_region_id", using: :btree
 
-  create_table "crest_price_histories_daily_used", id: false, force: :cascade do |t|
-    t.integer  "eve_item_id"
-    t.integer  "region_id"
-    t.datetime "max"
-    t.datetime "items_created_at"
-    t.datetime "regions_created_at"
-  end
-
-  create_table "crest_price_histories_frequently_used", id: false, force: :cascade do |t|
-    t.integer  "eve_item_id"
-    t.integer  "region_id"
-    t.datetime "updated_at"
-    t.datetime "items_created_at"
-    t.datetime "regions_created_at"
-  end
-
-  create_table "crest_price_histories_never_used", id: false, force: :cascade do |t|
-    t.integer "eve_items_id"
-    t.integer "regions_id"
-  end
-
-  create_table "crest_price_histories_rarely_used", id: false, force: :cascade do |t|
-    t.integer "eve_items_id"
-    t.integer "regions_id"
-  end
-
   create_table "crest_prices_last_month_averages", force: :cascade do |t|
     t.integer  "region_id",                 null: false
     t.integer  "eve_item_id",               null: false

@@ -11,7 +11,7 @@ module Modules::PriceAdvices::MarginModule
 
     user_eve_items = @user.eve_items.includes( :blueprint )
 
-    @user.trade_hubs.includes( region: :trade_hubs ).each do |trade_hub|
+    @user.trade_hubs.includes( :region ).each do |trade_hub|
 
       eve_items = user_eve_items
       if @user.remove_occuped_places
@@ -39,7 +39,7 @@ module Modules::PriceAdvices::MarginModule
           daily_monthly_diff = (price / avg_price)-1 if price && avg_price
         end
 
-        full_batch_size = eve_item.full_batch_size
+        full_batch_size = [ eve_item.full_batch_size, volume_sum ].min
         margin = eve_item.margin( price )
         benef = ( full_batch_size * margin if full_batch_size && margin )
         benef_pcent = eve_item.pcent_margin( price )
