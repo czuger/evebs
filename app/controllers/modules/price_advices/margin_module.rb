@@ -69,7 +69,7 @@ module Modules::PriceAdvices::MarginModule
             price: price,
             benef: benef,
             benef_pcent: benef_pcent,
-            batch_size: eve_item.full_batch_size,
+            batch_size: full_batch_size,
             monthly_amount: volume_sum,
             id: eve_item.id
           }
