@@ -51,7 +51,7 @@ GEM
     bullet (5.2.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    caddie (0.2.1)
+    caddie (0.2.2)
       mocha
       pg (~> 0.18, >= 0.18.4)
       rails (~> 4.2, >= 4.2.6)
@@ -265,7 +265,7 @@ DEPENDENCIES
   actionpack-page_caching
   bootstrap-sass (~> 3.3.6)
   bullet
-  caddie (= 0.2.1)
+  caddie (= 0.2.2)
   capistrano (~> 3.4.0)
   capistrano-rails (~> 1.1)
   capistrano3-unicorn
