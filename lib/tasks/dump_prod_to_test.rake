@@ -11,12 +11,12 @@ namespace :db do
         end
 
         puts 'Modifying prod dump'
-        `ssh hw 'sed -i.bak \'s/SET search_path = production, pg_catalog;/SET search_path = staging, pg_catalog;/ tmp/production_to_staging.sql\''`
+        # `ssh hw "sed -i.bak 's/SET search_path = production, pg_catalog;/SET search_path = staging, pg_catalog;/' /tmp/production_to_staging.sql"`
 
-        `ssh hw 'rm tmp/production_to_staging.sql.bak'`
+        # `ssh hw 'rm tmp/production_to_staging.sql.bak'`
 
         puts 'Dropping database'
-        `ssh hw 'psql -U eve_business_server -c \'DROP SCHEMA staging\''`
+        `ssh hw "psql -U eve_business_server eve_business_server -c 'DROP SCHEMA staging'"`
         puts 'Creating database'
         `ssh hw 'psql -U eve_business_server -c \'CREATE SCHEMA staging\''`
 

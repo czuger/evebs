@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160725094658) do
+ActiveRecord::Schema.define(version: 20160803145355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(version: 20160725094658) do
 
   create_table "components", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name"
+    t.string   "name",            limit: 255
     t.float    "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -109,11 +109,8 @@ ActiveRecord::Schema.define(version: 20160725094658) do
     t.datetime "updated_at",              null: false
   end
 
-  add_index "crest_price_histories", ["day_timestamp"], name: "index_crest_price_histories_on_day_timestamp", using: :btree
-  add_index "crest_price_histories", ["eve_item_id"], name: "index_crest_price_histories_on_eve_item_id", using: :btree
   add_index "crest_price_histories", ["history_date"], name: "index_crest_price_histories_on_history_date", using: :btree
   add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
-  add_index "crest_price_histories", ["region_id"], name: "index_crest_price_histories_on_region_id", using: :btree
 
   create_table "crest_prices_last_month_averages", force: :cascade do |t|
     t.integer  "region_id",                 null: false
@@ -134,8 +131,8 @@ ActiveRecord::Schema.define(version: 20160725094658) do
   add_index "crest_prices_last_month_averages", ["region_id"], name: "index_crest_prices_last_month_averages_on_region_id", using: :btree
 
   create_table "eve_clients", force: :cascade do |t|
-    t.string   "cpp_client_id", null: false
-    t.string   "name",          null: false
+    t.string   "cpp_client_id", limit: 255, null: false
+    t.string   "name",          limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -144,13 +141,13 @@ ActiveRecord::Schema.define(version: 20160725094658) do
 
   create_table "eve_items", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name",                                  null: false
+    t.string   "name",                  limit: 255,                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name_lowcase"
+    t.string   "name_lowcase",          limit: 255
     t.float    "cost"
-    t.boolean  "epic_blueprint",        default: false
-    t.boolean  "involved_in_blueprint", default: false
+    t.boolean  "epic_blueprint",                    default: false
+    t.boolean  "involved_in_blueprint",             default: false
     t.integer  "market_group_id"
   end
 
@@ -166,9 +163,9 @@ ActiveRecord::Schema.define(version: 20160725094658) do
   add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
-    t.string   "name"
-    t.string   "email"
-    t.string   "password_digest"
+    t.string   "name",            limit: 255
+    t.string   "email",           limit: 255
+    t.string   "password_digest", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -248,18 +245,18 @@ ActiveRecord::Schema.define(version: 20160725094658) do
   add_index "regions", ["cpp_region_id"], name: "index_regions_on_cpp_region_id", unique: true, using: :btree
 
   create_table "sale_records", force: :cascade do |t|
-    t.integer  "user_id",               null: false
-    t.integer  "eve_client_id",         null: false
-    t.integer  "eve_item_id",           null: false
-    t.integer  "station_id",            null: false
-    t.string   "eve_transaction_key",   null: false
-    t.integer  "quantity",              null: false
-    t.float    "unit_sale_price",       null: false
-    t.float    "total_sale_price",      null: false
+    t.integer  "user_id",                           null: false
+    t.integer  "eve_client_id",                     null: false
+    t.integer  "eve_item_id",                       null: false
+    t.integer  "station_id",                        null: false
+    t.string   "eve_transaction_key",   limit: 255, null: false
+    t.integer  "quantity",                          null: false
+    t.float    "unit_sale_price",                   null: false
+    t.float    "total_sale_price",                  null: false
     t.float    "unit_cost"
     t.float    "unit_sale_profit"
     t.float    "total_sale_profit"
-    t.datetime "transaction_date_time", null: false
+    t.datetime "transaction_date_time",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -284,7 +281,7 @@ ActiveRecord::Schema.define(version: 20160725094658) do
 
   create_table "stations", force: :cascade do |t|
     t.integer  "trade_hub_id"
-    t.string   "name"
+    t.string   "name",           limit: 255
     t.integer  "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -295,11 +292,11 @@ ActiveRecord::Schema.define(version: 20160725094658) do
 
   create_table "trade_hubs", force: :cascade do |t|
     t.integer  "eve_system_id"
-    t.string   "name"
+    t.string   "name",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "region_id"
-    t.boolean  "inner",         default: false
+    t.boolean  "inner",                     default: false
   end
 
   add_index "trade_hubs", ["region_id"], name: "index_trade_hubs_on_region_id", using: :btree
@@ -335,21 +332,21 @@ ActiveRecord::Schema.define(version: 20160725094658) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",                    limit: 255
     t.boolean  "remove_occuped_places"
-    t.string   "key_user_id"
-    t.string   "api_key"
+    t.string   "key_user_id",             limit: 255
+    t.string   "api_key",                 limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "provider"
-    t.string   "uid"
-    t.string   "oauth_token"
+    t.string   "provider",                limit: 255
+    t.string   "uid",                     limit: 255
+    t.string   "oauth_token",             limit: 255
     t.datetime "oauth_expires_at"
     t.datetime "last_changes_in_choices"
     t.integer  "min_pcent_for_advice"
     t.boolean  "watch_my_prices"
     t.float    "min_amount_for_advice"
-    t.boolean  "admin",                   default: false, null: false
+    t.boolean  "admin",                               default: false, null: false
   end
 
   add_foreign_key "api_key_errors", "users"
