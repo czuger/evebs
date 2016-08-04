@@ -29,7 +29,7 @@ module Modules::PriceAdvices::MarginModule
 
         if @monthly_averages && @monthly_averages[region_item_key]
           avg_price = @monthly_averages[region_item_key].avg_price_avg
-          volume_sum = @monthly_averages[region_item_key].volume_sum
+          volume_sum = @monthly_averages[region_item_key].volume_sum || 0
         end
 
         if margin_type == :monthly
