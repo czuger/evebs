@@ -21,3 +21,5 @@ sqlite.sqlite3
 
 *.bz2
 *.db
+
+coverage

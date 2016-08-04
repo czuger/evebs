@@ -81,12 +81,11 @@ group :development, :test do
 
   gem "factory_girl_rails", "~> 4.0"
 
-  gem 'simplecov'
-  gem 'simplecov-html'
-
   gem 'spring'
   gem "bullet"
 end
+
+gem 'simplecov', :require => false, :group => :test
 
 gem 'caddie', '0.2.3', path: '../caddie'
 # gem 'caddie', '0.2.3'

@@ -23,12 +23,12 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should change password" do
     get :change_password, user_id: :dummy, new_password: '123456', new_password_confirmation: '123456'
-    assert_redirected_to user_edit_password_path
+    assert_redirected_to edit_password_users_url
   end
 
   test "should not change password on error" do
     get :change_password, user_id: :dummy, new_password: '123456', new_password_confirmation: '654321'
-    assert_redirected_to user_edit_password_path
+    assert_redirected_to edit_password_users_url
   end
 
 end

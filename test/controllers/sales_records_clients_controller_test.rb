@@ -4,6 +4,7 @@ class SalesRecordsClientsControllerTest < ActionController::TestCase
 
   def setup
     @sale_record = create( :sale_record )
+    session[:user_id] = @sale_record.user.id
   end
 
   test "should get show" do
