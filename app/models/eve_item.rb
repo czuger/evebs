@@ -47,7 +47,11 @@ class EveItem < ActiveRecord::Base
   end
 
   def full_batch_size
-    blueprint.nb_runs*blueprint.prod_qtt if blueprint
+    unless blueprint
+      puts "EveItem#full_batch_size : #{self.inspect} has no blueprint"
+      return -Float::INFINITY
+    end
+    blueprint.nb_runs*blueprint.prod_qtt
   end
 
 end

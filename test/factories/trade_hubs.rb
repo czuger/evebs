@@ -17,6 +17,12 @@ FactoryGirl.define do
       name "Amarr"
     end
 
+    factory :e02_ik do
+      id 15
+      eve_system_id '30000903'
+      name "E02-IK"
+    end
+
   end
 
 end
