@@ -6,7 +6,7 @@ class CrestPriceHistoryIndexReworkAndOthers < ActiveRecord::Migration
     remove_index :crest_price_histories, :eve_item_id
     remove_index :crest_price_histories, :region_id
     remove_index :crest_price_histories, :history_date
-    remove_index :crest_price_histories, name: :price_histories_all_keys_index
+    # remove_index :crest_price_histories, name: :price_histories_all_keys_index
 
     add_index :crest_price_histories, [ :region_id, :eve_item_id ], name: :index_crest_price_histories_on_region_and_item
     add_index :crest_price_histories, :history_date

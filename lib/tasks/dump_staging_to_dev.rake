@@ -26,7 +26,7 @@ namespace :db do
         `createdb eve_business_server_dev -U postgres -O eve_business_server`
 
         puts 'Inserting datas'
-        `pg_restore -U eve_business_server -d eve_business_server_dev -n public < /tmp/staging.dump`
+        `pg_restore -U eve_business_server -d eve_business_server_dev -n public /tmp/staging.dump`
       end
 
     end

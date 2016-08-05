@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803145355) do
+ActiveRecord::Schema.define(version: 20160803143148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,21 +96,20 @@ ActiveRecord::Schema.define(version: 20160803145355) do
   add_index "crest_costs", ["eve_item_id"], name: "index_crest_costs_on_eve_item_id", unique: true, using: :btree
 
   create_table "crest_price_histories", force: :cascade do |t|
-    t.integer  "region_id",               null: false
-    t.integer  "eve_item_id",             null: false
-    t.string   "day_timestamp",           null: false
-    t.datetime "history_date",            null: false
-    t.integer  "order_count",   limit: 8
-    t.integer  "volume",        limit: 8
+    t.integer  "region_id",              null: false
+    t.integer  "eve_item_id",            null: false
+    t.datetime "history_date",           null: false
+    t.integer  "order_count",  limit: 8
+    t.integer  "volume",       limit: 8
     t.float    "low_price"
     t.float    "avg_price"
     t.float    "high_price"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "crest_price_histories", ["history_date"], name: "index_crest_price_histories_on_history_date", using: :btree
-  add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
+  add_index "crest_price_histories", ["region_id", "eve_item_id"], name: "index_crest_price_histories_on_region_and_item", using: :btree
 
   create_table "crest_prices_last_month_averages", force: :cascade do |t|
     t.integer  "region_id",                 null: false
@@ -127,7 +126,6 @@ ActiveRecord::Schema.define(version: 20160803145355) do
   end
 
   add_index "crest_prices_last_month_averages", ["eve_item_id"], name: "index_crest_prices_last_month_averages_on_eve_item_id", using: :btree
-  add_index "crest_prices_last_month_averages", ["region_id", "eve_item_id"], name: "prices_lmavg_all_keys_index", unique: true, using: :btree
   add_index "crest_prices_last_month_averages", ["region_id"], name: "index_crest_prices_last_month_averages_on_region_id", using: :btree
 
   create_table "eve_clients", force: :cascade do |t|
