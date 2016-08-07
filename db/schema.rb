@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803143148) do
+ActiveRecord::Schema.define(version: 20160807163944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 20160803143148) do
   create_table "components", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
     t.string   "name",            limit: 255
-    t.float    "cost"
+    t.float    "cost",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -204,7 +204,7 @@ ActiveRecord::Schema.define(version: 20160803143148) do
   create_table "materials", force: :cascade do |t|
     t.integer  "blueprint_id"
     t.integer  "component_id"
-    t.integer  "required_qtt"
+    t.integer  "required_qtt", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -289,12 +289,12 @@ ActiveRecord::Schema.define(version: 20160803143148) do
   add_index "stations", ["trade_hub_id"], name: "index_stations_on_trade_hub_id", using: :btree
 
   create_table "trade_hubs", force: :cascade do |t|
-    t.integer  "eve_system_id"
-    t.string   "name",          limit: 255
+    t.integer  "eve_system_id",                             null: false
+    t.string   "name",          limit: 255,                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "region_id"
-    t.boolean  "inner",                     default: false
+    t.boolean  "inner",                     default: false, null: false
   end
 
   add_index "trade_hubs", ["region_id"], name: "index_trade_hubs_on_region_id", using: :btree

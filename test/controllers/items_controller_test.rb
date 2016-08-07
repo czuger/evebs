@@ -10,6 +10,11 @@ class ItemsControllerTest < ActionController::TestCase
     session[:user_id] = @user.id
   end
 
+  test "should get items costs" do
+    get :cost, item_id: @eve_item.id
+    assert_response :success
+  end
+
   test "should show item detail" do
     get :show, id: @eve_item.id
     assert_response :success

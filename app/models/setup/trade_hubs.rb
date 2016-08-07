@@ -5,13 +5,13 @@ class Setup::TradeHubs
   def initialize
 
     api = EAAL::API.new(nil,nil)
-    api.scope = "eve"
+    api.scope = 'eve'
 
     ActiveRecord::Base.transaction do
 
       for system_name in SYSTEM_NAMES.sort
         unless TradeHub.find_by_name( system_name )
-          puts "Creating entry for #{system_name}"
+          puts "Creating entry for #{system_name}" unless Rails.env == 'test'
           result = api.CharacterID(:names => system_name)
           system_id = result.characters.first.characterID.to_i
           raise "Unable to find system for system_name #{system_name}" if system_id.nil? || system_id == 0
@@ -38,7 +38,5 @@ class Setup::TradeHubs
         end
       end
     end
-
   end
-
 end

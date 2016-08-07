@@ -7,12 +7,6 @@ class MarketGroup < ActiveRecord::Base
 
   EVE_ITEM_NOT_SHOWED_GROUPS = [ 1, 1496, 1335, 1314, 1263, 1103, 926, 870, 236, 68 ]
 
-  def get_market_group_breadcrumb
-    prefix = ancestors.reverse.map{ |e| e.name }.compact.join( ' > ' )
-    prefix << ' > ' << name unless OVERCLASSIFICATION.include?( name )
-    prefix
-  end
-
   def self.build_items_tree
     File.open( 'public/items_tree.json', 'w' ) do |file|
       arr = []

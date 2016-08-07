@@ -7,9 +7,13 @@ class MarketGroupTest < ActiveSupport::TestCase
     create( :mjolnir_fury_cruise_missile )
   end
 
-  test "the truth" do
-    # Crest::MarketGroups.update_market_group
-    # pp MarketGroup.all
+  test 'items_tree.json should be created and not empty' do
+
+    MarketGroup.stubs( :roots ).returns( [ MarketGroup.new ] )
+
+    MarketGroup.build_items_tree
+
+    assert_not_equal 0, File.open( 'public/items_tree.json', 'r' ).size
   end
 
 end

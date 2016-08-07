@@ -9,6 +9,12 @@ class ChooseItemsControllerTest < ActionController::TestCase
     @item = EveItem.find_by_cpp_eve_item_id( 2621 )
   end
 
+  test "should select an item" do
+    assert_difference '@user.eve_items.count' do
+      post :select_items, { item: 'true', id: @item.id, check_state: 'true' }
+    end
+  end
+
   test "should get edit" do
     get :edit
     assert_response :success

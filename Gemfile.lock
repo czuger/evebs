@@ -283,6 +283,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   lazy_high_charts
+  mocha
   nokogiri
   omniauth
   omniauth-crest

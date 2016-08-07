@@ -7,7 +7,8 @@ class Crest::ComputePriceHistoryAvg
       last_month = Date.today - 1.month
 
       sql = "
-      INSERT INTO crest_prices_last_month_averages
+      INSERT INTO crest_prices_last_month_averages( region_id, eve_item_id, order_count_sum, volume_sum,
+        order_count_avg, volume_avg, low_price_avg, avg_price_avg, high_price_avg, created_at, updated_at )
         SELECT region_id, eve_item_id, SUM( order_count ), SUM( volume ), AVG( order_count ), AVG( volume ),
           AVG( low_price ), AVG( avg_price ), AVG( high_price ), now(), now()
         FROM crest_price_histories

@@ -13,9 +13,12 @@ module Setup::UpdateEveItems
     new_items = {}
 
     # import new items
+    break_on_tests_counter = 0
     Setup::CppSourcesEveItem.where( published: 1 ).where.not( marketGroupId: nil ).each do |item|
       id, name, market_group = [ item.typeID, item.typeName, item.marketGroupID ]
       new_items[ id ] = { id: id, name: name, market_group: market_group }
+      break_on_tests_counter += 1
+      break if Rails.env=='test' && break_on_tests_counter > 0
     end
 
     blueprints = Blueprint.get_blueprints_array_from_cpp_sources

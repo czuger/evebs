@@ -6,6 +6,9 @@ class Crest::InitRegions
   include Crest::CrestBase
 
   def initialize
+  end
+
+  def fill_regions
     ActiveRecord::Base.transaction do
       fill_regions_table
       link_region_to_trade_hub

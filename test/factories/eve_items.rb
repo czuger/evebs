@@ -4,6 +4,8 @@ FactoryGirl.define do
 
     cost 5
     involved_in_blueprint true
+    name 'Item test'
+    cpp_eve_item_id 123456
 
     # An example of item with blueprint and market group
     factory :inferno_fury_cruise_missile do
@@ -38,6 +40,11 @@ FactoryGirl.define do
       name "Inferno Precision Cruise Missile"
       name_lowcase "inferno precision cruise missile"
       cost 1815252.83
+
+      after(:create) do |eve_item|
+        create( :inferno_fury_cruise_blueprint, eve_item: eve_item )
+      end
+
     end
 
     # Name says

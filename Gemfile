@@ -83,6 +83,7 @@ group :development, :test do
 
   gem 'spring'
   gem "bullet"
+  gem 'mocha'
 end
 
 gem 'simplecov', :require => false, :group => :test
