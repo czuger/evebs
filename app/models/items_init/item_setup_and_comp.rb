@@ -6,14 +6,14 @@ module ItemsInit::ItemSetupAndComp
       if material.component.cost
         total_cost += material.component.cost * material.required_qtt
       else
-        puts "Warning !!! #{material.component.inspect} has no cost"
+        puts "Warning !!! #{material.component.inspect} has no cost" unless Rails.env == 'test'
         # If we lack a material we set the price to nil and exit
         update_attribute(:cost,nil)
         return
       end
     end
     if total_cost <= 0
-      puts "Warning !!! #{self.inspect} has no cost"
+      puts "Warning !!! #{self.inspect} has no cost" unless Rails.env == 'test'
       # If we lack a material we set the price to nil and exit
       update_attribute(:cost,nil)
       return

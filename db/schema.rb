@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160807163944) do
+ActiveRecord::Schema.define(version: 20160808124908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,19 +82,6 @@ ActiveRecord::Schema.define(version: 20160807163944) do
 
   add_index "components", ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id", using: :btree
 
-  create_table "crest_costs", force: :cascade do |t|
-    t.integer  "cpp_item_id",    null: false
-    t.integer  "eve_item_id",    null: false
-    t.float    "adjusted_price"
-    t.float    "average_price"
-    t.float    "cost"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "crest_costs", ["cpp_item_id"], name: "index_crest_costs_on_cpp_item_id", unique: true, using: :btree
-  add_index "crest_costs", ["eve_item_id"], name: "index_crest_costs_on_eve_item_id", unique: true, using: :btree
-
   create_table "crest_price_histories", force: :cascade do |t|
     t.integer  "region_id",              null: false
     t.integer  "eve_item_id",            null: false
@@ -127,15 +114,6 @@ ActiveRecord::Schema.define(version: 20160807163944) do
 
   add_index "crest_prices_last_month_averages", ["eve_item_id"], name: "index_crest_prices_last_month_averages_on_eve_item_id", using: :btree
   add_index "crest_prices_last_month_averages", ["region_id"], name: "index_crest_prices_last_month_averages_on_region_id", using: :btree
-
-  create_table "eve_clients", force: :cascade do |t|
-    t.string   "cpp_client_id", limit: 255, null: false
-    t.string   "name",          limit: 255, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "eve_clients", ["cpp_client_id"], name: "index_eve_clients_on_cpp_client_id", unique: true, using: :btree
 
   create_table "eve_items", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
@@ -242,29 +220,6 @@ ActiveRecord::Schema.define(version: 20160807163944) do
 
   add_index "regions", ["cpp_region_id"], name: "index_regions_on_cpp_region_id", unique: true, using: :btree
 
-  create_table "sale_records", force: :cascade do |t|
-    t.integer  "user_id",                           null: false
-    t.integer  "eve_client_id",                     null: false
-    t.integer  "eve_item_id",                       null: false
-    t.integer  "station_id",                        null: false
-    t.string   "eve_transaction_key",   limit: 255, null: false
-    t.integer  "quantity",                          null: false
-    t.float    "unit_sale_price",                   null: false
-    t.float    "total_sale_price",                  null: false
-    t.float    "unit_cost"
-    t.float    "unit_sale_profit"
-    t.float    "total_sale_profit"
-    t.datetime "transaction_date_time",             null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "sale_records", ["eve_client_id"], name: "index_sale_records_on_eve_client_id", using: :btree
-  add_index "sale_records", ["eve_item_id"], name: "index_sale_records_on_eve_item_id", using: :btree
-  add_index "sale_records", ["eve_transaction_key"], name: "index_sale_records_on_eve_transaction_key", unique: true, using: :btree
-  add_index "sale_records", ["station_id"], name: "index_sale_records_on_station_id", using: :btree
-  add_index "sale_records", ["user_id"], name: "index_sale_records_on_user_id", using: :btree
-
   create_table "shopping_baskets", force: :cascade do |t|
     t.integer  "user_id",      null: false
     t.integer  "trade_hub_id", null: false
@@ -351,7 +306,6 @@ ActiveRecord::Schema.define(version: 20160807163944) do
   add_foreign_key "blueprints", "eve_items"
   add_foreign_key "caddie_crest_price_history_updates", "eve_items"
   add_foreign_key "caddie_crest_price_history_updates", "regions"
-  add_foreign_key "crest_costs", "eve_items"
   add_foreign_key "crest_price_histories", "eve_items"
   add_foreign_key "crest_price_histories", "regions"
   add_foreign_key "crest_prices_last_month_averages", "eve_items"

@@ -17,13 +17,6 @@ Rails.application.routes.draw do
 
   resources :jita_margins, only: [ :index, :update ]
 
-  resource :sale_records, only: [:show ] do
-    get :items_sums
-    get :station_sums
-    get :stations_items_sums
-    resources :sales_records_clients, only: [ :index, :show ]
-  end
-
   resources :identities
 
   resource :users, only: [:edit, :update] do

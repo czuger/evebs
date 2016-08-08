@@ -12,17 +12,6 @@ class Component < ActiveRecord::Base
   has_many :eve_items, through: :blueprints
   has_many :users, through: :eve_items
 
-  def self.used_components
-    used_items = EveItem.used_items
-    used_components = []
-    used_items.each do |item|
-      item.components.each do |component|
-        used_components << component unless used_components.include?( component )
-      end
-    end
-    used_components
-  end
-
   def self.set_min_prices_for_all_components
 
     jita_region = Region.find_by_cpp_region_id( JITA_REGION_CPP_ID )
@@ -32,11 +21,11 @@ class Component < ActiveRecord::Base
       if component_as_eve_item
         price_set = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita_region.id, component_as_eve_item.id )
         if price_set
-          puts "Updating component price for #{component_as_eve_item.name}"
+          puts "Updating component price for #{component_as_eve_item.name}" unless Rails.env == 'test'
           component.update_attribute( :cost, price_set.avg_price_avg )
         end
       else
-        puts "Unable to find EveItem for #{component.inspect}"
+        puts "Unable to find EveItem for #{component.inspect}" unless Rails.env == 'test'
       end
 
     end
