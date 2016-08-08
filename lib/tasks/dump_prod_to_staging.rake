@@ -21,7 +21,7 @@ namespace :db do
         `ssh hw 'createdb eve_business_server_staging -U eve_business_server -O eve_business_server'`
 
         puts 'Inserting datas'
-        `ssh hw 'pg_restore -U eve_business_server -f eve_business_server_staging -n public /tmp/production.dump'`
+        `ssh hw 'pg_restore -U eve_business_server -d eve_business_server_staging -n public /tmp/production.dump'`
 
         puts 'Starting staging server'
         `cap staging unicorn:start`
