@@ -13,10 +13,10 @@ class User < ActiveRecord::Base
   belongs_to :identity, foreign_key: :uid
 
   def self.from_omniauth(auth)
-    if auth["provider"] == 'identity'
+    if auth['provider'] == 'identity'
       find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)
     else
-      where(provider: auth["provider"], uid: auth["uid"]).first_or_initialize.tap do |user|
+      where(provider: auth['provider'], uid: auth['uid']).first_or_initialize.tap do |user|
         user.provider = auth.provider
         user.uid = auth.uid
         user.name = auth.info.name

@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.from_omniauth(env["omniauth.auth"])
+    user = User.from_omniauth(request.env['omniauth.auth'])
     raise "User can't be found : #{user}" unless user
     session[:user_id] = user.id
     redirect_to price_advices_advice_prices_url

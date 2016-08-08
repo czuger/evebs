@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 20160807163944) do
   create_table "components", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
     t.string   "name",            limit: 255
-    t.float    "cost",                        null: false
+    t.float    "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

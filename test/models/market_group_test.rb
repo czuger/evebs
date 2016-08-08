@@ -11,9 +11,14 @@ class MarketGroupTest < ActiveSupport::TestCase
 
     MarketGroup.stubs( :roots ).returns( [ MarketGroup.new ] )
 
+    `cp public/items_tree.json public/items_tree.json.bckp`
+
     MarketGroup.build_items_tree
 
     assert_not_equal 0, File.open( 'public/items_tree.json', 'r' ).size
+
+    `cp public/items_tree.json.bckp public/items_tree.json`
+    `rm public/items_tree.json.bckp`
   end
 
 end

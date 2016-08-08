@@ -38,8 +38,6 @@ Rails.application.routes.draw do
     post :update_basket
   end
 
-  get 'price_advices/:item_id/show_item_detail/' => 'price_advices#show_item_detail', as: 'price_advices_show_item_detail'
-
   resource :choose_trade_hubs, only: [:edit, :update]
 
   resource :choose_items, only: [ :edit ] do
