@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160808124908) do
+ActiveRecord::Schema.define(version: 20160808152728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,16 @@ ActiveRecord::Schema.define(version: 20160808124908) do
 
   add_index "blueprints", ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", using: :btree
   add_index "blueprints", ["eve_item_id"], name: "index_blueprints_on_eve_item_id", using: :btree
+
+  create_table "caddie_crest_price_history_last_day_timestamps", force: :cascade do |t|
+    t.integer  "eve_item_id"
+    t.integer  "region_id"
+    t.datetime "day_timestamp"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "caddie_crest_price_history_last_day_timestamps", ["region_id", "eve_item_id"], name: "index_caddie_crest_price_history_last_day_timestamps", unique: true, using: :btree
 
   create_table "caddie_crest_price_history_update_logs", force: :cascade do |t|
     t.date     "feed_date"
@@ -304,6 +314,8 @@ ActiveRecord::Schema.define(version: 20160808124908) do
 
   add_foreign_key "api_key_errors", "users"
   add_foreign_key "blueprints", "eve_items"
+  add_foreign_key "caddie_crest_price_history_last_day_timestamps", "eve_items"
+  add_foreign_key "caddie_crest_price_history_last_day_timestamps", "regions"
   add_foreign_key "caddie_crest_price_history_updates", "eve_items"
   add_foreign_key "caddie_crest_price_history_updates", "regions"
   add_foreign_key "crest_price_histories", "eve_items"
