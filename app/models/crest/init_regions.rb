@@ -19,7 +19,7 @@ class Crest::InitRegions
 
   def fill_regions_table
     parsed_data = get_parsed_data( :regions )
-    parsed_data["items"].each do |item|
+    parsed_data['items'].each do |item|
       name = item['name']
       cpp_id = item['href'].match( /\/(\d+)\// )[1]
       Region.find_or_create_by!( cpp_region_id: cpp_id ) do |region|
