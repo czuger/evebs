@@ -1,6 +1,6 @@
 namespace :data_compute do
   desc "Retrieve all orders list for all users"
-  task :get_ordersget_orders => :environment do
+  task :get_orders => :environment do
 
     puts '*'*100
     puts 'About to retrieve all orders list for all users'
