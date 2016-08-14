@@ -38,7 +38,7 @@ module Modules::PriceAdvices::MarginModule
             daily_monthly_diff = (price / avg_price)-1 if price && avg_price
           end
 
-          full_batch_size = [ eve_item.full_batch_size, volume_sum ].min
+          full_batch_size = ( [ eve_item.full_batch_size, volume_sum ].min ) / 10
           margin = eve_item.margin( price )
           benef = ( full_batch_size * margin if full_batch_size && margin )
           benef_pcent = eve_item.pcent_margin( price )
