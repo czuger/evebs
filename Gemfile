@@ -88,8 +88,8 @@ end
 
 gem 'simplecov', :require => false, :group => :test
 
-gem 'caddie', '0.2.3', path: '../caddie'
-# gem 'caddie', '0.2.3'
+# gem 'caddie', '0.2.3', path: '../caddie'
+gem 'caddie', '0.1.2'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
