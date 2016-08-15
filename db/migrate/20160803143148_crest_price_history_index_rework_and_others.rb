@@ -1,7 +1,7 @@
 class CrestPriceHistoryIndexReworkAndOthers < ActiveRecord::Migration
   def change
 
-    remove_column :crest_price_histories, :day_timestamp
+    # remove_column :crest_price_histories, :day_timestamp
 
     remove_index :crest_price_histories, :eve_item_id
     remove_index :crest_price_histories, :region_id
