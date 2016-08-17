@@ -5,7 +5,14 @@ require 'pp'
 # OpenURI::Cache.cache_path = 'tmp'
 
 namespace :data_compute do
+
+  desc 'Compute prices advices'
+  task :prices_advices => :environment do
+    PricesAdvice.update
+  end
+
   namespace :min_prices do
+
     desc "Retrieve min prices per trade hubs"
     task :used => :environment do
       # First compute used items and trade hubs

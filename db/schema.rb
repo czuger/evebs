@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160808152728) do
+ActiveRecord::Schema.define(version: 20160810133553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -221,6 +221,27 @@ ActiveRecord::Schema.define(version: 20160808152728) do
     t.datetime "updated_at",          null: false
   end
 
+  create_table "prices_advices", force: :cascade do |t|
+    t.integer  "eve_item_id",                   null: false
+    t.integer  "trade_hub_id",                  null: false
+    t.integer  "region_id"
+    t.integer  "vol_month",           limit: 8
+    t.integer  "vol_day",             limit: 8
+    t.float    "cost"
+    t.float    "min_price"
+    t.float    "avg_price"
+    t.float    "daily_monthly_pcent"
+    t.integer  "full_batch_size"
+    t.integer  "prod_qtt"
+    t.float    "single_unit_cost"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "prices_advices", ["eve_item_id"], name: "index_prices_advices_on_eve_item_id", using: :btree
+  add_index "prices_advices", ["region_id"], name: "index_prices_advices_on_region_id", using: :btree
+  add_index "prices_advices", ["trade_hub_id"], name: "index_prices_advices_on_trade_hub_id", using: :btree
+
   create_table "regions", force: :cascade do |t|
     t.string   "cpp_region_id", null: false
     t.string   "name",          null: false
@@ -323,6 +344,9 @@ ActiveRecord::Schema.define(version: 20160808152728) do
   add_foreign_key "crest_prices_last_month_averages", "eve_items"
   add_foreign_key "crest_prices_last_month_averages", "regions"
   add_foreign_key "eve_items", "market_groups"
+  add_foreign_key "prices_advices", "eve_items"
+  add_foreign_key "prices_advices", "regions"
+  add_foreign_key "prices_advices", "trade_hubs"
   add_foreign_key "shopping_baskets", "eve_items"
   add_foreign_key "shopping_baskets", "trade_hubs"
   add_foreign_key "shopping_baskets", "users"

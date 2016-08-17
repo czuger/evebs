@@ -66,11 +66,14 @@ gem 'time_diff'
 
 gem 'actionpack-page_caching'
 
-gem 'will_paginate', '~> 3.0.6'
+gem 'will_paginate', '~> 3.1.0'
 
 # gem 'inline_svg'
 
 gem 'bootstrap-sass', '~> 3.3.6'
+
+gem 'momentjs-rails'
+gem 'rails_bootstrap_sortable', :git => 'git://github.com/czuger/rails_bootstrap_sortable'
 
 # gem 'spreadsheet'
 
@@ -79,7 +82,7 @@ group :development, :test do
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano3-unicorn'
 
-  gem "factory_girl_rails", "~> 4.0"
+  gem 'factory_girl_rails', '~> 4.0'
 
   gem 'spring'
   gem "bullet"

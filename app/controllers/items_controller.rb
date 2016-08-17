@@ -6,7 +6,7 @@ class ItemsController < ApplicationController
   include Modules::Nvl
 
   def cost
-    @item = EveItem.find_by( id: params[ :item_id ] )
+    @item = EveItem.includes( :blueprint ).find_by( id: params[ :item_id ] )
   end
 
 end

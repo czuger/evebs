@@ -5,7 +5,7 @@ module Modules::PriceAdvices::ShowChallengedPrices
     @user = current_user
     @print_change_warning=print_change_warning
 
-    @trade_orders = @user.trade_orders.includes( { eve_item: :blueprint }, :trade_hub )
+    @trade_orders = @user.trade_orders.includes( { eve_item: :blueprint }, { trade_hub: :region } )
     @compared_prices = []
 
     @trade_orders.each do |to|

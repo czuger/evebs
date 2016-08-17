@@ -18,11 +18,14 @@ class EveItem < ActiveRecord::Base
   has_many :crest_price_histories, dependent: :destroy
   has_many :crest_prices_last_month_averages, dependent: :destroy
 
-  # Itemps containing non ascii characters
-  UNPROCESSABLE_ITEMS=[34457,34458,34459,34460,34461,34462,34463,34464,34465,34466,34467,34468,34469,34470,34471,34472,
-                       34473,34474,34475,34476,34477,34478,34479,34480,30952,32371,32372]
+  has_many :prices_advices
 
-  AVG_INDUSTRY_TAX = 0.11 # 10 % base + 1 % system costs (assuming players are smart enough to go in low cost systems)
+  # TODO : remove this dead code
+  # Itemps containing non ascii characters
+  # UNPROCESSABLE_ITEMS=[34457,34458,34459,34460,34461,34462,34463,34464,34465,34466,34467,34468,34469,34470,34471,34472,
+  #                      34473,34474,34475,34476,34477,34478,34479,34480,30952,32371,32372]
+  #
+  # AVG_INDUSTRY_TAX = 0.11 # 10 % base + 1 % system costs (assuming players are smart enough to go in low cost systems)
 
   def self.to_eve_item_id(cpp_eve_item_id)
     eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first
@@ -34,24 +37,25 @@ class EveItem < ActiveRecord::Base
     used_items
   end
 
-  def single_unit_cost
-    (cost*(1+AVG_INDUSTRY_TAX))/blueprint.prod_qtt if cost && blueprint
-  end
-
-  def pcent_margin( price )
-    (price / single_unit_cost)-1 if price && single_unit_cost
-  end
-
-  def margin( price )
-    price - single_unit_cost if price && single_unit_cost
-  end
-
-  def full_batch_size
-    unless blueprint
-      puts "EveItem#full_batch_size : #{self.inspect} has no blueprint"
-      return -Float::INFINITY
-    end
-    blueprint.nb_runs*blueprint.prod_qtt
-  end
+  # TODO : remove this dead code
+  # # def single_unit_cost
+  # #   (cost*(1+AVG_INDUSTRY_TAX))/blueprint.prod_qtt if cost && blueprint
+  # # end
+  # #
+  # # def pcent_margin( price )
+  # #   (price / single_unit_cost)-1 if price && single_unit_cost
+  # # end
+  # #
+  # # def margin( price )
+  # #   price - single_unit_cost if price && single_unit_cost
+  # # end
+  #
+  # def full_batch_size
+  #   unless blueprint
+  #     puts "EveItem#full_batch_size : #{self.inspect} has no blueprint"
+  #     return -Float::INFINITY
+  #   end
+  #   blueprint.nb_runs*blueprint.prod_qtt
+  # end
 
 end

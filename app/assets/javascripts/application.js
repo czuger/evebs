@@ -19,5 +19,8 @@
 //= require highcharts/highstock
 //= require highcharts/highcharts-more
 
+//= require moment
+//= require bootstrap-sortable
+
 //= require_tree .
 

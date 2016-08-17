@@ -28,20 +28,28 @@
           - if margin_type == :daily
             %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) } Daily/monthly
 
-        - @prices_array.each do |item|
+        - @items.each do |item|
           %tr{ class: cycle( :active, nil ) }
             -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
+            - region_name = item.region ? item.region.name : ''
             %td= shopping_basket_check_box( item )
             - if margin_type == :monthly
-              %td.trade_hub_name=item[:region_name]
+              %td.trade_hub_name=item.region.name
             - else
-              %td.trade_hub_name=item[:trade_hub]
-            %td.item_name= link_to( item[:eve_item], item_path( item[:eve_item_id] ) )
-            %td.text-right.information_highlight_left=print_volume(item[:monthly_amount])
-            %td.text-right.information_highlight_left= link_to( print_isk(item[:cost]), item_cost_path( item[:id] ), target: '_blank' )
-            %td.text-right.information_highlight_left= eve_central_quicklook_link( margin_type, item )
-            %td.text-right.information_highlight_right=print_pcent(item[:benef_pcent])
-            %td.text-right.information_highlight_right=print_isk(item[:benef])
-            %td.text-right.information_highlight_right=item[:batch_size]
+              %td.trade_hub_name=item.trade_hub.name + " (#{item.region.name})"
+
+            %td.item_name= link_to( item.eve_item.name, item_path( item.eve_item_id ) )
+            %td.text-right.information_highlight_left=print_volume(item.vol_month)
+            %td.text-right.information_highlight_left= link_to( print_isk(item.single_unit_cost), item_cost_path( item.eve_item_id ), target: '_blank' )
+
+            - price, batch, margin, margin_pcent = price_n_margin( margin_type, item )
+
+            %td.text-right.information_highlight_left= eve_central_quicklook_link( margin_type, price, item )
+            %td.text-right.information_highlight_right=print_pcent( margin_pcent )
+            %td.text-right.information_highlight_right=print_isk( margin )
+            %td.text-right.information_highlight_right=print_volume( batch )
+
             - if margin_type == :daily
-              %td.text-right.information_highlight_left=print_pcent( item[:daily_monthly_diff] )
+              %td.text-right.information_highlight_left=print_pcent( item.daily_monthly_pcent )
+
+  = will_paginate @items
