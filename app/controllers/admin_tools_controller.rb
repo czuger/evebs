@@ -59,7 +59,6 @@ class AdminToolsController < ApplicationController
 
     overview = MinPricesLog.connection.select_all( request )
     overview.each do |row|
-      puts row.inspect
       timeline << row['update_day']
       daily_runs << row['daily_runs'].to_i
       total_duration << row['total_duration'].to_i

@@ -60,7 +60,6 @@ module PriceAdvicesHelper
   end
 
   def challenged_prices_highlight_class_my_price_to_min_price_delta( delta )
-    puts delta
     return :danger if delta && delta < -20
     :warning if delta && delta < 0
   end

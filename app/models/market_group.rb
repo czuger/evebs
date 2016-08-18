@@ -31,8 +31,6 @@ class MarketGroup < ActiveRecord::Base
       items = EveItem.joins( :blueprint ).where( market_group_id: node.id, involved_in_blueprint: true ).pluck( :name, :id )
                 .map{ |e| { text: e[0], internal_node_id: e[1], item: true, 'showCheckbox': true } }
 
-      puts items.inspect
-
       return false if items.empty?
       result[ :nodes ] = items
     else

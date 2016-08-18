@@ -17,22 +17,27 @@ class JitaMargin < ActiveRecord::Base
       if min_price && item.blueprint && item.cost
         bp = item.blueprint
         # puts item.inspect
-        batch_size = item.full_batch_size
-        unit_cost = item.cost / bp.prod_qtt
-        margin = min_price.min_price - unit_cost
-        margin_percent = ( min_price.min_price / unit_cost ) - 1
+        prices_advice = item.prices_advices.first
+        if prices_advice
+          batch_size = prices_advice.full_batch_size
+          unit_cost = prices_advice.cost / prices_advice.prod_qtt
+          margin = min_price.min_price - unit_cost
+          margin_percent = ( min_price.min_price / unit_cost ) - 1
+          final_margin = margin * batch_size
 
-        cplma = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita.region_id, item.id )
-        sum_volume = cplma ? cplma.volume_sum : -1
+          cplma = CrestPricesLastMonthAverage.find_by_region_id_and_eve_item_id( jita.region_id, item.id )
+          sum_volume = cplma ? cplma.volume_sum : -1
 
-        jita_margin = JitaMargin.find_or_create_by!( eve_item_id: item.id )
-        jita_margin.update_attributes( margin: margin * batch_size,
-          jita_min_price: min_price.min_price, cost: unit_cost,
-          margin_percent: margin_percent, mens_volume: sum_volume, batch_size: batch_size )
+          jita_margin = JitaMargin.find_or_create_by!( eve_item_id: item.id )
+          jita_margin.update_attributes( margin: final_margin,
+            jita_min_price: min_price.min_price, cost: unit_cost,
+            margin_percent: margin_percent, mens_volume: sum_volume, batch_size: batch_size )
+
+        end
 
         items_processed += 1
       end
     end
-    puts "#{items_processed} items processed"
+    puts "#{items_processed} items processed" unless Rails.env == 'test'
   end
 end
