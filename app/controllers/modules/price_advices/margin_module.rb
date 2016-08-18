@@ -26,6 +26,7 @@ module Modules::PriceAdvices::MarginModule
     margin_comp_pcent = "((#{price_column_name}*#{batch_size_formula}) - (single_unit_cost*#{batch_size_formula}))"
 
     @items = PricesAdvice.includes( :eve_item, :region ).where( eve_item_id: @user.eve_item_ids, trade_hub_id: @user.trade_hub_ids )
+    .where.not( vol_month: nil )
     if margin_type == :daily
       @items = @items.includes( :trade_hub )
     end
