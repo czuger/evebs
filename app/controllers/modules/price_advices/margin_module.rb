@@ -11,9 +11,9 @@ module Modules::PriceAdvices::MarginModule
 
     # TODO : those variables need to be in the user
     # Monthly volume percent multiplier for margin computation (default 10 %)
-    @vol_month_pcent = 0.5
+    @vol_month_pcent = @user.vol_month_pcent * 0.01
     # Monthly volume capped by full batch ?
-    @batch_cap = true
+    @batch_cap = @user.batch_cap
 
     price_column_name = margin_type == :daily ? :min_price : :avg_price
 

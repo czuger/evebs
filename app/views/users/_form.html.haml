@@ -31,6 +31,16 @@
         = f.label :watch_my_prices
 
   .row
+    .col-md-4
+      .form-group
+        = f.check_box :batch_cap
+        = f.label :batch_cap
+
+      .form-group
+        = f.label :vol_month_pcent
+        = f.number_field :vol_month_pcent
+
+  .row
     .col-md-12.text-center
       .actions
         = f.submit 'Save', class: 'btn btn-default'
