@@ -93,19 +93,22 @@ ActiveRecord::Schema.define(version: 20160818184430) do
   add_index "components", ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id", using: :btree
 
   create_table "crest_price_histories", force: :cascade do |t|
-    t.integer  "region_id",              null: false
-    t.integer  "eve_item_id",            null: false
-    t.datetime "history_date",           null: false
-    t.integer  "order_count",  limit: 8
-    t.integer  "volume",       limit: 8
+    t.integer  "region_id",               null: false
+    t.integer  "eve_item_id",             null: false
+    t.string   "day_timestamp",           null: false
+    t.datetime "history_date",            null: false
+    t.integer  "order_count",   limit: 8
+    t.integer  "volume",        limit: 8
     t.float    "low_price"
     t.float    "avg_price"
     t.float    "high_price"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
+  add_index "crest_price_histories", ["day_timestamp"], name: "index_crest_price_histories_on_day_timestamp", using: :btree
   add_index "crest_price_histories", ["history_date"], name: "index_crest_price_histories_on_history_date", using: :btree
+  add_index "crest_price_histories", ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true, using: :btree
   add_index "crest_price_histories", ["region_id", "eve_item_id"], name: "index_crest_price_histories_on_region_and_item", using: :btree
 
   create_table "crest_prices_last_month_averages", force: :cascade do |t|
@@ -331,8 +334,8 @@ ActiveRecord::Schema.define(version: 20160818184430) do
     t.boolean  "watch_my_prices"
     t.float    "min_amount_for_advice"
     t.boolean  "admin",                               default: false, null: false
-    t.boolean  "batch_cap",                           default: false, null: false
-    t.integer  "vol_month_pcent",                     default: 20,    null: false
+    t.boolean  "batch_cap",                           default: true,  null: false
+    t.integer  "vol_month_pcent",                     default: 10,    null: false
   end
 
   add_foreign_key "api_key_errors", "users"
