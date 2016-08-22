@@ -23,12 +23,29 @@ namespace :extra_tools do
 
     items = assets.assets.select{ |e| e.locationID == "#{location}" if e.respond_to?( 'locationID' ) }
 
-    api.scope = 'eve'
-    names = api.TypeName( ids: items.map{ |e| e.typeID }.join(',')).types
-    names = Hash[ names.map{ |n| [ n.typeID, n.typeName ] } ]
+    # api.scope = 'eve'
+    # names = api.TypeName( ids: items.map{ |e| e.typeID }.join(',')).types
+    # names = Hash[ names.map{ |n| [ n.typeID, n.typeName ] } ]
+    # to_sell_items = items.map{ |a| { name: names[a.typeID], qtt: a.quantity.to_i, type_id: a.typeID } }
 
-    to_sell_items = items.map{ |a| { name: names[a.typeID], qtt: a.quantity.to_i, type_id: a.typeID } }
-    pp to_sell_items
-
+    results = []
+    items.each do |item|
+      i = EveItem.find_by_cpp_eve_item_id( item.typeID.to_i )
+      if i
+        prices = i.prices_advices.where.not( vol_month: nil ).
+          order( '( min_price * least( vol_month/5, full_batch_size ) ) DESC NULLS LAST' )
+        # puts prices.to_sql
+        price = prices.first
+        results_for_item = [ "#{i.name} - (#{i.id})", "#{price.trade_hub.name} - (#{price.trade_hub_id})",
+                             price.vol_month.round( 0 ), price.min_price.round( 2 )]
+        results_for_item << ( price.min_price - price.single_unit_cost ).round( 2 )
+        results << results_for_item
+      end
+    end
+    results.sort_by!{ |e| e[1] }
+    results.each do |results_for_item|
+      padded_str = ( '%-50s'*2 + '%25s'*3 ) % results_for_item
+      puts padded_str
+    end
   end
 end

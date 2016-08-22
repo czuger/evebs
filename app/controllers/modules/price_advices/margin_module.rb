@@ -17,6 +17,9 @@ module Modules::PriceAdvices::MarginModule
 
     price_column_name = margin_type == :daily ? :min_price : :avg_price
 
+    # TODO : caution : use coalesce before vol_month because least forget null value
+    # give you full_batch_size instead of zero in case of no sold in month
+    # Or add where vol_month is not null
     if @batch_cap
       batch_size_formula = "LEAST( full_batch_size, FLOOR( vol_month * #{@vol_month_pcent} ) )"
     else
