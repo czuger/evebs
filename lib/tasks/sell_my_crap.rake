@@ -36,10 +36,14 @@ namespace :extra_tools do
           order( '( min_price * least( vol_month/5, full_batch_size ) ) DESC NULLS LAST' )
         # puts prices.to_sql
         price = prices.first
-        results_for_item = [ "#{i.name} - (#{i.id})", "#{price.trade_hub.name} - (#{price.trade_hub_id})",
-                             price.vol_month.round( 0 ), price.min_price.round( 2 )]
-        results_for_item << ( price.min_price - price.single_unit_cost ).round( 2 )
-        results << results_for_item
+        if price
+          results_for_item = [ "#{i.name} - (#{i.id})", "#{price.trade_hub.name} - (#{price.trade_hub_id})",
+                               price.vol_month.round( 0 ), price.min_price.round( 2 )]
+          results_for_item << ( price.min_price - price.single_unit_cost ).round( 2 )
+          results << results_for_item
+        else
+          puts "Nothing for #{i.name}"
+        end
       end
     end
     results.sort_by!{ |e| e[1] }

@@ -44,7 +44,7 @@ module Modules::PriceAdvices::MarginModule
       @items = @items.where( "#{pcent_comp} > #{@user.min_pcent_for_advice}" )
     end
 
-    @items = @items.order( margin_comp + ' DESC' )
+    @items = @items.order( margin_comp + ' DESC' ) if margin_comp
 
     @items = @items.paginate(:page => params[:page], :per_page => 15 )
 
