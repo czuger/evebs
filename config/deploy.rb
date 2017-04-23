@@ -6,6 +6,7 @@ set :repo_url, 'git@github.com:czuger/evebs.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
+set :rvm_ruby_version, '2.2.1'      # Defaults to: 'default'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, "/var/www/eve_business_server"
