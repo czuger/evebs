@@ -19,8 +19,7 @@ class ChooseItemsController < ApplicationController
       ActiveRecord::Base.transaction do
         item = EveItem.find( params[ :id ] )
         if params[ :check_state ] == 'true'
-          # TODO : Need to check if the item does not already exist
-          @user.eve_items << item
+          @user.eve_items << item unless @user.eve_items.exists?( id: item.id )
         else
           @user.eve_items.delete( item )
         end
