@@ -1,5 +1,5 @@
 # config valid only for Capistrano 3.4
-lock '3.4.1'
+lock '3.8.1'
 
 set :application, 'eve_business_server'
 set :repo_url, 'git@github.com:czuger/evebs.git'

@@ -8,6 +8,9 @@ require 'capistrano/rails'
 # require 'capistrano3/unicorn'
 require 'capistrano/puma'
 
+install_plugin Capistrano::Puma  # Default puma tasks
+install_plugin Capistrano::Puma::Nginx
+
 # Includes tasks from other gems included in your Gemfile
 #
 # For documentation on these, see for example:
