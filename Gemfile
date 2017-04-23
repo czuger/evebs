@@ -79,10 +79,11 @@ gem 'rails_bootstrap_sortable', :git => 'git://github.com/czuger/rails_bootstrap
 # gem 'spreadsheet'
 
 group :development, :test do
-  gem 'capistrano', '~> 3.4.0'
-  gem 'capistrano-rails', '~> 1.1'
-  # gem 'capistrano3-unicorn'
-  gem 'capistrano3-puma'
+  gem 'capistrano', '~> 3.0'
+  gem 'capistrano-rvm'
+  gem 'capistrano-rails', '~> 1.2'
+
+  gem 'capistrano3-puma' , group: :development
 
   gem 'factory_girl_rails', '~> 4.0'
 
@@ -102,4 +103,6 @@ gem 'caddie', '0.2.4'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+
 
