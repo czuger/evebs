@@ -13,14 +13,17 @@ class ChooseTradeHubsController < ApplicationController
     @user = current_user
     begin
       ActiveRecord::Base.transaction do
-        @user.trade_hub_ids = params['trade_hubs_ids']
+
+        item = TradeHub.find( params[ :id ] )
+        if params[ :check_state ] == 'true'
+          @user.trade_hubs << item unless @user.trade_hubs.exists?( id: item.id )
+        else
+          @user.trade_hubs.delete( item )
+        end
         @user.update_attribute(:last_changes_in_choices,Time.now)
+
       end
-    rescue ActiveRecord::RecordInvalid => _
-      flash.alert = @user.errors
-      error = true
     end
-    flash.notice = 'Trade hubs list updated successfully' unless error
-    redirect_to edit_choose_trade_hubs_path
+    render nothing: true
   end
 end
