@@ -58,7 +58,8 @@ gem 'lazy_high_charts'
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
-gem 'unicorn'
+# gem 'unicorn'
+gem 'puma'
 gem 'time_diff'
 
 # gem 'bootstrap-tooltip-rails'
@@ -80,7 +81,8 @@ gem 'rails_bootstrap_sortable', :git => 'git://github.com/czuger/rails_bootstrap
 group :development, :test do
   gem 'capistrano', '~> 3.4.0'
   gem 'capistrano-rails', '~> 1.1'
-  gem 'capistrano3-unicorn'
+  # gem 'capistrano3-unicorn'
+  gem 'capistrano3-puma'
 
   gem 'factory_girl_rails', '~> 4.0'
 

@@ -5,7 +5,8 @@ require 'capistrano/setup'
 require 'capistrano/deploy'
 
 require 'capistrano/rails'
-require 'capistrano3/unicorn'
+# require 'capistrano3/unicorn'
+require 'capistrano/puma'
 
 # Includes tasks from other gems included in your Gemfile
 #
@@ -26,3 +27,5 @@ require 'capistrano3/unicorn'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }
+
+# install_plugin Capistrano::Puma  # Default puma tasks

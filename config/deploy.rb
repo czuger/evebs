@@ -2,7 +2,7 @@
 lock '3.4.1'
 
 set :application, 'eve_business_server'
-set :repo_url, 'git:/opt/git/eve_business_server'
+set :repo_url, 'git@github.com:czuger/evebs.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
@@ -16,14 +16,14 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/
 
 namespace :deploy do
 
-  task :custom_restart do
-    puts 'About to stop unicorn'
-    invoke 'unicorn:stop'
-    sleep( 1 ) # To give unicorn the time to really stop
-    puts 'About to start unicorn'
-    invoke 'unicorn:start'
-    puts 'End starting unicorn'
-  end
+  # task :custom_restart do
+  #   puts 'About to stop unicorn'
+  #   invoke 'unicorn:stop'
+  #   sleep( 1 ) # To give unicorn the time to really stop
+  #   puts 'About to start unicorn'
+  #   invoke 'unicorn:start'
+  #   puts 'End starting unicorn'
+  # end
 
   task :update_version_number do
     on roles( :app ) do
@@ -34,7 +34,7 @@ namespace :deploy do
 end
 
 after 'deploy:publishing', 'deploy:update_version_number'
-after 'deploy:publishing', 'deploy:custom_restart'
+# after 'deploy:publishing', 'deploy:custom_restart'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
