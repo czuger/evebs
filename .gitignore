@@ -23,3 +23,5 @@ sqlite.sqlite3
 *.db
 
 coverage
+
+.idea
