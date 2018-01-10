@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :jita_margin do
     eve_item { create( :inferno_fury_cruise_missile ) }

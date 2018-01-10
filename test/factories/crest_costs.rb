@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :crest_cost do
     factory :crest_cost_for_inferno_fury_cruise_missile do
       cpp_item_id 2621

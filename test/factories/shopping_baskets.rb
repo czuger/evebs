@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :shopping_baskets do
     user_references "MyString"
 trade_hub nil

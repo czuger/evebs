@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :component do
     factory :component_morphite do
       cpp_eve_item_id 11399

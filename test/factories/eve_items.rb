@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :eve_item do
 
@@ -13,7 +13,7 @@ FactoryGirl.define do
       name "Inferno Fury Cruise Missile"
       name_lowcase "inferno fury cruise missile"
       cost 1815252.83
-      market_group { FactoryGirl.create( :advanced_high_damage_cruise_missiles_market_group ) }
+      market_group { FactoryBot.create( :advanced_high_damage_cruise_missiles_market_group ) }
 
       after(:create) do |eve_item|
         create( :inferno_fury_cruise_blueprint, eve_item: eve_item )
