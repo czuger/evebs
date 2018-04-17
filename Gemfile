@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.10'
+gem 'rails', '5.2'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 gem 'pg'
@@ -42,7 +42,7 @@ gem 'coffee-rails'
 
 gem 'haml-rails'
 
-gem 'quiet_assets'
+# gem 'quiet_assets'
 
 # gem 'rails-jquery-autocomplete'
 
@@ -96,7 +96,7 @@ gem 'simplecov', :require => false, :group => :test
 
 # gem 'caddie', '0.1.2', :git => 'git://github.com/czuger/caddie', branch: 'v_1.2'
 # gem 'caddie', '0.2.3', path: '../caddie'
-gem 'caddie', '0.2.4'
+gem 'caddie', '0.2.4', path: '../caddie'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
