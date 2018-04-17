@@ -1,12 +1,14 @@
 # config valid only for Capistrano 3.4
-lock '3.8.1'
+lock '3.10.2'
 
 set :application, 'eve_business_server'
 set :repo_url, 'git@github.com:czuger/evebs.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
-set :rvm_ruby_version, '2.2.1'      # Defaults to: 'default'
+# set :rvm_ruby_version, '2.2.1'      # Defaults to: 'default'
+set :rbenv_type, :user # or :system, depends on your rbenv setup
+set :rbenv_ruby, '2.4.2'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, "/var/www/eve_business_server"
