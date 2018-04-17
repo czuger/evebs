@@ -25,3 +25,5 @@ sqlite.sqlite3
 coverage
 
 .idea
+
+config/omniauth.yaml

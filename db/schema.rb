@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 20160818184430) do
 
   create_table "components", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name",            limit: 255
+    t.string   "name"
     t.float    "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -130,13 +130,13 @@ ActiveRecord::Schema.define(version: 20160818184430) do
 
   create_table "eve_items", force: :cascade do |t|
     t.integer  "cpp_eve_item_id"
-    t.string   "name",                  limit: 255,                 null: false
+    t.string   "name",                                  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name_lowcase",          limit: 255
+    t.string   "name_lowcase"
     t.float    "cost"
-    t.boolean  "epic_blueprint",                    default: false
-    t.boolean  "involved_in_blueprint",             default: false
+    t.boolean  "epic_blueprint",        default: false
+    t.boolean  "involved_in_blueprint", default: false
     t.integer  "market_group_id"
   end
 
@@ -152,9 +152,9 @@ ActiveRecord::Schema.define(version: 20160818184430) do
   add_index "eve_items_users", ["user_id"], name: "index_eve_items_users_on_user_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
-    t.string   "name",            limit: 255
-    t.string   "email",           limit: 255
-    t.string   "password_digest", limit: 255
+    t.string   "name"
+    t.string   "email"
+    t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -268,7 +268,7 @@ ActiveRecord::Schema.define(version: 20160818184430) do
 
   create_table "stations", force: :cascade do |t|
     t.integer  "trade_hub_id"
-    t.string   "name",           limit: 255
+    t.string   "name"
     t.integer  "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -278,12 +278,12 @@ ActiveRecord::Schema.define(version: 20160818184430) do
   add_index "stations", ["trade_hub_id"], name: "index_stations_on_trade_hub_id", using: :btree
 
   create_table "trade_hubs", force: :cascade do |t|
-    t.integer  "eve_system_id",                             null: false
-    t.string   "name",          limit: 255,                 null: false
+    t.integer  "eve_system_id",                 null: false
+    t.string   "name",                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "region_id"
-    t.boolean  "inner",                     default: false, null: false
+    t.boolean  "inner",         default: false, null: false
   end
 
   add_index "trade_hubs", ["region_id"], name: "index_trade_hubs_on_region_id", using: :btree
@@ -319,23 +319,23 @@ ActiveRecord::Schema.define(version: 20160818184430) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",                    limit: 255
+    t.string   "name"
     t.boolean  "remove_occuped_places"
-    t.string   "key_user_id",             limit: 255
-    t.string   "api_key",                 limit: 255
+    t.string   "key_user_id"
+    t.string   "api_key"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "provider",                limit: 255
-    t.string   "uid",                     limit: 255
-    t.string   "oauth_token",             limit: 255
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "oauth_token"
     t.datetime "oauth_expires_at"
     t.datetime "last_changes_in_choices"
     t.integer  "min_pcent_for_advice"
     t.boolean  "watch_my_prices"
     t.float    "min_amount_for_advice"
-    t.boolean  "admin",                               default: false, null: false
-    t.boolean  "batch_cap",                           default: true,  null: false
-    t.integer  "vol_month_pcent",                     default: 10,    null: false
+    t.boolean  "admin",                   default: false, null: false
+    t.boolean  "batch_cap",               default: true,  null: false
+    t.integer  "vol_month_pcent",         default: 10,    null: false
   end
 
   add_foreign_key "api_key_errors", "users"
