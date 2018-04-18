@@ -11,7 +11,7 @@ class MarketGroup < ApplicationRecord
     File.open( 'public/items_tree.json', 'w' ) do |file|
       arr = []
       # i = 0
-      self.roots.order( :name ).each do |children|
+      self.roots.each do |children|
         next if EVE_ITEM_NOT_SHOWED_GROUPS.include?( children.id )
         result = build_items_tree_sub( children )
         arr << build_items_tree_sub( children ) if result
