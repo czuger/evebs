@@ -1,2 +1,2 @@
-class MinPricesLog < ActiveRecord::Base
+class MinPricesLog < ApplicationRecord
 end

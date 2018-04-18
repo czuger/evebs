@@ -1,4 +1,4 @@
-class Blueprint < ActiveRecord::Base
+class Blueprint < ApplicationRecord
 
   extend Setup::UpdateBlueprints
 

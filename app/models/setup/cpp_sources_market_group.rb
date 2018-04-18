@@ -1,4 +1,4 @@
-class Setup::CppSourcesMarketGroup < ActiveRecord::Base
+class Setup::CppSourcesMarketGroup < ApplicationRecord
 
   self.table_name = 'invMarketGroups'
 

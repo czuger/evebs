@@ -1,2 +1,2 @@
-class UserActivityLog < ActiveRecord::Base
+class UserActivityLog < ApplicationRecord
 end

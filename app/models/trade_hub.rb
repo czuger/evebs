@@ -1,4 +1,4 @@
-class TradeHub < ActiveRecord::Base
+class TradeHub < ApplicationRecord
 
   has_many :min_prices
   belongs_to :region

@@ -2,7 +2,7 @@ require_relative 'trade_orders/get_full_order_list'
 
 require 'pp'
 
-class TradeOrder < ActiveRecord::Base
+class TradeOrder < ApplicationRecord
   belongs_to :user
   belongs_to :eve_item
   belongs_to :trade_hub
@@ -38,7 +38,7 @@ class TradeOrder < ActiveRecord::Base
           end
           get_full_order_list( user, full_orders_list )
           # On supprime tous les ordres marqués comme anciens
-          TradeOrder.destroy_all( new_order: false )
+          TradeOrder.where( new_order: false ).destroy_all
 
         rescue StandardError => exception
 

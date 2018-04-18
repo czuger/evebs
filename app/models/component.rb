@@ -1,4 +1,4 @@
-class Component < ActiveRecord::Base
+class Component < ApplicationRecord
 
   JITA_EVE_SYSTEM_ID=30000142
   JITA_REGION_CPP_ID=10000002

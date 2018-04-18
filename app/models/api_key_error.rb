@@ -1,3 +1,3 @@
-class ApiKeyError < ActiveRecord::Base
+class ApiKeyError < ApplicationRecord
   belongs_to :user
 end

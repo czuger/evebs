@@ -1,4 +1,4 @@
-class Setup::CppSourcesIndustryBlueprint < ActiveRecord::Base
+class Setup::CppSourcesIndustryBlueprint < ApplicationRecord
 
   self.table_name = 'industryBlueprints'
 

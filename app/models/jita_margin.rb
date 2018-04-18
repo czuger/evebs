@@ -1,4 +1,4 @@
-class JitaMargin < ActiveRecord::Base
+class JitaMargin < ApplicationRecord
 
   belongs_to :eve_item
 

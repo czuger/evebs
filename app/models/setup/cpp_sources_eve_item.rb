@@ -1,4 +1,4 @@
-class Setup::CppSourcesEveItem < ActiveRecord::Base
+class Setup::CppSourcesEveItem < ApplicationRecord
 
   self.table_name = 'invTypes'
 

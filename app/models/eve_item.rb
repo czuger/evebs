@@ -2,7 +2,7 @@
 # # require 'open-uri/cached'
 require 'pp'
 
-class EveItem < ActiveRecord::Base
+class EveItem < ApplicationRecord
 
   include Assert
   include ItemsInit::ItemSetupAndComp

@@ -1,4 +1,4 @@
-class Station < ActiveRecord::Base
+class Station < ApplicationRecord
   belongs_to :trade_hub
   validates :trade_hub_id, :name, :cpp_station_id, presence: true
 

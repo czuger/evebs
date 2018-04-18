@@ -1,4 +1,4 @@
-class Setup::CppSourcesIndustryActivityMaterial < ActiveRecord::Base
+class Setup::CppSourcesIndustryActivityMaterial < ApplicationRecord
 
   self.table_name = 'industryActivityMaterials'
 

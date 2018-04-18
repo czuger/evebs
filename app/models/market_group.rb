@@ -1,4 +1,4 @@
-class MarketGroup < ActiveRecord::Base
+class MarketGroup < ApplicationRecord
 
   has_many :eve_items
   acts_as_tree
