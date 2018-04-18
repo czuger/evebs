@@ -1,5 +1,11 @@
+
+
 document.addEventListener("turbolinks:load", function() {
 
+    if( $('#rails_env') != 'production' )
+    {
+        return;
+    }
 	var railsEnv = $('body').data( 'rails-env' );
 
 	if( railsEnv != 'development' ){

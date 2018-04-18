@@ -1,6 +1,9 @@
 FactoryBot.define do
   factory :user do
 
+    # Important for OmniauthTests
+    uid 1234
+
     name "MyString"
     remove_occuped_places true
     key_user_id "MyString"

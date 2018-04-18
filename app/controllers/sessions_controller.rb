@@ -3,7 +3,7 @@ require 'pp'
 class SessionsController < ApplicationController
 
   before_action :log_client_activity
-  skip_before_action :verify_authenticity_token, only: :create, if: -> { Rails.env.development? }
+  skip_before_action :verify_authenticity_token, only: :create
 
   def new
   end

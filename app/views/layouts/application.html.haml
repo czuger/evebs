@@ -11,3 +11,5 @@
     .container-fluid
       = render partial: 'layouts/menu'
       = yield
+
+= hidden_field_tag :rails_mode, Rails.env

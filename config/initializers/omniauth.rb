@@ -25,4 +25,6 @@ OmniAuth.config.on_failure = Proc.new { |env|
   OmniAuth::FailureEndpoint.new(env).redirect_to_failure
 }
 
-# OmniAuth.config.full_host = 'https://staging.evebs.net'
+if Rails.env.test?
+  OmniAuth.config.full_host = 'http://localhost'
+end

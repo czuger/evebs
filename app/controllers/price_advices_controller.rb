@@ -28,7 +28,7 @@ class PriceAdvicesController < ApplicationController
     else
       sb = ShoppingBasket.delete_all( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
     end
-    render nothing: true
+    head :ok
   end
 
   private

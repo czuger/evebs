@@ -17,7 +17,7 @@ Rails.application.routes.draw do
 
   resources :jita_margins, only: [ :index, :update ]
 
-  resources :identities
+  # resources :identities
 
   resource :users, only: [:edit, :update] do
     get :edit_password

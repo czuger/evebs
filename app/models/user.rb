@@ -18,10 +18,12 @@ class User < ActiveRecord::Base
     if auth['provider'] == 'identity'
       find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)
     else
-      if auth['provider']
-        auth['credentials']['token'] = Digest::SHA256.hexdigest auth.info.name+auth.info.email
+
+      if auth['provider'] == 'developer'
+        auth['credentials']['token'] = Digest::SHA256.hexdigest auth.info.name
         auth['credentials']['expires_at'] = DateTime.new( 2999, 12, 31 ).to_time.to_i
       end
+
       where(provider: auth['provider'], uid: auth['uid']).first_or_initialize.tap do |user|
         user.provider = auth.provider
         user.uid = auth.uid

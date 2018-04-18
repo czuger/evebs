@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SessionsControllerTest < ActionController::TestCase
+class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     OmniAuth.config.test_mode = true
