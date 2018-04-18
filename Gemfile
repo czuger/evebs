@@ -74,7 +74,7 @@ gem 'will_paginate', '~> 3.1.0'
 gem 'bootstrap-sass', '~> 3.3.6'
 
 gem 'momentjs-rails'
-gem 'rails_bootstrap_sortable', :git => 'git://github.com/czuger/rails_bootstrap_sortable'
+gem 'rails_bootstrap_sortable', :git => 'https://github.com/czuger/rails_bootstrap_sortable'
 
 # gem 'spreadsheet'
 
@@ -104,8 +104,6 @@ gem 'caddie', '0.2.5'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-
-gem 'jquery-rails'
 
 
 

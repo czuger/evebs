@@ -1,16 +1,9 @@
 GIT
-  remote: git://github.com/czuger/rails_bootstrap_sortable
+  remote: https://github.com/czuger/rails_bootstrap_sortable
   revision: eef7b27b6cb93d9245d8d2d0df30f4bfc698a78c
   specs:
     rails_bootstrap_sortable (2.0.0)
       momentjs-rails (~> 2, >= 2.8.3)
-
-PATH
-  remote: ../caddie
-  specs:
-    caddie (0.2.4)
-      pg (~> 0.21)
-      rails (~> 5.2)
 
 GEM
   remote: https://rubygems.org/
@@ -73,6 +66,9 @@ GEM
     bullet (5.7.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
+    caddie (0.2.5)
+      pg (~> 0.21)
+      rails (~> 5.2)
     capistrano (3.10.2)
       airbrussh (>= 1.0.0)
       i18n
@@ -306,7 +302,7 @@ DEPENDENCIES
   actionpack-page_caching
   bootstrap-sass (~> 3.3.6)
   bullet
-  caddie (= 0.2.4)!
+  caddie (= 0.2.5)
   capistrano (~> 3.9)
   capistrano-rails (~> 1.2)
   capistrano-rbenv (~> 2.1)
