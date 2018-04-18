@@ -12,9 +12,11 @@
 //
 //= require rails-ujs
 //= require jquery
+//= require jquery_ujs
+
 
 //= require turbolinks
-// require bootstrap-sprockets
+//= require bootstrap-sprockets
 
 // Do not put that before bootstrap-sprocket
 // require highcharts/highstock
