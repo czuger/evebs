@@ -96,7 +96,8 @@ gem 'simplecov', :require => false, :group => :test
 
 # gem 'caddie', '0.1.2', :git => 'git://github.com/czuger/caddie', branch: 'v_1.2'
 # gem 'caddie', '0.2.3', path: '../caddie'
-gem 'caddie', '0.2.4', path: '../caddie'
+# gem 'caddie', '0.2.4', path: '../caddie'
+gem 'caddie', '0.2.5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
