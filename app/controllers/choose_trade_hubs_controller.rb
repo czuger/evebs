@@ -24,6 +24,6 @@ class ChooseTradeHubsController < ApplicationController
 
       end
     end
-    render nothing: true
+    head :ok
   end
 end

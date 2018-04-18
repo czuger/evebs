@@ -10,6 +10,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:twitter]
   end
 
+  def teardown
+    OmniAuth.config.test_mode = false
+  end
+
   test 'should get new' do
     get new_sessions_url
     assert_response :success
@@ -24,5 +28,21 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get signout_url
     assert_redirected_to root_url
   end
+
+  test 'developpment mode should be forbidden in production mode' do
+    get signout_url
+    OmniAuth.config.test_mode = false
+    @user = create( :user )
+
+    # We fake the production mode
+    current_mode = Rails.env
+    Rails.env = ActiveSupport::StringInquirer.new('production')
+    # Then assert that developer mode raises in production
+    assert_raises do
+      post '/auth/developer/callback', params: { name: @user.name }
+    end
+    Rails.env = current_mode
+  end
+
 
 end

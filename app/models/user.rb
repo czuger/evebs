@@ -16,14 +16,16 @@ class User < ActiveRecord::Base
 
   def self.from_omniauth(auth)
     if auth['provider'] == 'identity'
-      find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)
-    else
-
-      if auth['provider'] == 'developer'
-        auth['credentials']['token'] = Digest::SHA256.hexdigest auth.info.name
-        auth['credentials']['expires_at'] = DateTime.new( 2999, 12, 31 ).to_time.to_i
+      # Deprecated, should be removed
+      # find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)
+    elsif auth['provider'] == 'developer'
+      raise 'Developer mode is allowed only in test or development mode' unless Rails.env.development? || Rails.env.test?
+      where(provider: auth.provider, name: auth.info.name).first_or_initialize.tap do |user|
+        user.provider = auth.provider
+        user.name = auth.info.name
+        user.save!
       end
-
+    else
       where(provider: auth['provider'], uid: auth['uid']).first_or_initialize.tap do |user|
         user.provider = auth.provider
         user.uid = auth.uid

@@ -26,7 +26,7 @@ class ChooseItemsController < ApplicationController
         @user.update_attribute(:last_changes_in_choices,Time.now)
       end
     end
-    render nothing: true
+    head :ok
   end
 
 end
