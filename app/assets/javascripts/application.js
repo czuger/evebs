@@ -10,17 +10,18 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require rails-ujs
 //= require jquery
-//= require jquery_ujs
+
 //= require turbolinks
-//= require bootstrap-sprockets
+// require bootstrap-sprockets
 
 // Do not put that before bootstrap-sprocket
-//= require highcharts/highstock
-//= require highcharts/highcharts-more
+// require highcharts/highstock
+// require highcharts/highcharts-more
 
 //= require moment
-//= require bootstrap-sortable
+// require bootstrap-sortable
 
 //= require_tree .
 

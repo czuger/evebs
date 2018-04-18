@@ -7,44 +7,44 @@ getTree = ->
 
   return unless $( '#choose_items_edit' ).val() == 'true'
 
-  waitingDialog.show()
+#  waitingDialog.show()
 
-  $.get '/items_tree.json', ( json_data ) ->
+#  $.get '/items_tree.json', ( json_data ) ->
 
-    waitingDialog.hide()
+#    waitingDialog.hide()
 
-    tree = $('#tree').treeview data: json_data, levels: 0, showCheckbox: true
-    root.item_ids = JSON.parse( $( '#item_ids' ).val() )
+  tree = $('#tree').treeview data: $('#items_tree').val(), levels: 0, showCheckbox: true
+  root.item_ids = JSON.parse( $( '#item_ids' ).val() )
 
-    tree.on 'nodeChecked ', (ev, node) ->
-      unless root.checking_items
-        selectItem( node, true )
-        root.item_ids.push( node.internal_node_id )
+  tree.on 'nodeChecked ', (ev, node) ->
+    unless root.checking_items
+      selectItem( node, true )
+      root.item_ids.push( node.internal_node_id )
 
-    .on 'nodeUnchecked ', (ev, node) ->
-      unless root.checking_items
-        selectItem( node, false )
-        i = 0
-        for item_id in root.item_ids
-          if node.internal_node_id == item_id
-            delete root.item_ids[ i ]
-            break
-          i += 1
+  .on 'nodeUnchecked ', (ev, node) ->
+    unless root.checking_items
+      selectItem( node, false )
+      i = 0
+      for item_id in root.item_ids
+        if node.internal_node_id == item_id
+          delete root.item_ids[ i ]
+          break
+        i += 1
 
-    .on 'nodeExpanded ', (ev, node) ->
-      root.checking_items = true
-      for children in node.nodes
-        children_id = children.internal_node_id
-        for item_id in root.item_ids
+  .on 'nodeExpanded ', (ev, node) ->
+    root.checking_items = true
+    for children in node.nodes
+      children_id = children.internal_node_id
+      for item_id in root.item_ids
 
-          if children_id == item_id
-            if children.checked
-              $('#tree').treeview('uncheckNode', [ children.nodeId, { silent: false } ] )
-            else
-              $('#tree').treeview('checkNode', [ children.nodeId, { silent: false } ] )
-            break
+        if children_id == item_id
+          if children.checked
+            $('#tree').treeview('uncheckNode', [ children.nodeId, { silent: false } ] )
+          else
+            $('#tree').treeview('checkNode', [ children.nodeId, { silent: false } ] )
+          break
 
-      root.checking_items = false
+    root.checking_items = false
 
 $(document).on('turbolinks:load', getTree )
 

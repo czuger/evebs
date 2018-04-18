@@ -104,5 +104,7 @@ gem 'caddie', '0.2.4', path: '../caddie'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'jquery-rails'
+
 
 
