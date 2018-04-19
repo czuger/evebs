@@ -79,11 +79,11 @@ gem 'rails_bootstrap_sortable', :git => 'https://github.com/czuger/rails_bootstr
 # gem 'spreadsheet'
 
 group :development, :test do
-  gem 'capistrano', '~> 3.9'
+  gem 'capistrano', '~> 3.6'
+  gem 'capistrano-rails', '~> 1.3'
   gem 'capistrano-rbenv', '~> 2.1'
-  gem 'capistrano-rails', '~> 1.2'
 
-  gem 'capistrano3-puma' , group: :development
+  gem 'capistrano3-puma', '3.1.1'
 
   gem 'factory_bot_rails', '~> 4.0'
 

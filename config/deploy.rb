@@ -14,8 +14,8 @@ set :rbenv_ruby, '2.4.2'
 set :deploy_to, "/var/www/eve_business_server"
 set :keep_releases, 2
 
-set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'db/eve.db', 'config/omniauth.yaml' )
+append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads'
+append :linked_files, 'config/database.yml', 'config/secrets.yml', 'db/eve.db', 'config/omniauth.yaml'
 
 namespace :deploy do
 
@@ -37,6 +37,7 @@ namespace :deploy do
 end
 
 after 'deploy:publishing', 'deploy:update_version_number'
+
 # after 'deploy:publishing', 'deploy:custom_restart'
 
 # Default branch is :master
