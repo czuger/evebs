@@ -9,7 +9,7 @@ class ChooseItemsController < ApplicationController
   def edit
     @user = current_user
     @item_ids = @user.eve_item_ids.uniq
-    @json_tree = File.open( 'public/items_tree.json' ).read
+    @json_tree = File.open( 'data/items_tree.json' ).read
   end
 
   # TODO : add a limit in order to prevent to many items
