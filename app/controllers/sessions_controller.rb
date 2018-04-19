@@ -3,7 +3,10 @@ require 'pp'
 class SessionsController < ApplicationController
 
   before_action :log_client_activity
-  skip_before_action :verify_authenticity_token, only: :create, if: -> { Rails.env.developmen? }
+  # There is a strange behavior : if and only can't be used together
+  # see : https://github.com/rails/rails/issues/9703
+  # But skipping authenticity token for all actions in dev is fine.
+  skip_before_action :verify_authenticity_token, if: -> { Rails.env.development? }
 
   def new
   end
