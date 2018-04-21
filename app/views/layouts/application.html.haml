@@ -10,6 +10,7 @@
   %body{ data:{ rails_env: Rails.env } }
     .container-fluid
       = render partial: 'layouts/menu'
+      #error_area
       = yield
 
 = hidden_field_tag :rails_mode, Rails.env

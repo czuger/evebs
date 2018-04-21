@@ -53,7 +53,10 @@ setFilter = ->
 
 
 selectItem = ( node, check_state ) ->
-  $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }
+  request = $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }
+  request.error (jqXHR, textStatus, errorThrown) ->
+    $('#error_area').html(errorThrown)
+    $('#error_area').show().delay(3000).fadeOut(3000);
 
 
 getTree = ->
