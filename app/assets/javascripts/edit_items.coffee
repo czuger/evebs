@@ -25,7 +25,7 @@ deep_filter = ( elements_array ) ->
         match_string = "#{$('#filter').val().toLowerCase()}"
         if element.text.toLowerCase().match( match_string ) != null
           empty = false
-          element.nodes = sub_list
+#          element.nodes = sub_list
           filtered_array.push( element )
 
     else
