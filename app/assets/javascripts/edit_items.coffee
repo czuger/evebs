@@ -4,23 +4,57 @@ original_items_tree = null
 filtered_items_tree = null
 tree = null
 
-deep_filter = ( f ) ->
-  console.log( "/#{$('#filter').val().toLowerCase()}/" )
-  f = f.filter ( name ) -> name.text.toLowerCase().match( "#{$('#filter').val().toLowerCase()}")
-  for e in f
-    e.node = deep_filter( e.node )
-  f
+deep_filter = ( elements_array ) ->
+
+  empty = true
+  filtered_array = []
+
+  for element in elements_array
+
+    sub_list = []
+    sub_array_empty = true
+
+    if element.nodes
+      [ sub_list, sub_array_empty ] = deep_filter( element.nodes )
+
+      unless sub_array_empty
+        empty = false
+        element.nodes = sub_list
+        filtered_array.push( element )
+      else
+        match_string = "#{$('#filter').val().toLowerCase()}"
+        if element.text.toLowerCase().match( match_string ) != null
+          empty = false
+          element.nodes = sub_list
+          filtered_array.push( element )
+
+    else
+      match_string = "#{$('#filter').val().toLowerCase()}"
+      match = element.text.toLowerCase().match( match_string )
+      if match != null
+        empty = false
+        filtered_array.push( element )
+#        console.log( 'kept', element.text, match_string, match, )
+      else
+#        console.log( 'rejected', element.text, match_string, match, )
+
+#  console.log( filtered_array )
+  [ filtered_array, empty ]
+
 
 setFilter = ->
-  $('#filter').keydown( ->
+  $('#filter').keyup( ->
     f = JSON.parse( original_items_tree )
-    f = deep_filter( f )
+    [ f, _ ] = deep_filter( f )
     filtered_items_tree = JSON.stringify(f)
+
     tree = $('#tree').treeview data: filtered_items_tree, levels: 0, showCheckbox: true
   )
 
+
 selectItem = ( node, check_state ) ->
   $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }
+
 
 getTree = ->
 
