@@ -4,6 +4,13 @@ original_items_tree = null
 filtered_items_tree = null
 tree = null
 
+selectItem = ( node, check_state ) ->
+  request = $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }
+  request.error (jqXHR, textStatus, errorThrown) ->
+    $('#error_area').html(errorThrown)
+    $('#error_area').show().delay(3000).fadeOut(3000);
+
+
 deep_filter = ( elements_array ) ->
 
   empty = true
@@ -47,23 +54,11 @@ setFilter = ->
     f = JSON.parse( original_items_tree )
     [ f, _ ] = deep_filter( f )
     filtered_items_tree = JSON.stringify(f)
-
-    tree = $('#tree').treeview data: filtered_items_tree, levels: 0, showCheckbox: true
+    setTree(filtered_items_tree)
   )
 
 
-selectItem = ( node, check_state ) ->
-  request = $.post '/choose_items/select_items', { id: node.internal_node_id, item: node.item, check_state: check_state }
-  request.error (jqXHR, textStatus, errorThrown) ->
-    $('#error_area').html(errorThrown)
-    $('#error_area').show().delay(3000).fadeOut(3000);
-
-
-getTree = ->
-
-  original_items_tree = $('#items_tree').val()
-  filtered_items_tree = original_items_tree
-
+setTree = ( filtered_items_tree ) ->
   tree = $('#tree').treeview data: filtered_items_tree, levels: 0, showCheckbox: true
   root.item_ids = JSON.parse( $( '#item_ids' ).val() )
 
@@ -96,6 +91,14 @@ getTree = ->
           break
 
     root.checking_items = false
+
+
+getTree = ->
+
+  original_items_tree = $('#items_tree').val()
+  filtered_items_tree = original_items_tree
+  setTree(filtered_items_tree)
+
 
 $(document).on('turbolinks:load'
   ->
