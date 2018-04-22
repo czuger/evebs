@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+cd $1
+
+date >> log/hourly.log
+date >> log/hourly.err
+
+RAILS_ENV=production bundle exec rake data_compute:full:hourly >>log/hourly.log 2>>log/hourly.err
