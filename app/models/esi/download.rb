@@ -17,11 +17,15 @@ class Download
     url = build_url
     puts "Fetching : #{url}" if @debug_request
 
-    @request = open( url )
-    set_headers
+    begin
+      @request = open( url )
+      set_headers
 
-    json_result = @request.read
-    JSON.parse( json_result )
+      json_result = @request.read
+      JSON.parse( json_result )
+    rescue => e
+      return e
+    end
   end
 
   private

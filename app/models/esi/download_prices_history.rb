@@ -25,6 +25,12 @@ class Esi::DownloadPricesHistory < Download
         @params[:type_id]=cpp_eve_item_id
         pages = get_page
 
+        unless pages.is_a? Array
+          puts [ pages, @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' ) if @debug_request
+          EveMarketHistoryError.create!( cpp_region_id: cpp_region_id, cpp_eve_item_id: cpp_eve_item_id, error: pages )
+          next
+        end
+
         if pages.empty?
           set_empty_history( cpp_region_id, cpp_eve_item_id )
           next
@@ -43,14 +49,13 @@ class Esi::DownloadPricesHistory < Download
           next if downloaded_timestamps.include?( timestamp( record ) )
 
           record = EveMarketsHistory.new(
-              region_id: cpp_region_id, eve_item_id: cpp_eve_item_id, day_timestamp: timestamp( record ),
+              region_id: internal_region_id, eve_item_id: internal_eve_item_id, day_timestamp: timestamp( record ),
               history_date: DateTime.parse( record['date'] ), order_count: record['order_count'], volume: record['volume'],
               low_price: record['lowest'], avg_price: record['average'], high_price: record['highest'] )
-
-          puts 'Inserting' if @debug_request
-          p record if @debug_request
+          records << record
         end
         EveMarketsHistory.import( records )
+        puts "#{records.count} inserted" if @debug_request
       end
     end
 
