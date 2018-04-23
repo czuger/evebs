@@ -1,0 +1,4 @@
+class Esi::DownloadPriceHistories
+
+
+end
