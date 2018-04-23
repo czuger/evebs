@@ -15,7 +15,7 @@ class EveItem < ApplicationRecord
   has_many :materials, through: :blueprint
   has_many :components, through: :materials
   belongs_to :market_group
-  has_many :crest_price_histories, dependent: :destroy
+  has_many :eve_markets_histories, dependent: :destroy
   has_many :crest_prices_last_month_averages, dependent: :destroy
 
   has_many :prices_advices

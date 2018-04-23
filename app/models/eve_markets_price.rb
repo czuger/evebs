@@ -1,0 +1,2 @@
+class EveMarketsPrice < ApplicationRecord
+end

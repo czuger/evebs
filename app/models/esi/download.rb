@@ -4,11 +4,12 @@ require 'json'
 class Download
 
   ESI_BASE_URL='https://esi.tech.ccp.is/latest/'
+  ESI_DATA_SOURCE={ datasource: :tranquility }
 
   def initialize( rest_url, params = {}, debug_request: false )
     @debug_request = debug_request
     @rest_url = rest_url
-    @params = params
+    @params = params.merge( ESI_DATA_SOURCE )
   end
 
   def get_page( page_number=nil )

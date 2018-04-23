@@ -94,6 +94,9 @@ end
 
 gem 'simplecov', :require => false, :group => :test
 
+gem 'activerecord-import'
+
+
 # gem 'caddie', '0.1.2', :git => 'git://github.com/czuger/caddie', branch: 'v_1.2'
 # gem 'caddie', '0.2.3', path: '../caddie'
 # gem 'caddie', '0.2.4', path: '../caddie'
