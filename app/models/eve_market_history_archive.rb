@@ -1,0 +1,2 @@
+class EveMarketHistoryArchive < ApplicationRecord
+end
