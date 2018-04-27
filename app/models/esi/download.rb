@@ -24,6 +24,7 @@ class Download
       json_result = @request.read
       JSON.parse( json_result )
     rescue => e
+      sleep 3
       return e
     end
   end
