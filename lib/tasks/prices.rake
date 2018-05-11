@@ -6,6 +6,11 @@ require 'pp'
 
 namespace :data_compute do
 
+  desc 'Download min prices'
+  task :min_prices => :environment do
+    Esi::DownloadMinPrices.new( debug_request: false ).dl
+  end
+
   desc 'Compute prices advices'
   task :prices_advices => :environment do
     PricesAdvice.update

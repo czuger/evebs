@@ -4,7 +4,7 @@ class Esi::DownloadPricesHistory < Download
 
   def initialize( debug_request: false )
     super( nil, {}, debug_request: debug_request )
-    p @errors_limit_remain
+    # p @errors_limit_remain
   end
 
   def update_table

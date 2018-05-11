@@ -1,7 +1,7 @@
 require 'open-uri'
 require 'json'
 
-class Download
+class Esi::Download
 
   ESI_BASE_URL='https://esi.tech.ccp.is/latest/'
   ESI_DATA_SOURCE={ datasource: :tranquility }
@@ -32,7 +32,7 @@ class Download
   private
 
   def set_headers
-    @pages_count = @request.meta['x-pages']
+    @pages_count = @request.meta['x-pages'].to_i
     @errors_limit_remain = @request.meta['x-esi-error-limit-remain']
     @errors_limit_reset = @request.meta['x-esi-error-limit-reset']
   end

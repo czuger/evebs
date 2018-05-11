@@ -11,7 +11,7 @@ namespace :db do
           unless $?.to_i == 0 # file exist
             # Dump and compress it
             puts 'No remote dump, pg_dump'
-            `ssh hw pg_dump -Fc -n public -U eve_business_server eve_business_server_production -f /tmp/production.dump`
+            `ssh hw pg_dump -Fc -n public -T "eve_market_history_archives" -U eve_business_server eve_business_server_production -f /tmp/production.dump`
           end
           # Get the remote file
           puts 'Retrieving remote dump'

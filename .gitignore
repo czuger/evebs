@@ -27,3 +27,4 @@ coverage
 .idea
 
 config/omniauth.yaml
+items_tree.json
