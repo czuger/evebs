@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_04_26_084227) do
+ActiveRecord::Schema.define(version: 2018_05_11_123016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,21 +128,6 @@ ActiveRecord::Schema.define(version: 2018_04_26_084227) do
     t.integer "eve_item_id"
     t.index ["eve_item_id"], name: "index_eve_items_users_on_eve_item_id"
     t.index ["user_id"], name: "index_eve_items_users_on_user_id"
-  end
-
-  create_table "eve_market_history_archives", force: :cascade do |t|
-    t.integer "region_id", null: false
-    t.integer "eve_item_id", null: false
-    t.string "year", null: false
-    t.string "month", null: false
-    t.date "history_date", null: false
-    t.integer "order_count"
-    t.bigint "volume"
-    t.float "low_price"
-    t.float "avg_price"
-    t.float "high_price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "eve_market_history_errors", force: :cascade do |t|

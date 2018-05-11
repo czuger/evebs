@@ -8,7 +8,7 @@ module Setup::UpdateEveItems
   def update_eve_items_list
 
     # First ensure all markets are present
-    update_market_groups
+    # update_market_groups
 
     new_items = {}
 

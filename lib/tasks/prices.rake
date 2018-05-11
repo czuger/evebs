@@ -8,7 +8,7 @@ namespace :data_compute do
 
   desc 'Download min prices'
   task :min_prices => :environment do
-    Esi::DownloadMinPrices.new( debug_request: false ).dl
+    Esi::MinPrices.new(debug_request: false ).update
   end
 
   desc 'Compute prices advices'

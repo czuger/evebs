@@ -29,6 +29,38 @@ class Esi::Download
     end
   end
 
+  def get_all_pages
+    result = []
+    @params[:page] = 1
+
+    loop do
+      puts "Requesting page #{@params[:page]}" if @debug_request
+
+      pages = get_page
+
+      unless pages.is_a? Array
+        puts [ pages, @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' ) if @debug_request
+        next
+      end
+
+      result += pages unless pages.empty?
+
+      if @pages_count == 0 || @pages_count == 1
+        break
+      else
+        puts "More pages to download : #{@pages_count}" if @debug_request
+        @params[:page] += 1
+      end
+
+      if @params[:page] && @params[:page] > @pages_count
+        @params.delete(:page)
+        break
+      end
+    end
+
+    result
+  end
+
   private
 
   def set_headers
