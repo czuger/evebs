@@ -1,6 +1,7 @@
 class MarketGroup < ApplicationRecord
 
   has_many :eve_items
+  serialize :cpp_type_ids
   acts_as_tree
 
   OVERCLASSIFICATION = %w( Large Medium Small )

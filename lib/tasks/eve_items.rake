@@ -6,9 +6,11 @@ namespace :data_setup do
   task :update_all_items => :environment do
     puts 'About to fill the objects list'
 
-    # TODO : remettre cet update en prod, cet update doit être intégré a la tâche hebdomadaire.
+    # TODO : remettre ces updates en prod, ces updates doivent être intégrés a la tâche hebdomadaire.
     # Esi::DownloadTypeInRegion.new( debug_request: true ).update
-    Esi::Types.new( debug_request: true ).update
+    # Esi::DownloadMarketGroups.new( debug_request: true ).update
+
+    Esi::EveItems.new(debug_request: true ).update
   end
 
   desc "Fill name_lowcase"

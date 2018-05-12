@@ -25,7 +25,20 @@ class Esi::Download
       JSON.parse( json_result )
     rescue => e
       sleep 3
-      return e
+      raise e
+    end
+  end
+
+  def get_page_retry_on_error( page_number=nil )
+    loop do
+      page = nil
+      begin
+        page = get_page
+      rescue => e
+        puts [ "Requesting #{@rest_url} got #{e}", @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' )
+        next
+      end
+      return page
     end
   end
 
@@ -34,18 +47,23 @@ class Esi::Download
     @params[:page] = 1
 
     loop do
-      puts "Requesting page #{@params[:page]}" if @debug_request
+      puts "Requesting page #{@params[:page]}/#{@pages_count}" if @debug_request
 
-      pages = get_page
-
-      unless pages.is_a? Array
-        puts [ pages, @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' ) if @debug_request
+      pages = nil
+      begin
+        pages = get_page
+      rescue => e
+        puts [ "Requesting #{@rest_url} got #{e}", @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' )
         next
       end
 
-      result += pages unless pages.empty?
+      unless pages.empty?
+        result += pages if pages.is_a? Array
+        result << pages if pages.is_a? Hash
+      end
 
       if @pages_count == 0 || @pages_count == 1
+        puts "No other pages to download - breaking out" if @debug_request
         break
       else
         puts "More pages to download : #{@pages_count}" if @debug_request
@@ -53,6 +71,7 @@ class Esi::Download
       end
 
       if @params[:page] && @params[:page] > @pages_count
+        puts "No more pages to download - breaking out" if @debug_request
         @params.delete(:page)
         break
       end

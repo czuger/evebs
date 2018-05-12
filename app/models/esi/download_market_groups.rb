@@ -1,21 +1,33 @@
-class Esi::DownloadTypeInRegion < Esi::Download
+class Esi::DownloadMarketGroups < Esi::Download
 
   def initialize( debug_request: false )
-    super( nil, {}, debug_request: debug_request )
+    super( 'markets/groups/', {}, debug_request: debug_request )
   end
 
   def update
-    puts 'Updating type_in_regions'
-    ActiveRecord::Base.connection.execute("TRUNCATE type_in_regions RESTART IDENTITY")
+    puts 'Updating market_groups.'
 
-    Region.pluck( :cpp_region_id ).each do |cpp_region_id|
-      @rest_url = "markets/#{cpp_region_id}/types/"
+    groups_updated = 0
+    market_groups = get_all_pages.to_a
+    # pp market_groups
 
-      records = get_all_pages.map{ |cpp_type_id| TypeInRegion.new( cpp_region_id: cpp_region_id, cpp_type_id: cpp_type_id ) }
-      TypeInRegion.import( records )
+    market_groups.each do |mg|
+      @rest_url = "markets/groups/#{mg}"
 
-      puts "#{records.count} inserted for region #{cpp_region_id}" if @debug_request
+      get_all_pages.each do |group_info|
+        unless group_info['types'].empty?
+          group = MarketGroup.where( cpp_market_group_id: group_info['market_group_id'] ).first_or_initialize do |g|
+            g.name = group_info['name']
+            g.parent_id = group_info['parent_group_id']
+            g.cpp_type_ids = group_info['types']
+          end
+          group.save!
+          groups_updated += 1
+        end
+      end
     end
+
+    puts "#{groups_updated} groups updated."
 
   end
 end
