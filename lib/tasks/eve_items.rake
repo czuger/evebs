@@ -9,8 +9,12 @@ namespace :data_setup do
     # TODO : remettre ces updates en prod, ces updates doivent être intégrés a la tâche hebdomadaire.
     # Esi::DownloadTypeInRegion.new( debug_request: true ).update
     # Esi::DownloadMarketGroups.new( debug_request: true ).update
+    # Esi::EveItems.new(debug_request: true ).update
 
-    Esi::EveItems.new(debug_request: true ).update
+    Fuzzwork::Blueprints.new.update
+
+    # Il faudra d'abord calculer crest_prices_last_month_average before compuctin prices
+
   end
 
   desc "Fill name_lowcase"
