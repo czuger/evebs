@@ -1,0 +1,2 @@
+class TypeInRegion < ApplicationRecord
+end

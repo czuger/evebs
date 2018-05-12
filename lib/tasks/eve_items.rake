@@ -5,6 +5,9 @@ namespace :data_setup do
   desc "Feed item objects list"
   task :update_all_items => :environment do
     puts 'About to fill the objects list'
+
+    # TODO : remettre cet update en prod, cet update doit être intégré a la tâche hebdomadaire.
+    # Esi::DownloadTypeInRegion.new( debug_request: true ).update
     Esi::Types.new( debug_request: true ).update
   end
 

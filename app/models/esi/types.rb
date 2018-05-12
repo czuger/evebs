@@ -1,15 +1,17 @@
 class Esi::Types < Esi::Download
 
   def initialize( debug_request: false )
-    super( 'universe/types', {}, debug_request: debug_request )
+    super( nil, {}, debug_request: debug_request )
     # p @errors_limit_remain
   end
 
   def update
-    p = get_all_pages
-    pp p
+    new_ids = TypeInRegion.distinct.pluck( :cpp_type_id )
+
+    current_cpp_eve_item_ids = EveItem.pluck( :cpp_eve_item_id )
+    missing_ids = new_ids - current_cpp_eve_item_ids
+
+
+
   end
-
-
-
 end
