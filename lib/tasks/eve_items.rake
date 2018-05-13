@@ -7,7 +7,7 @@ namespace :data_setup do
     puts 'About to fill the objects list'
 
     # TODO : remettre ces updates en prod, ces updates doivent être intégrés a la tâche hebdomadaire.
-    # Esi::DownloadTypeInRegion.new( debug_request: true ).update
+    # Esi::DownloadTypeInRegion.new( debug_request: false ).update
     # Esi::DownloadMarketGroups.new( debug_request: true ).update
     # Esi::EveItems.new(debug_request: true ).update
 

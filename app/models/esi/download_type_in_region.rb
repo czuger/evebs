@@ -11,10 +11,11 @@ class Esi::DownloadTypeInRegion < Esi::Download
     Region.pluck( :cpp_region_id ).each do |cpp_region_id|
       @rest_url = "markets/#{cpp_region_id}/types/"
 
-      records = get_all_pages.map{ |cpp_type_id| TypeInRegion.new( cpp_region_id: cpp_region_id, cpp_type_id: cpp_type_id ) }
+      unique_ids = get_all_pages.map{ |cpp_type_id| [ cpp_region_id, cpp_type_id ] }.uniq
+      records = unique_ids.map{ |u_ids| TypeInRegion.new( cpp_region_id: u_ids[0], cpp_type_id: u_ids[1] ) }
       TypeInRegion.import( records )
 
-      puts "#{records.count} inserted for region #{cpp_region_id}" if @debug_request
+      puts "#{records.count} inserted for region #{cpp_region_id}"
     end
 
   end

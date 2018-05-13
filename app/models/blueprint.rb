@@ -4,7 +4,7 @@ class Blueprint < ApplicationRecord
 
   belongs_to :eve_item
   has_many :materials
-  validates :eve_item_id, :nb_runs, :prod_qtt, :cpp_blueprint_id, presence: true
+  validates :eve_item_id, :nb_runs, :prod_qtt, presence: true
 
   # We don't process some blueprint, because they leads to issues
   UNWANTED_BLUEPRINTS = [3927,34189,34497]

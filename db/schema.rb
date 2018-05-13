@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_12_094054) do
+ActiveRecord::Schema.define(version: 2018_05_13_100414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,7 +31,6 @@ ActiveRecord::Schema.define(version: 2018_05_12_094054) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "cpp_blueprint_id"
-    t.index ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id"
     t.index ["eve_item_id"], name: "index_blueprints_on_eve_item_id"
   end
 
