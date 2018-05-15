@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_13_100414) do
+ActiveRecord::Schema.define(version: 2018_05_15_081925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(version: 2018_05_13_100414) do
   end
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
-    t.integer "cpp_eve_item_id"
+    t.integer "cpp_eve_item_id", null: false
     t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -204,8 +204,8 @@ ActiveRecord::Schema.define(version: 2018_05_13_100414) do
   end
 
   create_table "materials", id: :serial, force: :cascade do |t|
-    t.integer "blueprint_id"
-    t.integer "component_id"
+    t.integer "blueprint_id", null: false
+    t.integer "component_id", null: false
     t.integer "required_qtt", null: false
     t.datetime "created_at"
     t.datetime "updated_at"

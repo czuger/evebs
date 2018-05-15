@@ -4,6 +4,17 @@ require 'json'
 class Fuzzwork::Blueprints
 
   def update
+    begin
+      sub_update
+    rescue => e
+      p e.record
+      raise e
+    end
+  end
+
+  private
+
+  def sub_update
 
     eve_item_cpp_key_to_id = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
     eve_item_cpp_key_to_name = Hash[ EveItem.pluck( :cpp_eve_item_id, :name ) ]
