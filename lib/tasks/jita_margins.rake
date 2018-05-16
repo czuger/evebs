@@ -9,9 +9,6 @@ namespace :data_compute do
     puts 'About to compute jita margin'
     puts '*'*100
     JitaMargin.compute_margins
-    puts '*'*100
-    puts 'About to compute jita margin'
-    puts '*'*100
 
     # At the end we need to clear the cache (the front page)
     File.unlink( 'public/index.html' ) if File.exists?( 'public/index.html' )

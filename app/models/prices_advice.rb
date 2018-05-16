@@ -6,7 +6,7 @@ class PricesAdvice < ApplicationRecord
 
   def self.update
     current_path = File.dirname( __FILE__ )
-    request = File.open( "#{current_path}/sql/update_crest_price_advices.sql" ).read
+    request = File.open( "#{Ralis.root}/sql/update_price_advices.sql" ).read
     ActiveRecord::Base.connection.execute( request )
   end
 
