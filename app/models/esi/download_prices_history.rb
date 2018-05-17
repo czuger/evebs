@@ -1,6 +1,8 @@
 require_relative 'download'
 
-class Esi::DownloadPricesHistory < Download
+# Seems not to require full download of all prices history
+# Just jita, see ...
+class Esi::DownloadPricesHistory < Esi::Download
 
   def initialize( debug_request: false )
     super( nil, {}, debug_request: debug_request )
@@ -9,74 +11,56 @@ class Esi::DownloadPricesHistory < Download
 
   def update_table
 
-    items = EveItem.pluck( :id, :cpp_eve_item_id )
-    regions = Region.pluck( :id, :cpp_region_id )
+    jita = Region.find_by_cpp_region_id( '10000002' )
 
-    regions.each do |region|
-      internal_region_id, cpp_region_id = region
-      cpp_region_id = cpp_region_id.to_i
+    jita.eve_items_in_market.each do |eve_item|
 
-      items.each do |item|
-        internal_eve_item_id, cpp_eve_item_id = item
+      @rest_url = "markets/#{jita.cpp_region_id}/history/"
+      @params[:type_id]=eve_item.cpp_eve_item_id
+      pages = get_all_pages
 
-        next if empty_history?( cpp_region_id, cpp_eve_item_id )
+      # pp pages
 
-        @rest_url = "markets/#{cpp_region_id}/history/"
-        @params[:type_id]=cpp_eve_item_id
-        pages = get_page
+      timestamps = pages.map{ |r| timestamp( r ) }
 
-        unless pages.is_a? Array
-          puts [ pages, @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' ) if @debug_request
-          EveMarketHistoryError.create!( cpp_region_id: cpp_region_id, cpp_eve_item_id: cpp_eve_item_id, error: pages )
-          next
-        end
+      downloaded_timestamps = EveMarketsHistory.where(
+          region_id: jita.id, eve_item_id: eve_item.id ).where( day_timestamp: timestamps ).
+          pluck( :day_timestamp )
 
-        if pages.empty?
-          set_empty_history( cpp_region_id, cpp_eve_item_id )
-          next
-        end
+      downloaded_timestamps = downloaded_timestamps.to_set
 
-        timestamps = pages.map{ |r| timestamp( r ) }
+      records = []
+      pages.each do |record|
+        next if downloaded_timestamps.include?( timestamp( record ) )
 
-        downloaded_timestamps = EveMarketsHistory.where(
-            region_id: internal_region_id, eve_item_id: internal_eve_item_id ).where( day_timestamp: timestamps ).
-            pluck( :day_timestamp )
-
-        downloaded_timestamps = downloaded_timestamps.to_set
-
-        records = []
-        pages.each do |record|
-          next if downloaded_timestamps.include?( timestamp( record ) )
-
-          record = EveMarketsHistory.new(
-              region_id: internal_region_id, eve_item_id: internal_eve_item_id, day_timestamp: timestamp( record ),
-              history_date: DateTime.parse( record['date'] ), order_count: record['order_count'], volume: record['volume'],
-              low_price: record['lowest'], avg_price: record['average'], high_price: record['highest'] )
-          records << record
-        end
-        EveMarketsHistory.import( records )
-        puts "#{records.count} inserted" if @debug_request
+        record = EveMarketsHistory.new(
+            region_id: jita.id, eve_item_id: eve_item.id, day_timestamp: timestamp( record ),
+            history_date: DateTime.parse( record['date'] ), order_count: record['order_count'], volume: record['volume'],
+            low_price: record['lowest'], avg_price: record['average'], high_price: record['highest'] )
+        records << record
       end
+      EveMarketsHistory.import( records )
+      puts "#{records.count} inserted" if @debug_request
     end
 
   end
 
   private
 
-  def set_empty_history( cpp_region_id, cpp_eve_item_id )
-    # Don't forget to clean up old markets to give a chance to refresh it.
-    EveEmptyMarketHistory.create!( cpp_region_id: cpp_region_id, cpp_eve_item_id: cpp_eve_item_id )
-  end
-
-  def empty_history?( cpp_region_id, cpp_eve_item_id )
-    # Initializing empty history
-    unless @empty_history
-      @empty_history = EveEmptyMarketHistory.pluck( :cpp_region_id, :cpp_eve_item_id )
-      @empty_history = @empty_history.to_set
-    end
-
-    @empty_history.include?( [ cpp_region_id, cpp_eve_item_id ] )
-  end
+  # def set_empty_history( cpp_region_id, cpp_eve_item_id )
+  #   # Don't forget to clean up old markets to give a chance to refresh it.
+  #   EveEmptyMarketHistory.create!( cpp_region_id: cpp_region_id, cpp_eve_item_id: cpp_eve_item_id )
+  # end
+  #
+  # def empty_history?( cpp_region_id, cpp_eve_item_id )
+  #   # Initializing empty history
+  #   unless @empty_history
+  #     @empty_history = EveEmptyMarketHistory.pluck( :cpp_region_id, :cpp_eve_item_id )
+  #     @empty_history = @empty_history.to_set
+  #   end
+  #
+  #   @empty_history.include?( [ cpp_region_id, cpp_eve_item_id ] )
+  # end
 
   def timestamp( record )
     record['date'].delete( '-' )

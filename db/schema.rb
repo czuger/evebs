@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_15_081925) do
+ActiveRecord::Schema.define(version: 2018_05_16_152332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -317,6 +317,7 @@ ActiveRecord::Schema.define(version: 2018_05_15_081925) do
     t.integer "cpp_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cpp_region_id"], name: "index_type_in_regions_on_cpp_region_id"
   end
 
   create_table "user_activity_logs", id: :serial, force: :cascade do |t|

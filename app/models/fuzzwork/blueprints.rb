@@ -32,6 +32,7 @@ class Fuzzwork::Blueprints
         nb_run = r['blueprintDetails']['maxProductionLimit']
         prod_qtt = r['blueprintDetails']['productQuantity']
 
+        # TODO : update involved_in_blueprint for EveItem
         ActiveRecord::Base.transaction do
 
           eve_item_id = eve_item_cpp_key_to_id[ cpp_id ]

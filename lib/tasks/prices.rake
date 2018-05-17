@@ -14,7 +14,7 @@ namespace :data_compute do
 
   desc 'Compute prices advices'
   task :prices_advices => :environment do
-    puts 'About to recompute prices advices.'
+    Banner.p 'About to recompute prices advices.'
     PricesAdvice.update
   end
 
