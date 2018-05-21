@@ -4,8 +4,11 @@ require 'json'
 class Fuzzwork::Blueprints
 
   def update
+    Banner.p( 'About to update blueprints' )
     begin
-      sub_update
+      ActiveRecord::Base.transaction do
+        sub_update
+      end
     rescue => e
       p e.record
       raise e
@@ -21,6 +24,8 @@ class Fuzzwork::Blueprints
 
     max_items_to_check = eve_item_cpp_key_to_id.count
     items_checked = 0
+
+    items_involved_in_blueprints = Set.new
 
     eve_item_cpp_key_to_id.keys.each do |cpp_id|
 
@@ -51,6 +56,7 @@ class Fuzzwork::Blueprints
               c.name = eve_item_cpp_key_to_name[ component_id ]
             end
             component.save!
+            items_involved_in_blueprints << component.id
 
             material = Material.where( blueprint_id: blueprint.id, component_id: component.id ).first_or_initialize do |m|
               m.required_qtt = material['quantity']
@@ -66,6 +72,10 @@ class Fuzzwork::Blueprints
         puts "#{items_checked} of #{max_items_to_check}"
       end
     end
+
+    EveItem.update_all( involved_in_blueprint: false )
+    EveItem.where( id: items_involved_in_blueprints ).update_all( involved_in_blueprint: true )
+
   end
 
 end

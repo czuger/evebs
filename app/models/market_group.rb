@@ -9,7 +9,7 @@ class MarketGroup < ApplicationRecord
   EVE_ITEM_NOT_SHOWED_GROUPS = [ 1, 1496, 1335, 1314, 1263, 1103, 926, 870, 236, 68 ]
 
   def self.build_items_tree
-    File.open( 'public/items_tree.json', 'w' ) do |file|
+    File.open( 'data/tmp_items_tree.json', 'w' ) do |file|
       arr = []
       # i = 0
       self.roots.each do |children|
@@ -21,6 +21,7 @@ class MarketGroup < ApplicationRecord
       # PP.pp( arr.to_json, file )
       # pp arr
     end
+    FileUtils.mv 'data/tmp_items_tree.json', 'data/items_tree.json'
   end
 
   private

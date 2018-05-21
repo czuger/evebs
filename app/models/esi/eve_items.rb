@@ -21,7 +21,7 @@ class Esi::EveItems < Esi::Download
         downloaded_items += 1
 
         if downloaded_items % 1000 == 0
-          puts "Downloaded items : #{downloaded_items} / #{new_ids.count}."
+          puts "Downloaded items : #{downloaded_items} / #{new_ids.count}." if @debug_request
         end
 
         next unless cpp_item['published']

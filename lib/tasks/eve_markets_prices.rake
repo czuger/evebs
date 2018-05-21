@@ -1,6 +1,6 @@
 require 'yaml'
 
-namespace :data_download do
+namespace :process do
 
   desc 'Download eve markets/prices'
   task :eve_markets_prices => :environment do

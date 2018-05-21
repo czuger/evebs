@@ -15,7 +15,7 @@ class Esi::DownloadTypeInRegion < Esi::Download
       records = unique_ids.map{ |u_ids| TypeInRegion.new( cpp_region_id: u_ids[0], cpp_type_id: u_ids[1] ) }
       TypeInRegion.import( records )
 
-      puts "#{records.count} inserted for region #{cpp_region_id}"
+      puts "#{records.count} inserted for region #{cpp_region_id}" if @debug_request
     end
 
   end
