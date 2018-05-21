@@ -1,6 +1,6 @@
 require_relative 'download'
 
-class Esi::DownloadMarketsPrices < Download
+class Esi::DownloadMarketsPrices < Esi::Download
 
   def initialize( debug_request: false )
     super( 'markets/prices/', {}, debug_request: debug_request )
