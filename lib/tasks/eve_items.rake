@@ -5,7 +5,6 @@ namespace :process do
   # TODO : move elements or rename this
   desc "Feed item objects list"
   task :update_all_items => :environment do
-    Banner.p 'About to fill the objects list'
 
     Banner.p 'About to download types in regions'
     Esi::DownloadTypeInRegion.new( debug_request: false ).update
