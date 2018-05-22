@@ -4,7 +4,6 @@ require 'json'
 class Fuzzwork::Blueprints
 
   def update
-    Banner.p( 'About to update blueprints' )
     begin
       ActiveRecord::Base.transaction do
         sub_update
@@ -68,9 +67,9 @@ class Fuzzwork::Blueprints
       end
 
       items_checked += 1
-      if items_checked % 100 == 0
-        puts "#{items_checked} of #{max_items_to_check}"
-      end
+      # if items_checked % 100 == 0
+      #   puts "#{items_checked} of #{max_items_to_check}" if @de
+      # end
     end
 
     EveItem.update_all( involved_in_blueprint: false )

@@ -4,7 +4,7 @@ namespace :process do
   task :eve_markets_histories => :environment do
     Banner.p 'About to update the table eve_markets_histories'
 
-    Esi::DownloadPricesHistory.new( debug_request: true ).update_table
+    Esi::DownloadPricesHistory.new( debug_request: false ).update_table
   end
 
   desc 'Compute prices history average'
