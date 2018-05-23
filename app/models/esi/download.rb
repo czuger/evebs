@@ -35,7 +35,8 @@ class Esi::Download
       begin
         page = get_page
       rescue => e
-        puts [ "Requesting #{@rest_url} got #{e}", @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' )
+        puts "Requesting #{@rest_url}, #{@params.inspect} got #{e}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
+        STDOUT.flush
         next
       end
       return page
