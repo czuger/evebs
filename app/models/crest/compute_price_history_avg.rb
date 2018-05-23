@@ -11,13 +11,13 @@ class Crest::ComputePriceHistoryAvg
         order_count_avg, volume_avg, low_price_avg, avg_price_avg, high_price_avg, created_at, updated_at )
         SELECT region_id, eve_item_id, SUM( order_count ), SUM( volume ), AVG( order_count ), AVG( volume ),
           AVG( low_price ), AVG( avg_price ), AVG( high_price ), now(), now()
-        FROM crest_price_histories
+        FROM eve_markets_histories
         WHERE history_date > '#{last_month}' AND
               NOT EXISTS (
                   SELECT region_id, eve_item_id
                   FROM crest_prices_last_month_averages
-                  WHERE crest_prices_last_month_averages.region_id = crest_price_histories.region_id
-                  AND crest_prices_last_month_averages.eve_item_id = crest_price_histories.eve_item_id  )
+                  WHERE crest_prices_last_month_averages.region_id = eve_markets_histories.region_id
+                  AND crest_prices_last_month_averages.eve_item_id = eve_markets_histories.eve_item_id  )
         GROUP BY region_id, eve_item_id
       "
       ActiveRecord::Base.connection.execute(sql)
@@ -37,7 +37,7 @@ class Crest::ComputePriceHistoryAvg
           SUM( order_count ) order_count_sum, SUM( volume ) volume_sum,
           AVG( order_count ) order_count_avg, AVG( volume ) volume_avg,
           AVG( low_price ) low_price_avg, AVG( avg_price ) avg_price_avg, AVG( high_price ) high_price_avg
-          FROM crest_price_histories
+          FROM eve_markets_histories
           WHERE history_date > '#{last_month}'
           GROUP BY region_id, eve_item_id ) sub
         WHERE crest_prices_last_month_averages.region_id = sub.region_id
