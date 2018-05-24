@@ -14,7 +14,7 @@
           %span Facebook
         %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-google{ :href => '/auth/google_oauth2', method: 'get' }
           %span Google
-        - if Rails.env.development?
+        - unless Rails.env.production?
           %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-dev{ :href => '/auth/developer', method: 'get' }
             %span Dev
 
