@@ -4,7 +4,7 @@ require 'pp'
 
 # OpenURI::Cache.cache_path = 'tmp'
 
-namespace :data_compute do
+namespace :process do
 
   desc 'Download min prices'
   task :min_prices => :environment do
