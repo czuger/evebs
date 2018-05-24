@@ -28,7 +28,7 @@ namespace :process do
 
     puts 'Refreshing all items costs'
     EveItem.where(involved_in_blueprint:true).all.each do |ei|
-      puts "Recomputing cost for #{ei.name}"
+      # puts "Recomputing cost for #{ei.name}"
       ei.compute_cost
     end
     Banner.p 'End for all recomputing cost'
