@@ -19,7 +19,7 @@ class User < ApplicationRecord
       # Deprecated, should be removed
       # find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)
     elsif auth['provider'] == 'developer'
-      raise 'Developer mode is allowed only in test or development mode' unless Rails.env.development? || Rails.env.test?
+      raise 'Developer mode is allowed only in test or development mode' unless Rails.env.development? || Rails.staging.test?
       where(provider: auth.provider, name: auth.info.name).first_or_initialize.tap do |user|
         user.provider = auth.provider
         user.name = auth.info.name
