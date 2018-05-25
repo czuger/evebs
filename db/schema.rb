@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_16_152332) do
+ActiveRecord::Schema.define(version: 2018_05_25_095642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,12 +194,12 @@ ActiveRecord::Schema.define(version: 2018_05_16_152332) do
   end
 
   create_table "market_groups", id: :serial, force: :cascade do |t|
-    t.string "cpp_market_group_id", null: false
     t.string "name", null: false
     t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "cpp_type_ids"
+    t.integer "cpp_market_group_id", null: false
+    t.integer "cpp_parent_market_group_id"
     t.index ["cpp_market_group_id"], name: "index_market_groups_on_cpp_market_group_id", unique: true
   end
 

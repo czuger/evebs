@@ -5,29 +5,54 @@ class Esi::DownloadMarketGroups < Esi::Download
   end
 
   def update
-    puts 'Updating market_groups.'
+    Banner.p 'About to update market groups'
 
     groups_updated = 0
+    groups_created = 0
     market_groups = get_all_pages.to_a
     # pp market_groups
 
-    market_groups.each do |mg|
-      @rest_url = "markets/groups/#{mg}"
+    ActiveRecord::Base.transaction do
 
-      get_all_pages.each do |group_info|
-        unless group_info['types'].empty?
-          group = MarketGroup.where( cpp_market_group_id: group_info['market_group_id'] ).first_or_initialize do |g|
-            g.name = group_info['name']
-            g.parent_id = group_info['parent_group_id']
-            g.cpp_type_ids = group_info['types']
+      Banner.p 'About to download market groups data'
+
+      market_groups.each do |mg|
+        @rest_url = "markets/groups/#{mg}"
+
+        get_all_pages.each do |group_info|
+          # p group_info
+          group_created = false
+          group = MarketGroup.where( cpp_market_group_id: group_info['market_group_id'] ).first_or_initialize do
+            group_created = true
+            groups_created += 1
           end
+
+          group.name = group_info['name']
+          group.cpp_parent_market_group_id = group_info['parent_group_id']
+
           group.save!
-          groups_updated += 1
+          groups_updated += 1 unless group_created
+
+          unless group_info['types'].empty?
+            EveItem.where( cpp_eve_item_id: group_info['types'] ).update_all( market_group_id: group.id )
+          end
         end
+      end
+
+      Banner.p 'About to update market groups hierarchy'
+      MarketGroup.all.each do |mg|
+        mg.parent_id = MarketGroup.find_by_cpp_market_group_id( mg.cpp_parent_market_group_id )&.id
+        begin
+          mg.save
+        rescue => e
+          p e
+          raise e
+        end
+
       end
     end
 
-    puts "#{groups_updated} groups updated."
+    puts "#{groups_updated} groups updated #{groups_created} groups created"
 
   end
 end

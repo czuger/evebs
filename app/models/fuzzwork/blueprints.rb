@@ -4,6 +4,8 @@ require 'json'
 class Fuzzwork::Blueprints
 
   def update
+    Banner.p 'About to update blueprints'
+
     begin
       ActiveRecord::Base.transaction do
         sub_update

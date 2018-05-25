@@ -25,15 +25,11 @@ namespace :process do
 
   end
 
-  # desc "Fill name_lowcase"
-  # task :fill_name_lowcase => :environment do
-  #   EveItem.all.to_a.each do |ei|
-  #     puts "About to lowercase #{ei.name}"
-  #     ei.update_attribute( :name_lowcase, ei.name.downcase )
-  #   end
-  # end
-  #
-  #
+  desc "Update market groups"
+  task :update_market_groups => :environment do
+    Esi::DownloadMarketGroups.new( debug_request: false ).update
+  end
+
   desc "Recompute blueprints"
   task :rebuild_blueprints => :environment do
     Banner.p 'About to update blueprints'
@@ -45,5 +41,15 @@ namespace :process do
     Banner.p 'About to build trees'
     MarketGroup.build_items_tree
   end
+
+  # desc "Fill name_lowcase"
+  # task :fill_name_lowcase => :environment do
+  #   EveItem.all.to_a.each do |ei|
+  #     puts "About to lowercase #{ei.name}"
+  #     ei.update_attribute( :name_lowcase, ei.name.downcase )
+  #   end
+  # end
+  #
+
 
 end
