@@ -11,6 +11,7 @@ namespace :process do
     task :hourly => [:environment, :print_time, :min_prices, :prices_advices, :print_time ]
 
     desc 'Full process - daily'
+    # TODO, revoir le process, faire le calcul des couts avant la creation du nouveau arbre d'objets.
     task :weekly => [:environment, :print_time, :update_all_items, :eve_markets_histories, :compute_prices_history_average, :costs, :print_time ]
   end
 end

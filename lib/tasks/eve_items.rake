@@ -20,9 +20,6 @@ namespace :process do
 
     Banner.p 'About to update blueprints'
     Fuzzwork::Blueprints.new.update
-
-    # Il faudra d'abord calculer crest_prices_last_month_average before compuctin prices
-
   end
 
   desc "Update market groups"

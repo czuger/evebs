@@ -28,8 +28,10 @@ class MarketGroup < ApplicationRecord
     result = { text: "#{node.name}", internal_node_id: node.id, item: false, 'showCheckbox': false }
     if node.leaf?
       # puts node.ancestors.map{ |e| e.name }.join( '-' )
-      items = EveItem.joins( :blueprint ).where( market_group_id: node.id ).order( :name ).pluck( :name, :id )
+      items = EveItem.joins( :blueprint ).where( market_group_id: node.id ).where.not( cost: nil ).order( :name ).pluck( :name, :id )
                 .map{ |e| { text: e[0], internal_node_id: e[1], item: true, 'showCheckbox': true } }
+
+      # p items
 
       return false if items.empty?
       result[ :nodes ] = items
