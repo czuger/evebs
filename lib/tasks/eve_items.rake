@@ -5,21 +5,7 @@ namespace :process do
   # TODO : move elements or rename this
   desc "Feed item objects list"
   task :update_all_items => :environment do
-
-    Banner.p 'About to download types in regions'
-    Esi::DownloadTypeInRegion.new( debug_request: false ).update
-
-    Banner.p 'About to download types in regions'
-    Esi::DownloadMarketGroups.new( debug_request: false ).update
-
-    Banner.p 'About to download new eve items'
     Esi::EveItems.new(debug_request: false ).update
-
-    Banner.p 'About to build trees'
-    MarketGroup.build_items_tree
-
-    Banner.p 'About to update blueprints'
-    Fuzzwork::Blueprints.new.update
   end
 
   desc "Update market groups"

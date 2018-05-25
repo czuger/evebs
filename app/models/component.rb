@@ -14,6 +14,8 @@ class Component < ApplicationRecord
 
   def self.set_min_prices_for_all_components
 
+    Banner.p 'Recomputing costs from Jita prices'
+
     jita_region = Region.find_by_cpp_region_id( JITA_REGION_CPP_ID )
 
     Component.all.each do |component|

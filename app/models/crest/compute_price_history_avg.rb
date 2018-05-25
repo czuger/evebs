@@ -2,6 +2,8 @@ class Crest::ComputePriceHistoryAvg
 
   def initialize()
 
+    Banner.p 'Recomputing prices history average'
+
     ActiveRecord::Base.transaction do
 
       last_month = Date.today - 1.month

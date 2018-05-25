@@ -12,6 +12,30 @@ namespace :process do
 
     desc 'Full process - daily'
     # TODO, revoir le process, faire le calcul des couts avant la creation du nouveau arbre d'objets.
-    task :weekly => [:environment, :print_time, :update_all_items, :eve_markets_histories, :compute_prices_history_average, :costs, :print_time ]
+    task :weekly => :environment do
+      Banner.p 'About to download types in regions'
+      Esi::DownloadTypeInRegion.new( debug_request: false ).update
+
+      Banner.p 'About to download types in regions'
+      Esi::DownloadMarketGroups.new( debug_request: false ).update
+
+      Esi::EveItems.new(debug_request: false ).update
+
+      Banner.p 'About to update the table eve_markets_histories'
+
+      Banner.p 'About to update blueprints'
+      Fuzzwork::Blueprints.new.update
+
+      Esi::DownloadPricesHistory.new( debug_request: false ).update_table
+
+      Crest::ComputePriceHistoryAvg.new
+
+      EveItem.compute_cost_for_all_items
+
+      Banner.p 'About to build trees'
+      MarketGroup.build_items_tree
+
+      Banner.p( 'Finished' )
+    end
   end
 end

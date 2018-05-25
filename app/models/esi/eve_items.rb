@@ -7,6 +7,8 @@ class Esi::EveItems < Esi::Download
 
   def update
 
+    Banner.p 'About to download new eve items'
+
     new_ids = get_all_pages
     market_transformation_hash = Hash[ MarketGroup.pluck( :cpp_market_group_id, :id ) ]
 

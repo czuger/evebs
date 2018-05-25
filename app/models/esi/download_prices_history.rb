@@ -10,6 +10,7 @@ class Esi::DownloadPricesHistory < Esi::Download
   end
 
   def update_table
+    Banner.p 'About to update the table eve_markets_histories'
 
     jita = Region.find_by_cpp_region_id( '10000002' )
 
