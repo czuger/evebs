@@ -11,8 +11,7 @@ namespace :db do
           unless $?.to_i == 0 # file exist
             # Dump and compress it
             puts 'No remote dump, pg_dump'
-            # TODO : faire un test avec uniquement le schema public.
-            `ssh hw pg_dump -Fc -n public -U eve_business_server eve_business_server_staging -f /tmp/staging.dump`
+            `ssh hw pg_dump -Fc -n public -T "eve_market_history_archives" -U eve_business_server eve_business_server_staging -f /tmp/staging.dump`
           end
           # Get the remote file
           puts 'Retrieving remote dump'
@@ -20,10 +19,10 @@ namespace :db do
         end
 
         puts 'Dropping database'
-        `dropdb eve_business_server_dev -U postgres`
+        `dropdb eve_business_server_dev -U eve_business_server`
 
         puts 'Creating database'
-        `createdb eve_business_server_dev -U postgres -O eve_business_server`
+        `createdb eve_business_server_dev -U eve_business_server -O eve_business_server`
 
         puts 'Inserting datas'
         `pg_restore -U eve_business_server -d eve_business_server_dev -n public /tmp/staging.dump`

@@ -40,6 +40,7 @@ class Fuzzwork::Blueprints
         ActiveRecord::Base.transaction do
 
           eve_item_id = eve_item_cpp_key_to_id[ cpp_id ]
+          items_involved_in_blueprints << eve_item_id
           next unless eve_item_id
 
           blueprint = Blueprint.where( eve_item_id: eve_item_id ).first_or_initialize do |b|

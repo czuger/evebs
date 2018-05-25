@@ -33,6 +33,13 @@ namespace :process do
   #   end
   # end
   #
+  #
+  desc "Recompute blueprints"
+  task :rebuild_blueprints => :environment do
+    Banner.p 'About to update blueprints'
+    Fuzzwork::Blueprints.new.update
+  end
+
   desc "Build JSON market groups + eve items tree"
   task :build_items_tree => :environment do
     Banner.p 'About to build trees'
