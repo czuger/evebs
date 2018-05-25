@@ -32,7 +32,6 @@ namespace :process do
 
       EveItem.compute_cost_for_all_items
 
-      Banner.p 'About to build trees'
       MarketGroup.build_items_tree
 
       Banner.p( 'Finished' )

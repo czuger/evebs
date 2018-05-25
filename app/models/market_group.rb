@@ -5,6 +5,8 @@ class MarketGroup < ApplicationRecord
   acts_as_tree
 
   def self.build_items_tree
+    Banner.p 'About to build trees'
+
     File.open( 'data/tmp_items_tree.json', 'w' ) do |file|
       arr = []
       # i = 0
