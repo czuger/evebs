@@ -37,6 +37,18 @@ class EveItem < ApplicationRecord
     used_items
   end
 
+  def self.compute_cost_for_all_items
+
+    Component.set_min_prices_for_all_components
+
+    Banner.p 'Refreshing all items costs'
+    EveItem.joins( :blueprint ).all.each do |ei|
+      # puts "Recomputing cost for #{ei.name}"
+      ei.compute_cost
+    end
+
+  end
+
   # TODO : remove this dead code
   # # def single_unit_cost
   # #   (cost*(1+AVG_INDUSTRY_TAX))/blueprint.prod_qtt if cost && blueprint

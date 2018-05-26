@@ -1,17 +1,5 @@
 module ItemsInit::ItemSetupAndComp
 
-  def self.compute_cost_for_all_items
-
-    Component.set_min_prices_for_all_components
-
-    Banner.p 'Refreshing all items costs'
-    EveItem.joins( :blueprint ).all.each do |ei|
-      # puts "Recomputing cost for #{ei.name}"
-      ei.compute_cost
-    end
-
-  end
-
   def compute_cost
     total_cost = 0
     materials.each do |material|
