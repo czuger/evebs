@@ -15,8 +15,9 @@ class Esi::MinPrices < Esi::Download
 
     regions.each do |region|
       cpp_region_id = region.cpp_region_id
+
       # next if internal_region_id < 24
-      puts "Requesting #{region.name}"
+      puts "Requesting #{region.name}" if @debug_request
       cpp_region_id = cpp_region_id.to_i
 
       prices = {}
@@ -41,7 +42,7 @@ class Esi::MinPrices < Esi::Download
 
           eve_item_id = eve_item_conversion_hash[key[1]]
           unless eve_item_id
-            puts "Type id not found for cpp id #{key[1]}"  if @debug_request
+            puts "Type id not found for cpp id #{key[1]}" if @debug_request
             next
           end
 
