@@ -34,9 +34,21 @@ namespace :deploy do
     end
   end
 
+  desc 'Update the items tree.'
+  task :create_items_tree do
+    on roles(:all) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'process:build_items_tree'
+        end
+      end
+    end
+  end
+
 end
 
 after 'deploy:publishing', 'deploy:update_version_number'
+after 'deploy:published', 'deploy:create_items_tree'
 
 # after 'deploy:publishing', 'deploy:custom_restart'
 
