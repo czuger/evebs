@@ -2,9 +2,9 @@
   %h3
     Informations for
     = link_to( @item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{@item.cpp_eve_item_id}", :target => '_blank' )
-    (
-    = link_to( 'Eve central quicklook', "https://eve-central.com/home/quicklook.html?typeid=#{@item.cpp_eve_item_id}", :target => '_blank' )
-    )
+    -#(
+    -#= link_to( 'Eve central quicklook', "https://eve-central.com/home/quicklook.html?typeid=#{@item.cpp_eve_item_id}", :target => '_blank' )
+    -#)
 
   -#%h4
   -#  = "Item cost: #{print_isk(@item_cost)}"

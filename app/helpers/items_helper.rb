@@ -37,9 +37,9 @@ module ItemsHelper
   end
 
   def eve_central_quicklook_link( margin_type, price, item )
-    if margin_type == :daily
-      return link_to( print_isk(price), "https://eve-central.com/home/quicklook.html?typeid=#{item.eve_item.cpp_eve_item_id}&usesystem=#{item.trade_hub.eve_system_id}", target: '_blank' )
-    end
+    # if margin_type == :daily
+    #   return link_to( print_isk(price), "https://eve-central.com/home/quicklook.html?typeid=#{item.eve_item.cpp_eve_item_id}&usesystem=#{item.trade_hub.eve_system_id}", target: '_blank' )
+    # end
     print_isk(price)
   end
 
