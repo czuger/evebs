@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '5.2'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+# gem 'sqlite3'
 gem 'pg'
 
 # Use SCSS for stylesheets
@@ -30,7 +30,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 gem 'nokogiri'
 gem 'constructor'
-gem 'eaal'
+# gem 'eaal'
 # gem 'open-uri-cached'
 gem 'closure_tree'
 gem 'crypt'

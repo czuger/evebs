@@ -21,12 +21,23 @@
             - else
               Trade hub
           %th Item
-          %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) } Volume
-          %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.cost' ) } Cost
-          %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) } Price
-          %th.text-center{ colspan: 3, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') } Margin
+          %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) }
+            Volume
+            %i.glyphicon.glyphicon-question-sign
+          %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.cost' ) }
+            Cost
+            %i.glyphicon.glyphicon-question-sign
+
+          %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) }
+            Price
+            %i.glyphicon.glyphicon-question-sign
+          %th.text-center{ colspan: 3, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') }
+            Margin
+            %i.glyphicon.glyphicon-question-sign
           - if margin_type == :daily
-            %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) } Daily/monthly
+            %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) }
+              Daily/monthly
+              %i.glyphicon.glyphicon-question-sign
 
         - @items.each do |item|
           %tr{ class: cycle( :active, nil ) }

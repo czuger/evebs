@@ -5,7 +5,7 @@ class Component < ApplicationRecord
 
 
   validates :cpp_eve_item_id, :name, presence: true
-  extend MultiplePriceRetriever
+  # extend MultiplePriceRetriever
 
   has_many :materials
   has_many :blueprints, through: :materials
