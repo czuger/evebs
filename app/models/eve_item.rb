@@ -7,7 +7,7 @@ class EveItem < ApplicationRecord
   include Assert
   include ItemsInit::ItemSetupAndComp
   extend ItemsInit::ItemSetupAndCompSelf
-  extend MultiplePriceRetriever
+  # extend MultiplePriceRetriever
   # extend Setup::UpdateEveItems
 
   has_and_belongs_to_many :users

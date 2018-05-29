@@ -7,13 +7,21 @@ class Esi::EveItems < Esi::Download
 
   def update
 
-    Banner.p 'About to download new eve items'
+    Banner.p 'About to download new eve items list.'
 
     new_ids = get_all_pages
     market_transformation_hash = Hash[ MarketGroup.pluck( :cpp_market_group_id, :id ) ]
 
-    puts "About to download #{new_ids.count} items."
-    updated_items = downloaded_items = 0
+    # need to be tested before sent to production. Probably removing and item will lead to keys violations.
+    # Banner.p 'About to remove old items.'
+    #
+    # old_items_ids = EveItem.pluck( :cpp_eve_item_id ) - new_ids
+    #
+    # EveItem.where( cpp_eve_item_id: old_items_ids ).destroy_all
+    # puts "#{old_items_ids.count} old types removed."
+    #
+    # Banner.p "About to download #{new_ids.count} items."
+    # updated_items = downloaded_items = 0
 
     ActiveRecord::Base.transaction do
       new_ids.each do |missing_id|
