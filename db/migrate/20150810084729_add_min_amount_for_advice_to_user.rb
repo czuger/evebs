@@ -1,4 +1,4 @@
-class AddMinAmountForAdviceToUser < ActiveRecord::Migration
+class AddMinAmountForAdviceToUser < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :min_amount_for_advice, :float
   end

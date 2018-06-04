@@ -1,4 +1,4 @@
-class CreateBlueprints < ActiveRecord::Migration
+class CreateBlueprints < ActiveRecord::Migration[4.2]
   def change
     create_table :blueprints do |t|
       t.references :eve_item, index: true

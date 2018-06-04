@@ -1,4 +1,4 @@
-class CreateEveItems < ActiveRecord::Migration
+class CreateEveItems < ActiveRecord::Migration[4.2]
   def change
     create_table :eve_items do |t|
       t.integer :eve_item_id

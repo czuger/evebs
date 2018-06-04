@@ -1,4 +1,4 @@
-class CreateApiKeyErrors < ActiveRecord::Migration
+class CreateApiKeyErrors < ActiveRecord::Migration[4.2]
   def change
     create_table :api_key_errors do |t|
       t.references :user, index: true, foreign_key: true

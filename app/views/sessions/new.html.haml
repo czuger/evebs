@@ -10,15 +10,13 @@
         %h3.form-signin-heading Sign In with
         %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-eve-sso{ :href => '/auth/crest', method: 'get' }
           %span EVE SSO
-        %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-facebook{ :href => '/auth/facebook', method: 'get' }
-          %span Facebook
-        %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-google{ :href => '/auth/google_oauth2', method: 'get' }
-          %span Google
+        -#%a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-facebook{ :href => '/auth/facebook', method: 'get' }
+        -#  %span Facebook
+        -#%a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-google{ :href => '/auth/google_oauth2', method: 'get' }
+        -#  %span Google
         - unless Rails.env.production?
           %a.btn.btn-lg.btn-block.omb_socialButtons.omb_btn-dev{ :href => '/auth/developer', method: 'get' }
             %span Dev
-
-
 
         -#%hr
         -#%h5.form-signin-heading User creation is disabled. New users, please login with a Facebook or Google account. Already registered users can still use their account.

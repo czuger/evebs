@@ -1,4 +1,4 @@
-class CreateStations < ActiveRecord::Migration
+class CreateStations < ActiveRecord::Migration[4.2]
   def change
     create_table :stations do |t|
       t.references :trade_hub, index: true

@@ -1,4 +1,4 @@
-class CreateMarketGroups < ActiveRecord::Migration
+class CreateMarketGroups < ActiveRecord::Migration[4.2]
   def change
     create_table :market_groups do |t|
 

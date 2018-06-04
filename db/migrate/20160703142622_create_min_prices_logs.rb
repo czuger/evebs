@@ -1,4 +1,4 @@
-class CreateMinPricesLogs < ActiveRecord::Migration
+class CreateMinPricesLogs < ActiveRecord::Migration[4.2]
   def change
     create_table :min_prices_logs do |t|
       t.string :random_hash

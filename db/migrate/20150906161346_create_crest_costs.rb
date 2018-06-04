@@ -1,4 +1,4 @@
-class CreateCrestCosts < ActiveRecord::Migration
+class CreateCrestCosts < ActiveRecord::Migration[4.2]
   def change
     create_table :crest_costs do |t|
       t.integer :cpp_item_id, null: false

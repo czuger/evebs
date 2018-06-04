@@ -1,4 +1,4 @@
-class CreateCrestPricesLastMonthAverages < ActiveRecord::Migration
+class CreateCrestPricesLastMonthAverages < ActiveRecord::Migration[4.2]
   def change
     create_table :crest_prices_last_month_averages, id: false do |t|
       t.references :region, index: true, foreign_key: true, null: false

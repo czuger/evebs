@@ -1,5 +1,5 @@
 # This migration comes from caddie (originally 20160725091214)
-class AddIndexesToCrestPriceHistoryUpdate < ActiveRecord::Migration
+class AddIndexesToCrestPriceHistoryUpdate < ActiveRecord::Migration[4.2]
   def change
     add_index :caddie_crest_price_history_updates, :nb_days
     add_index :caddie_crest_price_history_updates, :process_queue

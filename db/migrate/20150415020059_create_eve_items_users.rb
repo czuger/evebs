@@ -1,4 +1,4 @@
-class CreateEveItemsUsers < ActiveRecord::Migration
+class CreateEveItemsUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :eve_items_users do |t|
       t.references :user, index: true

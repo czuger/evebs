@@ -1,4 +1,4 @@
-class CreateSaleRecords < ActiveRecord::Migration
+class CreateSaleRecords < ActiveRecord::Migration[4.2]
   def change
     create_table :sale_records do |t|
 

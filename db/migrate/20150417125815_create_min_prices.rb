@@ -1,4 +1,4 @@
-class CreateMinPrices < ActiveRecord::Migration
+class CreateMinPrices < ActiveRecord::Migration[4.2]
   def change
     create_table :min_prices do |t|
       t.references :eve_item, index: true

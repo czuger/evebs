@@ -1,5 +1,5 @@
 # This migration comes from caddie (originally 20160707153021)
-class CreateCaddieCrestPriceHistoryUpdateLogs < ActiveRecord::Migration
+class CreateCaddieCrestPriceHistoryUpdateLogs < ActiveRecord::Migration[4.2]
   def change
     create_table :caddie_crest_price_history_update_logs do |t|
       t.date :feed_date

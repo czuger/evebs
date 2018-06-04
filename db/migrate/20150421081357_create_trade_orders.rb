@@ -1,4 +1,4 @@
-class CreateTradeOrders < ActiveRecord::Migration
+class CreateTradeOrders < ActiveRecord::Migration[4.2]
   def change
     create_table :trade_orders do |t|
       t.references :user, index: true

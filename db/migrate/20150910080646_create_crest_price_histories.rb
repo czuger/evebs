@@ -1,4 +1,4 @@
-class CreateCrestPriceHistories < ActiveRecord::Migration
+class CreateCrestPriceHistories < ActiveRecord::Migration[4.2]
   def change
     create_table :crest_price_histories do |t|
       t.references :region, index: true, foreign_key: true, null: false

@@ -1,4 +1,4 @@
-class CreateMarketGroupHierarchies < ActiveRecord::Migration
+class CreateMarketGroupHierarchies < ActiveRecord::Migration[4.2]
   def change
     create_table :market_group_hierarchies, id: false do |t|
       t.integer :ancestor_id, null: false

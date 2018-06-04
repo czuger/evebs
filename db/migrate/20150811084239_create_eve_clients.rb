@@ -1,4 +1,4 @@
-class CreateEveClients < ActiveRecord::Migration
+class CreateEveClients < ActiveRecord::Migration[4.2]
   def change
     create_table :eve_clients do |t|
       t.string :cpp_client_id, null: false
