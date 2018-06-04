@@ -17,6 +17,7 @@ namespace :process do
   task :prices_advices => :environment do
     Banner.p 'About to recompute prices advices.'
     PricesAdvice.update
+    Banner.p 'Prices advices compute finished.'
   end
 
   # TODO : to remove
