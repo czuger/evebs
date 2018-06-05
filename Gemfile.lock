@@ -181,6 +181,8 @@ GEM
       rack (>= 1.6.2, < 3)
     omniauth-crest (1.2.0)
       omniauth-oauth2 (~> 1.0)
+    omniauth-eve_online-sso (0.2.0)
+      omniauth-oauth2
     omniauth-facebook (5.0.0)
       omniauth-oauth2 (~> 1.2)
     omniauth-google-oauth2 (0.5.3)
@@ -313,6 +315,7 @@ DEPENDENCIES
   nokogiri
   omniauth
   omniauth-crest
+  omniauth-eve_online-sso
   omniauth-facebook
   omniauth-google-oauth2
   omniauth-identity

@@ -50,7 +50,8 @@ gem 'omniauth'
 gem 'omniauth-facebook'
 gem "omniauth-google-oauth2"
 gem 'omniauth-identity'
-gem 'omniauth-crest'
+#gem 'omniauth-crest'
+gem 'omniauth-eve_online-sso'
 
 gem 'lazy_high_charts'
 

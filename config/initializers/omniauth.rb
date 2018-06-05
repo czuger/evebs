@@ -9,15 +9,11 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   if File.exists?( 'config/omniauth.yaml' )
     results = YAML.load( File.open( 'config/omniauth.yaml' ).read )
 
-    results.each do |result|
-      provider *result
-    end
-  end
+    pp results
+    client_id, secret_key = results[:esi]
 
-  #
-  # provider :identity, on_failed_registration: lambda { |env|
-  #   IdentitiesController.action(:new).call(env)
-  # }
+    provider :eve_online_sso, client_id, secret_key, scope: 'esi-markets.read_character_orders.v1'
+  end
 
 end
 

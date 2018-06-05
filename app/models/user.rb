@@ -26,6 +26,7 @@ class User < ApplicationRecord
         user.save!
       end
     else
+      pp auth
       where(provider: auth['provider'], uid: auth['uid']).first_or_initialize.tap do |user|
         user.provider = auth.provider
         user.uid = auth.uid
