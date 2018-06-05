@@ -20,8 +20,8 @@ class Esi::EveItems < Esi::Download
     # EveItem.where( cpp_eve_item_id: old_items_ids ).destroy_all
     # puts "#{old_items_ids.count} old types removed."
     #
-    # Banner.p "About to download #{new_ids.count} items."
-    # updated_items = downloaded_items = 0
+    Banner.p "About to download #{new_ids.count} items."
+    updated_items = downloaded_items = 0
 
     ActiveRecord::Base.transaction do
       new_ids.each do |missing_id|

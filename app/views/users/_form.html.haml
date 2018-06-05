@@ -6,13 +6,13 @@
     .col-md-9
       .form-group
         = f.label :name
-        = f.text_field :name, class: 'form-control'
-      .form-group
-        = f.label :key_user_id
-        = f.text_field :key_user_id, class: 'form-control'
-      .form-group
-        = f.label :api_key
-        = f.password_field :api_key, size: 60, class: 'form-control', value: @user.api_key
+        = f.text_field :name, class: 'form-control', disabled: true
+      -#.form-group
+      -#  = f.label :key_user_id
+      -#  = f.text_field :key_user_id, class: 'form-control'
+      -#.form-group
+      -#  = f.label :api_key
+      -#  = f.password_field :api_key, size: 60, class: 'form-control', value: @user.api_key
 
     .col-md-3
       .form-group
