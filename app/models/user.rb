@@ -15,10 +15,7 @@ class User < ApplicationRecord
   belongs_to :identity, foreign_key: :uid
 
   def self.from_omniauth(auth)
-    if auth['provider'] == 'identity'
-      # Deprecated, should be removed
-      # find_by_provider_and_uid(auth['provider'], auth['uid']) || create_with_omniauth(auth)
-    elsif auth['provider'] == 'developer'
+    if auth['provider'] == 'developer'
       raise 'Developer mode is allowed only in test or development mode' unless Rails.env.development? || Rails.env.staging?
       where(provider: auth.provider, name: auth.info.name).first_or_initialize.tap do |user|
         user.provider = auth.provider
@@ -27,13 +24,25 @@ class User < ApplicationRecord
       end
     else
       pp auth
-      where(provider: auth['provider'], uid: auth['uid']).first_or_initialize.tap do |user|
+
+      ActiveRecord::Base.transaction do
+        user = where(provider: auth['provider'], uid: auth['uid']).first_or_initialize
         user.provider = auth.provider
         user.uid = auth.uid
         user.name = auth.info.name
         user.oauth_token = auth.credentials.token
         user.oauth_expires_at = Time.at(auth.credentials.expires_at)
         user.save!
+
+        if auth.info.character_id
+          Character.where( user_id: user.id, eve_id: auth.info.character_id ).first_or_initialize.tap do |character|
+            character.name = auth.info.name
+            character.expires_on = Time.parse(auth.info.expires_on + ' UTC')
+            character.save!
+          end
+        end
+
+        user
       end
     end
   end

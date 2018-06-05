@@ -79,10 +79,9 @@ ActiveRecord::Schema.define(version: 2018_06_05_053333) do
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.integer "eve_id", null: false
-    t.datetime "expire_at", null: false
+    t.datetime "expires_on", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["eve_id"], name: "index_characters_on_eve_id", unique: true
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
