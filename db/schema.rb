@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_25_095642) do
+ActiveRecord::Schema.define(version: 2018_06_05_053333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,17 @@ ActiveRecord::Schema.define(version: 2018_05_25_095642) do
     t.index ["next_process_date"], name: "index_caddie_crest_price_history_updates_on_next_process_date"
     t.index ["process_queue"], name: "index_caddie_crest_price_history_updates_on_process_queue"
     t.index ["thread_slice_id"], name: "index_caddie_crest_price_history_updates_on_thread_slice_id"
+  end
+
+  create_table "characters", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.integer "eve_id", null: false
+    t.datetime "expire_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["eve_id"], name: "index_characters_on_eve_id", unique: true
+    t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
   create_table "components", id: :serial, force: :cascade do |t|
@@ -369,6 +380,7 @@ ActiveRecord::Schema.define(version: 2018_05_25_095642) do
   add_foreign_key "caddie_crest_price_history_last_day_timestamps", "regions"
   add_foreign_key "caddie_crest_price_history_updates", "eve_items"
   add_foreign_key "caddie_crest_price_history_updates", "regions"
+  add_foreign_key "characters", "users"
   add_foreign_key "crest_prices_last_month_averages", "eve_items"
   add_foreign_key "crest_prices_last_month_averages", "regions"
   add_foreign_key "eve_items", "market_groups"
