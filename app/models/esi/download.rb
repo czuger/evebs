@@ -61,6 +61,8 @@ class Esi::Download
       unless pages.empty?
         result += pages if pages.is_a? Array
         result << pages if pages.is_a? Hash
+      else
+        puts "Page is empty" if @debug_request
       end
 
       if @pages_count == 0 || @pages_count == 1
@@ -92,10 +94,6 @@ class Esi::Download
   def build_url
     url = ( @rest_url + '?' + @params.map{ |k, v| "#{k}=#{v}" }.join( '&' ) ).gsub( '//', '/' )
     ESI_BASE_URL + url
-  end
-
-  def load_headers
-    open( @url ).meta
   end
 
 end

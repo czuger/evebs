@@ -23,7 +23,7 @@ class User < ApplicationRecord
         user.save!
       end
     else
-      pp auth
+      # pp auth
 
       ActiveRecord::Base.transaction do
         user = where(provider: auth['provider'], uid: auth['uid']).first_or_initialize
@@ -34,10 +34,14 @@ class User < ApplicationRecord
         user.oauth_expires_at = Time.at(auth.credentials.expires_at)
         user.save!
 
+        pp auth
+
         if auth.info.character_id
           Character.where( user_id: user.id, eve_id: auth.info.character_id ).first_or_initialize.tap do |character|
             character.name = auth.info.name
             character.expires_on = Time.parse(auth.info.expires_on + ' UTC')
+            character.token = auth.credentials.token
+            character.renew_token = auth.credentials.refresh_token
             character.save!
           end
         end

@@ -16,7 +16,7 @@ class Esi::MinPrices < Esi::Download
     regions.each do |region|
       cpp_region_id = region.cpp_region_id.to_i
 
-      # next unless ( only_cpp_region_id && only_cpp_region_id == cpp_region_id )
+      next if only_cpp_region_id && only_cpp_region_id != cpp_region_id
 
       # next if internal_region_id < 24
       puts "Requesting #{region.name}" if @debug_request
@@ -28,16 +28,23 @@ class Esi::MinPrices < Esi::Download
       pages = get_all_pages
 
       pages.each do |record|
+
+        pp record if record['type_id'] == 11689
+
         next unless trade_hubs.include?(record['system_id'])
 
-        # next unless ( cpp_type_id && record['type_id'] )
+        next if cpp_type_id && record['type_id'] != cpp_type_id
 
         key = [record['system_id'], record['type_id']]
         prices[key] ||= []
         prices[key] << record['price']
       end
 
+      pp prices if @debug_request
+
       prices.transform_values!{ |v| v.min }
+
+      pp prices if @debug_request
 
       ActiveRecord::Base.transaction do
         prices.each do |key, price|
@@ -61,10 +68,6 @@ class Esi::MinPrices < Esi::Download
 
         end
       end
-
     end
   end
-
-
-
 end

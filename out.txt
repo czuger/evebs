@@ -1,0 +1,247 @@
+****************************************************************************************************
+About to download min prices. - Sat Jun  9 17:28:36 2018
+****************************************************************************************************
+Requesting Metropolis
+Requesting page 1/
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=1
+More pages to download : 76
+Requesting page 2/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=2
+More pages to download : 76
+Requesting page 3/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=3
+More pages to download : 76
+Requesting page 4/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=4
+More pages to download : 76
+Requesting page 5/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=5
+More pages to download : 76
+Requesting page 6/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=6
+More pages to download : 76
+Requesting page 7/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=7
+More pages to download : 76
+Requesting page 8/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=8
+More pages to download : 76
+Requesting page 9/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=9
+More pages to download : 76
+Requesting page 10/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=10
+More pages to download : 76
+Requesting page 11/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=11
+More pages to download : 76
+Requesting page 12/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=12
+More pages to download : 76
+Requesting page 13/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=13
+More pages to download : 76
+Requesting page 14/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=14
+More pages to download : 76
+Requesting page 15/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=15
+More pages to download : 76
+Requesting page 16/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=16
+More pages to download : 76
+Requesting page 17/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=17
+More pages to download : 76
+Requesting page 18/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=18
+More pages to download : 76
+Requesting page 19/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=19
+More pages to download : 76
+Requesting page 20/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=20
+More pages to download : 76
+Requesting page 21/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=21
+More pages to download : 76
+Requesting page 22/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=22
+More pages to download : 76
+Requesting page 23/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=23
+More pages to download : 76
+Requesting page 24/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=24
+More pages to download : 76
+Requesting page 25/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=25
+More pages to download : 76
+Requesting page 26/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=26
+More pages to download : 76
+Requesting page 27/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=27
+More pages to download : 76
+Requesting page 28/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=28
+More pages to download : 76
+Requesting page 29/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=29
+More pages to download : 76
+Requesting page 30/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=30
+More pages to download : 76
+Requesting page 31/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=31
+More pages to download : 76
+Requesting page 32/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=32
+More pages to download : 76
+Requesting page 33/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=33
+More pages to download : 76
+Requesting page 34/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=34
+More pages to download : 76
+Requesting page 35/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=35
+More pages to download : 76
+Requesting page 36/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=36
+More pages to download : 76
+Requesting page 37/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=37
+More pages to download : 76
+Requesting page 38/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=38
+More pages to download : 76
+Requesting page 39/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=39
+More pages to download : 76
+Requesting page 40/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=40
+More pages to download : 76
+Requesting page 41/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=41
+More pages to download : 76
+Requesting page 42/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=42
+More pages to download : 76
+Requesting page 43/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=43
+More pages to download : 76
+Requesting page 44/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=44
+More pages to download : 76
+Requesting page 45/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=45
+More pages to download : 76
+Requesting page 46/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=46
+More pages to download : 76
+Requesting page 47/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=47
+More pages to download : 76
+Requesting page 48/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=48
+More pages to download : 76
+Requesting page 49/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=49
+More pages to download : 76
+Requesting page 50/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=50
+More pages to download : 76
+Requesting page 51/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=51
+More pages to download : 76
+Requesting page 52/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=52
+More pages to download : 76
+Requesting page 53/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=53
+More pages to download : 76
+Requesting page 54/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=54
+More pages to download : 76
+Requesting page 55/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=55
+More pages to download : 76
+Requesting page 56/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=56
+More pages to download : 76
+Requesting page 57/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=57
+More pages to download : 76
+Requesting page 58/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=58
+More pages to download : 76
+Requesting page 59/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=59
+More pages to download : 76
+Requesting page 60/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=60
+More pages to download : 76
+Requesting page 61/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=61
+More pages to download : 76
+Requesting page 62/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=62
+More pages to download : 76
+Requesting page 63/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=63
+More pages to download : 76
+Requesting page 64/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=64
+More pages to download : 76
+Requesting page 65/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=65
+More pages to download : 76
+Requesting page 66/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=66
+More pages to download : 76
+Requesting page 67/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=67
+More pages to download : 76
+Requesting page 68/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=68
+More pages to download : 76
+Requesting page 69/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=69
+More pages to download : 76
+Requesting page 70/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=70
+More pages to download : 76
+Requesting page 71/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=71
+More pages to download : 76
+Requesting page 72/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=72
+More pages to download : 76
+Requesting page 73/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=73
+More pages to download : 76
+Requesting page 74/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=74
+More pages to download : 76
+Requesting page 75/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=75
+More pages to download : 76
+Requesting page 76/76
+Fetching : https://esi.tech.ccp.is/latest/markets/10000042/orders/?order_type=sell&datasource=tranquility&page=76
+More pages to download : 76
+No more pages to download - breaking out
+{"duration"=>90,
+ "is_buy_order"=>false,
+ "issued"=>"2018-04-11T23:32:02Z",
+ "location_id"=>60004630,
+ "min_volume"=>1,
+ "order_id"=>5134114764,
+ "price"=>35385.47,
+ "range"=>"region",
+ "system_id"=>30003378,
+ "type_id"=>11689,
+ "volume_remain"=>1,
+ "volume_total"=>1}
+{}
+{}
