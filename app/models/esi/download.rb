@@ -24,7 +24,7 @@ class Esi::Download
       json_result = @request.read
       JSON.parse( json_result )
     rescue => e
-      sleep 3
+      sleep 10
       raise e
     end
   end
