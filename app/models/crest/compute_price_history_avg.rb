@@ -6,7 +6,8 @@ class Crest::ComputePriceHistoryAvg
 
     ActiveRecord::Base.transaction do
 
-      last_month = Date.today - 1.month
+      # last_month = Date.today - 1.month
+      last_week = Date.today - 1.week
 
       sql = "
       INSERT INTO crest_prices_last_month_averages( region_id, eve_item_id, order_count_sum, volume_sum,
@@ -14,7 +15,7 @@ class Crest::ComputePriceHistoryAvg
         SELECT region_id, eve_item_id, SUM( order_count ), SUM( volume ), AVG( order_count ), AVG( volume ),
           AVG( low_price ), AVG( avg_price ), AVG( high_price ), now(), now()
         FROM eve_markets_histories
-        WHERE history_date > '#{last_month}' AND
+        WHERE history_date > '#{last_week}' AND
               NOT EXISTS (
                   SELECT region_id, eve_item_id
                   FROM crest_prices_last_month_averages
@@ -40,7 +41,7 @@ class Crest::ComputePriceHistoryAvg
           AVG( order_count ) order_count_avg, AVG( volume ) volume_avg,
           AVG( low_price ) low_price_avg, AVG( avg_price ) avg_price_avg, AVG( high_price ) high_price_avg
           FROM eve_markets_histories
-          WHERE history_date > '#{last_month}'
+          WHERE history_date > '#{last_week}'
           GROUP BY region_id, eve_item_id ) sub
         WHERE crest_prices_last_month_averages.region_id = sub.region_id
         AND crest_prices_last_month_averages.eve_item_id = sub.eve_item_id;

@@ -9,10 +9,10 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   if File.exists?( 'config/omniauth.yaml' )
     results = YAML.load( File.open( 'config/omniauth.yaml' ).read )
 
-    pp results
-    client_id, secret_key = results[:esi]
-
-    provider :eve_online_sso, client_id, secret_key, scope: 'esi-markets.read_character_orders.v1'
+    if results && results[:esi]
+      client_id, secret_key = results[:esi]
+      provider :eve_online_sso, client_id, secret_key, scope: 'esi-markets.read_character_orders.v1'
+    end
   end
 
 end
