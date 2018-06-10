@@ -26,7 +26,7 @@ class PriceAdvicesController < ApplicationController
         ShoppingBasket.create!( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
       end
     else
-      sb = ShoppingBasket.delete_all( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
+      sb = ShoppingBasket.where( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id ).delete_all
     end
     head :ok
   end
