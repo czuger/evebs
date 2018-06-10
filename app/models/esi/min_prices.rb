@@ -78,5 +78,7 @@ class Esi::MinPrices < Esi::Download
         end
       end
     end
+
+    MinPriceDaily.where( 'day < ?', Time.now - 1.week ).delete_all
   end
 end
