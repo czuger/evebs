@@ -3,7 +3,7 @@ require_relative 'download'
 class Esi::UpdateMyOrders < Esi::Download
 
   def initialize( debug_request: false )
-    super( nil, {}, debug_request: true )
+    super( nil, {}, debug_request: debug_request )
   end
 
   def update
