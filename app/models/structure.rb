@@ -1,0 +1,2 @@
+class Structure < ApplicationRecord
+end

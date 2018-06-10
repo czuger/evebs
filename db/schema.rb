@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_09_180253) do
+ActiveRecord::Schema.define(version: 2018_06_09_181309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -294,6 +294,14 @@ ActiveRecord::Schema.define(version: 2018_06_09_180253) do
     t.index ["trade_hub_id"], name: "index_stations_on_trade_hub_id"
   end
 
+  create_table "structures", force: :cascade do |t|
+    t.bigint "cpp_structure_id"
+    t.bigint "trade_hub_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trade_hub_id"], name: "index_structures_on_trade_hub_id"
+  end
+
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
     t.string "name", limit: 255, null: false
@@ -378,5 +386,6 @@ ActiveRecord::Schema.define(version: 2018_06_09_180253) do
   add_foreign_key "shopping_baskets", "eve_items"
   add_foreign_key "shopping_baskets", "trade_hubs"
   add_foreign_key "shopping_baskets", "users"
+  add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
 end

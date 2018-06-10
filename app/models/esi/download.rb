@@ -83,6 +83,20 @@ class Esi::Download
     result
   end
 
+  def set_auth_token
+    unless @character
+      character_id = File.open( 'config/character_id.txt' ).read.to_i
+      @character = Character.find_by_eve_id( character_id )
+    end
+
+    if @character.expires_on < Time.now().utc
+      puts "Token expired - #{@character.expires_on} < #{Time.now().utc}"
+      exit
+    end
+
+    @params[:token] = @character.token
+  end
+
   private
 
   def set_headers

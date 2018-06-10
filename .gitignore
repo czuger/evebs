@@ -30,3 +30,4 @@ config/omniauth.yaml
 items_tree.json
 
 omniauth.yml
+character_id.txt
