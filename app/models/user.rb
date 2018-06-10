@@ -14,6 +14,8 @@ class User < ApplicationRecord
 
   belongs_to :identity, foreign_key: :uid
 
+  belongs_to :last_used_character, class_name: 'Character'
+
   def self.from_omniauth(auth)
     if auth['provider'] == 'developer'
       raise 'Developer mode is allowed only in test or development mode' unless Rails.env.development? || Rails.env.staging?
@@ -30,20 +32,20 @@ class User < ApplicationRecord
         user.provider = auth.provider
         user.uid = auth.uid
         user.name = auth.info.name
-        user.oauth_token = auth.credentials.token
-        user.oauth_expires_at = Time.at(auth.credentials.expires_at)
         user.save!
 
-        pp auth
+        # pp auth
 
         if auth.info.character_id
-          Character.where( user_id: user.id, eve_id: auth.info.character_id ).first_or_initialize.tap do |character|
-            character.name = auth.info.name
-            character.expires_on = Time.parse(auth.info.expires_on + ' UTC')
-            character.token = auth.credentials.token
-            character.renew_token = auth.credentials.refresh_token
-            character.save!
-          end
+          character = Character.where( user_id: user.id, eve_id: auth.info.character_id ).first_or_initialize
+          character.name = auth.info.name
+          character.expires_on = Time.parse(auth.info.expires_on + ' UTC')
+          character.token = auth.credentials.token
+          character.renew_token = auth.credentials.refresh_token
+          character.save!
+
+          user.last_used_character_id = character.id
+          user.save!
         end
 
         user

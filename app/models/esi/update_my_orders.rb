@@ -7,9 +7,17 @@ class Esi::UpdateMyOrders < Esi::Download
   end
 
   def update
+    User.where.not( last_used_character_id: nil ).each do |user|
+      update_user user
+    end
+  end
 
-    character = Character.first
-    character_id = Character.first.eve_id
+  private
+
+  def update_user( user )
+
+    character = user.last_used_character
+    character_id = character.eve_id
     @rest_url = "characters/#{character_id}/orders/"
 
     set_auth_token

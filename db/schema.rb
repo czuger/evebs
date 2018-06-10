@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_10_043002) do
+ActiveRecord::Schema.define(version: 2018_06_10_061106) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -350,14 +350,10 @@ ActiveRecord::Schema.define(version: 2018_06_10_043002) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.boolean "remove_occuped_places"
-    t.string "key_user_id", limit: 255
-    t.string "api_key", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "provider", limit: 255
     t.string "uid", limit: 255
-    t.string "oauth_token", limit: 255
-    t.datetime "oauth_expires_at"
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"
@@ -365,6 +361,8 @@ ActiveRecord::Schema.define(version: 2018_06_10_043002) do
     t.boolean "admin", default: false, null: false
     t.boolean "batch_cap", default: true, null: false
     t.integer "vol_month_pcent", default: 10, null: false
+    t.bigint "last_used_character_id"
+    t.index ["last_used_character_id"], name: "index_users_on_last_used_character_id"
   end
 
   add_foreign_key "api_key_errors", "users"
@@ -387,4 +385,5 @@ ActiveRecord::Schema.define(version: 2018_06_10_043002) do
   add_foreign_key "shopping_baskets", "users"
   add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
+  add_foreign_key "users", "characters", column: "last_used_character_id"
 end
