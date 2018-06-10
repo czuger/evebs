@@ -91,10 +91,33 @@ class Esi::Download
 
     if @character.expires_on < Time.now().utc
       puts "Token expired - #{@character.expires_on} < #{Time.now().utc}"
-      exit
+      renew_token
     end
 
     @params[:token] = @character.token
+  end
+
+  def renew_token
+    client_id = secret_key = nil
+    if File.exists?( 'config/omniauth.yaml' )
+      results = YAML.load( File.open( 'config/omniauth.yaml' ).read )
+
+      if results && results[:esi]
+        client_id, secret_key = results[:esi]
+      end
+    end
+
+    auth64 = Base64.strict_encode64( "#{client_id}:#{secret_key}" )
+    auth_string = "Basic #{auth64}"
+
+    # RestClient.log = 'stdout'
+
+    c = RestClient.post 'https://login.eveonline.com/oauth/token',
+                        { grant_type: :refresh_token, refresh_token: @character.renew_token },
+                        { 'Authorization' => auth_string }
+    response = JSON.parse( c.body )
+
+    @character.update!( token: response['access_token'], expires_on: Time.now() + response['expires_in'] )
   end
 
   private

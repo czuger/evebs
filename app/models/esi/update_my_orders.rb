@@ -26,7 +26,6 @@ class Esi::UpdateMyOrders < Esi::Download
 
         to = TradeOrder.where( user: character.user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
         to.price = page['price']
-        to.new_order = false
         to.save!
 
         current_trade_orders_id.delete( to.id )
