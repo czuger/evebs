@@ -7,7 +7,7 @@ class TradeOrder < ApplicationRecord
   belongs_to :eve_item
   belongs_to :trade_hub
 
-  validates :user_id, :eve_item_id, :trade_hub_id, :new_order, presence: true
+  # validates :user_id, :eve_item_id, :trade_hub_id, :new_order, presence: true
 
   extend TradeOrders::GetFullOrderList
 

@@ -25,7 +25,7 @@
           %th{ colspan: 2 }
         - @compared_prices.each do |cp|
           %tr{ class: cycle( :odd, :even ) }
-            %td.trade_hub_name=cp[:trade_hub_name]
+            %td.trade_hub_name.text-center=cp[:trade_hub_name]
             %td.item_name= link_to( cp[:eve_item_name], item_url( cp[:eve_item_id] ) )
             %td.text-right=print_isk( cp[:cost] )
             %td.text-right=print_isk( cp[:min_price] )

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_09_181309) do
+ActiveRecord::Schema.define(version: 2018_06_10_043002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -320,12 +320,11 @@ ActiveRecord::Schema.define(version: 2018_06_09_181309) do
   end
 
   create_table "trade_orders", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "eve_item_id"
-    t.integer "trade_hub_id"
+    t.integer "user_id", null: false
+    t.integer "eve_item_id", null: false
+    t.integer "trade_hub_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean "new_order"
     t.float "price"
     t.index ["eve_item_id"], name: "index_trade_orders_on_eve_item_id"
     t.index ["trade_hub_id"], name: "index_trade_orders_on_trade_hub_id"
