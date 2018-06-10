@@ -31,7 +31,7 @@ class Esi::MinPrices < Esi::Download
 
       pages.each do |record|
 
-        pp record if record['type_id'] == 11689
+        # pp record if record['type_id'] == 11689
 
         next unless trade_hubs.include?(record['system_id'])
 
@@ -42,11 +42,11 @@ class Esi::MinPrices < Esi::Download
         prices[key] << record['price']
       end
 
-      pp prices if @debug_request
+      # pp prices if @debug_request
 
       prices.transform_values!{ |v| v.min }
 
-      pp prices if @debug_request
+      # pp prices if @debug_request
 
       ActiveRecord::Base.transaction do
         prices.each do |key, price|

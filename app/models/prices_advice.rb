@@ -7,7 +7,6 @@ class PricesAdvice < ApplicationRecord
   def self.update
     Banner.p 'About to recompute prices advices.'
 
-    current_path = File.dirname( __FILE__ )
     request = File.open( "#{Rails.root}/sql/update_price_advices.sql" ).read
     ActiveRecord::Base.connection.execute( request )
   end
