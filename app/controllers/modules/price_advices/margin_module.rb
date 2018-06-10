@@ -29,8 +29,9 @@ module Modules::PriceAdvices::MarginModule
     # WTF ?
     # margin_comp_pcent = "((#{price_column_name}*#{batch_size_formula}) - (single_unit_cost*#{batch_size_formula}))"
 
-    @items = PricesAdvice.includes( :eve_item, :region ).where( eve_item_id: @user.eve_item_ids, trade_hub_id: @user.trade_hub_ids )
+    @items = PricesAdvice.includes( :eve_item, :region ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )
     .where.not( vol_month: nil )
+
     if margin_type == :daily
       @items = @items.includes( :trade_hub )
     end
@@ -43,6 +44,12 @@ module Modules::PriceAdvices::MarginModule
     if @user.min_pcent_for_advice
       pcent_comp = "(((#{price_column_name}*#{batch_size_formula}) / (single_unit_cost*#{batch_size_formula})) - 1) * 100"
       @items = @items.where( "#{pcent_comp} > #{@user.min_pcent_for_advice}" )
+    end
+
+    if @user.remove_occuped_places
+      @items = @items.where.not( TradeOrder.where( user_id: @user.id )
+          .where( 'prices_advices.eve_item_id = trade_orders.eve_item_id AND prices_advices.trade_hub_id = trade_orders.trade_hub_id').
+          exists )
     end
 
     @items = @items.order( margin_comp + ' DESC' ) if margin_comp
