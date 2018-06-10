@@ -7,6 +7,8 @@ class Esi::MinPrices < Esi::Download
 
   def update( only_cpp_region_id = nil, cpp_type_id = nil )
 
+    Banner.p 'About to update min prices.'
+
     trade_hubs = TradeHub.pluck( :eve_system_id ).to_set
     regions = Region.all
 

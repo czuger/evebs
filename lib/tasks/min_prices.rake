@@ -8,16 +8,13 @@ namespace :process do
 
   desc 'Download min prices'
   task :min_prices => :environment do
-    Banner.p 'About to download min prices.'
-    Esi::MinPrices.new(debug_request: true ).update( 10000042, 11689 )
-    # Esi::MinPrices.new(debug_request: false ).update()
+    # Esi::MinPrices.new(debug_request: true ).update( 10000042, 11689 )
+    Esi::MinPrices.new(debug_request: false ).update()
   end
 
   desc 'Compute prices advices'
   task :prices_advices => :environment do
-    Banner.p 'About to recompute prices advices.'
     PricesAdvice.update
-    Banner.p 'Prices advices compute finished.'
   end
 
   # TODO : to remove

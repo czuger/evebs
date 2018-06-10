@@ -5,10 +5,14 @@
 
 namespace :process do
   namespace :full do
+
     desc 'Full process - hourly'
-    # task :hourly => [:environment, :min_prices, :get_orders, :prices_advices, :jita_margins ]
-    # task :hourly => [:environment, :print_time, :min_prices, :prices_advices, :jita_margins, :print_time ]
-    task :hourly => [:environment, :min_prices, :prices_advices, :print_time ]
+    task :hourly => :environment do
+      Esi::MinPrices.new(debug_request: false ).update()
+      PricesAdvice.update
+      Esi::UpdateMyOrders.new.update()
+      Banner.p( 'Finished' )
+    end
 
     desc 'Full process - daily'
     # TODO, revoir le process, faire le calcul des couts avant la creation du nouveau arbre d'objets.
