@@ -51,6 +51,7 @@ class Esi::MinPrices < Esi::Download
       ActiveRecord::Base.transaction do
         prices.each do |key, price|
           trade_hub_id = trade_hub_conversion_hash[key[0]]
+
           unless trade_hub_id
             puts "Trade hub not found for cpp id #{key[0]}" if @debug_request
             next
@@ -67,6 +68,12 @@ class Esi::MinPrices < Esi::Download
           mp = MinPrice.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
           mp.min_price = price
           mp.save!
+
+          mpd = MinPriceDaily.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, day: Time.now ).first_or_initialize do |record|
+            record.price = price
+          end
+          mpd.price = [ price, mpd.price ].min
+          mpd.save!
 
         end
       end

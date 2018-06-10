@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_10_061106) do
+ActiveRecord::Schema.define(version: 2018_06_10_120052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -225,6 +225,16 @@ ActiveRecord::Schema.define(version: 2018_06_10_061106) do
     t.index ["component_id"], name: "index_materials_on_component_id"
   end
 
+  create_table "min_price_dailies", force: :cascade do |t|
+    t.bigint "eve_item_id", null: false
+    t.bigint "trade_hub_id", null: false
+    t.date "day", null: false
+    t.float "price", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["eve_item_id", "trade_hub_id", "day"], name: "index_min_price_dailies_on_eve_item_id_and_trade_hub_id_and_day", unique: true
+  end
+
   create_table "min_prices", id: :serial, force: :cascade do |t|
     t.integer "eve_item_id"
     t.integer "trade_hub_id"
@@ -377,6 +387,8 @@ ActiveRecord::Schema.define(version: 2018_06_10_061106) do
   add_foreign_key "eve_items", "market_groups"
   add_foreign_key "eve_markets_histories", "eve_items"
   add_foreign_key "eve_markets_histories", "regions"
+  add_foreign_key "min_price_dailies", "eve_items"
+  add_foreign_key "min_price_dailies", "trade_hubs"
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
   add_foreign_key "prices_advices", "trade_hubs"
