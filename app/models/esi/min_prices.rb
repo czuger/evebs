@@ -15,6 +15,8 @@ class Esi::MinPrices < Esi::Download
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
     @cpp_type_id = cpp_type_id
+
+    @sales_orders_ids = SaleOrder.pluck( :order_id ).to_set
     @sales_orders_stored = 0
 
     regions.each do |region|
@@ -46,6 +48,8 @@ class Esi::MinPrices < Esi::Download
   private
 
   def process_prices( pages, prices )
+    @sales_orders = []
+
     pages.each do |record|
 
       next unless @trade_hubs.include?(record['system_id'])
@@ -56,15 +60,14 @@ class Esi::MinPrices < Esi::Download
       prices[key] ||= []
       prices[key] << record['price']
 
-      SaleOrder.where( order_id: record['order_id'] ).first_or_create! do |sr|
-        sr.day = Time.now
-        sr.cpp_system_id = record['system_id']
-        sr.cpp_type_id = record['type_id']
-        sr.volume = record['volume_remain']
-        sr.price = record['price']
+      unless @sales_orders_ids.include?( record['order_id'] )
+        @sales_orders << SaleOrder.new( day: Time.now, cpp_system_id: record['system_id'], cpp_type_id: record['type_id'],
+                                        volume: record['volume_remain'], price: record['price'] )
         @sales_orders_stored += 1
       end
     end
+
+    SaleOrder.import @sales_orders
 
     prices.transform_values{ |v| v.min }
   end
