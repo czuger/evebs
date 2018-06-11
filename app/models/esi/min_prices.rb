@@ -9,11 +9,12 @@ class Esi::MinPrices < Esi::Download
 
     Banner.p 'About to update min prices.'
 
-    trade_hubs = TradeHub.pluck( :eve_system_id ).to_set
+    @trade_hubs = TradeHub.pluck( :eve_system_id ).to_set
     regions = Region.all
 
-    trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
-    eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
+    @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
+    @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
+    @cpp_type_id = cpp_type_id
 
     regions.each do |region|
       cpp_region_id = region.cpp_region_id.to_i
@@ -29,56 +30,68 @@ class Esi::MinPrices < Esi::Download
 
       pages = get_all_pages
 
-      pages.each do |record|
-
-        # pp record if record['type_id'] == 11689
-
-        next unless trade_hubs.include?(record['system_id'])
-
-        next if cpp_type_id && record['type_id'] != cpp_type_id
-
-        key = [record['system_id'], record['type_id']]
-        prices[key] ||= []
-        prices[key] << record['price']
-      end
-
-      # pp prices if @debug_request
-
-      prices.transform_values!{ |v| v.min }
-
-      # pp prices if @debug_request
-
       ActiveRecord::Base.transaction do
-        prices.each do |key, price|
-          trade_hub_id = trade_hub_conversion_hash[key[0]]
-
-          unless trade_hub_id
-            puts "Trade hub not found for cpp id #{key[0]}" if @debug_request
-            next
-          end
-
-          eve_item_id = eve_item_conversion_hash[key[1]]
-          unless eve_item_id
-            puts "Type id not found for cpp id #{key[1]}" if @debug_request
-            next
-          end
-
-          # puts "trade_hub_id = #{trade_hub_id}, eve_item_id = #{eve_item_id}" if @debug_request
-
-          mp = MinPrice.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
-          mp.min_price = price
-          mp.save!
-
-          mpd = MinPriceDaily.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, day: Time.now ).first_or_initialize do |record|
-            record.price = price
-          end
-          mpd.price = [ price, mpd.price ].min
-          mpd.save!
-
-        end
+        prices = process_prices( pages, prices )
+        save_prices( prices)
       end
+
     end
 
     MinPriceDaily.where( 'day < ?', Time.now - 1.week ).delete_all
+  end
+
+  private
+
+  def process_prices( pages, prices )
+    pages.each do |record|
+
+      next unless @trade_hubs.include?(record['system_id'])
+
+      next if @cpp_type_id && record['type_id'] != @cpp_type_id
+
+      key = [record['system_id'], record['type_id']]
+      prices[key] ||= []
+      prices[key] << record['price']
+
+      SaleOrder.where( order_id: record['order_id'] ).first_or_create! do |sr|
+        sr.day = Time.now
+        sr.cpp_system_id = record['system_id']
+        sr.cpp_type_id = record['type_id']
+        sr.volume = record['volume_remain']
+        sr.price = record['price']
+      end
+    end
+
+    prices.transform_values{ |v| v.min }
+  end
+
+
+  def save_prices( prices )
+    prices.each do |key, price|
+      trade_hub_id = @trade_hub_conversion_hash[key[0]]
+
+      unless trade_hub_id
+        puts "Trade hub not found for cpp id #{key[0]}" if @debug_request
+        next
+      end
+
+      eve_item_id = @eve_item_conversion_hash[key[1]]
+      unless eve_item_id
+        puts "Type id not found for cpp id #{key[1]}" if @debug_request
+        next
+      end
+
+      # puts "trade_hub_id = #{trade_hub_id}, eve_item_id = #{eve_item_id}" if @debug_request
+
+      mp = MinPrice.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
+      mp.min_price = price
+      mp.save!
+
+      mpd = MinPriceDaily.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, day: Time.now ).first_or_initialize do |record|
+        record.price = price
+      end
+      mpd.price = [ price, mpd.price ].min
+      mpd.save!
+    end
   end
 end
