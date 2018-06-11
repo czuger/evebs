@@ -15,6 +15,7 @@ class Esi::MinPrices < Esi::Download
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
     @cpp_type_id = cpp_type_id
+    @sales_orders_stored = 0
 
     regions.each do |region|
       cpp_region_id = region.cpp_region_id.to_i
@@ -38,6 +39,8 @@ class Esi::MinPrices < Esi::Download
     end
 
     MinPriceDaily.where( 'day < ?', Time.now - 1.week ).delete_all
+
+    puts "#{@sales_orders_stored} sales orders stored."
   end
 
   private
@@ -59,6 +62,7 @@ class Esi::MinPrices < Esi::Download
         sr.cpp_type_id = record['type_id']
         sr.volume = record['volume_remain']
         sr.price = record['price']
+        @sales_orders_stored += 1
       end
     end
 
