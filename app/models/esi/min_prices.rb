@@ -62,7 +62,7 @@ class Esi::MinPrices < Esi::Download
 
       unless @sales_orders_ids.include?( record['order_id'] )
         @sales_orders << SaleOrder.new( day: Time.now, cpp_system_id: record['system_id'], cpp_type_id: record['type_id'],
-                                        volume: record['volume_remain'], price: record['price'] )
+                                        volume: record['volume_remain'], price: record['price'], order_id: record['order_id'] )
         @sales_orders_stored += 1
       end
     end
