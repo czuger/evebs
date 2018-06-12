@@ -8,10 +8,16 @@ namespace :process do
 
     desc 'Full process - hourly'
     task :hourly => :environment do
+
+      Crontab.start( :hourly )
+
       Esi::MinPrices.new(debug_request: false ).update()
       PricesAdvice.update
       Esi::UpdateMyOrders.new.update()
       Banner.p( 'Finished' )
+
+      Crontab.stop( :hourly )
+
     end
 
     desc 'Full process - daily'
