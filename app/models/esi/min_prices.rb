@@ -16,7 +16,7 @@ class Esi::MinPrices < Esi::Download
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
     @cpp_type_id = cpp_type_id
 
-    # @sales_orders_ids = SaleOrder.pluck( :order_id ).to_set
+    @sales_orders_ids = SaleOrder.pluck( :order_id, :volume ).to_set
     @sales_orders_stored = 0
 
     regions.each do |region|
@@ -60,12 +60,13 @@ class Esi::MinPrices < Esi::Download
       prices[key] ||= []
       prices[key] << record['price']
 
-      # unless @sales_orders_ids.include?( record['order_id'] )
+      sale_key = [ record['order_id'], record['volume_remain'] ]
+      unless @sales_orders_ids.include?( sale_key )
         @sales_orders << SaleOrder.new( day: Time.now, cpp_system_id: record['system_id'], cpp_type_id: record['type_id'],
                                         volume: record['volume_remain'], price: record['price'], order_id: record['order_id'] )
         @sales_orders_stored += 1
-        # @sales_orders_ids << record['order_id']
-      # end
+        @sales_orders_ids << sale_key
+      end
     end
 
     SaleOrder.import @sales_orders

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_13_072429) do
+ActiveRecord::Schema.define(version: 2018_06_13_154002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -309,7 +309,7 @@ ActiveRecord::Schema.define(version: 2018_06_13_072429) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cpp_system_id", "cpp_type_id"], name: "index_sale_orders_on_cpp_system_id_and_cpp_type_id"
-    t.index ["order_id"], name: "index_sale_orders_on_order_id", unique: true
+    t.index ["order_id", "volume"], name: "index_sale_orders_on_order_id_and_volume", unique: true
   end
 
   create_table "shopping_baskets", id: :serial, force: :cascade do |t|
