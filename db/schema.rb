@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_12_222810) do
+ActiveRecord::Schema.define(version: 2018_06_13_072429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -262,6 +262,15 @@ ActiveRecord::Schema.define(version: 2018_06_12_222810) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "price_avg_weeks", force: :cascade do |t|
+    t.bigint "trade_hub_id", null: false
+    t.bigint "eve_item_id", null: false
+    t.float "price", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trade_hub_id", "eve_item_id"], name: "index_price_avg_weeks_on_trade_hub_id_and_eve_item_id", unique: true
+  end
+
   create_table "prices_advices", id: :serial, force: :cascade do |t|
     t.integer "eve_item_id", null: false
     t.integer "trade_hub_id", null: false
@@ -299,6 +308,7 @@ ActiveRecord::Schema.define(version: 2018_06_12_222810) do
     t.bigint "order_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cpp_system_id", "cpp_type_id"], name: "index_sale_orders_on_cpp_system_id_and_cpp_type_id"
     t.index ["order_id"], name: "index_sale_orders_on_order_id", unique: true
   end
 
@@ -408,6 +418,8 @@ ActiveRecord::Schema.define(version: 2018_06_12_222810) do
   add_foreign_key "eve_markets_histories", "regions"
   add_foreign_key "min_price_dailies", "eve_items"
   add_foreign_key "min_price_dailies", "trade_hubs"
+  add_foreign_key "price_avg_weeks", "eve_items"
+  add_foreign_key "price_avg_weeks", "trade_hubs"
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
   add_foreign_key "prices_advices", "trade_hubs"
