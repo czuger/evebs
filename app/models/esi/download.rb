@@ -17,16 +17,11 @@ class Esi::Download
     url = build_url
     puts "Fetching : #{url}" if @debug_request
 
-    begin
-      @request = open( url )
-      set_headers
+    @request = open( url )
+    set_headers
 
-      json_result = @request.read
-      JSON.parse( json_result )
-    rescue => e
-      sleep 10
-      raise e
-    end
+    json_result = @request.read
+    JSON.parse( json_result )
   end
 
   def get_page_retry_on_error( page_number=nil )
@@ -35,8 +30,7 @@ class Esi::Download
       begin
         page = get_page
       rescue => e
-        puts "Requesting #{@rest_url}, #{@params.inspect} got #{e.inspect}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
-        STDOUT.flush
+        error_handling e
         next
       end
       return page
@@ -54,7 +48,7 @@ class Esi::Download
       begin
         pages = get_page
       rescue => e
-        puts [ "Requesting #{@rest_url} got #{e}", @errors_limit_remain.to_s, @errors_limit_reset.to_s ].join( ', ' )
+        error_handling e
         next
       end
 
@@ -121,6 +115,11 @@ class Esi::Download
   end
 
   private
+
+  def error_handling( e )
+    puts "Requesting #{@rest_url}, #{@params.inspect} got #{e.inspect} / #{e.class.name}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
+    STDOUT.flush
+  end
 
   def set_headers
     @pages_count = @request.meta['x-pages'].to_i
