@@ -74,7 +74,6 @@ class Esi::MinPrices < Esi::Download
     prices.transform_values{ |v| v.min }
   end
 
-
   def save_prices( prices )
     prices.each do |key, price|
       trade_hub_id = @trade_hub_conversion_hash[key[0]]

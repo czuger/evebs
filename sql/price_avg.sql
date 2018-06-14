@@ -1,5 +1,7 @@
 /* il faut voir si on peut faire le calcul d'un coup ou bien s'il faut consolider les données de manière journalière d'abord */
 
+
+
 BEGIN;
 
 UPDATE price_avg_weeks paw SET ( price, updated_at ) = (
