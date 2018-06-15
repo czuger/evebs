@@ -17,12 +17,12 @@ namespace :process do
       Banner.p( 'Finished' )
 
       Crontab.stop( :hourly )
-
     end
 
     desc 'Full process - daily'
     task :daily => :environment do
       SalesDaily.compute_sold_amounts
+      Banner.p( 'Finished' )
     end
 
     desc 'Full process - weekly'

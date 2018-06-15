@@ -17,7 +17,12 @@ class Esi::Download
     url = build_url
     puts "Fetching : #{url}" if @debug_request
 
-    @request = open( url )
+    begin
+      @request = open( url )
+    rescue => e
+      Esi::Errors::Base.dispatch( e )
+    end
+
     set_headers
 
     json_result = @request.read
