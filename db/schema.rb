@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_13_154002) do
+ActiveRecord::Schema.define(version: 2018_06_15_075822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -299,7 +299,8 @@ ActiveRecord::Schema.define(version: 2018_06_13_154002) do
     t.index ["cpp_region_id"], name: "index_regions_on_cpp_region_id", unique: true
   end
 
-  create_table "sale_orders", force: :cascade do |t|
+  create_table "sale_orders", id: false, force: :cascade do |t|
+    t.bigint "id", null: false
     t.date "day", null: false
     t.integer "cpp_system_id", null: false
     t.integer "cpp_type_id", null: false
@@ -308,8 +309,19 @@ ActiveRecord::Schema.define(version: 2018_06_13_154002) do
     t.bigint "order_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cpp_system_id", "cpp_type_id"], name: "index_sale_orders_on_cpp_system_id_and_cpp_type_id"
-    t.index ["order_id", "volume"], name: "index_sale_orders_on_order_id_and_volume", unique: true
+  end
+
+  create_table "sales_dailies", force: :cascade do |t|
+    t.date "day", null: false
+    t.bigint "trade_hub_id", null: false
+    t.bigint "eve_item_id", null: false
+    t.bigint "volume", null: false
+    t.float "price", null: false
+    t.bigint "order_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["eve_item_id"], name: "index_sales_dailies_on_eve_item_id"
+    t.index ["trade_hub_id"], name: "index_sales_dailies_on_trade_hub_id"
   end
 
   create_table "shopping_baskets", id: :serial, force: :cascade do |t|
@@ -423,6 +435,8 @@ ActiveRecord::Schema.define(version: 2018_06_13_154002) do
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
   add_foreign_key "prices_advices", "trade_hubs"
+  add_foreign_key "sales_dailies", "eve_items"
+  add_foreign_key "sales_dailies", "trade_hubs"
   add_foreign_key "shopping_baskets", "eve_items"
   add_foreign_key "shopping_baskets", "trade_hubs"
   add_foreign_key "shopping_baskets", "users"

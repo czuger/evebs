@@ -1,19 +1,8 @@
-namespace :data_compute do
+namespace :process do
 
-  desc "Get sales for me only"
-  task :get_sales => :environment do
-
-    puts '*'*100
-    puts 'About to retrieve sales records'
-    puts '*'*100
-
-    SaleRecord.get_sale_records
-
-    puts '*'*100
-    puts 'Sales records retrieval finished'
-    puts '*'*100
-    puts
-
+  desc 'Get daily sales for all items and trade hubs'
+  task :get_sales_dailies => :environment do
+    PriceAvgWeek.compute_sold_amounts
   end
 
 end

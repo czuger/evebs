@@ -21,6 +21,12 @@ namespace :process do
     end
 
     desc 'Full process - daily'
+    task :daily => :environment do
+      PriceAvgWeek.compute_sold_amounts
+    end
+
+
+    desc 'Full process - weekly'
     # TODO, revoir le process, faire le calcul des couts avant la creation du nouveau arbre d'objets.
     task :weekly => :environment do
       Banner.p 'About to download types in regions'

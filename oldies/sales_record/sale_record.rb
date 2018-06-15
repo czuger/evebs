@@ -8,6 +8,7 @@ class SaleRecord < ActiveRecord::Base
   def self.get_sale_records
 
     # delete_all
+    #
 
     api = EAAL::API.new( '3808229', 'SNvU2rwG8Rjeg36vJwR7AWoMymfAW7TGNh2hLeKLZRAtGYrRzywIFuntLeTF2Qg7' )
     api.scope = 'char'
