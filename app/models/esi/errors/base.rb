@@ -8,6 +8,8 @@ class Esi::Errors::Base < RuntimeError
       raise Esi::Errors::BadGateway
     when '403 Forbidden'
       raise Esi::Errors::Forbidden
+    when '420 status code 420'
+      raise Esi::Errors::ErrorLimited
     else
       raise exception
     end

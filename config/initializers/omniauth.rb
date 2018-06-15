@@ -11,7 +11,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 
     if results && results[:esi]
       client_id, secret_key = results[:esi]
-      provider :eve_online_sso, client_id, secret_key, scope: 'esi-markets.read_character_orders.v1'
+      provider :eve_online_sso, client_id, secret_key, scope: 'esi-markets.read_character_orders.v1 esi-universe.read_structures.v1 esi-markets.structure_markets.v1'
     end
   end
 
