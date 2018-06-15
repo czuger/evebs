@@ -33,8 +33,8 @@ class SalesDaily < ApplicationRecord
             break
           end
           ei_id = eve_item_conversion_hash[highest_order.cpp_type_id]
-          unless th_id
-            puts "system id #{highest_order.cpp_system_id} not found."
+          unless ei_id
+            puts "type id #{highest_order.cpp_type_id} not found."
             break
           end
 
