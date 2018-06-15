@@ -19,6 +19,7 @@ class EveItem < ApplicationRecord
   has_many :crest_prices_last_month_averages, dependent: :destroy
 
   has_many :prices_advices
+  has_many :min_prices
 
   # TODO : remove this dead code
   # Itemps containing non ascii characters

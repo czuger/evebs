@@ -12,6 +12,8 @@ class Component < ApplicationRecord
   has_many :eve_items, through: :blueprints
   has_many :users, through: :eve_items
 
+  has_one :eve_item, :primary_key => :cpp_eve_item_id, foreign_key: :cpp_eve_item_id
+
   def self.set_min_prices_for_all_components
 
     Banner.p 'Recomputing costs from Jita prices'
