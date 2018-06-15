@@ -2,7 +2,7 @@ namespace :db do
   namespace :dump do
     namespace :production_to_dev do
 
-      desc 'Dump full database from production to dev'
+      desc 'Dump single table from production to dev'
       task :single_table, [:table_name] => :environment do |task, args|
 
         table_name = args.table_name
@@ -26,8 +26,7 @@ namespace :db do
         # puts 'Creating database'
         # `createdb eve_business_server_dev -U eve_business_server -O eve_business_server`
         #
-        `psql -U eve_business_server -d eve_business_server_dev -c "DROP TABLE sale_orders"`
-
+        `psql -U eve_business_server -d eve_business_server_dev -c "DROP TABLE #{table_name}"`
 
         puts 'Inserting datas'
         `pg_restore -U eve_business_server -d eve_business_server_dev -n public -t #{table_name} /tmp/production_#{table_name}.dump`
