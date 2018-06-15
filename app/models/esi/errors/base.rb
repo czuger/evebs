@@ -15,4 +15,8 @@ class Esi::Errors::Base < RuntimeError
     end
   end
 
+  def pause
+    sleep 3
+  end
+
 end

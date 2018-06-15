@@ -125,12 +125,7 @@ class Esi::Download
     puts "Requesting #{@rest_url}, #{@params.inspect} got #{e.inspect}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     STDOUT.flush
 
-    case e.class
-    when Esi::Errors::GatewayTimeout
-      sleep 30
-    else
-      sleep 3
-    end
+    e.pause
   end
 
   def set_headers
