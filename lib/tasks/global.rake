@@ -22,6 +22,7 @@ namespace :process do
     desc 'Full process - daily'
     task :daily => :environment do
       SalesDaily.compute_sold_amounts
+      Esi::UpdateStructures.new( debug_request: false ).update
       Banner.p( 'Finished' )
     end
 
