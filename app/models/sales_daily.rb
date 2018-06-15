@@ -41,6 +41,8 @@ class SalesDaily < ApplicationRecord
 
           sales_dailies << SalesDaily.new( day: highest_order.day, trade_hub_id: th_id, eve_item_id: ei_id,
                                            volume: sold_amount, price: sold_price, order_id: highest_order.order_id )
+
+          highest_order = lower_order
         end
       end
     end
