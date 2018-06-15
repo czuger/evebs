@@ -6,7 +6,7 @@ class SalesDaily < ApplicationRecord
 
     Banner.p 'About to compute SalesDailies'
 
-    orders = SaleOrder.having('count(order_id) > 1').group(:order_id).pluck( :order_id )
+    orders = SalesOrder.having('count(order_id) > 1').group(:order_id).pluck(:order_id )
 
     trade_hub_conversion_hash = Hash[TradeHub.pluck( :eve_system_id, :id )]
     eve_item_conversion_hash = Hash[EveItem.pluck( :cpp_eve_item_id, :id )]
@@ -15,7 +15,7 @@ class SalesDaily < ApplicationRecord
 
     orders.each do |o|
 
-      sorted_orders = SaleOrder.where( order_id: o ).order( 'volume DESC' ).to_a
+      sorted_orders = SalesOrder.where(order_id: o ).order('volume DESC' ).to_a
 
       if sorted_orders.count > 1
 
