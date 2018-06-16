@@ -5,6 +5,8 @@ class Esi::MinPrices < Esi::Download
     # p @errors_limit_remain
   end
 
+  # TODO : il faut gérer la disparition de l'ordre. Est ce qu'on s'en fout ?
+  # Dans un premier temps oui, car on ne sait pas si l'ordre a été annulé, timeout ou bien vendu.
   def update( only_cpp_region_id = nil, cpp_type_id = nil )
 
     Banner.p 'About to update min prices.'

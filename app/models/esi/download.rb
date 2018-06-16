@@ -122,7 +122,7 @@ class Esi::Download
   private
 
   def error_handling( e )
-    puts "Requesting #{@rest_url}, #{@params.inspect} got #{e.inspect}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
+    puts "Requesting #{@rest_url}, #{@params.inspect} got #{e}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     STDOUT.flush
 
     e.pause
