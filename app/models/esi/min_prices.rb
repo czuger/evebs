@@ -42,7 +42,7 @@ class Esi::MinPrices < Esi::Download
 
     end
 
-    MinPriceDaily.where( 'day < ?', Time.now - 1.week ).delete_all
+    # MinPriceDaily.where( 'day < ?', Time.now - 1.week ).delete_all
 
     puts "#{@sales_orders_stored} sales orders stored."
   end
