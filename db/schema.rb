@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_18_071716) do
+ActiveRecord::Schema.define(version: 2018_06_18_111154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,47 +32,6 @@ ActiveRecord::Schema.define(version: 2018_06_18_071716) do
     t.datetime "updated_at"
     t.integer "cpp_blueprint_id"
     t.index ["eve_item_id"], name: "index_blueprints_on_eve_item_id"
-  end
-
-  create_table "caddie_crest_price_history_last_day_timestamps", id: :serial, force: :cascade do |t|
-    t.integer "eve_item_id"
-    t.integer "region_id"
-    t.datetime "day_timestamp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["region_id", "eve_item_id"], name: "index_caddie_crest_price_history_last_day_timestamps", unique: true
-  end
-
-  create_table "caddie_crest_price_history_update_logs", id: :serial, force: :cascade do |t|
-    t.date "feed_date"
-    t.integer "update_planning_time"
-    t.integer "feeding_time"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "total_inserts"
-    t.float "co_seconds"
-    t.index ["feed_date"], name: "index_caddie_crest_price_history_update_logs_on_feed_date", unique: true
-  end
-
-  create_table "caddie_crest_price_history_updates", id: :serial, force: :cascade do |t|
-    t.integer "eve_item_id"
-    t.integer "region_id"
-    t.date "max_update"
-    t.date "max_eve_item_create"
-    t.date "max_region_create"
-    t.date "max_date"
-    t.integer "nb_days"
-    t.string "process_queue"
-    t.integer "process_queue_priority"
-    t.date "next_process_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "thread_slice_id"
-    t.index ["eve_item_id", "region_id"], name: "index_caddie_cphu_on_eve_item_id_and_region_id", unique: true
-    t.index ["nb_days"], name: "index_caddie_crest_price_history_updates_on_nb_days"
-    t.index ["next_process_date"], name: "index_caddie_crest_price_history_updates_on_next_process_date"
-    t.index ["process_queue"], name: "index_caddie_crest_price_history_updates_on_process_queue"
-    t.index ["thread_slice_id"], name: "index_caddie_crest_price_history_updates_on_thread_slice_id"
   end
 
   create_table "characters", force: :cascade do |t|
@@ -402,10 +361,6 @@ ActiveRecord::Schema.define(version: 2018_06_18_071716) do
 
   add_foreign_key "api_key_errors", "users"
   add_foreign_key "blueprints", "eve_items"
-  add_foreign_key "caddie_crest_price_history_last_day_timestamps", "eve_items"
-  add_foreign_key "caddie_crest_price_history_last_day_timestamps", "regions"
-  add_foreign_key "caddie_crest_price_history_updates", "eve_items"
-  add_foreign_key "caddie_crest_price_history_updates", "regions"
   add_foreign_key "characters", "users"
   add_foreign_key "crest_prices_last_month_averages", "eve_items"
   add_foreign_key "crest_prices_last_month_averages", "regions"
