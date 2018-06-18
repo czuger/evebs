@@ -8,9 +8,6 @@ class SalesDaily < ApplicationRecord
 
     orders = SalesOrder.having('count(order_id) > 1').group(:order_id).pluck(:order_id )
 
-    trade_hub_conversion_hash = Hash[TradeHub.pluck( :eve_system_id, :id )]
-    eve_item_conversion_hash = Hash[EveItem.pluck( :cpp_eve_item_id, :id )]
-
     sales_dailies = []
 
     orders.each do |o|
@@ -27,19 +24,7 @@ class SalesDaily < ApplicationRecord
           sold_amount = highest_order.volume - lower_order.volume
           sold_price = highest_order.price
 
-          th_id = trade_hub_conversion_hash[highest_order.cpp_system_id]
-          unless th_id
-            puts "system id #{highest_order.cpp_system_id} not found."
-            break
-          end
-
-          ei_id = eve_item_conversion_hash[highest_order.cpp_type_id]
-          unless ei_id
-            puts "type id #{highest_order.cpp_type_id} not found."
-            break
-          end
-
-          sales_dailies << SalesDaily.new( day: highest_order.day, trade_hub_id: th_id, eve_item_id: ei_id,
+          sales_dailies << SalesDaily.new( day: highest_order.day, trade_hub_id: o.trade_hub_id, eve_item_id: o.eve_item_id,
                                            volume: sold_amount, price: sold_price, order_id: highest_order.order_id )
 
           highest_order = lower_order
