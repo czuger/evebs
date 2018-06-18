@@ -13,7 +13,7 @@ namespace :db do
           unless $?.to_i == 0 # file exist
             # Dump and compress it
             puts 'No remote dump, pg_dump'
-            `ssh hw pg_dump -Fc -n public -t #{table_name} -U eve_business_server eve_business_server_production -f /tmp/production_#{table_name}.dump`
+            `ssh hw pg_dump -Fc -n public -t #{table_name} -t #{table_name}_id_seq -U eve_business_server eve_business_server_production -f /tmp/production_#{table_name}.dump`
           end
           # Get the remote file
           puts 'Retrieving remote dump'
@@ -29,7 +29,7 @@ namespace :db do
         `psql -U eve_business_server -d eve_business_server_dev -c "DROP TABLE #{table_name}"`
 
         puts 'Inserting datas'
-        `pg_restore -U eve_business_server -d eve_business_server_dev -n public -t #{table_name} /tmp/production_#{table_name}.dump`
+        `pg_restore -U eve_business_server -d eve_business_server_dev /tmp/production_#{table_name}.dump`
       end
 
     end
