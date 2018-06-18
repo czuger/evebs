@@ -80,6 +80,7 @@ class Esi::MinPrices < Esi::Download
         @sales_orders << SalesOrder.new(day: Time.now, cpp_system_id: record['system_id'], cpp_type_id: record['type_id'],
                                         volume: record['volume_remain'], price: record['price'], order_id: record['order_id'],
                                         trade_hub_id: trade_hub_id, eve_item_id: eve_item_id)
+
         @sales_orders_stored += 1
         @sales_orders_ids << sale_key
       end
