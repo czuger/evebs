@@ -34,7 +34,7 @@ class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show challenged prices without min prices' do
-    MinPrice.find_by_eve_item_id_and_trade_hub_id( @eve_item, @trade_hub ).destroy
+    PricesMin.find_by_eve_item_id_and_trade_hub_id(@eve_item, @trade_hub ).destroy
     create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item, new_order: true )
     get price_advices_show_challenged_prices_url
     assert_response :success

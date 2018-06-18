@@ -9,7 +9,7 @@ module Modules::PriceAdvices::ShowChallengedPrices
     @compared_prices = []
 
     @trade_orders.each do |to|
-      min_price = MinPrice.find_by_eve_item_id_and_trade_hub_id( to.eve_item_id, to.trade_hub_id )
+      min_price = PricesMin.find_by_eve_item_id_and_trade_hub_id(to.eve_item_id, to.trade_hub_id )
 
       min_price = min_price.min_price if min_price
 

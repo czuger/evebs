@@ -1,6 +1,6 @@
 class TradeHub < ApplicationRecord
 
-  has_many :min_prices
+  has_many :prices_mins
   belongs_to :region
   has_many :crest_prices_last_month_averages, through: :region, source: :trade_hubs
 

@@ -5,10 +5,6 @@ require 'pp'
 class EveItem < ApplicationRecord
 
   include Assert
-  include ItemsInit::ItemSetupAndComp
-  extend ItemsInit::ItemSetupAndCompSelf
-  # extend MultiplePriceRetriever
-  # extend Setup::UpdateEveItems
 
   has_and_belongs_to_many :users
   has_one :blueprint, dependent: :destroy
@@ -19,14 +15,7 @@ class EveItem < ApplicationRecord
   has_many :crest_prices_last_month_averages, dependent: :destroy
 
   has_many :prices_advices
-  has_many :min_prices
-
-  # TODO : remove this dead code
-  # Itemps containing non ascii characters
-  # UNPROCESSABLE_ITEMS=[34457,34458,34459,34460,34461,34462,34463,34464,34465,34466,34467,34468,34469,34470,34471,34472,
-  #                      34473,34474,34475,34476,34477,34478,34479,34480,30952,32371,32372]
-  #
-  # AVG_INDUSTRY_TAX = 0.11 # 10 % base + 1 % system costs (assuming players are smart enough to go in low cost systems)
+  has_many :prices_mins
 
   def self.to_eve_item_id(cpp_eve_item_id)
     eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first
@@ -38,8 +27,8 @@ class EveItem < ApplicationRecord
     used_items
   end
 
+  # Recompute the cost for all items
   def self.compute_cost_for_all_items
-
     Component.set_min_prices_for_all_components
 
     Banner.p 'Refreshing all items costs'
@@ -50,25 +39,27 @@ class EveItem < ApplicationRecord
 
   end
 
-  # TODO : remove this dead code
-  # # def single_unit_cost
-  # #   (cost*(1+AVG_INDUSTRY_TAX))/blueprint.prod_qtt if cost && blueprint
-  # # end
-  # #
-  # # def pcent_margin( price )
-  # #   (price / single_unit_cost)-1 if price && single_unit_cost
-  # # end
-  # #
-  # # def margin( price )
-  # #   price - single_unit_cost if price && single_unit_cost
-  # # end
-  #
-  # def full_batch_size
-  #   unless blueprint
-  #     puts "EveItem#full_batch_size : #{self.inspect} has no blueprint"
-  #     return -Float::INFINITY
-  #   end
-  #   blueprint.nb_runs*blueprint.prod_qtt
-  # end
+  private
+
+  def compute_cost
+    total_cost = 0
+    materials.each do |material|
+      if material.component.cost
+        total_cost += material.component.cost * material.required_qtt
+      else
+        puts "Warning !!! #{material.component.inspect} has no cost" unless Rails.env == 'test'
+        # If we lack a material we set the price to nil and exit
+        update_attribute(:cost,nil)
+        return
+      end
+    end
+    if total_cost <= 0
+      puts "Warning !!! #{self.inspect} has no cost" unless Rails.env == 'test'
+      # If we lack a material we set the price to nil and exit
+      update_attribute(:cost,nil)
+      return
+    end
+    update_attribute(:cost,total_cost)
+  end
 
 end

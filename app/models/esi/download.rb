@@ -125,7 +125,12 @@ class Esi::Download
     puts "Requesting #{@rest_url}, #{@params.inspect} got #{e}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     STDOUT.flush
 
-    e.pause
+    if e.kind_of? Esi::Errors::Base
+      e.pause
+    else
+      sleep 10
+    end
+
   end
 
   def set_headers

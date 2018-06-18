@@ -12,7 +12,7 @@ class JitaMargin < ApplicationRecord
 
       # puts "Computing margin for #{item.name}"
 
-      min_price = MinPrice.find_by_eve_item_id_and_trade_hub_id( item.id, jita.id )
+      min_price = PricesMin.find_by_eve_item_id_and_trade_hub_id(item.id, jita.id )
 
       if min_price && item.blueprint && item.cost
         bp = item.blueprint

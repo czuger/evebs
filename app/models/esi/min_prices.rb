@@ -107,15 +107,17 @@ class Esi::MinPrices < Esi::Download
 
       # puts "trade_hub_id = #{trade_hub_id}, eve_item_id = #{eve_item_id}" if @debug_request
 
-      mp = MinPrice.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
+      mp = PricesMin.where(eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
       mp.min_price = price
       mp.save!
 
-      mpd = MinPriceDaily.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, day: Time.now ).first_or_initialize do |record|
-        record.price = price
-      end
-      mpd.price = [ price, mpd.price ].min
-      mpd.save!
+      # computation will come from sales records.
+
+      # mpd = MinPriceDaily.where( eve_item_id: eve_item_id, trade_hub_id: trade_hub_id, day: Time.now ).first_or_initialize do |record|
+      #   record.price = price
+      # end
+      # mpd.price = [ price, mpd.price ].min
+      # mpd.save!
     end
   end
 end
