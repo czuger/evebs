@@ -73,7 +73,7 @@ class Esi::MinPrices < Esi::Download
 
         eve_item_id = @eve_item_conversion_hash[record['type_id']]
         unless eve_item_id
-          puts "Type id not found for cpp id #{record['type_id']}"
+          puts "Type id not found for cpp id #{record['type_id']}" if @debug_request
           next
         end
 
