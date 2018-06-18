@@ -9,7 +9,7 @@ class Esi::MinPrices < Esi::Download
   # Dans un premier temps oui, car on ne sait pas si l'ordre a été annulé, timeout ou bien vendu.
   def update( only_cpp_region_id = nil, cpp_type_id = nil )
 
-    Banner.p 'About to update min prices.'
+    Banner.p 'About to update min prices'
 
     @trade_hubs = TradeHub.pluck( :eve_system_id ).to_set
     regions = Region.all
@@ -64,8 +64,22 @@ class Esi::MinPrices < Esi::Download
 
       sale_key = [ record['order_id'], record['volume_remain'] ]
       unless @sales_orders_ids.include?( sale_key )
+
+        trade_hub_id = @trade_hub_conversion_hash[record['system_id']]
+        unless trade_hub_id
+          puts "Trade hub not found for cpp id #{record['system_id']}"
+          next
+        end
+
+        eve_item_id = @eve_item_conversion_hash[record['type_id']]
+        unless eve_item_id
+          puts "Type id not found for cpp id #{record['type_id']}"
+          next
+        end
+
         @sales_orders << SalesOrder.new(day: Time.now, cpp_system_id: record['system_id'], cpp_type_id: record['type_id'],
-                                        volume: record['volume_remain'], price: record['price'], order_id: record['order_id'] )
+                                        volume: record['volume_remain'], price: record['price'], order_id: record['order_id'],
+                                        trade_hub_id: trade_hub_id, eve_item_id: eve_item_id)
         @sales_orders_stored += 1
         @sales_orders_ids << sale_key
       end
