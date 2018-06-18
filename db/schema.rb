@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
 
   create_table "components", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id"
-    t.string "name", limit: 255
+    t.string "name"
     t.float "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -129,10 +129,10 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "name_lowcase", limit: 255
+    t.string "name_lowcase"
     t.float "cost"
     t.boolean "epic_blueprint", default: false
     t.boolean "involved_in_blueprint", default: false
@@ -148,6 +148,21 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
     t.index ["user_id"], name: "index_eve_items_users_on_user_id"
   end
 
+  create_table "eve_market_history_archives", force: :cascade do |t|
+    t.integer "region_id", null: false
+    t.integer "eve_item_id", null: false
+    t.string "year", null: false
+    t.string "month", null: false
+    t.date "history_date", null: false
+    t.integer "order_count"
+    t.bigint "volume"
+    t.float "low_price"
+    t.float "avg_price"
+    t.float "high_price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "eve_market_history_errors", force: :cascade do |t|
     t.integer "cpp_region_id"
     t.integer "cpp_eve_item_id"
@@ -159,7 +174,7 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
   create_table "eve_markets_histories", id: :serial, force: :cascade do |t|
     t.integer "region_id", null: false
     t.integer "eve_item_id", null: false
-    t.string "day_timestamp"
+    t.string "day_timestamp", null: false
     t.datetime "history_date", null: false
     t.bigint "order_count"
     t.bigint "volume"
@@ -184,9 +199,9 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "email", limit: 255
-    t.string "password_digest", limit: 255
+    t.string "name"
+    t.string "email"
+    t.string "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -299,8 +314,7 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
     t.index ["cpp_region_id"], name: "index_regions_on_cpp_region_id", unique: true
   end
 
-  create_table "sales_dailies", id: false, force: :cascade do |t|
-    t.bigint "id", null: false
+  create_table "sales_dailies", force: :cascade do |t|
     t.date "day", null: false
     t.bigint "trade_hub_id", null: false
     t.bigint "eve_item_id", null: false
@@ -309,6 +323,8 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
     t.bigint "order_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["eve_item_id"], name: "index_sales_dailies_on_eve_item_id"
+    t.index ["trade_hub_id"], name: "index_sales_dailies_on_trade_hub_id"
   end
 
   create_table "sales_orders", force: :cascade do |t|
@@ -320,8 +336,12 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
     t.bigint "order_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "trade_hub_id"
+    t.bigint "eve_item_id"
     t.index ["cpp_system_id", "cpp_type_id"], name: "index_sales_orders_on_cpp_system_id_and_cpp_type_id"
+    t.index ["eve_item_id"], name: "index_sales_orders_on_eve_item_id"
     t.index ["order_id", "volume"], name: "index_sales_orders_on_order_id_and_volume", unique: true
+    t.index ["trade_hub_id"], name: "index_sales_orders_on_trade_hub_id"
   end
 
   create_table "shopping_baskets", id: :serial, force: :cascade do |t|
@@ -337,7 +357,7 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name", limit: 255
+    t.string "name"
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -357,7 +377,7 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -401,12 +421,12 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
+    t.string "name"
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider", limit: 255
-    t.string "uid", limit: 255
+    t.string "provider"
+    t.string "uid"
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"
@@ -437,6 +457,10 @@ ActiveRecord::Schema.define(version: 2018_06_16_194808) do
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
   add_foreign_key "prices_advices", "trade_hubs"
+  add_foreign_key "sales_dailies", "eve_items"
+  add_foreign_key "sales_dailies", "trade_hubs"
+  add_foreign_key "sales_orders", "eve_items"
+  add_foreign_key "sales_orders", "trade_hubs"
   add_foreign_key "shopping_baskets", "eve_items"
   add_foreign_key "shopping_baskets", "trade_hubs"
   add_foreign_key "shopping_baskets", "users"
