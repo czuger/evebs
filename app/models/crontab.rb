@@ -8,11 +8,11 @@ class Crontab < ApplicationRecord
       exit
     end
 
-    r.update!( status: true )
+    r.update!( status: true, updated_at: Time.now )
   end
 
   def self.stop( cron_name )
-    Crontab.where( cron_name: cron_name ).update_all( status: false )
+    Crontab.where( cron_name: cron_name ).update_all( status: false, updated_at: Time.now )
   end
 
 end
