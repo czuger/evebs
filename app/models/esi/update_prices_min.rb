@@ -44,6 +44,7 @@ class Esi::UpdatePricesMin < Esi::Download
     end
 
     ActiveRecord::Base.transaction do
+      Banner.p 'About to update volumes.'
       update_volumes
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
     end
