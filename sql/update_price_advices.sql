@@ -24,7 +24,7 @@ AND th.region_id = cplma.region_id;
 
 UPDATE prices_advices cpa
 SET min_price = mp.min_price, updated_at = now()
-FROM min_prices mp
+FROM prices_mins mp
 WHERE cpa.eve_item_id = mp.eve_item_id
 AND cpa.trade_hub_id = mp.trade_hub_id;
 
