@@ -11,9 +11,13 @@ namespace :process do
 
       Crontab.start( :hourly )
 
-      Esi::UpdatePricesMin.new(debug_request: false ).update()
-      PricesAdvice.update
-      Esi::UpdateMyOrders.new.update()
+      # Esi::DownloadSalesOrders.new.update
+
+      Sql::PricesMins.update
+      Sql::PricesAdvices.update
+
+      # Esi::DownloadMyOrders.new.update()
+
       Banner.p( 'Finished' )
 
       Crontab.stop( :hourly )

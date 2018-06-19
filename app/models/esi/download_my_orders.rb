@@ -1,6 +1,6 @@
 require_relative 'download'
 
-class Esi::UpdateMyOrders < Esi::Download
+class Esi::DownloadMyOrders < Esi::Download
 
   def initialize( debug_request: false )
     super( nil, {}, debug_request: debug_request )
