@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_18_112529) do
+ActiveRecord::Schema.define(version: 2018_06_19_162636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -238,7 +238,7 @@ ActiveRecord::Schema.define(version: 2018_06_18_112529) do
     t.index ["cpp_region_id"], name: "index_regions_on_cpp_region_id", unique: true
   end
 
-  create_table "sales_dailies", force: :cascade do |t|
+  create_table "sales_finals", force: :cascade do |t|
     t.date "day", null: false
     t.bigint "trade_hub_id", null: false
     t.bigint "eve_item_id", null: false
@@ -247,8 +247,8 @@ ActiveRecord::Schema.define(version: 2018_06_18_112529) do
     t.bigint "order_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["eve_item_id"], name: "index_sales_dailies_on_eve_item_id"
-    t.index ["trade_hub_id"], name: "index_sales_dailies_on_trade_hub_id"
+    t.index ["eve_item_id"], name: "index_sales_finals_on_eve_item_id"
+    t.index ["trade_hub_id"], name: "index_sales_finals_on_trade_hub_id"
   end
 
   create_table "sales_orders", force: :cascade do |t|
@@ -372,8 +372,8 @@ ActiveRecord::Schema.define(version: 2018_06_18_112529) do
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
   add_foreign_key "prices_advices", "trade_hubs"
-  add_foreign_key "sales_dailies", "eve_items"
-  add_foreign_key "sales_dailies", "trade_hubs"
+  add_foreign_key "sales_finals", "eve_items"
+  add_foreign_key "sales_finals", "trade_hubs"
   add_foreign_key "sales_orders", "eve_items"
   add_foreign_key "sales_orders", "trade_hubs"
   add_foreign_key "shopping_baskets", "eve_items"

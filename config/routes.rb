@@ -35,6 +35,7 @@ Rails.application.routes.draw do
 
   resource :choose_items, only: [ :edit ] do
     get :items_tree
+    get :select_all_items
     post :select_items
   end
 

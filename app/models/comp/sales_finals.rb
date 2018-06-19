@@ -1,12 +1,11 @@
-class SalesDaily < ApplicationRecord
-  belongs_to :trade_hub
-  belongs_to :eve_item
+class Comp::SalesFinals
 
-  def self.compute_sold_amounts
+  def self.run
 
     Banner.p 'About to compute SalesDailies'
 
-    orders = SalesOrder.having('count(order_id) > 1').group(:order_id).pluck(:order_id )
+    # orders = SalesOrder.having('count(order_id) > 1').group(:order_id)
+    orders = SalesOrder.all
 
     sales_dailies = []
 
@@ -24,8 +23,8 @@ class SalesDaily < ApplicationRecord
           sold_amount = highest_order.volume - lower_order.volume
           sold_price = highest_order.price
 
-          sales_dailies << SalesDaily.new( day: highest_order.day, trade_hub_id: o.trade_hub_id, eve_item_id: o.eve_item_id,
-                                           volume: sold_amount, price: sold_price, order_id: highest_order.order_id )
+          sales_dailies << SalesFinal.new(day: highest_order.day, trade_hub_id: o.trade_hub_id, eve_item_id: o.eve_item_id,
+                                          volume: sold_amount, price: sold_price, order_id: highest_order.order_id )
 
           highest_order = lower_order
         end
@@ -33,8 +32,8 @@ class SalesDaily < ApplicationRecord
     end
 
     ActiveRecord::Base.transaction do
-      SalesDaily.delete_all
-      SalesDaily.import!( sales_dailies )
+      SalesFinal.delete_all
+      SalesFinal.import!(sales_dailies )
     end
 
   end

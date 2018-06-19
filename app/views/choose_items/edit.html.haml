@@ -4,6 +4,11 @@
 
   %h3 Select items you want to monitor
 
+  .row
+    .col-md-12.text-center
+      .actions
+        = link_to 'Select all items', select_all_items_choose_items_path, class: 'btn btn-default'
+
   = text_field_tag :filter, '', class: 'form-control'
 
   %hr
