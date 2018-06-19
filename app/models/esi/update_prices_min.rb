@@ -59,7 +59,7 @@ class Esi::UpdatePricesMin < Esi::Download
   end
 
   def update_volumes
-    PricesMin.each do |pm|
+    PricesMin.all.each do |pm|
       pm.volume = SalesOrder.where( trade_hub_id: pm.trade_hub_id, eve_item_id: pm.eve_item_id, price: pm.min_price ).sum( :volume )
       pm.save!
     end
