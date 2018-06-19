@@ -1,7 +1,5 @@
 /* il faut voir si on peut faire le calcul d'un coup ou bien s'il faut consolider les données de manière journalière d'abord */
 
-
-
 BEGIN;
 
 UPDATE price_avg_weeks paw SET ( price, updated_at ) = (
@@ -25,8 +23,5 @@ INSERT INTO price_avg_weeks
         SELECT 1 FROM price_avg_weeks WHERE th.id = price_avg_weeks.trade_hub_id AND ei.id = price_avg_weeks.eve_item_id
     )
   GROUP BY th.id, ei.id;
-
-
-DELETE FROM sale_orders WHERE day < now() - interval '1 months';
 
 COMMIT;

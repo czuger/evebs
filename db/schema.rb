@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_18_111154) do
+ActiveRecord::Schema.define(version: 2018_06_18_112529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -226,8 +226,8 @@ ActiveRecord::Schema.define(version: 2018_06_18_111154) do
     t.float "min_price"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["eve_item_id"], name: "index_prices_mins_on_eve_item_id"
-    t.index ["trade_hub_id"], name: "index_prices_mins_on_trade_hub_id"
+    t.bigint "volume"
+    t.index ["eve_item_id", "trade_hub_id"], name: "index_prices_mins_on_eve_item_id_and_trade_hub_id", unique: true
   end
 
   create_table "regions", id: :serial, force: :cascade do |t|
