@@ -13,7 +13,24 @@ INSERT INTO prices_advices( eve_item_id, region_id, trade_hub_id, created_at, up
       WHERE eve_item_id = eve_items.id
       AND trade_hub_id = trade_hubs.id );
 
+/* Removing advices for which we have no items/trade hubs */
+DELETE FROM prices_advices pm WHERE NOT EXISTS (
+    SELECT * FROM sales_finals so
+    WHERE pm.trade_hub_id = so.trade_hub_id
+          AND pm.eve_item_id = so.eve_item_id );
+
 /* Update all datas */
+
+UPDATE prices_advices pm SET ( vol_month, updated_at ) = ( mp, now() )
+FROM (
+       SELECT SUM( so.volume ) mp, so.trade_hub_id ti, so.eve_item_id ei
+       FROM sales_finals so
+       GROUP BY so.trade_hub_id, so.eve_item_id ) min_so
+WHERE ti = pm.trade_hub_id
+AND ei = pm.eve_item_id;
+
+UPDATE prices_advices pm SET ( vol_day, updated_at ) = ( vol_month/30, now() );
+
 UPDATE prices_advices cpa
 SET vol_month = cplma.volume_sum, vol_day = floor( cplma.volume_sum / 30 ), avg_price = cplma.avg_price_avg,
 updated_at = now()
