@@ -14,7 +14,7 @@ class ItemsController < ApplicationController
     if @item.prices_advices.exists?
       @item_prices = @item.prices_advices.includes( { trade_hub: :region } ).order( 'vol_month DESC NULLS LAST' )
     else
-      @min_prices = @item.min_prices.includes( { trade_hub: :region } ).order( 'min_price ASC NULLS LAST' )
+      @min_prices = @item.prices_mins.includes( { trade_hub: :region } ).order( 'min_price ASC NULLS LAST' )
     end
   end
 

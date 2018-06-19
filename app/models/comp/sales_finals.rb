@@ -5,11 +5,18 @@ class Comp::SalesFinals
     Banner.p 'About to compute SalesDailies'
 
     # orders = SalesOrder.having('count(order_id) > 1').group(:order_id)
-    orders = SalesOrder.all
+    orders = SalesOrder
 
     sales_dailies = []
+    sales_count = 0
+    sales_max = orders.count
 
-    orders.each do |o|
+    orders.find_each do |o|
+
+      if sales_count % 10000 == 0
+        puts "Processed #{sales_count}/#{sales_max} - #{((sales_count*100.0)/sales_max).round(2)}%"
+      end
+      sales_count += 1
 
       sorted_orders = SalesOrder.where(order_id: o ).order('volume DESC' ).to_a
 
