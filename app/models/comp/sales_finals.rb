@@ -34,7 +34,9 @@ class Comp::SalesFinals
 
     ActiveRecord::Base.transaction do
       SalesFinal.delete_all
-      SalesFinal.import!(sales_dailies )
+      sales_dailies.in_groups_of( 500 ) do |g|
+        SalesFinal.import!( g.compact )
+      end
     end
 
   end

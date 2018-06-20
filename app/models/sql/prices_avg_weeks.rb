@@ -9,5 +9,4 @@ class Sql::PricesAvgWeeks
     end
   end
 
-
 end
