@@ -9,14 +9,14 @@ namespace :process do
     desc 'Full process - hourly'
     task :hourly => :environment do
 
-      # Crontab.start( :hourly )
+      Crontab.start( :hourly )
 
-      # Esi::DownloadSalesOrders.new.update
+      Esi::DownloadSalesOrders.new.update
 
-      # Sql::PricesMins.update
-      # Sql::PricesAdvices.update
+      Sql::PricesMins.update
+      Sql::PricesAdvices.update
 
-      # Esi::DownloadMyOrders.new.update()
+      Esi::DownloadMyOrders.new.update()
 
       Banner.p( 'Finished' )
 

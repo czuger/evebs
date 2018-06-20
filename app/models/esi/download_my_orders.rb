@@ -7,7 +7,7 @@ class Esi::DownloadMyOrders < Esi::Download
   end
 
   def update
-    Banner.p 'About to download users orders.'
+    Banner.p 'About to download users orders'
     User.where.not( last_used_character_id: nil ).each do |user|
       update_user user
     end
