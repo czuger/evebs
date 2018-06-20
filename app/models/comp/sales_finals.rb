@@ -2,7 +2,7 @@ class Comp::SalesFinals
 
   def self.run
 
-    Banner.p 'About to compute SalesDailies'
+    Banner.p 'About to compute sales final'
 
     # orders = SalesOrder.having('count(order_id) > 1').group(:order_id)
     orders = SalesOrder
@@ -13,9 +13,9 @@ class Comp::SalesFinals
 
     orders.find_each do |o|
 
-      if sales_count % 10000 == 0
-        puts "Processed #{sales_count}/#{sales_max} - #{((sales_count*100.0)/sales_max).round(2)}%"
-      end
+      # if sales_count % 10000 == 0
+      #   puts "Processed #{sales_count}/#{sales_max} - #{((sales_count*100.0)/sales_max).round(2)}%"
+      # end
       sales_count += 1
 
       sorted_orders = SalesOrder.where(order_id: o ).order('volume DESC' ).to_a

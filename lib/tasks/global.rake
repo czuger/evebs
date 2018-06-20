@@ -14,7 +14,6 @@ namespace :process do
       Esi::DownloadSalesOrders.new.update
 
       Sql::PricesMins.update
-      Sql::PricesAdvices.update
 
       Esi::DownloadMyOrders.new.update()
 
@@ -27,6 +26,7 @@ namespace :process do
     task :daily => :environment do
 
       Comp::SalesFinals.run
+      Sql::PricesAdvices.update
 
       # Esi::UpdateStructures.new( debug_request: false ).update
       Banner.p( 'Finished' )

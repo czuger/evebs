@@ -1,16 +1,15 @@
 /* il faut voir si on peut faire le calcul d'un coup ou bien s'il faut consolider les données de manière journalière d'abord */
 
--- Bad explain plan
--- UPDATE price_avg_weeks paw SET ( price, updated_at ) = (
---   SELECT SUM( so.volume * so.price ) / SUM( so.volume ),now()
---   FROM sales_finals so
---   WHERE so.eve_item_id = paw.eve_item_id
---         AND so.trade_hub_id = paw.trade_hub_id
---         AND so.day >= current_date - 7
---   GROUP BY paw.eve_item_id, paw.trade_hub_id
--- );
+UPDATE prices_avg_weeks pm SET ( price, updated_at ) = ( mp, now() )
+FROM (
+       SELECT SUM( so.volume * so.price ) / SUM( so.volume ) mp, so.trade_hub_id ti, so.eve_item_id ei
+       FROM sales_finals so
+       WHERE so.day >= current_date - 7
+       GROUP BY so.trade_hub_id, so.eve_item_id ) min_so
+WHERE ti = pm.trade_hub_id
+AND ei = pm.eve_item_id;
 
-INSERT INTO price_avg_weeks
+INSERT INTO prices_avg_weeks
   SELECT nextval( 'eve_market_history_archives_id_seq' ), so.trade_hub_id, so.eve_item_id, SUM( so.volume * so.price ) / SUM( so.volume ), now(), now()
   FROM sales_finals so
   WHERE so.eve_item_id = eve_item_id
@@ -20,5 +19,4 @@ INSERT INTO price_avg_weeks
       SELECT 1 FROM price_avg_weeks
       WHERE so.trade_hub_id = price_avg_weeks.trade_hub_id
             AND so.eve_item_id = price_avg_weeks.eve_item_id
-  )
-  GROUP BY so.eve_item_id, so.trade_hub_id
+  );
