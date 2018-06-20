@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_19_162636) do
+ActiveRecord::Schema.define(version: 2018_06_20_060308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,15 +191,6 @@ ActiveRecord::Schema.define(version: 2018_06_19_162636) do
     t.index ["component_id"], name: "index_materials_on_component_id"
   end
 
-  create_table "price_avg_weeks", force: :cascade do |t|
-    t.bigint "trade_hub_id", null: false
-    t.bigint "eve_item_id", null: false
-    t.float "price", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["trade_hub_id", "eve_item_id"], name: "index_price_avg_weeks_on_trade_hub_id_and_eve_item_id", unique: true
-  end
-
   create_table "prices_advices", id: :serial, force: :cascade do |t|
     t.integer "eve_item_id", null: false
     t.integer "trade_hub_id", null: false
@@ -218,6 +209,15 @@ ActiveRecord::Schema.define(version: 2018_06_19_162636) do
     t.index ["eve_item_id"], name: "index_prices_advices_on_eve_item_id"
     t.index ["region_id"], name: "index_prices_advices_on_region_id"
     t.index ["trade_hub_id"], name: "index_prices_advices_on_trade_hub_id"
+  end
+
+  create_table "prices_avg_weeks", force: :cascade do |t|
+    t.bigint "trade_hub_id", null: false
+    t.bigint "eve_item_id", null: false
+    t.float "price", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trade_hub_id", "eve_item_id"], name: "index_prices_avg_weeks_on_trade_hub_id_and_eve_item_id", unique: true
   end
 
   create_table "prices_mins", id: :serial, force: :cascade do |t|
@@ -367,11 +367,11 @@ ActiveRecord::Schema.define(version: 2018_06_19_162636) do
   add_foreign_key "eve_items", "market_groups"
   add_foreign_key "eve_markets_histories", "eve_items"
   add_foreign_key "eve_markets_histories", "regions"
-  add_foreign_key "price_avg_weeks", "eve_items"
-  add_foreign_key "price_avg_weeks", "trade_hubs"
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
   add_foreign_key "prices_advices", "trade_hubs"
+  add_foreign_key "prices_avg_weeks", "eve_items"
+  add_foreign_key "prices_avg_weeks", "trade_hubs"
   add_foreign_key "sales_finals", "eve_items"
   add_foreign_key "sales_finals", "trade_hubs"
   add_foreign_key "sales_orders", "eve_items"

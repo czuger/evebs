@@ -19,25 +19,22 @@ DELETE FROM prices_advices pm WHERE NOT EXISTS (
     WHERE pm.trade_hub_id = so.trade_hub_id
           AND pm.eve_item_id = so.eve_item_id );
 
-/* Update all datas */
-
-UPDATE prices_advices pm SET ( vol_month, updated_at ) = ( mp, now() )
+/* Update all data */
+UPDATE prices_advices pm SET ( vol_month, vol_day, avg_price, updated_at ) = ( mp, mp/30, ap, now() )
 FROM (
-       SELECT SUM( so.volume ) mp, so.trade_hub_id ti, so.eve_item_id ei
+       SELECT SUM( so.volume ) mp, AVG( price ) ap, so.trade_hub_id ti, so.eve_item_id ei
        FROM sales_finals so
        GROUP BY so.trade_hub_id, so.eve_item_id ) min_so
 WHERE ti = pm.trade_hub_id
 AND ei = pm.eve_item_id;
 
-UPDATE prices_advices pm SET ( vol_day, updated_at ) = ( vol_month/30, now() );
-
-UPDATE prices_advices cpa
-SET vol_month = cplma.volume_sum, vol_day = floor( cplma.volume_sum / 30 ), avg_price = cplma.avg_price_avg,
-updated_at = now()
-FROM crest_prices_last_month_averages cplma, trade_hubs th
-WHERE cpa.eve_item_id = cplma.eve_item_id
-AND cpa.trade_hub_id = th.id
-AND th.region_id = cplma.region_id;
+-- UPDATE prices_advices cpa
+-- SET vol_month = cplma.volume_sum, vol_day = floor( cplma.volume_sum / 30 ), avg_price = cplma.avg_price_avg,
+-- updated_at = now()
+-- FROM crest_prices_last_month_averages cplma, trade_hubs th
+-- WHERE cpa.eve_item_id = cplma.eve_item_id
+-- AND cpa.trade_hub_id = th.id
+-- AND th.region_id = cplma.region_id;
 
 UPDATE prices_advices cpa
 SET min_price = mp.min_price, updated_at = now()
