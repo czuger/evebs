@@ -27,6 +27,7 @@ namespace :process do
 
       Comp::SalesFinals.run
       Sql::PricesAdvices.update
+      Sql::PricesAvgWeeks.update
 
       # Esi::UpdateStructures.new( debug_request: false ).update
       Banner.p( 'Finished' )
