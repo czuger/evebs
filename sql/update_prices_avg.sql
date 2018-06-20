@@ -10,13 +10,14 @@ WHERE ti = pm.trade_hub_id
 AND ei = pm.eve_item_id;
 
 INSERT INTO prices_avg_weeks
-  SELECT nextval( 'eve_market_history_archives_id_seq' ), so.trade_hub_id, so.eve_item_id, SUM( so.volume * so.price ) / SUM( so.volume ), now(), now()
+  SELECT NULL, so.trade_hub_id, so.eve_item_id, SUM( so.volume * so.price ) / SUM( so.volume ), now(), now()
   FROM sales_finals so
   WHERE so.eve_item_id = eve_item_id
         AND so.trade_hub_id = trade_hub_id
         AND so.day >= current_date - 7
         AND NOT EXISTS (
-      SELECT 1 FROM price_avg_weeks
-      WHERE so.trade_hub_id = price_avg_weeks.trade_hub_id
-            AND so.eve_item_id = price_avg_weeks.eve_item_id
-  );
+          SELECT 1 FROM prices_avg_weeks
+          WHERE so.trade_hub_id = trade_hub_id
+          AND so.eve_item_id = eve_item_id
+        )
+  GROUP BY so.trade_hub_id, so.eve_item_id;

@@ -3,21 +3,23 @@
 
 /* TRUNCATE TABLE caddie_crest_price_history_updates; */
 
+/* Removing advices for which we have no sales data */
+DELETE FROM prices_advices pm WHERE NOT EXISTS (
+    SELECT * FROM sales_finals so
+    WHERE pm.trade_hub_id = so.trade_hub_id
+          AND pm.eve_item_id = so.eve_item_id );
+
 /* Insert new regions / items */
 INSERT INTO prices_advices( eve_item_id, region_id, trade_hub_id, created_at, updated_at )
   SELECT eve_items.id, trade_hubs.region_id, trade_hubs.id, now(), now()
   FROM eve_items, trade_hubs, blueprints
   WHERE eve_items.id = blueprints.eve_item_id
-  AND NOT EXISTS (
-      SELECT NULL FROM prices_advices
-      WHERE eve_item_id = eve_items.id
-      AND trade_hub_id = trade_hubs.id );
-
-/* Removing advices for which we have no items/trade hubs */
-DELETE FROM prices_advices pm WHERE NOT EXISTS (
-    SELECT * FROM sales_finals so
-    WHERE pm.trade_hub_id = so.trade_hub_id
-          AND pm.eve_item_id = so.eve_item_id );
+      AND NOT EXISTS (
+      SELECT NULL FROM prices_advices pa, sales_finals sf
+      WHERE pa.eve_item_id = eve_items.id
+            AND pa.trade_hub_id = trade_hubs.id
+            AND sf.eve_item_id = eve_items.id
+            AND sf.trade_hub_id = trade_hubs.id );
 
 /* Update all data */
 UPDATE prices_advices pm SET ( vol_month, vol_day, avg_price, updated_at ) = ( mp, mp/30, ap, now() )
