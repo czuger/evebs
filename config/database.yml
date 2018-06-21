@@ -3,15 +3,11 @@ development:
   encoding: unicode
   database: eve_business_server_dev
   pool: 5
-  username: eve_business_server
-  password: 123456
-  #schema_search_path: :dev
+  username: ced
 
 test:
   adapter: postgresql
   encoding: unicode
   database: eve_business_server_test
   pool: 5
-  username: eve_business_server
-  password: 123456
-  #schema_search_path: :test
+  username: ced

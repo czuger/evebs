@@ -27,13 +27,13 @@ namespace :db do
         end
 
         puts 'Dropping database'
-        `dropdb eve_business_server_dev -U eve_business_server`
+        `dropdb eve_business_server_dev`
 
         puts 'Creating database'
-        `createdb eve_business_server_dev -U eve_business_server -O eve_business_server`
+        `createdb eve_business_server_dev`
 
         puts 'Inserting datas'
-        `pg_restore -U eve_business_server -d eve_business_server_dev -n public /tmp/production.dump`
+        `pg_restore --no-owner -d eve_business_server_dev -n public /tmp/production.dump`
       end
 
     end
