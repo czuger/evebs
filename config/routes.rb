@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     get :cost
   end
 
+  resource :list_items, only: [ :edit, :update ]
+
   resource :shopping_baskets, only: [ :show ]
 
   resources :jita_margins, only: [ :index, :update ]

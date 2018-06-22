@@ -1,0 +1,25 @@
+.container
+
+  = render partial: 'shared/errors'
+
+  = form_tag list_items_path, method: :put do
+
+    .row
+      .col-md-12.text-center
+        .actions
+          = submit_tag 'Delete selected items', class: 'btn btn-default'
+
+    %table.table.table-bordered
+      %thead
+        %tr
+          %th
+            Check
+          %th
+            Name
+
+      %tbody
+        - @user.eve_items.each do |item|
+          %tr
+            %th
+              = check_box_tag "items[#{item.id}]"
+            %th= item.name

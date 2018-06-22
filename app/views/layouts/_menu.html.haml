@@ -9,9 +9,15 @@
     -#    Eve business server (Beta) - version 0.2-CHANGE_TO_VERSION_NUMBER
     - if current_user
       %ul.nav.navbar-nav
-        %li.dropdown
-        %li{ class: active_link( edit_choose_items_path ) }
-          = link_to 'Items', edit_choose_items_path
+        -#%li.dropdown
+
+        %li
+          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+            Items
+            %span.caret
+          %ul.dropdown-menu
+            %li{ class: active_link( edit_choose_items_path ) }= link_to 'Add items', edit_choose_items_path
+            %li{ class: active_link( edit_list_items_path ) }= link_to 'Edit items', edit_list_items_path
 
         %li{ class: active_link( edit_choose_trade_hubs_path ) }
           = link_to 'Trade hubs', edit_choose_trade_hubs_path
