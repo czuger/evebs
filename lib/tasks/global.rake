@@ -11,11 +11,14 @@ namespace :process do
 
       Crontab.start( :hourly )
 
-      Esi::DownloadSalesOrders.new.update
+      ActiveRecord::Base.transaction do
+        Esi::DownloadSalesOrders.new.update
 
-      Sql::PricesMins.update
+        Sql::PricesMins.update
+        Sql::PricesAdvices.update
 
-      Esi::DownloadMyOrders.new.update()
+        Esi::DownloadMyOrders.new.update()
+      end
 
       Banner.p( 'Finished' )
 
@@ -25,9 +28,10 @@ namespace :process do
     desc 'Full process - daily'
     task :daily => :environment do
 
-      Comp::SalesFinals.run
-      Sql::PricesAdvices.update
-      Sql::PricesAvgWeeks.update
+      ActiveRecord::Base.transaction do
+        Comp::SalesFinals.run
+        Sql::PricesAvgWeeks.update
+      end
 
       # Esi::UpdateStructures.new( debug_request: false ).update
       Banner.p( 'Finished' )

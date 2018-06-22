@@ -7,10 +7,10 @@ class Comp::SalesFinals
     orders_ids = SalesOrder.having('count(order_id) > 1').group(:order_id).pluck(:order_id)
 
     sales_dailies = []
-    sales_count = 0
+
+    SalesFinal.delete_all
 
     orders_ids.each do |oid|
-      sales_count += 1
 
       sorted_orders = SalesOrder.where( order_id: oid ).order( 'volume DESC' ).to_a
 
@@ -28,16 +28,16 @@ class Comp::SalesFinals
                                           volume: sold_amount, price: sold_price, order_id: highest_order.order_id )
 
           highest_order = lower_order
+
+          if sales_dailies.count == 2000
+            SalesFinal.import!( sales_dailies )
+            sales_dailies = []
+          end
         end
       end
     end
 
-    ActiveRecord::Base.transaction do
-      SalesFinal.delete_all
-      sales_dailies.in_groups_of( 500 ) do |g|
-        SalesFinal.import!( g.compact )
-      end
-    end
+    SalesFinal.import!( sales_dailies )
 
   end
 

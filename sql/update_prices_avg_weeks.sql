@@ -9,8 +9,8 @@ FROM (
 WHERE ti = pm.trade_hub_id
 AND ei = pm.eve_item_id;
 
-INSERT INTO prices_avg_weeks
-  SELECT NULL, so.trade_hub_id, so.eve_item_id, SUM( so.volume * so.price ) / SUM( so.volume ), now(), now()
+INSERT INTO prices_avg_weeks( trade_hub_id, eve_item_id, price, created_at, updated_at )
+  SELECT so.trade_hub_id, so.eve_item_id, SUM( so.volume * so.price ) / SUM( so.volume ), now(), now()
   FROM sales_finals so
   WHERE so.eve_item_id = eve_item_id
         AND so.trade_hub_id = trade_hub_id

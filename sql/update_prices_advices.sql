@@ -59,4 +59,3 @@ UPDATE prices_advices cpa SET single_unit_cost = (cost*(1+0.11))/prod_qtt, updat
 
 UPDATE prices_advices cpa
 SET daily_monthly_pcent = min_price / avg_price, updated_at = now();
-
