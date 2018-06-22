@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'components/show'
   resource :admin_tools, only: [ :show ] do
     get :denied
     get :activity
@@ -12,6 +13,8 @@ Rails.application.routes.draw do
   resources :items, only: [ :show ] do
     get :cost
   end
+
+  resource :components, only: [ :show ]
 
   resource :list_items, only: [ :edit, :update ]
 
