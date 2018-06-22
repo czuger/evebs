@@ -99,7 +99,6 @@ getTree = ->
   filtered_items_tree = original_items_tree
   setTree(filtered_items_tree)
 
-
 $(document).on('turbolinks:load'
   ->
     if window.location.pathname == '/choose_items/edit'

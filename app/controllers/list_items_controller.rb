@@ -4,6 +4,9 @@ class ListItemsController < ApplicationController
 
   def edit
     @user = current_user
+    @items = EveItem.where( "name_lowcase like '%#{params['filter']}%'" ).order( 'name' ).paginate(:page => params[:page], :per_page => 15)
+    @filter = params['filter']
+    @item_ids = @user.eve_item_ids.uniq.to_set
   end
 
   def update

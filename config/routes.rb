@@ -14,8 +14,6 @@ Rails.application.routes.draw do
     get :cost
   end
 
-  resource :components, only: [ :show ]
-
   resource :list_items, only: [ :edit, :update ]
 
   resource :shopping_baskets, only: [ :show ]

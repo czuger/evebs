@@ -2,12 +2,15 @@
 
   = render partial: 'shared/errors'
 
-  = form_tag list_items_path, method: :put do
+  = form_tag edit_list_items_path, method: :get do
 
-    .row
-      .col-md-12.text-center
-        .actions
-          = submit_tag 'Delete selected items', class: 'btn btn-default'
+    .form-group
+      .row
+        .col-md-10
+          = text_field_tag :filter, @filter, class: 'form-control'
+
+        .col-md-2
+          = button_tag :filter, class: 'form-control'
 
     %table.table.table-bordered
       %thead
@@ -18,8 +21,10 @@
             Name
 
       %tbody
-        - @user.eve_items.each do |item|
+        - @items.each do |item|
           %tr
             %th
-              = check_box_tag "items[#{item.id}]"
+              = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
             %th= item.name
+
+  = will_paginate @items
