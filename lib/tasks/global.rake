@@ -31,6 +31,7 @@ namespace :process do
       ActiveRecord::Base.transaction do
         Comp::SalesFinals.run
         Sql::PricesAvgWeeks.update
+        EveItem.compute_cost_for_all_items
       end
 
       # Esi::UpdateStructures.new( debug_request: false ).update
@@ -53,11 +54,11 @@ namespace :process do
       Banner.p 'About to update blueprints'
       Fuzzwork::Blueprints.new.update
 
-      Esi::DownloadPricesHistory.new( debug_request: false ).update_table
-
-      Crest::ComputePriceHistoryAvg.new
-
-      EveItem.compute_cost_for_all_items
+      # Esi::DownloadPricesHistory.new( debug_request: false ).update_table
+      #
+      # Crest::ComputePriceHistoryAvg.new
+      #
+      # EveItem.compute_cost_for_all_items
 
       MarketGroup.build_items_tree
 

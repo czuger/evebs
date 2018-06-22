@@ -39,8 +39,6 @@ class EveItem < ApplicationRecord
 
   end
 
-  private
-
   def compute_cost
     total_cost = 0
     materials.each do |material|

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_20_060308) do
+ActiveRecord::Schema.define(version: 2018_06_22_094812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,10 +48,11 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
 
   create_table "components", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id"
-    t.string "name"
+    t.string "name", limit: 255
     t.float "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "blueprints_count"
     t.index ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
   end
 
@@ -88,10 +89,10 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "name_lowcase"
+    t.string "name_lowcase", limit: 255
     t.float "cost"
     t.boolean "epic_blueprint", default: false
     t.boolean "involved_in_blueprint", default: false
@@ -107,21 +108,6 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
     t.index ["user_id"], name: "index_eve_items_users_on_user_id"
   end
 
-  create_table "eve_market_history_archives", force: :cascade do |t|
-    t.integer "region_id", null: false
-    t.integer "eve_item_id", null: false
-    t.string "year", null: false
-    t.string "month", null: false
-    t.date "history_date", null: false
-    t.integer "order_count"
-    t.bigint "volume"
-    t.float "low_price"
-    t.float "avg_price"
-    t.float "high_price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "eve_market_history_errors", force: :cascade do |t|
     t.integer "cpp_region_id"
     t.integer "cpp_eve_item_id"
@@ -133,7 +119,7 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
   create_table "eve_markets_histories", id: :serial, force: :cascade do |t|
     t.integer "region_id", null: false
     t.integer "eve_item_id", null: false
-    t.string "day_timestamp", null: false
+    t.string "day_timestamp"
     t.datetime "history_date", null: false
     t.bigint "order_count"
     t.bigint "volume"
@@ -158,9 +144,9 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "password_digest"
+    t.string "name", limit: 255
+    t.string "email", limit: 255
+    t.string "password_digest", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -293,7 +279,7 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name"
+    t.string "name", limit: 255
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -313,7 +299,7 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -357,12 +343,12 @@ ActiveRecord::Schema.define(version: 2018_06_20_060308) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name"
+    t.string "name", limit: 255
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider"
-    t.string "uid"
+    t.string "provider", limit: 255
+    t.string "uid", limit: 255
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"
