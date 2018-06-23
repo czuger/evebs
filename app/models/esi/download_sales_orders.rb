@@ -52,8 +52,13 @@ class Esi::DownloadSalesOrders < Esi::Download
 
       @order_ids_present.uniq!
 
-      @order_ids_present.in_groups_of( 10000 ) do |g|
-        SalesOrder.where.not( order_id: g.compact ).where( closed: false ).update_all( closed: true )
+      # Remove after first test.
+      SalesOrder.update_all( closed: false )
+
+      orders_absent = SalesOrder.distinct.pluck( :order_id ) - @order_ids_present
+
+      orders_absent.in_groups_of( 10000 ) do |g|
+        SalesOrder.where( order_id: g.compact ).update_all( closed: true )
       end
 
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
