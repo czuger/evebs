@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :items, only: [ :show ] do
     get :cost
+    get :trade_hub_detail
   end
 
   resource :list_items, only: [ :edit, :update ]

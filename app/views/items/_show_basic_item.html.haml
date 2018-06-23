@@ -18,6 +18,6 @@
           %td= trade_hub_name_with_region( mp.trade_hub )
 
           %td.text-right
-            = print_isk( mp.min_price )
+            = link_to( print_isk( mp.min_price ), item_trade_hub_detail_path( mp.eve_item_id, trade_hub_id: mp.trade_hub_id ) )
           %td.text-right
             = print_volume( mp.volume )

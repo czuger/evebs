@@ -1,0 +1,15 @@
+.container
+
+  %table.table.table-bordered.sortable
+    %thead
+      %tr
+        %th.text-center Price
+        %th.text-center Volume
+        %th.text-center Date
+
+    %tbody
+      - @orders.each_with_index do |order|
+        %tr
+          %td= order.price
+          %td= order.volume
+          %td= order.updated_at
