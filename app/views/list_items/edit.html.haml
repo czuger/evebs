@@ -25,6 +25,8 @@
           %tr
             %th
               = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
-            %th= item.name
+            %th= link_to( item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{item.cpp_eve_item_id}", :target => '_blank' )
+            %th= link_to( 'Cost', item_cost_path( item ) )
+            %th= link_to( 'Market', item_path( item ) )
 
   = will_paginate @items
