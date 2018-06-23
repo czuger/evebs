@@ -1,0 +1,2 @@
+class SalesOrdersProcessInfo < ApplicationRecord
+end

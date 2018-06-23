@@ -1,6 +1,10 @@
 class Crontab < ApplicationRecord
 
   def self.start( cron_name )
+
+    # Skip it in development.
+    return if Rails.env.development?
+
     r = Crontab.where( cron_name: cron_name ).first_or_create!
 
     if r.status

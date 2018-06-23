@@ -111,5 +111,6 @@ gem 'activerecord-import'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'active_record-sequence'
 
 

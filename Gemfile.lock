@@ -33,6 +33,7 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    active_record-sequence (0.2.0)
     activejob (5.2.0)
       activesupport (= 5.2.0)
       globalid (>= 0.3.6)
@@ -307,6 +308,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack-page_caching
+  active_record-sequence
   activerecord-import
   bootstrap-sass (~> 3.3.6)
   bullet
@@ -347,4 +349,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.0)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

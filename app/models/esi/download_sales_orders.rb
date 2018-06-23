@@ -8,7 +8,7 @@ class Esi::DownloadSalesOrders < Esi::Download
   # il faut gérer la disparition de l'ordre. Est ce qu'on s'en fout ?
   # Dans un premier temps oui (oui, on s'en fout), car on ne sait pas
   # si l'ordre a été annulé, timeout ou bien vendu.
-  def update( only_cpp_region_id = nil, cpp_type_id = nil )
+  def update( only_cpp_region_id: nil, cpp_type_id: nil )
 
     Banner.p 'About to update min prices'
 
@@ -20,12 +20,21 @@ class Esi::DownloadSalesOrders < Esi::Download
     @cpp_type_id = cpp_type_id
 
     @sales_orders_ids = SalesOrder.pluck(:order_id, :volume ).to_set
+    puts "@sales_orders_ids.count = #{@sales_orders_ids.count}" if @debug_request
+
     @sales_orders_stored = 0
+
+    @sequence = ActiveRecord::Sequence.new('sales_orders_retrieve_session_id' )
+    @sales_orders_retrieve_session_id = @sequence.next
+
+    puts "@sales_orders_retrieve_session_id = #{@sales_orders_retrieve_session_id}" if @debug_request
 
     ActiveRecord::Base.transaction do
 
       regions.each do |region|
         cpp_region_id = region.cpp_region_id.to_i
+
+        # puts "only_cpp_region_id=#{only_cpp_region_id} vs cpp_region_id=#{cpp_region_id}" if @debug_request
 
         next if only_cpp_region_id && only_cpp_region_id != cpp_region_id
 
@@ -37,10 +46,10 @@ class Esi::DownloadSalesOrders < Esi::Download
 
         pages = get_all_pages
         download_orders( pages )
+
       end
 
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
-
     end
 
     puts "#{@sales_orders_stored} sales orders stored."
@@ -75,10 +84,17 @@ class Esi::DownloadSalesOrders < Esi::Download
         end
 
         @sales_orders << SalesOrder.new(day: Time.now, volume: record['volume_remain'], price: record['price'],
-                                        trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'])
+          trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
+          retrieve_session_id: @sales_orders_retrieve_session_id )
 
         @sales_orders_stored += 1
         @sales_orders_ids << sale_key
+
+        if @sales_orders.count == 2000
+          SalesOrder.import!( @sales_orders )
+          @sales_orders = []
+        end
+
       end
     end
 

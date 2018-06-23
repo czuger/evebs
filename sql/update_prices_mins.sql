@@ -18,8 +18,8 @@ FROM (
 WHERE ti = pm.trade_hub_id
 AND ei = pm.eve_item_id;
 
-INSERT INTO prices_mins
-  SELECT nextval( 'prices_mins_id_seq' ), trade_hub_id, eve_item_id, MIN( price ), now(), now(), NULL
+INSERT INTO prices_mins( trade_hub_id, eve_item_id, min_price, created_at, updated_at )
+  SELECT trade_hub_id, eve_item_id, MIN( price ), now(), now()
   FROM sales_orders
   WHERE NOT EXISTS (
       SELECT * FROM prices_mins WHERE trade_hub_id = prices_mins.trade_hub_id AND eve_item_id = prices_mins.eve_item_id
