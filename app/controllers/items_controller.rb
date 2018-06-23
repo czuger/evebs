@@ -24,7 +24,9 @@ class ItemsController < ApplicationController
   end
 
   def trade_hub_detail
-    @orders = SalesOrder.where( trade_hub_id: params[ :trade_hub_id ], eve_item_id: params[ :trade_hub_id ], day: Time.now ).order( 'updated_at' )
+    @trade_hub = TradeHub.find( params[ :trade_hub_id ] )
+    @item = EveItem.find( params[ :item_id ] )
+    @orders = SalesOrder.where( trade_hub_id: params[ :trade_hub_id ], eve_item_id: params[ :item_id ], day: Time.now ).order( 'updated_at' )
   end
 
 end
