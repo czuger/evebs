@@ -12,7 +12,7 @@ namespace :process do
       Crontab.start( :hourly )
 
       ActiveRecord::Base.transaction do
-        Esi::DownloadSalesOrders.new( debug_request: true ).update( only_cpp_region_id: nil )
+        Esi::DownloadSalesOrders.new( debug_request: false ).update( only_cpp_region_id: nil )
 
         Sql::PricesMins.update
         Sql::PricesAdvices.update
