@@ -20,6 +20,7 @@ class Esi::DownloadSalesOrders < Esi::Download
     @cpp_type_id = cpp_type_id
 
     @sales_orders_ids = SalesOrder.pluck(:order_id, :volume ).to_set
+    @order_ids_present = []
     puts "@sales_orders_ids.count = #{@sales_orders_ids.count}" if @debug_request
 
     @sales_orders_stored = 0
@@ -47,6 +48,12 @@ class Esi::DownloadSalesOrders < Esi::Download
         pages = get_all_pages
         download_orders( pages )
 
+      end
+
+      @order_ids_present.uniq!
+
+      @order_ids_present.in_groups_of( 10000 ) do |g|
+        SalesOrder.where.not( order_id: g.compact ).where( closed: false ).update_all( closed: true )
       end
 
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
@@ -85,7 +92,7 @@ class Esi::DownloadSalesOrders < Esi::Download
 
         @sales_orders << SalesOrder.new(day: Time.now, volume: record['volume_remain'], price: record['price'],
           trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
-          retrieve_session_id: @sales_orders_retrieve_session_id )
+          retrieve_session_id: @sales_orders_retrieve_session_id, closed: false )
 
         @sales_orders_stored += 1
         @sales_orders_ids << sale_key
@@ -94,8 +101,9 @@ class Esi::DownloadSalesOrders < Esi::Download
           SalesOrder.import!( @sales_orders )
           @sales_orders = []
         end
-
       end
+
+      @order_ids_present << record['order_id']
     end
 
     SalesOrder.import @sales_orders
