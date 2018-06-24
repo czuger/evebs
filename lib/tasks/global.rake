@@ -28,11 +28,15 @@ namespace :process do
     desc 'Full process - daily'
     task :daily => :environment do
 
+      Crontab.start( :hourly )
+
       ActiveRecord::Base.transaction do
         Comp::SalesFinals.run
         Sql::PricesAvgWeeks.update
         EveItem.compute_cost_for_all_items
       end
+
+      Crontab.stop( :hourly )
 
       # Esi::UpdateStructures.new( debug_request: false ).update
       Banner.p( 'Finished' )
