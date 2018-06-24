@@ -10,6 +10,7 @@ class Esi::Download
     @debug_request = debug_request
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
+    @forbidden_count = 0
   end
 
   def get_page( page_number=nil )
@@ -53,7 +54,7 @@ class Esi::Download
       begin
         pages = get_page
       rescue => e
-        error_handling e
+        return false unless error_handling e
         next
       end
 
@@ -125,7 +126,10 @@ class Esi::Download
     puts "Requesting #{@rest_url}, #{@params.inspect} got #{e}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     STDOUT.flush
 
-    if e.kind_of? Esi::Errors::Base
+    if e.is_a? Esi::Errors::Forbidden
+      @forbidden_count += 1
+      return false if @forbidden_count > 5
+    elsif e.kind_of? Esi::Errors::Base
       e.pause
     else
       sleep 10

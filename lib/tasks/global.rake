@@ -28,6 +28,7 @@ namespace :process do
     desc 'Full process - daily'
     task :daily => :environment do
 
+      # Hourly process should be stopped when daily crontab is on.
       Crontab.start( :hourly )
 
       ActiveRecord::Base.transaction do

@@ -18,12 +18,25 @@ class Esi::DownloadMyOrders < Esi::Download
   def update_user( user )
 
     character = user.last_used_character
+
+
+    if character.locked
+      puts "#{character.name} is locked. Skipping ..."
+    end
+
     character_id = character.eve_id
     @rest_url = "characters/#{character_id}/orders/"
 
     set_auth_token
 
     pages = get_all_pages
+
+    unless pages
+      if @forbidden_count > 5
+        character.update( locked: true )
+        return
+      end
+    end
 
     current_trade_orders_id = TradeOrder.pluck( :id )
 
