@@ -19,9 +19,9 @@ class Esi::DownloadMyOrders < Esi::Download
 
     character = user.last_used_character
 
-
     if character.locked
       puts "#{character.name} is locked. Skipping ..."
+      return
     end
 
     character_id = character.eve_id
