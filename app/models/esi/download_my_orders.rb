@@ -32,10 +32,8 @@ class Esi::DownloadMyOrders < Esi::Download
     pages = get_all_pages
 
     unless pages
-      if @forbidden_count > 5
-        character.update( locked: true )
-        return
-      end
+      character.update( locked: true )
+      return
     end
 
     current_trade_orders_id = TradeOrder.pluck( :id )
