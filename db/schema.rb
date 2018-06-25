@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_24_124026) do
+ActiveRecord::Schema.define(version: 2018_06_25_131458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,35 +57,11 @@ ActiveRecord::Schema.define(version: 2018_06_24_124026) do
     t.index ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
   end
 
-  create_table "crest_prices_last_month_averages", id: :serial, force: :cascade do |t|
-    t.integer "region_id", null: false
-    t.integer "eve_item_id", null: false
-    t.bigint "order_count_sum"
-    t.bigint "volume_sum"
-    t.bigint "order_count_avg"
-    t.bigint "volume_avg"
-    t.float "low_price_avg"
-    t.float "avg_price_avg"
-    t.float "high_price_avg"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["eve_item_id"], name: "index_crest_prices_last_month_averages_on_eve_item_id"
-    t.index ["region_id"], name: "index_crest_prices_last_month_averages_on_region_id"
-  end
-
   create_table "crontabs", force: :cascade do |t|
     t.string "cron_name", null: false
     t.boolean "status", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "eve_empty_market_histories", force: :cascade do |t|
-    t.integer "cpp_region_id"
-    t.integer "cpp_eve_item_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cpp_region_id", "cpp_eve_item_id"], name: "idx_eve_empty_market_histories", unique: true
   end
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
@@ -107,56 +83,6 @@ ActiveRecord::Schema.define(version: 2018_06_24_124026) do
     t.integer "eve_item_id"
     t.index ["eve_item_id"], name: "index_eve_items_users_on_eve_item_id"
     t.index ["user_id"], name: "index_eve_items_users_on_user_id"
-  end
-
-  create_table "eve_market_history_archives", force: :cascade do |t|
-    t.integer "region_id", null: false
-    t.integer "eve_item_id", null: false
-    t.string "year", null: false
-    t.string "month", null: false
-    t.date "history_date", null: false
-    t.integer "order_count"
-    t.bigint "volume"
-    t.float "low_price"
-    t.float "avg_price"
-    t.float "high_price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "eve_market_history_errors", force: :cascade do |t|
-    t.integer "cpp_region_id"
-    t.integer "cpp_eve_item_id"
-    t.string "error"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "eve_markets_histories", id: :serial, force: :cascade do |t|
-    t.integer "region_id", null: false
-    t.integer "eve_item_id", null: false
-    t.string "day_timestamp"
-    t.datetime "history_date", null: false
-    t.bigint "order_count"
-    t.bigint "volume"
-    t.float "low_price"
-    t.float "avg_price"
-    t.float "high_price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["day_timestamp"], name: "index_eve_markets_histories_on_day_timestamp"
-    t.index ["history_date"], name: "index_eve_markets_histories_on_history_date"
-    t.index ["region_id", "eve_item_id", "day_timestamp"], name: "price_histories_all_keys_index", unique: true
-    t.index ["region_id", "eve_item_id"], name: "index_crest_price_histories_on_region_and_item"
-  end
-
-  create_table "eve_markets_prices", force: :cascade do |t|
-    t.integer "type_id", null: false
-    t.float "average_price"
-    t.float "adjusted_price", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["type_id"], name: "index_eve_markets_prices_on_type_id", unique: true
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
@@ -391,11 +317,7 @@ ActiveRecord::Schema.define(version: 2018_06_24_124026) do
   add_foreign_key "api_key_errors", "users"
   add_foreign_key "blueprints", "eve_items"
   add_foreign_key "characters", "users"
-  add_foreign_key "crest_prices_last_month_averages", "eve_items"
-  add_foreign_key "crest_prices_last_month_averages", "regions"
   add_foreign_key "eve_items", "market_groups"
-  add_foreign_key "eve_markets_histories", "eve_items"
-  add_foreign_key "eve_markets_histories", "regions"
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
   add_foreign_key "prices_advices", "trade_hubs"

@@ -1,2 +1,0 @@
-class EveMarketHistoryError < ApplicationRecord
-end
