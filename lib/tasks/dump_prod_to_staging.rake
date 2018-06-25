@@ -8,7 +8,7 @@ namespace :db do
         `ssh hw [ -e /tmp/production.dump ]`
         unless $?.to_i == 0 # file exist
           puts 'Dump does not exist. Dumping'
-          `ssh hw 'pg_dump -Fc -U eve_business_server -T "eve_market_history_archives" -n public eve_business_server_production -f /tmp/production.dump'`
+          `ssh hw 'pg_dump -Fc -U eve_business_server -n public eve_business_server_production -f /tmp/production.dump'`
         end
 
         puts 'Stopping staging server'
