@@ -1,7 +1,5 @@
 class Blueprint < ApplicationRecord
 
-  extend Setup::UpdateBlueprints
-
   # belongs_to :produced
   has_many :materials
 
