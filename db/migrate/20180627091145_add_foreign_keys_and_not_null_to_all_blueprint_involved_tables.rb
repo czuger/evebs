@@ -12,7 +12,6 @@ class AddForeignKeysAndNotNullToAllBlueprintInvolvedTables < ActiveRecord::Migra
 
     change_column :components, :cpp_eve_item_id, :integer, null: false
     change_column :components, :name, :string, null: false
-
   end
 
   def down
