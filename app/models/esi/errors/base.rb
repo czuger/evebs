@@ -10,6 +10,8 @@ class Esi::Errors::Base < RuntimeError
       raise Esi::Errors::Forbidden
     when '420 status code 420'
       raise Esi::Errors::ErrorLimited
+    when '404 Not Found'
+      raise Esi::Errors::NotFound
     else
       raise exception
     end

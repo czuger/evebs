@@ -3,11 +3,6 @@ require 'yaml'
 namespace :process do
 
   # TODO : move elements or rename this
-  desc "Feed item objects list"
-  task :update_all_items => :environment do
-    Esi::EveItems.new(debug_request: false ).update
-  end
-
   desc "Update market groups"
   task :update_market_groups => :environment do
     Esi::DownloadMarketGroups.new( debug_request: false ).update

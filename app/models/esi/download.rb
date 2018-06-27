@@ -129,6 +129,8 @@ class Esi::Download
     if e.is_a? Esi::Errors::Forbidden
       @forbidden_count += 1
       return false if @forbidden_count > 5
+    elsif e.is_a? Esi::Errors::NotFound
+      raise e
     elsif e.kind_of? Esi::Errors::Base
       e.pause
     else

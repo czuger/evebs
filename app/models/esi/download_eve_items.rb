@@ -1,25 +1,20 @@
-class Esi::EveItems < Esi::Download
+class Esi::DownloadEveItems < Esi::Download
 
   def initialize( debug_request: false )
-    super( 'universe/types/', {}, debug_request: debug_request )
+    super( nil, {}, debug_request: debug_request )
     # p @errors_limit_remain
   end
 
   def update
 
-    Banner.p 'About to download new eve items list.'
+    Banner.p 'About to remove unused eve items'
 
-    new_ids = get_all_pages
-    market_transformation_hash = Hash[ MarketGroup.pluck( :cpp_market_group_id, :id ) ]
+    EveItem.where.not( cpp_eve_item_id: Blueprint.select( :produced_cpp_type_id ) ).destroy_all
 
-    # need to be tested before sent to production. Probably removing and item will lead to keys violations.
-    # Banner.p 'About to remove old items.'
-    #
-    # old_items_ids = EveItem.pluck( :cpp_eve_item_id ) - new_ids
-    #
-    # EveItem.where( cpp_eve_item_id: old_items_ids ).destroy_all
-    # puts "#{old_items_ids.count} old types removed."
-    #
+    Banner.p 'About to update new eve items list.'
+
+    new_ids = Blueprint.where.not( produced_cpp_type_id: EveItem.select( :cpp_eve_item_id ) ).pluck( :produced_cpp_type_id )
+
     Banner.p "About to download #{new_ids.count} items."
     updated_items = downloaded_items = 0
 

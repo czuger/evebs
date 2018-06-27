@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_25_131458) do
+ActiveRecord::Schema.define(version: 2018_06_26_104714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,13 +25,15 @@ ActiveRecord::Schema.define(version: 2018_06_25_131458) do
   end
 
   create_table "blueprints", id: :serial, force: :cascade do |t|
-    t.integer "eve_item_id"
-    t.integer "nb_runs"
-    t.integer "prod_qtt"
+    t.integer "produced_cpp_type_id"
+    t.integer "nb_runs", null: false
+    t.integer "prod_qtt", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "cpp_blueprint_id"
-    t.index ["eve_item_id"], name: "index_blueprints_on_eve_item_id"
+    t.string "name"
+    t.index ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", unique: true
+    t.index ["produced_cpp_type_id"], name: "index_blueprints_on_produced_cpp_type_id"
   end
 
   create_table "characters", force: :cascade do |t|
@@ -315,7 +317,6 @@ ActiveRecord::Schema.define(version: 2018_06_25_131458) do
   end
 
   add_foreign_key "api_key_errors", "users"
-  add_foreign_key "blueprints", "eve_items"
   add_foreign_key "characters", "users"
   add_foreign_key "eve_items", "market_groups"
   add_foreign_key "prices_advices", "eve_items"
