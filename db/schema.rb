@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_27_102242) do
+ActiveRecord::Schema.define(version: 2018_06_27_102847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,12 +28,12 @@ ActiveRecord::Schema.define(version: 2018_06_27_102242) do
     t.integer "produced_cpp_type_id", null: false
     t.integer "nb_runs", null: false
     t.integer "prod_qtt", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "cpp_blueprint_id", null: false
     t.string "name", null: false
     t.index ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", unique: true
-    t.index ["produced_cpp_type_id"], name: "index_blueprints_on_produced_cpp_type_id"
+    t.index ["produced_cpp_type_id"], name: "index_blueprints_on_produced_cpp_type_id", unique: true
   end
 
   create_table "characters", force: :cascade do |t|
@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(version: 2018_06_27_102242) do
     t.integer "cpp_eve_item_id", null: false
     t.string "name", null: false
     t.float "cost"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "blueprints_count"
     t.index ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
   end
@@ -69,8 +69,8 @@ ActiveRecord::Schema.define(version: 2018_06_27_102242) do
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
     t.string "name", limit: 255, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "name_lowcase", null: false
     t.float "cost"
     t.integer "market_group_id"
@@ -130,8 +130,8 @@ ActiveRecord::Schema.define(version: 2018_06_27_102242) do
     t.integer "blueprint_id", null: false
     t.integer "component_id", null: false
     t.integer "required_qtt", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["blueprint_id"], name: "index_materials_on_blueprint_id"
     t.index ["component_id"], name: "index_materials_on_component_id"
   end
