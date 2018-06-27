@@ -13,7 +13,7 @@ DELETE FROM prices_advices pm WHERE NOT EXISTS (
 INSERT INTO prices_advices( eve_item_id, region_id, trade_hub_id, created_at, updated_at )
   SELECT eve_items.id, trade_hubs.region_id, trade_hubs.id, now(), now()
   FROM eve_items, trade_hubs, blueprints
-  WHERE eve_items.id = blueprints.eve_item_id
+  WHERE eve_items.blueprints_id = blueprints.id
       AND NOT EXISTS (
       SELECT NULL FROM prices_advices pa, sales_finals sf
       WHERE pa.eve_item_id = eve_items.id
