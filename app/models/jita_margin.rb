@@ -4,7 +4,7 @@ class JitaMargin < ApplicationRecord
 
   def self.compute_margins
 
-    jita = TradeHub.find_by_eve_system_id( Component::JITA_EVE_SYSTEM_ID )
+    jita = TradeHub.find_by_eve_system_id(BlueprintComponent::JITA_EVE_SYSTEM_ID )
     items_processed = 0
     EveItem.find_each do |item|
 

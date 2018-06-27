@@ -7,8 +7,8 @@ class User < ApplicationRecord
 
   has_many :regions, through: :trade_hubs
   has_many :blueprints, through: :eve_items
-  has_many :materials, through: :blueprints
-  has_many :components, through: :materials
+  has_many :blueprint_materials, through: :blueprints
+  has_many :blueprint_components, through: :materials
   has_many :trade_orders
   has_many :api_key_errors
 

@@ -39,8 +39,8 @@ class Esi::UpdateBlueprints < Esi::Download
     Blueprint.where( cpp_blueprint_id: @to_remove_blueprint ).delete_all
     Blueprint.where.not( cpp_blueprint_id: @full_blueprints_id_list ).delete_all
 
-    Material.where.not( blueprint_id: Blueprint.select( :id ) ).delete_all
-    Component.where.not( id: Material.select( :component_id ) ).delete_all
+    BlueprintMaterial.where.not(blueprint_id: Blueprint.select(:id ) ).delete_all
+    BlueprintComponent.where.not(id: BlueprintMaterial.select(:component_id ) ).delete_all
 
   end
 
@@ -116,7 +116,7 @@ class Esi::UpdateBlueprints < Esi::Download
     @materials.each do |material|
       t_id = material['typeID']
 
-      comp = Component.find_by_cpp_eve_item_id( t_id )
+      comp = BlueprintComponent.find_by_cpp_eve_item_id(t_id )
       unless comp
 
         @rest_url = "universe/types/#{@bp_id}/"
@@ -127,10 +127,10 @@ class Esi::UpdateBlueprints < Esi::Download
           return false
         end
 
-        comp = Component.create!( cpp_eve_item_id: t_id, name: local_page['name'] )
+        comp = BlueprintComponent.create!(cpp_eve_item_id: t_id, name: local_page['name'] )
       end
 
-      ar_material = Material.where( blueprint_id: blueprint.id, component_id: comp.id ).first_or_initialize
+      ar_material = BlueprintMaterial.where(blueprint_id: blueprint.id, component_id: comp.id ).first_or_initialize
       ar_material.required_qtt = material['quantity']
       ar_material.save!
     end

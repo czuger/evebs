@@ -9,8 +9,8 @@ class EveItem < ApplicationRecord
   has_and_belongs_to_many :users
   has_one :blueprint
 
-  has_many :materials, through: :blueprint
-  has_many :components, through: :materials
+  has_many :blueprint_materials, through: :blueprint
+  has_many :blueprint_components, through: :materials
   belongs_to :market_group
 
   has_many :prices_mins, dependent: :delete_all
@@ -31,7 +31,7 @@ class EveItem < ApplicationRecord
 
   # Recompute the cost for all items
   def self.compute_cost_for_all_items
-    Component.set_min_prices_for_all_components
+    BlueprintComponent.set_min_prices_for_all_components
 
     Banner.p 'Refreshing all items costs'
     EveItem.joins( :blueprint ).all.each do |ei|

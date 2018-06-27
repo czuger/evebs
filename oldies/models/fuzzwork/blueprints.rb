@@ -54,13 +54,13 @@ class Fuzzwork::Blueprints
           r['activityMaterials']['1'].each do |material|
             component_id = material['typeid']
 
-            component = Component.where( cpp_eve_item_id: component_id ).first_or_initialize do |c|
+            component = BlueprintComponent.where(cpp_eve_item_id: component_id ).first_or_initialize do |c|
               c.name = eve_item_cpp_key_to_name[ component_id ]
             end
             component.save!
             items_involved_in_blueprints << component.id
 
-            material = Material.where( blueprint_id: blueprint.id, component_id: component.id ).first_or_initialize do |m|
+            material = BlueprintMaterial.where(blueprint_id: blueprint.id, component_id: component.id ).first_or_initialize do |m|
               m.required_qtt = material['quantity']
             end
             material.save!
