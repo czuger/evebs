@@ -16,7 +16,6 @@ namespace :process do
 
   desc "Build JSON market groups + eve items tree"
   task :build_items_tree => :environment do
-    Banner.p 'About to build trees'
     MarketGroup.build_items_tree
   end
 
