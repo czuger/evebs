@@ -27,11 +27,14 @@ ActiveRecord::Schema.define(version: 2018_06_27_133905) do
   create_table "blueprint_component_sales_orders", force: :cascade do |t|
     t.bigint "trade_hub_id", null: false
     t.bigint "blueprint_component_id", null: false
+    t.bigint "cpp_order_id", null: false
     t.bigint "volume", null: false
     t.float "price", null: false
+    t.boolean "touched", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["blueprint_component_id"], name: "index_bcso_blueprint_component"
+    t.index ["cpp_order_id"], name: "index_blueprint_component_sales_orders_on_cpp_order_id", unique: true
     t.index ["trade_hub_id"], name: "index_blueprint_component_sales_orders_on_trade_hub_id"
   end
 

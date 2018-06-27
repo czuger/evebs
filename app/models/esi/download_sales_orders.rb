@@ -32,6 +32,8 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     ActiveRecord::Base.transaction do
 
+      BlueprintComponentSalesOrder.update_all( touched: false )
+
       regions.each do |region|
         cpp_region_id = region.cpp_region_id.to_i
 
@@ -62,6 +64,11 @@ class Esi::DownloadSalesOrders < Esi::Download
       end
 
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
+
+      BlueprintComponentSalesOrder.where(  touched: false ).delete_all
+
+      bc_update_statement = File.open( 'sql/update_component_raw_cost.sql', 'r' ).read
+      BlueprintComponent.exec_update( bc_update_statement )
     end
 
     puts "#{@sales_orders_stored} sales orders stored."
@@ -78,7 +85,7 @@ class Esi::DownloadSalesOrders < Esi::Download
 
       next if @cpp_type_id && record['type_id'] != @cpp_type_id
 
-      key = [record['system_id'], record['type_id']]
+      update_blueprint_component_sales_orders( record )
 
       sale_key = [ record['order_id'], record['volume_remain'] ]
       unless @sales_orders_ids.include?( sale_key )
@@ -113,4 +120,25 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     SalesOrder.import @sales_orders
   end
+
+  def update_blueprint_component_sales_orders( record )
+
+    trade_hub_id = @trade_hub_conversion_hash[record['system_id']]
+    bc = BlueprintComponent.find_by_cpp_eve_item_id( record['type_id'] )
+
+    if bc
+      bc_so = BlueprintComponentSalesOrder.where( cpp_order_id: record['order_id'] ).first_or_initialize
+
+      bc_so.trade_hub_id = trade_hub_id
+      bc_so.blueprint_component_id = bc.id
+
+      bc_so.volume = record['volume_remain']
+      bc_so.price = record['price']
+      bc_so.touched = true
+
+      bc_so.save!
+    end
+
+  end
+
 end
