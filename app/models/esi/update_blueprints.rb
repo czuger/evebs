@@ -14,6 +14,7 @@ class Esi::UpdateBlueprints < Esi::Download
 
   def load_blueprints
     @to_remove_blueprint = []
+    @full_blueprints_id_list = []
 
     blueprints = YAML::load_file('data/blueprints.yaml')
     bp_count = blueprints.count
@@ -27,13 +28,16 @@ class Esi::UpdateBlueprints < Esi::Download
       end
 
       next unless read_blueprint_data( blueprint )
-      next unless download_produced_item_data
-      bp = blueprint_update
+      blueprint_type = download_produced_item_data
+      next unless blueprint_type
+
+      bp = blueprint_update( blueprint_type )
       next unless process_materials( bp )
     end
 
     Blueprint.where( cpp_blueprint_id: nil ).delete_all
     Blueprint.where( cpp_blueprint_id: @to_remove_blueprint ).delete_all
+    Blueprint.where.not( cpp_blueprint_id: @full_blueprints_id_list ).delete_all
 
     Material.where.not( blueprint_id: Blueprint.select( :id ) ).delete_all
     Component.where.not( id: Material.select( :component_id ) ).delete_all
@@ -46,8 +50,9 @@ class Esi::UpdateBlueprints < Esi::Download
     @blueprint= blueprint[1]
 
     @bp_id = @blueprint['blueprintTypeID']
+    @full_blueprints_id_list << @bp_id
 
-    if  !@blueprint['activities']['manufacturing']
+     unless @blueprint['activities']['manufacturing']
       @to_remove_blueprint << @bp_id
       return false
     end
@@ -67,27 +72,27 @@ class Esi::UpdateBlueprints < Esi::Download
     @rest_url = "universe/types/#{@bp_id}/"
 
     begin
-      @page = get_page_retry_on_error
+      page = get_page_retry_on_error
     rescue Esi::Errors::NotFound
       return false
     end
 
-    unless @page['published']
+    unless page['published']
       @to_remove_blueprint << @bp_id
       return false
     end
 
     REJECTED_PATTERNS.each do |pattern|
-      if @page['name'] =~ /#{pattern}/
+      if page['name'] =~ /#{pattern}/
         @to_remove_blueprint << @bp_id
         return false
       end
     end
 
-    true
+    page
   end
 
-  def blueprint_update
+  def blueprint_update( blueprint_type )
     bp = Blueprint.where( cpp_blueprint_id: @bp_id ).first_or_initialize
 
     if @products.count > 1
@@ -97,7 +102,7 @@ class Esi::UpdateBlueprints < Esi::Download
     end
 
     product = @products.first
-    bp.name = @page['name']
+    bp.name = blueprint_type['name']
     bp.nb_runs = @blueprint['maxProductionLimit']
     bp.prod_qtt = product['quantity']
     bp.produced_cpp_type_id = product['typeID']

@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 2018_06_26_104714) do
 
   create_table "blueprints", id: :serial, force: :cascade do |t|
     t.integer "produced_cpp_type_id"
-    t.integer "nb_runs", null: false
-    t.integer "prod_qtt", null: false
+    t.integer "nb_runs"
+    t.integer "prod_qtt"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "cpp_blueprint_id"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2018_06_26_104714) do
 
   create_table "components", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id"
-    t.string "name", limit: 255
+    t.string "name"
     t.float "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -71,11 +71,11 @@ ActiveRecord::Schema.define(version: 2018_06_26_104714) do
     t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "name_lowcase", limit: 255
+    t.string "name_lowcase"
     t.float "cost"
-    t.boolean "epic_blueprint", default: false
-    t.boolean "involved_in_blueprint", default: false
     t.integer "market_group_id"
+    t.boolean "epic_blueprint"
+    t.boolean "involved_in_blueprint"
     t.index ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id"
     t.index ["market_group_id"], name: "index_eve_items_on_market_group_id"
   end
