@@ -53,7 +53,7 @@ UPDATE prices_advices cpa
 SET full_batch_size = bp.nb_runs*bp.prod_qtt, prod_qtt = bp.prod_qtt, updated_at = now()
 FROM eve_items ei, blueprints bp
 WHERE cpa.eve_item_id = ei.id
-AND ei.id = bp.eve_item_id;
+AND ei.blueprint_id = bp.id;
 
 UPDATE prices_advices cpa SET single_unit_cost = (cost*(1+0.11))/prod_qtt, updated_at = now();
 

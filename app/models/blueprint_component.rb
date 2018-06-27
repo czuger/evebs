@@ -6,12 +6,6 @@ class BlueprintComponent < ApplicationRecord
   has_many :blueprint_materials
   has_many :blueprints, through: :blueprint_materials
 
-  def self.set_blueprints_count
-    BlueprintComponent.all.each do |component|
-      component.update( blueprints_count: component.blueprints.count )
-    end
-  end
-
   def self.set_min_prices_for_all_components
 
     Banner.p 'Recomputing costs from Jita prices'
