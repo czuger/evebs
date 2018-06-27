@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_27_115949) do
+ActiveRecord::Schema.define(version: 2018_06_27_133905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,17 @@ ActiveRecord::Schema.define(version: 2018_06_27_115949) do
     t.datetime "updated_at", null: false
     t.string "user_message"
     t.index ["user_id"], name: "index_api_key_errors_on_user_id"
+  end
+
+  create_table "blueprint_component_sales_orders", force: :cascade do |t|
+    t.bigint "trade_hub_id", null: false
+    t.bigint "blueprint_component_id", null: false
+    t.bigint "volume", null: false
+    t.float "price", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_component_id"], name: "index_bcso_blueprint_component"
+    t.index ["trade_hub_id"], name: "index_blueprint_component_sales_orders_on_trade_hub_id"
   end
 
   create_table "blueprint_components", id: :integer, default: -> { "nextval('components_id_seq'::regclass)" }, force: :cascade do |t|
@@ -316,6 +327,8 @@ ActiveRecord::Schema.define(version: 2018_06_27_115949) do
   end
 
   add_foreign_key "api_key_errors", "users"
+  add_foreign_key "blueprint_component_sales_orders", "blueprint_components"
+  add_foreign_key "blueprint_component_sales_orders", "trade_hubs"
   add_foreign_key "blueprint_materials", "blueprint_components"
   add_foreign_key "blueprint_materials", "blueprints"
   add_foreign_key "characters", "users"
