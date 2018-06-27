@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_27_101339) do
+ActiveRecord::Schema.define(version: 2018_06_27_102242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(version: 2018_06_27_101339) do
     t.string "name_lowcase", null: false
     t.float "cost"
     t.integer "market_group_id"
-    t.bigint "blueprint_id"
+    t.bigint "blueprint_id", null: false
     t.index ["blueprint_id"], name: "index_eve_items_on_blueprint_id"
     t.index ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id"
     t.index ["market_group_id"], name: "index_eve_items_on_market_group_id"
