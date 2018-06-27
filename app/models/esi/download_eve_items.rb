@@ -19,8 +19,8 @@ class Esi::DownloadEveItems < Esi::Download
     updated_items = downloaded_items = 0
 
     ActiveRecord::Base.transaction do
-      new_ids.each do |missing_id|
-        @rest_url = "universe/types/#{missing_id}/"
+      new_ids.each do |missing_blueprint_id|
+        @rest_url = "universe/types/#{missing_blueprint_id}/"
         cpp_item = get_page_retry_on_error
 
         downloaded_items += 1
@@ -31,11 +31,12 @@ class Esi::DownloadEveItems < Esi::Download
 
         next unless cpp_item['published']
 
-        item = EveItem.where( cpp_eve_item_id: missing_id ).first_or_initialize
+        item = EveItem.where( cpp_eve_item_id: missing_blueprint_id ).first_or_initialize
 
         item.name = cpp_item['name']
         item.name_lowcase = item.name.downcase
         item.market_group_id = market_transformation_hash[ cpp_item['market_group_id'] ]
+        item.blueprint_id = missing_blueprint_id
         item.save!
 
         updated_items += 1

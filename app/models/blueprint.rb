@@ -1,10 +1,7 @@
 class Blueprint < ApplicationRecord
 
-  # belongs_to :produced
-  has_many :materials
-
-  # We don't process some blueprint, because they leads to issues
-  UNWANTED_BLUEPRINTS = [3927,34189,34497]
+  belongs_to :eve_item, dependent: :destroy
+  has_many :materials, dependent: :destroy
 
   def batch_elements_count
     prod_qtt*nb_runs

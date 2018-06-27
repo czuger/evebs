@@ -3,16 +3,8 @@ class Component < ApplicationRecord
   JITA_EVE_SYSTEM_ID=30000142
   JITA_REGION_CPP_ID=10000002
 
-
-  validates :cpp_eve_item_id, :name, presence: true
-  # extend MultiplePriceRetriever
-
   has_many :materials
   has_many :blueprints, through: :materials
-  has_many :eve_items, through: :blueprints
-  has_many :users, through: :eve_items
-
-  has_one :eve_item, :primary_key => :cpp_eve_item_id, foreign_key: :cpp_eve_item_id
 
   def self.set_blueprints_count
     Component.all.each do |component|
@@ -38,16 +30,5 @@ class Component < ApplicationRecord
         puts "Unable to find EveItem for #{component.inspect}" unless Rails.env == 'test'
       end
     end
-
   end
-
-  # Dead code
-  #
-  # def set_min_price
-  #   min_price = get_min_price_from_eve_central(cpp_eve_item_id,JITA_EVE_SYSTEM_ID)
-  #   if min_price
-  #     update_attribute( :cost, min_price )
-  #   end
-  # end
-
 end

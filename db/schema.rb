@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_26_104714) do
+ActiveRecord::Schema.define(version: 2018_06_27_101339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,13 +25,13 @@ ActiveRecord::Schema.define(version: 2018_06_26_104714) do
   end
 
   create_table "blueprints", id: :serial, force: :cascade do |t|
-    t.integer "produced_cpp_type_id"
-    t.integer "nb_runs"
-    t.integer "prod_qtt"
+    t.integer "produced_cpp_type_id", null: false
+    t.integer "nb_runs", null: false
+    t.integer "prod_qtt", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer "cpp_blueprint_id"
-    t.string "name"
+    t.integer "cpp_blueprint_id", null: false
+    t.string "name", null: false
     t.index ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", unique: true
     t.index ["produced_cpp_type_id"], name: "index_blueprints_on_produced_cpp_type_id"
   end
@@ -50,8 +50,8 @@ ActiveRecord::Schema.define(version: 2018_06_26_104714) do
   end
 
   create_table "components", id: :serial, force: :cascade do |t|
-    t.integer "cpp_eve_item_id"
-    t.string "name"
+    t.integer "cpp_eve_item_id", null: false
+    t.string "name", null: false
     t.float "cost"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -71,11 +71,11 @@ ActiveRecord::Schema.define(version: 2018_06_26_104714) do
     t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "name_lowcase"
+    t.string "name_lowcase", null: false
     t.float "cost"
     t.integer "market_group_id"
-    t.boolean "epic_blueprint"
-    t.boolean "involved_in_blueprint"
+    t.bigint "blueprint_id"
+    t.index ["blueprint_id"], name: "index_eve_items_on_blueprint_id"
     t.index ["cpp_eve_item_id"], name: "index_eve_items_on_cpp_eve_item_id"
     t.index ["market_group_id"], name: "index_eve_items_on_market_group_id"
   end
@@ -318,6 +318,7 @@ ActiveRecord::Schema.define(version: 2018_06_26_104714) do
 
   add_foreign_key "api_key_errors", "users"
   add_foreign_key "characters", "users"
+  add_foreign_key "eve_items", "blueprints"
   add_foreign_key "eve_items", "market_groups"
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "regions"
