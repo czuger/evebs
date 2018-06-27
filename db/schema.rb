@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_27_102847) do
+ActiveRecord::Schema.define(version: 2018_06_27_115949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,25 @@ ActiveRecord::Schema.define(version: 2018_06_27_102847) do
     t.datetime "updated_at", null: false
     t.string "user_message"
     t.index ["user_id"], name: "index_api_key_errors_on_user_id"
+  end
+
+  create_table "blueprint_components", id: :integer, default: -> { "nextval('components_id_seq'::regclass)" }, force: :cascade do |t|
+    t.integer "cpp_eve_item_id", null: false
+    t.string "name", null: false
+    t.float "cost"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
+  end
+
+  create_table "blueprint_materials", id: :serial, force: :cascade do |t|
+    t.integer "blueprint_id", null: false
+    t.integer "blueprint_component_id", null: false
+    t.integer "required_qtt", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_component_id"], name: "index_blueprint_materials_on_blueprint_component_id"
+    t.index ["blueprint_id"], name: "index_blueprint_materials_on_blueprint_id"
   end
 
   create_table "blueprints", id: :serial, force: :cascade do |t|
@@ -47,16 +66,6 @@ ActiveRecord::Schema.define(version: 2018_06_27_102847) do
     t.string "renew_token"
     t.boolean "locked", default: false, null: false
     t.index ["user_id"], name: "index_characters_on_user_id"
-  end
-
-  create_table "components", id: :serial, force: :cascade do |t|
-    t.integer "cpp_eve_item_id", null: false
-    t.string "name", null: false
-    t.float "cost"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "blueprints_count"
-    t.index ["cpp_eve_item_id"], name: "index_components_on_cpp_eve_item_id"
   end
 
   create_table "crontabs", force: :cascade do |t|
@@ -124,16 +133,6 @@ ActiveRecord::Schema.define(version: 2018_06_27_102847) do
     t.integer "cpp_market_group_id", null: false
     t.integer "cpp_parent_market_group_id"
     t.index ["cpp_market_group_id"], name: "index_market_groups_on_cpp_market_group_id", unique: true
-  end
-
-  create_table "materials", id: :serial, force: :cascade do |t|
-    t.integer "blueprint_id", null: false
-    t.integer "component_id", null: false
-    t.integer "required_qtt", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["blueprint_id"], name: "index_materials_on_blueprint_id"
-    t.index ["component_id"], name: "index_materials_on_component_id"
   end
 
   create_table "prices_advices", id: :serial, force: :cascade do |t|
@@ -317,6 +316,8 @@ ActiveRecord::Schema.define(version: 2018_06_27_102847) do
   end
 
   add_foreign_key "api_key_errors", "users"
+  add_foreign_key "blueprint_materials", "blueprint_components"
+  add_foreign_key "blueprint_materials", "blueprints"
   add_foreign_key "characters", "users"
   add_foreign_key "eve_items", "blueprints"
   add_foreign_key "eve_items", "market_groups"

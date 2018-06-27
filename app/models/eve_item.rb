@@ -7,7 +7,7 @@ class EveItem < ApplicationRecord
   include Assert
 
   has_and_belongs_to_many :users
-  has_one :blueprint
+  belongs_to :blueprint
 
   has_many :blueprint_materials, through: :blueprint
   has_many :blueprint_components, through: :materials
@@ -43,11 +43,11 @@ class EveItem < ApplicationRecord
 
   def compute_cost
     total_cost = 0
-    materials.each do |material|
-      if material.component.cost
-        total_cost += material.component.cost * material.required_qtt
+    blueprint_materials.each do |material|
+      if material.blueprint_component.cost
+        total_cost += material.blueprint_component.cost * material.required_qtt
       else
-        puts "Warning !!! #{material.component.inspect} has no cost" unless Rails.env == 'test'
+        puts "Warning !!! #{material.blueprint_component.inspect} has no cost" unless Rails.env == 'test'
         # If we lack a material we set the price to nil and exit
         update_attribute(:cost,nil)
         return
