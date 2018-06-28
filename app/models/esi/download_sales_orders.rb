@@ -127,6 +127,31 @@ class Esi::DownloadSalesOrders < Esi::Download
     bc = BlueprintComponent.find_by_cpp_eve_item_id( record['type_id'] )
 
     if bc
+      # Recording the current blueprint
+      older_bc_so = BlueprintComponentSalesOrder.where( cpp_order_id: record['order_id'] ).first
+      if older_bc_so
+        # We already have an order, we will update it and store the difference
+        if older_bc_so.volume != record['volume_remain']
+
+          # save the diff into bpc_jita_sales_finals if it is done in jita
+          if record['system_id'] == 30000142
+            sold_volume = older_bc_so.volume - record['volume_remain']
+            sold_price = record['price']
+            BpcJitaSalesFinal.create!( blueprint_component_id: bc.id, volume: sold_volume, price: sold_price,
+                                       cpp_order_id: record['order_id'] )
+          end
+
+          older_bc_so.volume = record['volume_remain']
+          older_bc_so.price = record['price']
+        end
+
+        older_bc_so.touched = true
+        older_bc_so.save!
+      else
+        BlueprintComponentSale.create!( cpp_order_id: record['order_id'], volume: record['volume_remain'],
+           price: record['price'], touched: true, trade_hub_id: trade_hub_id, blueprint_component_id: bc.id )
+      end
+
       bc_so = BlueprintComponentSalesOrder.where( cpp_order_id: record['order_id'] ).first_or_initialize
 
       bc_so.trade_hub_id = trade_hub_id
