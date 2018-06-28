@@ -148,22 +148,9 @@ class Esi::DownloadSalesOrders < Esi::Download
         older_bc_so.touched = true
         older_bc_so.save!
       else
-        BlueprintComponentSale.create!( cpp_order_id: record['order_id'], volume: record['volume_remain'],
+        BlueprintComponentSalesOrder.create!( cpp_order_id: record['order_id'], volume: record['volume_remain'],
            price: record['price'], touched: true, trade_hub_id: trade_hub_id, blueprint_component_id: bc.id )
       end
-
-      bc_so = BlueprintComponentSalesOrder.where( cpp_order_id: record['order_id'] ).first_or_initialize
-
-      bc_so.trade_hub_id = trade_hub_id
-      bc_so.blueprint_component_id = bc.id
-
-      bc_so.volume = record['volume_remain']
-      bc_so.price = record['price']
-      bc_so.touched = true
-
-      bc_so.save!
     end
-
   end
-
 end
