@@ -82,7 +82,7 @@ gem 'rails_bootstrap_sortable', :git => 'https://github.com/czuger/rails_bootstr
 # gem 'spreadsheet'
 
 group :development, :test do
-  gem 'capistrano', '~> 3.6'
+  gem 'capistrano', '>= 3.11'
   gem 'capistrano-rails', '~> 1.3'
   gem 'capistrano-rbenv', '~> 2.1'
 
