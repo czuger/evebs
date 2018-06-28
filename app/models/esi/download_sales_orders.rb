@@ -65,7 +65,7 @@ class Esi::DownloadSalesOrders < Esi::Download
 
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
 
-      BlueprintComponentSalesOrder.where(  touched: false ).delete_all
+      BlueprintComponentSalesOrder.where( touched: false ).delete_all
     end
 
     puts "#{@sales_orders_stored} sales orders stored."
