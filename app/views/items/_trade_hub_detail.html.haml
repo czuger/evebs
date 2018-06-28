@@ -1,0 +1,29 @@
+.container
+
+  %h3
+    Trade hub :
+    = @trade_hub.name
+
+  %h3
+    Item :
+    = @element.name
+
+  %table.table.table-bordered.sortable
+    %thead
+      %tr
+        %th.text-center Price
+        %th.text-center Volume
+        %th.text-center Date
+        %th.text-center Order id
+
+    %tbody
+      - @orders.each_with_index do |order|
+        %tr
+          %td.text-right= print_isk order.price
+          %td.text-right= print_volume order.volume
+          %td.text-center= order.updated_at
+
+          - if order.is_a? SalesOrder
+            %td.text-center= order.order_id
+          - else
+            %td.text-center= order.cpp_order_id

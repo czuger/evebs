@@ -14,7 +14,10 @@ Rails.application.routes.draw do
     get :trade_hub_detail
   end
 
-  resources :components, only: [ :show ]
+  resources :components, only: [ :show ] do
+    get :trade_hub_detail
+  end
+
   resource :list_items, only: [ :edit, :update ]
   resource :shopping_baskets, only: [ :show ]
   # resources :jita_margins, only: [ :index, :update ]

@@ -4,9 +4,14 @@ class ComponentsController < ApplicationController
 
   def show
     @component = BlueprintComponent.find( params[ :id ])
-    @min_prices = BlueprintComponentSalesOrder.where( blueprint_component_id: @component.id )
-      .group( :trade_hub_id ).minimum( :price )
-
-    @trade_hubs_hash = Hash[ TradeHub.all.map { |t| [ t.id, t ] } ]
+    @min_prices = BpcPricesMin.includes( { trade_hub: :region } ).where( blueprint_component_id: @component.id ).order( 'price' )
   end
+
+  def trade_hub_detail
+    @trade_hub = TradeHub.find( params[ :trade_hub_id ] )
+    @element = BlueprintComponent.find( params[ :component_id ] )
+    @orders = BlueprintComponentSalesOrder.where( trade_hub_id: params[ :trade_hub_id ],
+      blueprint_component_id: params[ :component_id ] ).order( 'price' ).limit( 20 )
+  end
+
 end
