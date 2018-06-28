@@ -34,6 +34,8 @@ namespace :process do
       ActiveRecord::Base.transaction do
         Comp::SalesFinals.run
         Sql::PricesAvgWeeks.update
+
+        BlueprintComponent.set_min_prices_for_all_components
         EveItem.compute_cost_for_all_items
       end
 
