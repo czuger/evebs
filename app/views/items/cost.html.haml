@@ -9,14 +9,14 @@
   %table.table
     %tr
       %th Item
-      %th.text-right Average cost overt the last 30 days in Jita
+      %th.text-right Average sold price over the last 7 days in Jita
       %th.text-right Required quantity
       %th.text-right Total cost
-    - @item.materials.includes( { component: :eve_item } ).each do |material|
-      - component = material.component
+    - @item.blueprint_materials.joins( :blueprint_component ).each do |material|
+      - component = material.blueprint_component
       - if component
         %tr{ class: cycle( :odd, :even ) }
-          %td= link_to( component.name, item_path( component.eve_item.id ) )
+          %td= link_to( component.name, component_path( component.id ) )
           %td.text-right= print_isk( component.cost )
           %td.text-right= print_volume( material.required_qtt )
           - total = component.cost * material.required_qtt

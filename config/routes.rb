@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  get 'components/show'
   resource :admin_tools, only: [ :show ] do
     get :denied
     get :activity
@@ -15,11 +14,10 @@ Rails.application.routes.draw do
     get :trade_hub_detail
   end
 
+  resources :components, only: [ :show ]
   resource :list_items, only: [ :edit, :update ]
-
   resource :shopping_baskets, only: [ :show ]
-
-  resources :jita_margins, only: [ :index, :update ]
+  # resources :jita_margins, only: [ :index, :update ]
 
   # resources :identities
 

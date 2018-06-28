@@ -1,0 +1,23 @@
+.container
+  %h3
+    Informations for
+    = link_to( @component.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{@component.cpp_eve_item_id}", :target => '_blank' )
+
+  %table.table.table-bordered.sortable
+    %thead
+      %tr
+        %th Trade hub
+        %th.text-center Current min price
+        -#%th.text-center Available volume
+
+    %tbody
+      - @min_prices.each_with_index do | mp |
+
+        %tr
+          %td= trade_hub_name_with_region( @trade_hubs_hash[ mp[0] ] )
+
+          %td.text-right
+            -#= link_to( print_isk( mp[1] ), item_trade_hub_detail_path( mp.id, trade_hub_id: mp.trade_hub_id ) )
+            = print_isk( mp[1] )
+          -#%td.text-right
+          -#  = print_volume( mp.volume )
