@@ -15,6 +15,8 @@ namespace :process do
         Esi::DownloadSalesOrders.new( debug_request: false ).update( only_cpp_region_id: nil )
 
         Sql::PricesMins.update
+        BpcPricesMin.feed_table
+
         Sql::PricesAdvices.update
 
         Esi::DownloadMyOrders.new.update()

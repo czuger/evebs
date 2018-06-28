@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_28_095113) do
+ActiveRecord::Schema.define(version: 2018_06_28_141624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,17 @@ ActiveRecord::Schema.define(version: 2018_06_28_095113) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["blueprint_component_id"], name: "index_bpc_jita_sales_finals_on_blueprint_component_id"
+  end
+
+  create_table "bpc_prices_mins", force: :cascade do |t|
+    t.bigint "trade_hub_id", null: false
+    t.bigint "blueprint_component_id", null: false
+    t.bigint "volume"
+    t.float "price", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_component_id"], name: "index_bpc_prices_mins_on_blueprint_component_id"
+    t.index ["trade_hub_id"], name: "index_bpc_prices_mins_on_trade_hub_id"
   end
 
   create_table "characters", force: :cascade do |t|
@@ -345,6 +356,8 @@ ActiveRecord::Schema.define(version: 2018_06_28_095113) do
   add_foreign_key "blueprint_materials", "blueprint_components"
   add_foreign_key "blueprint_materials", "blueprints"
   add_foreign_key "bpc_jita_sales_finals", "blueprint_components"
+  add_foreign_key "bpc_prices_mins", "blueprint_components"
+  add_foreign_key "bpc_prices_mins", "trade_hubs"
   add_foreign_key "characters", "users"
   add_foreign_key "eve_items", "blueprints"
   add_foreign_key "eve_items", "market_groups"
