@@ -19,10 +19,9 @@ INSERT INTO bpc_prices_mins( trade_hub_id, blueprint_component_id, price, create
   )
 GROUP BY trade_hub_id, blueprint_component_id;
 
-UPDATE bpc_prices_mins pm SET ( volume, updated_at ) = (
-  SELECT MAX( so.volume ) mp, now()
+UPDATE bpc_prices_mins pm SET volume = (
+  SELECT MAX( so.volume ) mp
   FROM blueprint_component_sales_orders so
   WHERE so.trade_hub_id = pm.trade_hub_id
   AND so.blueprint_component_id = pm.blueprint_component_id
   AND so.price = pm.price );
-
