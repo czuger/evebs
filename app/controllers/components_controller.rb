@@ -3,8 +3,13 @@ class ComponentsController < ApplicationController
   before_action :require_logged_in!, :log_client_activity
 
   def index
-    @components = BlueprintComponent.where( "lower( name ) like '%#{params['filter']}%'" )
-                 .order( 'name' ).paginate(:page => params[:page], :per_page => 20 )
+    if params['filter']
+      @components = BlueprintComponent.where( "lower( name ) like '%#{params['filter']}%'" )
+                        .order( 'name' ).paginate(:page => params[:page], :per_page => 20 )
+    else
+      @components = BlueprintComponent.none.paginate(:page => params[:page], :per_page => 20 )
+    end
+
     @filter = params['filter']
   end
 
