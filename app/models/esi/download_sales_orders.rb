@@ -66,9 +66,6 @@ class Esi::DownloadSalesOrders < Esi::Download
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
 
       BlueprintComponentSalesOrder.where(  touched: false ).delete_all
-
-      bc_update_statement = File.open( 'sql/update_component_raw_cost.sql', 'r' ).read
-      ActiveRecord::Base.connection.exec_update( bc_update_statement )
     end
 
     puts "#{@sales_orders_stored} sales orders stored."
