@@ -5,7 +5,14 @@ namespace :db do
       desc 'Dump full database from production to dev'
       task :full => :environment do
 
-        unless File.exists?( '/tmp/production.dump' )
+        use_local_pg_dump = true
+        if File.exists?( '/tmp/production.dump' )
+          puts 'There already is a local dump. Do you want to remove it and refresh the dump ? (y/n)'
+          result = STDIN.gets.chomp
+          use_local_pg_dump = false if result == 'y'
+        end
+
+        unless use_local_pg_dump
           puts 'No local dump, retrieving ...'
           `ssh hw [ -e /tmp/production.dump ]`
 
