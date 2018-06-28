@@ -1,0 +1,27 @@
+.container
+
+  = render partial: 'shared/errors'
+
+  = form_tag components_path, method: :get do
+
+    .form-group
+      .row
+        .col-md-10
+          = text_field_tag :filter, @filter, class: 'form-control'
+
+        .col-md-2
+          = button_tag :filter, class: 'form-control'
+
+    %table.table.table-bordered
+      %thead
+        %tr
+          %th
+            Name
+
+      %tbody
+        - @components.each do |component|
+          %tr
+            %th= link_to( component.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{component.cpp_eve_item_id}", :target => '_blank' )
+            %th= link_to( 'Min prices in trades hubs', component_path( component ) )
+
+  = will_paginate @components

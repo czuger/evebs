@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     get :trade_hub_detail
   end
 
-  resources :components, only: [ :show ] do
+  resources :components, only: [ :index, :show ] do
     get :trade_hub_detail
   end
 

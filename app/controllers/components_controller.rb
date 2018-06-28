@@ -2,6 +2,12 @@ class ComponentsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
 
+  def index
+    @components = BlueprintComponent.where( "lower( name ) like '%#{params['filter']}%'" )
+                 .order( 'name' ).paginate(:page => params[:page], :per_page => 20 )
+    @filter = params['filter']
+  end
+
   def show
     @component = BlueprintComponent.find( params[ :id ])
     @min_prices = BpcPricesMin.includes( { trade_hub: :region } ).where( blueprint_component_id: @component.id ).order( 'price' )
