@@ -11,4 +11,4 @@
       %tr{ class: cycle( :odd, :even ) }
         %td= shopping_basket_check_box_shopping_basket( basket )
         %td= basket.trade_hub.name
-        %td= basket.eve_item.name
+        %td= link_to( basket.eve_item.name, item_path( basket.eve_item_id ) )
