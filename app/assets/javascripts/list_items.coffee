@@ -24,5 +24,6 @@ setSelectItem = ->
 $(document).on('turbolinks:load'
   ->
     if window.location.pathname.match( /list_items\/edit/ )
+      console.log( 'loaded' )
       setSelectItem()
 )
