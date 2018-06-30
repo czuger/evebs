@@ -12,7 +12,7 @@
       %th.text-right Average sold price over the last 7 days in Jita
       %th.text-right Required quantity
       %th.text-right Total cost
-    - @item.blueprint_materials.joins( :blueprint_component ).each do |material|
+    - @item.blueprint_materials.includes( :blueprint_component ).each do |material|
       - component = material.blueprint_component
       - if component
         %tr{ class: cycle( :odd, :even ) }

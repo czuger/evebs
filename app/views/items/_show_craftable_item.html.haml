@@ -1,7 +1,9 @@
 .container
   %h3
-    Informations for
-    = link_to( @item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{@item.cpp_eve_item_id}", :target => '_blank' )
+    = "Informations for #{@item.name}"
+    = link_to( 'Item detail', "http://games.chruker.dk/eve_online/item.php?type_id=#{@item.cpp_eve_item_id}", :target => '_blank' )
+    \-
+    = link_to( 'Cost', item_cost_path( @item.id ) )
 
   %table.table.table-bordered.sortable
     %thead

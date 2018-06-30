@@ -1,12 +1,9 @@
 .container
 
   %h3
-    Trade hub :
-    = @trade_hub.name
-
-  %h3
-    Item :
     = @element.name
+    at
+    = @trade_hub.name
 
   %table.table.table-bordered.sortable
     %thead
