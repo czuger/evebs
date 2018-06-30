@@ -14,7 +14,7 @@ setSelectItem = ->
     state = $(this).is(':checked')
     id = $(this).attr('item_id')
 
-    request = $.post '/choose_items/select_items', { id: id, item: true, check_state: true }
+    request = $.post '/choose_items/select_items', { id: id, item: true, check_state: state }
 
     request.error (jqXHR, textStatus, errorThrown) ->
       $('#error_area').html(errorThrown)
