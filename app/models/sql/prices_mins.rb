@@ -2,7 +2,7 @@ class Sql::PricesMins
 
   def self.update
     ActiveRecord::Base.transaction do
-      Banner.p 'About to update prices and volumes'
+      Banner.p 'About to update prices mins.'
       update_prices
       update_volumes
     end
