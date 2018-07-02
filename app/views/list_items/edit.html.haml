@@ -12,6 +12,8 @@
         .col-md-2
           = button_tag :filter, class: 'form-control'
 
+    = hidden_field_tag :my_items_only, @my_items_only
+
     %table.table.table-bordered
       %thead
         %tr

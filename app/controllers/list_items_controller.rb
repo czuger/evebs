@@ -4,9 +4,27 @@ class ListItemsController < ApplicationController
 
   def edit
     @user = current_user
-    @items = EveItem.where( "name_lowcase like '%#{params['filter']}%'" ).order( 'name' ).paginate(:page => params[:page], :per_page => 15)
-    @filter = params['filter']
     @item_ids = @user.eve_item_ids.uniq.to_set
+
+    @my_items_only = ( params['my_items_only'] == 'true' )
+
+    if @my_items_only
+      @items = @user.eve_items
+    else
+      @items = EveItem.all
+    end
+
+    if params['filter']
+      @items = @items.where( "lower( name ) like '%#{params['filter']}%'" ).order( 'name' )
+    else
+      @items = EveItem.none unless @my_items_only
+    end
+
+    # p @items.to_sql
+
+    @items = @items.paginate(:page => params[:page], :per_page => 20 )
+    @filter = params['filter']
+
   end
 
   def update
