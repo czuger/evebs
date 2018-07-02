@@ -25,7 +25,7 @@ namespace :extra_tools do
             min_price = SalesOrder.joins( :trade_hub ).where( eve_item_id: item.id, 'trade_hubs.eve_system_id': trade_hub_cpp_id ).minimum( :price )
             order = SalesOrder.joins( :trade_hub ).where( eve_item_id: item.id, 'trade_hubs.eve_system_id': trade_hub_cpp_id,  price: min_price ).first
           end
-          prices_for_item[ min_price ] = order.trade_hub.name if order
+          prices_for_item[ min_price ] = order.trade_hub.name if order && min_price
         end
 
         best_price = prices_for_item.keys.min
@@ -36,32 +36,10 @@ namespace :extra_tools do
       end
     end
 
-    pp locations
-
-    # items = assets.assets.select{ |e| e.locationID == "#{location}" if e.respond_to?( 'locationID' ) }
-
-    # results = []
-    # items.each do |item|
-    #   i = EveItem.find_by_cpp_eve_item_id( item.typeID.to_i )
-    #   if i
-    #     prices = i.prices_advices.where.not( vol_month: nil ).
-    #       order( '( min_price * least( vol_month/5, full_batch_size ) ) DESC NULLS LAST' )
-    #     # puts prices.to_sql
-    #     price = prices.first
-    #     if price
-    #       results_for_item = [ "#{i.name} - (#{i.id})", "#{price.trade_hub.name} - (#{price.trade_hub_id})",
-    #                            price.vol_month.round( 0 ), price.min_price.round( 2 )]
-    #       results_for_item << ( price.min_price - price.single_unit_cost ).round( 2 )
-    #       results << results_for_item
-    #     else
-    #       puts "Nothing for #{i.name}"
-    #     end
-    #   end
-    # end
-    # results.sort_by!{ |e| e[1] }
-    # results.each do |results_for_item|
-    #   padded_str = ( '%-50s'*2 + '%25s'*3 ) % results_for_item
-    #   puts padded_str
-    # end
+    locations.each do |l|
+      l[1].each do |pricing|
+        puts ( "%-15s %-50s %10.2f" % [l[0], pricing[0], pricing[1]] ) if pricing[1]
+      end
+    end
   end
 end
