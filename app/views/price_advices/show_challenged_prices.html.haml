@@ -22,7 +22,7 @@
           %th.text-center Min price margin
           %th.text-center My price
           %th.text-center Diff
-          %th{ colspan: 2 }
+          -#%th{ colspan: 2 }
         - @compared_prices.each do |cp|
           %tr{ class: cycle( :odd, :even ) }
             %td.trade_hub_name.text-center=cp[:trade_hub_name]
@@ -34,10 +34,10 @@
             - delta = ( cp[:min_price] - cp[:my_price] ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
             %td.text-right{ class: challenged_prices_highlight_class_my_price_to_min_price_delta( delta ) }
               = print_isk( delta ) if delta
-            %td.text-center
-              %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})", class: 'btn btn-default' }
-                Show Market Details
-            %td.text-center
-              %button{ onclick: "CCPEVE.setDestination(#{cp[:trade_hub_cpp_id]})" , class: 'btn btn-default' }
-                Set Destination
+            -#%td.text-center
+            -#  %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})", class: 'btn btn-default' }
+            -#    Show Market Details
+            -#%td.text-center
+            -#  %button{ onclick: "CCPEVE.setDestination(#{cp[:trade_hub_cpp_id]})" , class: 'btn btn-default' }
+            -#    Set Destination
 
