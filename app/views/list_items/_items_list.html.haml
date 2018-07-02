@@ -1,0 +1,28 @@
+.form-group
+  .row
+    .col-md-10
+      = text_field_tag :filter, @filter, class: 'form-control'
+
+    .col-md-2
+      = button_tag :filter, class: 'form-control'
+
+  %table.table.table-bordered
+    %thead
+      %tr
+        %th
+          Check
+        %th
+          Name
+        %th
+        %th
+
+    %tbody
+      - @items.each do |item|
+        %tr
+          %th
+            = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
+          %th= link_to( item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{item.cpp_eve_item_id}", :target => '_blank' )
+          %th= link_to( 'Cost', item_cost_path( item ) )
+          %th= link_to( 'Market', item_path( item ) )
+
+= will_paginate @items

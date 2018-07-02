@@ -3,28 +3,11 @@ class ListItemsController < ApplicationController
   before_action :require_logged_in!, :log_client_activity
 
   def edit
-    @user = current_user
-    @item_ids = @user.eve_item_ids.uniq.to_set
+    items_list false
+  end
 
-    @my_items_only = ( params['my_items_only'] == 'true' )
-
-    if @my_items_only
-      @items = @user.eve_items
-    else
-      @items = EveItem.all
-    end
-
-    if params['filter']
-      @items = @items.where( "lower( name ) like '%#{params['filter']}%'" ).order( 'name' )
-    else
-      @items = EveItem.none unless @my_items_only
-    end
-
-    # p @items.to_sql
-
-    @items = @items.paginate(:page => params[:page], :per_page => 20 )
-    @filter = params['filter']
-
+  def my_items_list
+    items_list true
   end
 
   def update
@@ -36,5 +19,29 @@ class ListItemsController < ApplicationController
 
     @user.eve_item_ids = current_ids
     redirect_to edit_list_items_path
+  end
+
+  private
+
+  def items_list( my_items_only )
+    @user = current_user
+    @item_ids = @user.eve_item_ids.uniq.to_set
+
+    if my_items_only
+      @items = @user.eve_items
+    else
+      @items = EveItem.all
+    end
+
+    if params['filter']
+      @items = @items.where( "lower( name ) like '%#{params['filter']}%'" ).order( 'name' )
+    else
+      @items = EveItem.none unless my_items_only
+    end
+
+    # p @items.to_sql
+
+    @items = @items.paginate(:page => params[:page], :per_page => 20 )
+    @filter = params['filter']
   end
 end
