@@ -50,7 +50,7 @@ class Esi::DownloadMyOrders < Esi::Download
 
         current_trade_orders_id.delete( to.id )
 
-        ShoppingBasket.where( user: character.user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
+        ShoppingBasket.where( user_id: character.user_id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
       end
 
       character.user.trade_orders.where( id: current_trade_orders_id ).delete_all
