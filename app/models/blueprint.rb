@@ -1,5 +1,7 @@
 class Blueprint < ApplicationRecord
 
+  TAX_AMOUNT= 0.11
+
   belongs_to :eve_item, dependent: :destroy
   has_many :blueprint_materials, dependent: :destroy
 
