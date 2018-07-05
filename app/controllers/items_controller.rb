@@ -17,7 +17,7 @@ class ItemsController < ApplicationController
     @item = EveItem.find( params[ :id ] )
 
     if @item.prices_advices.exists?
-      @item_prices = @item.prices_advices.includes( { trade_hub: :region } ).order( 'vol_month DESC NULLS LAST' )
+      @item_prices = @item.prices_advices.includes( { trade_hub: :region } ).order( 'vol_month DESC NULLS LAST, min_price DESC NULLS LAST' )
     else
       @min_prices = @item.prices_mins.includes( { trade_hub: :region } ).order( 'min_price ASC NULLS LAST' )
     end
