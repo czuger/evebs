@@ -17,7 +17,8 @@
 DELETE FROM prices_mins pm WHERE NOT EXISTS (
     SELECT * FROM sales_orders so
     WHERE pm.trade_hub_id = so.trade_hub_id
-    AND pm.eve_item_id = so.eve_item_id );
+    AND pm.eve_item_id = so.eve_item_id
+    AND so.closed = false );
 
 UPDATE prices_mins pm SET ( min_price, updated_at ) = ( mp, now() )
 FROM (

@@ -38,11 +38,22 @@ AND ei = pm.eve_item_id;
 -- AND cpa.trade_hub_id = th.id
 -- AND th.region_id = cplma.region_id;
 
+-- start min prices update
+
 UPDATE prices_advices cpa
 SET min_price = mp.min_price, updated_at = now()
 FROM prices_mins mp
 WHERE cpa.eve_item_id = mp.eve_item_id
 AND cpa.trade_hub_id = mp.trade_hub_id;
+
+UPDATE prices_advices cpa
+SET min_price = NULL, updated_at = now()
+WHERE NOT EXISTS (
+    SELECT NULL FROM prices_mins mp
+    WHERE cpa.eve_item_id = mp.eve_item_id
+          AND cpa.trade_hub_id = mp.trade_hub_id );
+
+-- end min prices update
 
 UPDATE prices_advices cpa
 SET cost = ei.cost, updated_at = now()
