@@ -203,6 +203,9 @@ GEM
       oauth2 (~> 1.1)
       omniauth (~> 1.2)
     pg (1.0.0)
+    pluck_to_hash (1.0.2)
+      activerecord (>= 4.0.2)
+      activesupport (>= 4.0.2)
     puma (3.11.4)
     rack (2.0.5)
     rack-test (1.0.0)
@@ -334,6 +337,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   pg
+  pluck_to_hash
   puma
   rails (= 5.2)
   rails_bootstrap_sortable!

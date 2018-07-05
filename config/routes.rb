@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     get :advice_prices
     get :advice_prices_monthly
     get :show_challenged_prices
+    get :empty_places
     post :update_basket
   end
 

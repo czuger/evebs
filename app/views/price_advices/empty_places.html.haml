@@ -1,0 +1,31 @@
+.container-fluid
+
+  %table.table.table-bordered
+    %tr
+      %th
+      %th Trade hub
+      %th Item
+      %th.text-right
+        Volume last 30 days
+        %i.glyphicon.glyphicon-question-sign
+      %th.text-right
+        Cost (1 unit)
+        %i.glyphicon.glyphicon-question-sign
+      %th.text-right
+        Price (1 unit)
+        %i.glyphicon.glyphicon-question-sign
+      %th.text-right
+        Margin %
+        %i.glyphicon.glyphicon-question-sign
+
+    - @empty_places_array.each do |empty_place|
+      %tr{ class: cycle( :active, nil ) }
+        %td= #shopping_basket_check_box( empty_place )
+        %td.trade_hub_name= trade_hub_name_with_region_v2( empty_place )
+        %td.item_name= link_to( empty_place['eve_items.name'], item_path( empty_place['eve_items.id'] ) )
+        %td.text-right.information_highlight_left=print_volume(empty_place['vol_month'])
+        %td.text-right.information_highlight_left=print_isk(empty_place['avg_price'])
+        %td.text-right.information_highlight_left=print_isk(empty_place['single_unit_cost'])
+        %td.text-right.information_highlight_left=print_pcent((empty_place['single_unit_cost'])/empty_place['avg_price'])
+
+  = will_paginate @empty_places_objects

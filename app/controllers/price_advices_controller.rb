@@ -17,6 +17,16 @@ class PriceAdvicesController < ApplicationController
     advice_prices_margins( :daily )
   end
 
+  def empty_places
+    @user = current_user
+    @empty_places_objects = PricesAdvice.joins( :eve_item, :region, :trade_hub ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )
+      .where( min_price: nil ).where.not( vol_month: nil )
+      .order( 'vol_month DESC' ).paginate(:page => params[:page], :per_page => 20 )
+
+    @empty_places_array = @empty_places_objects
+      .pluck_to_hash( 'trade_hubs.name', 'regions.name', 'eve_items.name', 'eve_items.id', :vol_month, :avg_price, :single_unit_cost )
+  end
+
   def update_basket
     user_id, trade_hub_id, eve_item_id = params[:item_code].split('|')
     checked = params[:checked] == 'true'

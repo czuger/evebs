@@ -30,6 +30,7 @@
             %span.caret
           %ul.dropdown-menu
             %li{ class: active_link( price_advices_advice_prices_path ) }= link_to 'Daily', price_advices_advice_prices_path
+            %li{ class: active_link( price_advices_empty_places_path ) }= link_to 'Empty places', price_advices_empty_places_path
             -#%li{ class: active_link( price_advices_advice_prices_monthly_path ) }= link_to 'Monthly', price_advices_advice_prices_monthly_path
             %li{ class: active_link( price_advices_show_challenged_prices_path ) }= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
             %li{ class: active_link( shopping_baskets_path ) }= link_to 'Basket', shopping_baskets_path

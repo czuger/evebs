@@ -16,6 +16,10 @@ module PriceAdvicesHelper
     name
   end
 
+  def trade_hub_name_with_region_v2( row_data )
+    "#{row_data['trade_hubs.name']} (#{row_data['regions.name']})"
+  end
+
   def price_n_margin( margin_type, item )
     price = margin_type == :daily ? item.min_price : item.avg_price
 

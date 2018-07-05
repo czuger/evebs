@@ -112,5 +112,5 @@ gem 'activerecord-import'
 # gem 'debugger', group: [:development, :test]
 
 gem 'active_record-sequence'
-
+gem 'pluck_to_hash'
 
