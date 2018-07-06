@@ -42,7 +42,7 @@
     %tr{ class: cycle( :odd, :even ) }
       %td{ colspan: 3 }
         Final cost
-      %td.text-right= print_isk( total_for_one_item * ( 1+Blueprint::TAX_AMOUNT ) )
+      %td.text-right= print_isk( total_for_one_item * Blueprint::TAX_AMOUNT_MULTIPLIER )
 
 
 

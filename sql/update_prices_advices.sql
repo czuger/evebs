@@ -67,7 +67,7 @@ WHERE cpa.eve_item_id = ei.id
 AND ei.blueprint_id = bp.id;
 
 -- TODO : set the cost using the blueprint variable (see update_components_costs)
-UPDATE prices_advices cpa SET single_unit_cost = (cost*(1+0.11))/prod_qtt, updated_at = now();
+UPDATE prices_advices cpa SET single_unit_cost = cost/prod_qtt, updated_at = now();
 
 UPDATE prices_advices cpa
 SET daily_monthly_pcent = min_price / avg_price, updated_at = now();
