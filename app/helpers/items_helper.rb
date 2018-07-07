@@ -87,6 +87,11 @@ module ItemsHelper
     protected_print_routine( pcent, :pcent )
   end
 
+  def compute_and_print_pcent( amount, max )
+    return protected_print_routine( amount.to_f / max.to_f, :pcent ) if amount && max
+    nil
+  end
+
   def print_isk(amount)
     protected_print_routine( amount, :isk )
   end
