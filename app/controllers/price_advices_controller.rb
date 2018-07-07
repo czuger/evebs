@@ -18,10 +18,13 @@ class PriceAdvicesController < ApplicationController
   end
 
   def empty_places
-    # TODO : wrong, il faut chercher la ou il n'y a pas d'ordre positionné.s
+    # Attention : min price, veut dire : last sold min price, pas last current min price.
     @user = current_user
     @empty_places_objects = PricesAdvice.joins( :eve_item, :region, :trade_hub ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )
       .where( min_price: nil ).where.not( vol_month: nil )
+      .where.not( SalesOrder.where( closed: false )
+         .where( 'prices_advices.eve_item_id = sales_orders.eve_item_id AND prices_advices.trade_hub_id = sales_orders.trade_hub_id' )
+            .exists )
       .order( 'vol_month DESC' ).paginate(:page => params[:page], :per_page => 20 )
 
     @empty_places_array = @empty_places_objects
