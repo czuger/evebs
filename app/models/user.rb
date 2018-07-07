@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :blueprint_components, through: :materials
   has_many :trade_orders
   has_many :api_key_errors
+  has_many :shopping_baskets, dependent: :destroy
 
   belongs_to :identity, foreign_key: :uid
 

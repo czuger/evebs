@@ -7,8 +7,18 @@
       %th
       %th Trade hub
       %th Item
-    - @basket.each do |basket|
+      %th.text-center Volume
+      %th.text-center Cost
+      %th.text-center Price
+      %th.text-center Margin
+    - @basket_array.each do |basket|
       %tr{ class: cycle( :odd, :even ) }
         %td= shopping_basket_check_box_shopping_basket( basket )
-        %td= basket.trade_hub.name
-        %td= link_to( basket.eve_item.name, item_path( basket.eve_item_id ) )
+        %td= trade_hub_name_with_region_v2( basket )
+        %td= link_to( basket['eve_items.name'], item_path( basket['eve_items.id'] ) )
+        %td.text-right.information_highlight_left=print_volume(basket['vol_month'])
+        %td.text-right.information_highlight_left=print_isk(basket['min_price'])
+        %td.text-right.information_highlight_left=print_isk(basket['single_unit_cost'])
+        %td.text-right.information_highlight_left=print_pcent((basket['single_unit_cost'])/basket['min_price'])
+
+    = will_paginate @basket_active_record

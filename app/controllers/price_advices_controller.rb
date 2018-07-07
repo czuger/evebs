@@ -18,6 +18,7 @@ class PriceAdvicesController < ApplicationController
   end
 
   def empty_places
+    # TODO : wrong, il faut chercher la ou il n'y a pas d'ordre positionné.s
     @user = current_user
     @empty_places_objects = PricesAdvice.joins( :eve_item, :region, :trade_hub ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )
       .where( min_price: nil ).where.not( vol_month: nil )

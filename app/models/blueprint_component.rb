@@ -6,7 +6,7 @@ class BlueprintComponent < ApplicationRecord
   has_many :blueprint_materials
   has_many :blueprints, through: :blueprint_materials
 
-  def self.set_min_prices_for_all_components
+  def self.compute_costs
     Banner.p 'Recomputing components costs from Jita prices'
 
     request = File.open( "#{Rails.root}/sql/update_components_costs.sql" ).read
