@@ -44,6 +44,9 @@ class Esi::DownloadMyOrders < Esi::Download
         eve_item_id = EveItem.to_eve_item_id(page['type_id'])
         trade_hub_id =  Station.to_trade_hub_id(page['location_id'])
 
+        # We can set orders in other hubs than those we have in the database.
+        next unless trade_hub_id
+
         to = TradeOrder.where( user: character.user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
         to.price = page['price']
         to.save!
