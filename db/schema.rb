@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_28_141624) do
+ActiveRecord::Schema.define(version: 2018_07_09_155406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -185,6 +185,7 @@ ActiveRecord::Schema.define(version: 2018_06_28_141624) do
     t.float "single_unit_cost"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "margin_percent"
     t.index ["eve_item_id"], name: "index_prices_advices_on_eve_item_id"
     t.index ["region_id"], name: "index_prices_advices_on_region_id"
     t.index ["trade_hub_id"], name: "index_prices_advices_on_trade_hub_id"

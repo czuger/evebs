@@ -56,7 +56,7 @@ WHERE NOT EXISTS (
 -- end min prices update
 
 UPDATE prices_advices cpa
-SET cost = ei.cost, updated_at = now()
+SET cost = ei.cost, margin_percent = ( min_price / ei.cost - 1 ) * 100, updated_at = now()
 FROM eve_items ei
 WHERE cpa.eve_item_id = ei.id;
 
