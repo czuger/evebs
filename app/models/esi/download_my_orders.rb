@@ -8,7 +8,7 @@ class Esi::DownloadMyOrders < Esi::Download
 
   def update
     Banner.p 'About to download users orders'
-    User.where.not( last_used_character_id: nil ).each do |user|
+    User.where.not( last_used_character_id: nil ).where( watch_my_prices: true ).each do |user|
       download_orders user
     end
   end
@@ -53,7 +53,9 @@ class Esi::DownloadMyOrders < Esi::Download
 
         current_trade_orders_id.delete( to.id )
 
-        ShoppingBasket.where( user_id: character.user_id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
+        if remove_occuped_places
+          ShoppingBasket.where( user_id: character.user_id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
+        end
       end
 
       character.user.trade_orders.where( id: current_trade_orders_id ).delete_all
