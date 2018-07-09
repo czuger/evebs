@@ -53,10 +53,10 @@
             %td.text-right.information_highlight_left=print_volume(item.vol_month)
             %td.text-right.information_highlight_left= link_to( print_isk(item.single_unit_cost), item_cost_path( item.eve_item_id ), target: '_blank' )
 
-            - price, batch, margin, margin_pcent = price_n_margin( margin_type, item )
+            - price, batch, margin, _ = price_n_margin( margin_type, item )
 
             %td.text-right.information_highlight_left= eve_central_quicklook_link( margin_type, price, item )
-            %td.text-right.information_highlight_right=print_pcent( margin_pcent )
+            %td.text-right.information_highlight_right=print_pcent_nomultiply( item.margin_percent )
             %td.text-right.information_highlight_right=print_isk( margin )
             %td.text-right.information_highlight_right=print_volume( batch )
 

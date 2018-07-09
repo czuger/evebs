@@ -56,7 +56,7 @@ WHERE NOT EXISTS (
 -- end min prices update
 
 UPDATE prices_advices cpa
-SET cost = ei.cost, margin_percent = ( min_price / ei.cost - 1 ) * 100, updated_at = now()
+SET cost = ei.cost, updated_at = now()
 FROM eve_items ei
 WHERE cpa.eve_item_id = ei.id;
 
@@ -67,7 +67,8 @@ WHERE cpa.eve_item_id = ei.id
 AND ei.blueprint_id = bp.id;
 
 -- TODO : set the cost using the blueprint variable (see update_components_costs)
-UPDATE prices_advices cpa SET single_unit_cost = cost/prod_qtt, updated_at = now();
-
-UPDATE prices_advices cpa
-SET daily_monthly_pcent = min_price / avg_price, updated_at = now();
+UPDATE prices_advices cpa SET
+  single_unit_cost = cost/prod_qtt,
+  margin_percent = ( min_price / (cost/prod_qtt) - 1 ) * 100,
+  daily_monthly_pcent = min_price / avg_price,
+  updated_at = now();

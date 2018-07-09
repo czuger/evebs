@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_09_155406) do
+ActiveRecord::Schema.define(version: 2018_07_09_160644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -187,6 +187,7 @@ ActiveRecord::Schema.define(version: 2018_07_09_155406) do
     t.datetime "updated_at", null: false
     t.float "margin_percent"
     t.index ["eve_item_id"], name: "index_prices_advices_on_eve_item_id"
+    t.index ["margin_percent"], name: "index_prices_advices_on_margin_percent"
     t.index ["region_id"], name: "index_prices_advices_on_region_id"
     t.index ["trade_hub_id"], name: "index_prices_advices_on_trade_hub_id"
   end

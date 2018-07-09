@@ -41,10 +41,7 @@ module Modules::PriceAdvices::MarginModule
       @items = @items.where( "#{margin_comp} > #{@user.min_amount_for_advice}" )
     end
 
-    if @user.min_pcent_for_advice
-      pcent_comp = "(((#{price_column_name}*#{batch_size_formula}) / (single_unit_cost*#{batch_size_formula})) - 1) * 100"
-      @items = @items.where( "#{pcent_comp} > #{@user.min_pcent_for_advice}" )
-    end
+    @items = @items.where( 'margin_percent > ?', @user.min_pcent_for_advice ) if @user.min_pcent_for_advice
 
     if @user.remove_occuped_places
       @items = @items.where.not( TradeOrder.where( user_id: @user.id )

@@ -93,6 +93,10 @@ module PriceAdvicesHelper
     protected_print_routine( pcent, :pcent )
   end
 
+  def print_pcent_nomultiply(pcent)
+    protected_print_routine( pcent, :pcent_nomultiply )
+  end
+
   def print_isk(amount)
     protected_print_routine( amount, :isk )
   end
@@ -114,8 +118,10 @@ module PriceAdvicesHelper
         number_with_delimiter(amount, separator: ",", delimiter: " ",)
       when :isk
         number_to_currency(amount.round(2), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
-      when :pcent
-        number_with_delimiter((amount * 100).round( 2 ), separator: ",", delimiter: " ",) + ' %'
+      when :pcent, :pcent_nomultiply
+        amount = amount * 100.0 if kind == :pcent
+        p amount
+        number_with_delimiter(amount.round( 2 ), separator: ",", delimiter: " ",) + ' %'
       else
     end
   end
