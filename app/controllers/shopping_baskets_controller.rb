@@ -9,7 +9,7 @@ class ShoppingBasketsController < ApplicationController
                                 .order( 'trade_hubs.name', 'eve_items.name' ).paginate( :page => params[:page], :per_page => 20 )
 
     @basket_array = @basket_active_record.pluck_to_hash( 'trade_hubs.name', 'regions.name', 'eve_items.name', 'eve_items.id',
-                                                         :vol_month, :min_price, :single_unit_cost, 'trade_hubs.id' )
+                                                         :vol_month, :min_price, :single_unit_cost, 'trade_hubs.id', :margin_percent )
   end
 
 end
