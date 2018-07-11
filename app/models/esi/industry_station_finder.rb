@@ -6,7 +6,15 @@ module Esi
       super( 'universe/systems/', {}, debug_request: debug_request )
     end
 
-    def get
+    def fill_station_table
+      ActiveRecord::Base.transaction do
+        sub_fill_station_table
+      end
+    end
+
+    private
+
+    def sub_fill_station_table
       systems = get_page_retry_on_error
 
       stations_office_prices = []
@@ -17,7 +25,7 @@ module Esi
         @rest_url = "universe/systems/#{system_id}/"
         system_data = get_page_retry_on_error
 
-        stations = system_data['sta tions']
+        stations = system_data['stations']
         if stations
           stations.each do |station_id|
             puts "\tChecking station : #{station_id}"
@@ -25,17 +33,19 @@ module Esi
             @rest_url = "universe/stations/#{station_id}/"
             station_data = get_page_retry_on_error
 
-            if ( REQUIRED_SERVICES - station_data['services'] ).empty?
-              stations_office_prices << [ station_data['office_rental_cost'], station_data['name'] ]
-            end
+            trade_hub_station = Station.find_by_cpp_station_id( station_id )
 
+            station = StationDetail.where( cpp_station_id: station_id ).first_or_initialize
+            station.name = station_data['name']
+            station.office_rental_cost = station_data['office_rental_cost']
+            station.services = station_data['services']
+            station.cpp_system_id = system_id
+            station.station_id = trade_hub_station&.id
+
+            station.save!
           end
         end
       end
-
-      stations_office_prices = stations_office_prices.sort.reverse
-
-      pp stations_office_prices
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_09_160644) do
+ActiveRecord::Schema.define(version: 2018_07_11_141441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -269,6 +269,19 @@ ActiveRecord::Schema.define(version: 2018_07_09_160644) do
     t.index ["user_id"], name: "index_shopping_baskets_on_user_id"
   end
 
+  create_table "station_details", force: :cascade do |t|
+    t.integer "cpp_system_id", null: false
+    t.integer "cpp_station_id", null: false
+    t.string "name", null: false
+    t.string "services", null: false, array: true
+    t.float "office_rental_cost", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "station_id"
+    t.index ["cpp_station_id"], name: "index_station_details_on_cpp_station_id", unique: true
+    t.index ["station_id"], name: "index_station_details_on_station_id"
+  end
+
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
     t.string "name", limit: 255
@@ -375,6 +388,7 @@ ActiveRecord::Schema.define(version: 2018_07_09_160644) do
   add_foreign_key "shopping_baskets", "eve_items"
   add_foreign_key "shopping_baskets", "trade_hubs"
   add_foreign_key "shopping_baskets", "users"
+  add_foreign_key "station_details", "stations"
   add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
   add_foreign_key "users", "characters", column: "last_used_character_id"

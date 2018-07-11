@@ -28,6 +28,6 @@ namespace :data_setup do
 
   desc 'Finding the prefect industrial station'
   task :find_station => :environment do
-    Esi::IndustryStationFinder.new.get
+    Esi::IndustryStationFinder.new.fill_station_table
   end
 end
