@@ -1,2 +1,8 @@
-%h1 ComponentsToBuy#show
-%p Find me in app/views/components_to_buy/show.html.haml
+%table.table
+  %tr
+    %th
+    %th
+  - @required_quantities.each do |rq|
+    %tr{ class: cycle( :odd, :even ) }
+      %td= rq[0][1]
+      %td= rq[1]

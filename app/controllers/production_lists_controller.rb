@@ -20,8 +20,9 @@ class ProductionListsController < ApplicationController
         corresponding_blueprint = pl.eve_item.blueprint
 
         # Always count in production batches
-        to_produce_qtt = ( qtt[1].to_f / corresponding_blueprint.prod_qtt ).ceil * corresponding_blueprint.prod_qtt
-        pl.update!( quantity_to_produce: to_produce_qtt )
+        runs_count = ( qtt[1].to_f / corresponding_blueprint.prod_qtt ).ceil
+        quantity_to_produce = runs_count * corresponding_blueprint.prod_qtt
+        pl.update!( quantity_to_produce: quantity_to_produce, runs_count: runs_count )
       end
     end
 

@@ -12,7 +12,9 @@ class User < ApplicationRecord
   has_many :trade_orders
   has_many :api_key_errors
   has_many :production_lists, dependent: :destroy
+
   has_many :characters
+  has_many :bpc_assets, through: :characters
 
   belongs_to :identity, foreign_key: :uid
 

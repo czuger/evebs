@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_13_092921) do
+ActiveRecord::Schema.define(version: 2018_07_13_103258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -234,6 +234,7 @@ ActiveRecord::Schema.define(version: 2018_07_13_092921) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "quantity_to_produce"
+    t.integer "runs_count", limit: 2
     t.index ["eve_item_id"], name: "index_production_lists_on_eve_item_id"
     t.index ["trade_hub_id"], name: "index_production_lists_on_trade_hub_id"
     t.index ["user_id"], name: "index_production_lists_on_user_id"
