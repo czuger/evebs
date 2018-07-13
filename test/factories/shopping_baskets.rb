@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :shopping_baskets do
+  factory :production_lists do
     user_references "MyString"
 trade_hub nil
 eve_item nil

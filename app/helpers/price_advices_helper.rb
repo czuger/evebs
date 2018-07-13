@@ -120,7 +120,6 @@ module PriceAdvicesHelper
         number_to_currency(amount.round(2), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
       when :pcent, :pcent_nomultiply
         amount = amount * 100.0 if kind == :pcent
-        p amount
         number_with_delimiter(amount.round( 2 ), separator: ",", delimiter: " ",) + ' %'
       else
     end

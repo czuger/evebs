@@ -54,7 +54,7 @@ class Esi::DownloadMyOrders < Esi::Download
         current_trade_orders_id.delete( to.id )
 
         if user.remove_occuped_places
-          ShoppingBasket.where( user_id: character.user_id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
+          ProductionList.where(user_id: character.user_id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
         end
       end
 

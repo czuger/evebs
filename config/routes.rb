@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     get :my_items_list
   end
 
-  resource :shopping_baskets, only: [ :show ]
+  resources :production_lists, only: [ :edit, :update ]
   # resources :jita_margins, only: [ :index, :update ]
 
   # resources :identities

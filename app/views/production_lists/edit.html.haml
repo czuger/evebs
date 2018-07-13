@@ -1,0 +1,33 @@
+.container
+
+  = form_tag production_list_path( @character ), method: :patch do
+
+    %h4 Items you checked in the daily earnings screen
+
+    %table.table
+      %tr
+        %th
+        %th Trade hub
+        %th Item
+        %th.text-center Volume
+        %th.text-center Cost
+        %th.text-center Price
+        %th.text-center Margin
+        %th.text-center Quantity to produce
+      - @basket_array.each do |basket|
+        %tr{ class: cycle( :odd, :even ) }
+          %td= shopping_basket_check_box_shopping_basket( basket )
+          %td= trade_hub_name_with_region_v2( basket )
+          %td= link_to( basket['eve_items.name'], item_path( basket['eve_items.id'] ) )
+          %td.text-right.information_highlight_left=print_volume(basket['vol_month'])
+          %td.text-right.information_highlight_left=print_isk(basket['single_unit_cost'])
+          %td.text-right.information_highlight_left=print_isk(basket['min_price'])
+          %td.text-right.information_highlight_left=print_pcent_nomultiply( basket['margin_percent'] )
+          %td.text-right.information_highlight_left=number_field_tag( "quantity_to_produce[#{basket[:id]}]", basket[:quantity_to_produce] )
+
+      = will_paginate @basket_active_record
+
+    .row
+      .col-md-12.text-center
+        .actions
+          = submit_tag 'Save', class: 'btn btn-default'

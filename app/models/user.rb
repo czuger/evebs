@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many :blueprint_components, through: :materials
   has_many :trade_orders
   has_many :api_key_errors
-  has_many :shopping_baskets, dependent: :destroy
+  has_many :production_lists, dependent: :destroy
   has_many :characters
 
   belongs_to :identity, foreign_key: :uid
@@ -44,7 +44,6 @@ class User < ApplicationRecord
           character.expires_on = Time.parse(auth.info.expires_on + ' UTC')
           character.token = auth.credentials.token
           character.renew_token = auth.credentials.refresh_token
-          character.current = true
           character.save!
 
           user.current_character_id = character.id

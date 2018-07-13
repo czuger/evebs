@@ -36,11 +36,11 @@ class PriceAdvicesController < ApplicationController
     checked = params[:checked] == 'true'
 
     if checked
-      unless ShoppingBasket.find_by_user_id_and_trade_hub_id_and_eve_item_id( user_id, trade_hub_id, eve_item_id )
-        ShoppingBasket.create!( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
+      unless ProductionList.find_by_user_id_and_trade_hub_id_and_eve_item_id(user_id, trade_hub_id, eve_item_id )
+        ProductionList.create!(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
       end
     else
-      sb = ShoppingBasket.where( user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id ).delete_all
+      sb = ProductionList.where(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id ).delete_all
     end
     head :ok
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_13_081344) do
+ActiveRecord::Schema.define(version: 2018_07_13_092921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -227,6 +227,18 @@ ActiveRecord::Schema.define(version: 2018_07_13_081344) do
     t.index ["eve_item_id", "trade_hub_id"], name: "index_prices_mins_on_eve_item_id_and_trade_hub_id", unique: true
   end
 
+  create_table "production_lists", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "trade_hub_id", null: false
+    t.integer "eve_item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "quantity_to_produce"
+    t.index ["eve_item_id"], name: "index_production_lists_on_eve_item_id"
+    t.index ["trade_hub_id"], name: "index_production_lists_on_trade_hub_id"
+    t.index ["user_id"], name: "index_production_lists_on_user_id"
+  end
+
   create_table "regions", id: :serial, force: :cascade do |t|
     t.string "cpp_region_id", null: false
     t.string "name", null: false
@@ -272,17 +284,6 @@ ActiveRecord::Schema.define(version: 2018_07_13_081344) do
     t.integer "last_retrieve_session_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "shopping_baskets", id: :serial, force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "trade_hub_id", null: false
-    t.integer "eve_item_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["eve_item_id"], name: "index_shopping_baskets_on_eve_item_id"
-    t.index ["trade_hub_id"], name: "index_shopping_baskets_on_trade_hub_id"
-    t.index ["user_id"], name: "index_shopping_baskets_on_user_id"
   end
 
   create_table "station_details", force: :cascade do |t|
@@ -403,13 +404,13 @@ ActiveRecord::Schema.define(version: 2018_07_13_081344) do
   add_foreign_key "prices_advices", "trade_hubs"
   add_foreign_key "prices_avg_weeks", "eve_items"
   add_foreign_key "prices_avg_weeks", "trade_hubs"
+  add_foreign_key "production_lists", "eve_items"
+  add_foreign_key "production_lists", "trade_hubs"
+  add_foreign_key "production_lists", "users"
   add_foreign_key "sales_finals", "eve_items"
   add_foreign_key "sales_finals", "trade_hubs"
   add_foreign_key "sales_orders", "eve_items"
   add_foreign_key "sales_orders", "trade_hubs"
-  add_foreign_key "shopping_baskets", "eve_items"
-  add_foreign_key "shopping_baskets", "trade_hubs"
-  add_foreign_key "shopping_baskets", "users"
   add_foreign_key "station_details", "stations"
   add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
