@@ -54,7 +54,7 @@ class Esi::Download
       begin
         pages = get_page
       rescue => e
-        return false unless error_handling e
+        return false unless error_handling( e )
         next
       end
 
@@ -83,18 +83,18 @@ class Esi::Download
     result
   end
 
-  def set_auth_token
-    unless @character
+  def set_auth_token( character=nil )
+    unless character
       character_id = File.open( 'config/character_id.txt' ).read.to_i
-      @character = Character.find_by_eve_id( character_id )
+      character = Character.find_by_eve_id( character_id )
     end
 
-    if @character.expires_on < Time.now().utc
-      puts "Token expired - #{@character.expires_on} < #{Time.now().utc}"
+    if character.expires_on < Time.now().utc
+      puts "Token expired - #{character.expires_on} < #{Time.now().utc}"
       renew_token
     end
 
-    @params[:token] = @character.token
+    @params[:token] = character.token
   end
 
   def renew_token
@@ -110,7 +110,7 @@ class Esi::Download
     auth64 = Base64.strict_encode64( "#{client_id}:#{secret_key}" )
     auth_string = "Basic #{auth64}"
 
-    # RestClient.log = 'stdout'
+    RestClient.log = 'stdout' if @debug_request
 
     c = RestClient.post 'https://login.eveonline.com/oauth/token',
                         { grant_type: :refresh_token, refresh_token: @character.renew_token },
@@ -127,6 +127,7 @@ class Esi::Download
     STDOUT.flush
 
     if e.is_a? Esi::Errors::Forbidden
+      p @forbidden_count
       @forbidden_count += 1
       return false if @forbidden_count > 5
     elsif e.is_a? Esi::Errors::NotFound
@@ -137,6 +138,7 @@ class Esi::Download
       sleep 10
     end
 
+    true
   end
 
   def set_headers

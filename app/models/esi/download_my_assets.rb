@@ -8,16 +8,25 @@ class Esi::DownloadMyAssets < Esi::Download
 
   def update
     Banner.p 'About to download users assets'
-    Character.each do |character|
-      download_orders user
+
+    ActiveRecord::Base.transaction do
+
+      BpcAsset.update_all( touched: false )
+
+      Character.all.each do |character|
+        puts "About to download #{character.name}"
+        download_assets character
+      end
+
+      BpcAsset.where( touched: false ).delete_all
     end
+
   end
 
   private
 
   def download_assets( character )
-
-    if character.locked
+    if character.locked && character.id != 3
       puts "#{character.name} is locked. Skipping ..."
       return
     end
@@ -25,7 +34,7 @@ class Esi::DownloadMyAssets < Esi::Download
     character_id = character.eve_id
     @rest_url = "characters/#{character_id}/assets/"
 
-    set_auth_token
+    set_auth_token( character )
 
     pages = get_all_pages
 
@@ -34,30 +43,18 @@ class Esi::DownloadMyAssets < Esi::Download
       return
     end
 
-    current_trade_orders_id = TradeOrder.pluck( :id )
-
     ActiveRecord::Base.transaction do
+      pages.each do |asset|
+        eve_item_id = BlueprintComponent.find_by_cpp_eve_item_id(asset['type_id'])&.id
+        next unless eve_item_id
 
-      pages.each do |page|
-        eve_item_id = EveItem.to_eve_item_id(page['type_id'])
-        trade_hub_id =  Station.to_trade_hub_id(page['location_id'])
+        trade_hub_id =  StationDetail.find_by_cpp_station_id(asset['location_id'])&.id
 
-        # We can set orders in other hubs than those we have in the database.
-        next unless trade_hub_id
-
-        to = TradeOrder.where( user: character.user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
-        to.price = page['price']
+        to = BpcAsset.where( character_id: character.id, blueprint_component_id: eve_item_id, station_detail_id: trade_hub_id ).first_or_initialize
+        to.quantity = asset['quantity']
+        to.touched = true
         to.save!
-
-        current_trade_orders_id.delete( to.id )
-
-        if user.remove_occuped_places
-          ShoppingBasket.where( user_id: character.user_id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
-        end
       end
-
-      character.user.trade_orders.where( id: current_trade_orders_id ).delete_all
-
     end
   end
 

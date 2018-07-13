@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_12_075657) do
+ActiveRecord::Schema.define(version: 2018_07_13_065950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -68,6 +68,19 @@ ActiveRecord::Schema.define(version: 2018_07_12_075657) do
     t.string "name", null: false
     t.index ["cpp_blueprint_id"], name: "index_blueprints_on_cpp_blueprint_id", unique: true
     t.index ["produced_cpp_type_id"], name: "index_blueprints_on_produced_cpp_type_id", unique: true
+  end
+
+  create_table "bpc_assets", force: :cascade do |t|
+    t.bigint "character_id", null: false
+    t.bigint "blueprint_component_id", null: false
+    t.bigint "station_detail_id"
+    t.bigint "quantity", null: false
+    t.boolean "touched", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_component_id"], name: "index_bpc_assets_on_blueprint_component_id"
+    t.index ["character_id"], name: "index_bpc_assets_on_character_id"
+    t.index ["station_detail_id"], name: "index_bpc_assets_on_station_detail_id"
   end
 
   create_table "bpc_jita_sales_finals", force: :cascade do |t|
@@ -374,6 +387,9 @@ ActiveRecord::Schema.define(version: 2018_07_12_075657) do
   add_foreign_key "blueprint_component_sales_orders", "trade_hubs"
   add_foreign_key "blueprint_materials", "blueprint_components"
   add_foreign_key "blueprint_materials", "blueprints"
+  add_foreign_key "bpc_assets", "blueprint_components"
+  add_foreign_key "bpc_assets", "characters"
+  add_foreign_key "bpc_assets", "station_details"
   add_foreign_key "bpc_jita_sales_finals", "blueprint_components"
   add_foreign_key "bpc_prices_mins", "blueprint_components"
   add_foreign_key "bpc_prices_mins", "trade_hubs"
