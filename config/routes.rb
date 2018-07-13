@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
 
   resources :characters, only: [ :edit, :update ]
+  resources :components_to_buy, only: [ :show ]
 
   resources :items, only: [ :show ] do
     get :cost

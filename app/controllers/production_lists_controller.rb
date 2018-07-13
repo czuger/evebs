@@ -17,7 +17,11 @@ class ProductionListsController < ApplicationController
     params['quantity_to_produce'].each do |qtt|
       unless qtt[1].empty?
         pl = @user.production_lists.find( qtt[0] )
-        pl.update!( quantity_to_produce: qtt[1] )
+        corresponding_blueprint = pl.eve_item.blueprint
+
+        # Always count in production batches
+        to_produce_qtt = ( qtt[1].to_f / corresponding_blueprint.prod_qtt ).ceil * corresponding_blueprint.prod_qtt
+        pl.update!( quantity_to_produce: to_produce_qtt )
       end
     end
 
