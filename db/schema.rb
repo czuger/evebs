@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_11_141441) do
+ActiveRecord::Schema.define(version: 2018_07_12_075657) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "hstore"
   enable_extension "plpgsql"
 
   create_table "api_key_errors", id: :serial, force: :cascade do |t|
@@ -278,6 +279,9 @@ ActiveRecord::Schema.define(version: 2018_07_11_141441) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "station_id"
+    t.float "security_status"
+    t.integer "jita_distance", limit: 2
+    t.hstore "industry_costs_indices"
     t.index ["cpp_station_id"], name: "index_station_details_on_cpp_station_id", unique: true
     t.index ["station_id"], name: "index_station_details_on_station_id"
   end
