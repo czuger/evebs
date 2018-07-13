@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     get :crest_price_history_update
   end
 
+  resources :characters, only: [ :edit, :update ]
+
   resources :items, only: [ :show ] do
     get :cost
     get :trade_hub_detail

@@ -12,10 +12,11 @@ class User < ApplicationRecord
   has_many :trade_orders
   has_many :api_key_errors
   has_many :shopping_baskets, dependent: :destroy
+  has_many :characters
 
   belongs_to :identity, foreign_key: :uid
 
-  belongs_to :last_used_character, class_name: 'Character'
+  belongs_to :current_character, class_name: 'Character'
 
   def self.from_omniauth(auth)
     if auth['provider'] == 'developer'
@@ -43,9 +44,10 @@ class User < ApplicationRecord
           character.expires_on = Time.parse(auth.info.expires_on + ' UTC')
           character.token = auth.credentials.token
           character.renew_token = auth.credentials.refresh_token
+          character.current = true
           character.save!
 
-          user.last_used_character_id = character.id
+          user.current_character_id = character.id
           user.save!
         end
 

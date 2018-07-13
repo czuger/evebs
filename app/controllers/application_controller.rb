@@ -19,8 +19,15 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id] && User.where(id: session[:user_id]).exists?
+    set_current_character
+    @current_user
+  end
+
+  def set_current_character
+    @current_character = @current_user&.current_character
   end
 
   helper_method :current_user

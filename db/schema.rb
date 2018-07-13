@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_13_065950) do
+ActiveRecord::Schema.define(version: 2018_07_13_081344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 2018_07_13_065950) do
     t.string "token"
     t.string "renew_token"
     t.boolean "locked", default: false, null: false
+    t.boolean "download_my_assets", default: false, null: false
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
@@ -378,8 +379,8 @@ ActiveRecord::Schema.define(version: 2018_07_13_065950) do
     t.boolean "admin", default: false, null: false
     t.boolean "batch_cap", default: true, null: false
     t.integer "vol_month_pcent", default: 10, null: false
-    t.bigint "last_used_character_id"
-    t.index ["last_used_character_id"], name: "index_users_on_last_used_character_id"
+    t.bigint "current_character_id"
+    t.index ["current_character_id"], name: "index_users_on_current_character_id"
   end
 
   add_foreign_key "api_key_errors", "users"
@@ -411,5 +412,5 @@ ActiveRecord::Schema.define(version: 2018_07_13_065950) do
   add_foreign_key "station_details", "stations"
   add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
-  add_foreign_key "users", "characters", column: "last_used_character_id"
+  add_foreign_key "users", "characters", column: "current_character_id"
 end

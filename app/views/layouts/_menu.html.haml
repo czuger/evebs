@@ -45,7 +45,8 @@
             User
             %span.caret
           %ul.dropdown-menu
-            %li{ class: active_link( edit_users_path ) }= link_to 'Edit', edit_users_path
+            %li{ class: active_link( edit_users_path ) }= link_to 'Edit user options', edit_users_path
+            %li{ class: active_link( edit_character_path( @current_character ) ) }= link_to 'Edit character options', edit_character_path( @current_character )
             -#%li{ class: active_link( edit_password_users_path ) }= link_to 'Change password', edit_password_users_path
         -#%li= link_to 'Help', '/help.pdf', target: '_blank'
         %li= link_to "Sign out", signout_path, id: "sign_out"
