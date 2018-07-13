@@ -33,10 +33,16 @@
             %li{ class: active_link( price_advices_empty_places_path ) }= link_to 'Empty places', price_advices_empty_places_path
             -#%li{ class: active_link( price_advices_advice_prices_monthly_path ) }= link_to 'Monthly', price_advices_advice_prices_monthly_path
             %li{ class: active_link( price_advices_show_challenged_prices_path ) }= link_to 'Challenged prices', price_advices_show_challenged_prices_path if current_user.watch_my_prices
-            %li{ class: active_link( edit_production_list_path( @current_character ) ) }= link_to 'Production list', edit_production_list_path( @current_character )
-            %li{ class: active_link( components_to_buy_path( @current_character ) ) }= link_to 'Components to buy', components_to_buy_path( @current_character )
-            %li{ class: active_link( character_share_list_path( @current_character ) ) }= link_to 'Share production list', character_share_list_path( @current_character )
 
+        %li
+          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+            Production
+            %span.caret
+          %ul.dropdown-menu
+            %li{ class: active_link( edit_production_list_path( @current_character ) ) }= link_to 'Production list', edit_production_list_path( @current_character )
+            %li{ class: active_link( character_share_list_path( @current_character ) ) }= link_to 'Share production list', character_share_list_path( @current_character )
+            %li.divider
+            %li{ class: active_link( components_to_buy_path( @current_character ) ) }= link_to 'Components to buy', components_to_buy_path( @current_character )
         %li
           = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
             User
