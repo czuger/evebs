@@ -1,0 +1,2 @@
+class ProductionListShareRequest < ApplicationRecord
+end

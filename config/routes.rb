@@ -9,7 +9,13 @@ Rails.application.routes.draw do
     get :crest_price_history_update
   end
 
-  resources :characters, only: [ :edit, :update ]
+  resources :characters, only: [ :edit, :update ] do
+    get :share_list, controller: :production_lists
+    post :share_list_validate, controller: :production_lists
+    get :accept_shared_list, controller: :production_lists
+    get :accept_shared_list_validate, controller: :production_lists
+  end
+
   resources :components_to_buy, only: [ :show ]
 
   resources :items, only: [ :show ] do
@@ -25,7 +31,9 @@ Rails.application.routes.draw do
     get :my_items_list
   end
 
-  resources :production_lists, only: [ :edit, :update ]
+  resources :production_lists, only: [ :edit, :update ] do
+  end
+
   # resources :jita_margins, only: [ :index, :update ]
 
   # resources :identities

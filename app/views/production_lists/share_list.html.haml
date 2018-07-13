@@ -1,0 +1,12 @@
+.container
+
+  = form_tag character_share_list_validate_path( @character ) do
+
+    %h4 You can share your production list to another user (your alt for example)
+
+    = select( :character, :id, @characters, {}, class: 'form-control' )
+
+    .row
+      .col-md-12.text-center
+        .actions
+          = submit_tag 'Share', class: 'btn btn-default'

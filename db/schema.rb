@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_13_103258) do
+ActiveRecord::Schema.define(version: 2018_07_13_115657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -227,6 +227,15 @@ ActiveRecord::Schema.define(version: 2018_07_13_103258) do
     t.index ["eve_item_id", "trade_hub_id"], name: "index_prices_mins_on_eve_item_id_and_trade_hub_id", unique: true
   end
 
+  create_table "production_list_share_requests", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "recipient_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipient_id"], name: "index_production_list_share_requests_on_recipient_id"
+    t.index ["sender_id"], name: "index_production_list_share_requests_on_sender_id"
+  end
+
   create_table "production_lists", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "trade_hub_id", null: false
@@ -405,6 +414,8 @@ ActiveRecord::Schema.define(version: 2018_07_13_103258) do
   add_foreign_key "prices_advices", "trade_hubs"
   add_foreign_key "prices_avg_weeks", "eve_items"
   add_foreign_key "prices_avg_weeks", "trade_hubs"
+  add_foreign_key "production_list_share_requests", "characters", column: "recipient_id"
+  add_foreign_key "production_list_share_requests", "characters", column: "sender_id"
   add_foreign_key "production_lists", "eve_items"
   add_foreign_key "production_lists", "trade_hubs"
   add_foreign_key "production_lists", "users"
