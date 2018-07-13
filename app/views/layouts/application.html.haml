@@ -10,6 +10,7 @@
   %body{ data:{ rails_env: Rails.env } }
     .container-fluid
       = render partial: 'layouts/menu'
+      = render partial: 'shared/errors'
       #error_area
       = yield
 

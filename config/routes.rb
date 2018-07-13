@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   resources :characters, only: [ :edit, :update ] do
     get :share_list, controller: :production_lists
-    post :share_list_validate, controller: :production_lists
+    post :share_list_update, controller: :production_lists
     get :accept_shared_list, controller: :production_lists
     get :accept_shared_list_validate, controller: :production_lists
   end

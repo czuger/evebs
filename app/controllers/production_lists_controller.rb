@@ -1,7 +1,7 @@
 class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_character, only: [:edit, :update, :share_list]
+  before_action :set_character, only: [:edit, :update, :share_list, :share_list_update]
 
   def edit
     @basket_active_record = @user.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
@@ -33,7 +33,12 @@ class ProductionListsController < ApplicationController
     @characters = Character.all.pluck( :name, :id )
   end
 
-  def share_list_validate
+  def share_list_update
+    params[:character][:id].to_i
+    params[:character_id].to_i
+    ProductionListShareRequest.find_or_create_by!( sender_id: params[:character_id].to_i, recipient_id: params[:character][:id].to_i )
+    flash[ :notice ] = 'List sent successfully'
+    redirect_to character_share_list_path( @character )
   end
 
   def accept_shared_list

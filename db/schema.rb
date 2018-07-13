@@ -232,8 +232,7 @@ ActiveRecord::Schema.define(version: 2018_07_13_115657) do
     t.bigint "recipient_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["recipient_id"], name: "index_production_list_share_requests_on_recipient_id"
-    t.index ["sender_id"], name: "index_production_list_share_requests_on_sender_id"
+    t.index ["recipient_id", "sender_id"], name: "plsr_unique_index", unique: true
   end
 
   create_table "production_lists", id: :serial, force: :cascade do |t|
