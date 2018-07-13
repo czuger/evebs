@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 2018_07_13_081344) do
     t.string "renew_token"
     t.boolean "locked", default: false, null: false
     t.boolean "download_my_assets", default: false, null: false
+    t.index ["download_my_assets"], name: "index_characters_on_download_my_assets"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
 

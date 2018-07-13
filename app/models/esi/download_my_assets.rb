@@ -13,7 +13,7 @@ class Esi::DownloadMyAssets < Esi::Download
 
       BpcAsset.update_all( touched: false )
 
-      Character.all.each do |character|
+      Character.where( download_my_assets: true, locked: false ).each do |character|
         puts "About to download #{character.name}"
         download_assets character
       end
