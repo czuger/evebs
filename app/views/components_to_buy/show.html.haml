@@ -1,8 +1,9 @@
-%table.table
-  %tr
-    %th
-    %th
-  - @required_quantities.each do |rq|
-    %tr{ class: cycle( :odd, :even ) }
-      %td= rq[0][1]
-      %td= rq[1]
+.container
+  %table.table
+    %tr
+      %th
+      %th
+    - @required_quantities.each do |rq|
+      %tr{ class: cycle( :odd, :even ) }
+        %td= rq[0][1]
+        %td= rq[1]

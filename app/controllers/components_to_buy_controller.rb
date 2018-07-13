@@ -19,9 +19,13 @@ class ComponentsToBuyController < ApplicationController
     @required_quantities.each do |k, v|
       asset = BpcAsset.where( character_id: user_characters_ids, blueprint_component_id: k[0] ).first
       if asset
-        @required_quantities[k] = v - asset.quantity
+        required_quantity = v - asset.quantity
+        if required_quantity > 0
+          @required_quantities[k] = required_quantity
+        else
+          @required_quantities.delete( k )
+        end
       end
-
     end
   end
 
