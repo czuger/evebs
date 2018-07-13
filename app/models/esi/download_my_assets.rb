@@ -6,19 +6,14 @@ class Esi::DownloadMyAssets < Esi::Download
     super( nil, {}, debug_request: debug_request )
   end
 
-  def update
-    Banner.p 'About to download users assets'
+  def update( character )
+    # Banner.p 'About to download users assets'
 
     ActiveRecord::Base.transaction do
 
-      BpcAsset.update_all( touched: false )
-
-      Character.where( download_my_assets: true, locked: false ).each do |character|
-        puts "About to download #{character.name}"
-        download_assets character
-      end
-
-      BpcAsset.where( touched: false ).delete_all
+      character.bpc_assets.update_all( touched: false )
+      download_assets character
+      character.bpc_assets.where( touched: false ).delete_all
     end
 
   end

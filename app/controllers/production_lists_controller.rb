@@ -1,7 +1,8 @@
 class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_character, only: [:edit, :update, :share_list, :share_list_update]
+  before_action :set_character, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
+                                       :accept_shared_list_update, :download_assets]
 
   def edit
     @basket_active_record = @user.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
@@ -30,7 +31,7 @@ class ProductionListsController < ApplicationController
   end
 
   def share_list
-    @characters = Character.all.pluck( :name, :id )
+    @characters = Character.where.not( id: @character.id ).pluck( :name, :id )
   end
 
   def share_list_update
@@ -42,6 +43,26 @@ class ProductionListsController < ApplicationController
   end
 
   def accept_shared_list
+    @shared_lists = ProductionListShareRequest.joins( :sender ).where( recipient_id: @character.id ).pluck( 'characters.name', 'characters.id' )
+  end
+
+  def accept_shared_list_update
+    ActiveRecord::Base.transaction do
+      @character.user.production_lists.delete_all
+
+      new_c = Character.find( params['sending_character_id'] )
+      @character.user.production_lists = new_c.user.production_lists
+      @character.save!
+
+      ProductionListShareRequest.where( recipient_id: @character.id, sender_id: params['sending_character_id'] ).delete_all
+    end
+
+    flash[ :notice ] = 'List successfully imported'
+    redirect_to character_accept_shared_list_path( @character )
+  end
+
+  def download_assets
+    Esi::DownloadMyAssets.new.update( @character )
   end
 
   private
