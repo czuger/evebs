@@ -1,8 +1,15 @@
 require 'test_helper'
 
 class ComponentsToBuyControllerTest < ActionDispatch::IntegrationTest
-  test "should get show" do
-    get components_to_buy_show_url
+
+  def setup
+    @user = create( :user, last_changes_in_choices: Time.now - 120 )
+    post '/auth/developer/callback', params: { name: @user.name }
+    @user.reload
+  end
+
+  test 'should get show' do
+    get components_to_buy_url @user.current_character
     assert_response :success
   end
 

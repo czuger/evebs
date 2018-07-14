@@ -6,8 +6,6 @@ FactoryBot.define do
 
     name "MyString"
     remove_occuped_places true
-    key_user_id "MyString"
-    api_key "MyString"
     min_pcent_for_advice 10
     min_amount_for_advice 10000000
 

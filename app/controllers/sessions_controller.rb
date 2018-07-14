@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
   # There is a strange behavior : if and only can't be used together
   # see : https://github.com/rails/rails/issues/9703
   # But skipping authenticity token for all actions in dev is fine.
-  skip_before_action :verify_authenticity_token, if: -> { Rails.env.development? || Rails.env.staging? }
+  skip_before_action :verify_authenticity_token, if: -> { Rails.env.development? || Rails.env.staging? || Rails.env.test? }
 
   def new
   end

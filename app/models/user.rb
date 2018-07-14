@@ -22,12 +22,20 @@ class User < ApplicationRecord
 
   def self.from_omniauth(auth)
     if auth['provider'] == 'developer'
-      raise 'Developer mode is allowed only in test or development mode' unless Rails.env.development? || Rails.env.staging?
-      where(provider: auth.provider, name: auth.info.name).first_or_initialize.tap do |user|
-        user.provider = auth.provider
-        user.name = auth.info.name
-        user.save!
-      end
+      raise 'Developer mode is allowed only in staging or development mode' unless Rails.env.development? || Rails.env.staging? || Rails.env.test?
+
+      user = where(provider: auth.provider, name: auth.info.name).first_or_initialize
+      user.provider = auth.provider
+      user.name = auth.info.name
+      user.save!
+
+      character = Character.where( user_id: user.id, eve_id: auth.info.name ).first_or_initialize
+      character.name = auth.info.name
+      character.expires_on = Time.now + 3600*24*12*100
+      raise unless character.save!
+
+      user.current_character_id = character.id
+      user.save!
     else
       # pp auth
 
@@ -51,10 +59,11 @@ class User < ApplicationRecord
           user.current_character_id = character.id
           user.save!
         end
-
-        user
       end
     end
+
+    raise unless user.current_character
+    user
   end
 
   def self.create_with_omniauth(auth)
