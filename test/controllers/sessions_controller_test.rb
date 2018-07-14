@@ -4,10 +4,12 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     OmniAuth.config.test_mode = true
-    OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(
-      { :provider => 'twitter', :uid => '123545', 'info' => {'email' => 'testuser@testmail.com', 'name' => 'test', 'image' => ''},
-      'credentials' => {'token' => '123456', 'expires_at' => 123456789 } } )
-    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:twitter]
+    OmniAuth.config.mock_auth[:eve_online_sso] = OmniAuth::AuthHash.new(
+      { :provider => 'eve_online_sso', :uid => '123545',
+        'info' => {'email' => 'testuser@testmail.com', 'name' => 'test', 'image' => '', character_id: 123456,
+                   expires_on: ( Time.now + 100.year ).to_s },
+        'credentials' => {'token' => '123456', 'expires_at' => 123456789 } } )
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:eve_online_sso]
   end
 
   def teardown
@@ -20,7 +22,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get create' do
-    post '/auth/twitter/callback'
+    post '/auth/eve_online_sso/callback'
     assert_redirected_to price_advices_advice_prices_url
   end
 

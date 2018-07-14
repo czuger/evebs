@@ -32,7 +32,7 @@ class User < ApplicationRecord
       character = Character.where( user_id: user.id, eve_id: auth.info.name ).first_or_initialize
       character.name = auth.info.name
       character.expires_on = Time.now + 3600*24*12*100
-      raise unless character.save!
+      character.save!
 
       user.current_character_id = character.id
       user.save!
@@ -45,8 +45,6 @@ class User < ApplicationRecord
         user.uid = auth.uid
         user.name = auth.info.name
         user.save!
-
-        # pp auth
 
         if auth.info.character_id
           character = Character.where( user_id: user.id, eve_id: auth.info.character_id ).first_or_initialize
@@ -62,7 +60,7 @@ class User < ApplicationRecord
       end
     end
 
-    raise unless user.current_character
+    raise "Character is null for #{user.inspect}. Auth : #{auth.inspect}" unless user.current_character
     user
   end
 
