@@ -10,20 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_14_120042) do
+ActiveRecord::Schema.define(version: 2018_07_14_150836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
   enable_extension "plpgsql"
-
-  create_table "api_key_errors", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.string "error_message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "user_message"
-    t.index ["user_id"], name: "index_api_key_errors_on_user_id"
-  end
 
   create_table "blueprint_component_sales_orders", force: :cascade do |t|
     t.bigint "trade_hub_id", null: false
@@ -397,7 +388,6 @@ ActiveRecord::Schema.define(version: 2018_07_14_120042) do
     t.index ["current_character_id"], name: "index_users_on_current_character_id"
   end
 
-  add_foreign_key "api_key_errors", "users"
   add_foreign_key "blueprint_component_sales_orders", "blueprint_components"
   add_foreign_key "blueprint_component_sales_orders", "trade_hubs"
   add_foreign_key "blueprint_materials", "blueprint_components"

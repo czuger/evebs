@@ -11,7 +11,7 @@
     Assets download finished. Last refresh :
     = @character.last_assets_download
 
-- unless @character.last_assets_download
+- unless @character.download_assets_running
   = form_tag character_download_assets_start_path( @character ) do
     = submit_tag 'Download my assets', class: 'form-control'
 
