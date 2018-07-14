@@ -14,7 +14,9 @@ Rails.application.routes.draw do
     post :share_list_update, controller: :production_lists
     get :accept_shared_list, controller: :production_lists
     post :accept_shared_list_update, controller: :production_lists
-    get :download_assets,  controller: :production_lists
+
+    get :download_assets,  controller: :components_to_buy
+    post :download_assets_start,  controller: :components_to_buy
   end
 
   resources :components_to_buy, only: [ :show ]

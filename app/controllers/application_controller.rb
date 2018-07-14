@@ -30,6 +30,11 @@ class ApplicationController < ActionController::Base
     @current_character = @current_user&.current_character
   end
 
+  def set_character
+    @character = Character.find( params[:id] || params[:character_id] )
+    @user = @character.user
+  end
+
   helper_method :current_user
 
 end

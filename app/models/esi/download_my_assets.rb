@@ -14,6 +14,8 @@ class Esi::DownloadMyAssets < Esi::Download
       character.bpc_assets.update_all( touched: false )
       download_assets character
       character.bpc_assets.where( touched: false ).delete_all
+
+      character.update( download_assets_running: false, last_assets_download: Time.now )
     end
 
   end

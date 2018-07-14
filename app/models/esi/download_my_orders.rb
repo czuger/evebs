@@ -17,7 +17,7 @@ class Esi::DownloadMyOrders < Esi::Download
 
   def download_orders( user )
 
-    character = user.last_used_character
+    character = user.current_character
 
     if character.locked
       puts "#{character.name} is locked. Skipping ..."

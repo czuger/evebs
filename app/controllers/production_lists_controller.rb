@@ -2,7 +2,7 @@ class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
   before_action :set_character, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
-                                       :accept_shared_list_update, :download_assets]
+                                       :accept_shared_list_update]
 
   def edit
     @basket_active_record = @user.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
@@ -61,16 +61,7 @@ class ProductionListsController < ApplicationController
     redirect_to character_accept_shared_list_path( @character )
   end
 
-  def download_assets
-    Esi::DownloadMyAssets.new.update( @character )
-  end
-
   private
-
-    def set_character
-      @character = Character.find( params[:id] || params[:character_id] )
-      @user = @character.user
-    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def character_params

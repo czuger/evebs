@@ -1,7 +1,7 @@
 class ComponentsToBuyController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_character, only: [:show]
+  before_action :set_character, only: [:show, :download_assets, :download_assets_start]
 
   def show
     # required_quantities_detail = @user.production_lists.where.not( runs_count: nil )
@@ -29,11 +29,13 @@ class ComponentsToBuyController < ApplicationController
     end
   end
 
-  private
+  def download_assets
+  end
 
-  def set_character
-    @character = Character.find( params[:id] )
-    @user = @character.user
+  def download_assets_start
+    @character.update( download_assets_running: true )
+    DownloadMyAssetsJob.perform_later @character
+    redirect_to character_download_assets_path( @character )
   end
 
 end

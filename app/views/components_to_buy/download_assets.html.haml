@@ -1,0 +1,17 @@
+- if @character.download_assets_running
+  %h4
+    Assets download in progress
+
+- elsif @character.last_assets_download.nil?
+  %h4
+    Assets never downloaded
+
+- else
+  %h4
+    Assets download finished. Last refresh :
+    = @character.last_assets_download
+
+- unless @character.last_assets_download
+  = form_tag character_download_assets_start_path( @character ) do
+    = submit_tag 'Download my assets', class: 'form-control'
+

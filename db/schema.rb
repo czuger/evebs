@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_14_090426) do
+ActiveRecord::Schema.define(version: 2018_07_14_120042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -116,6 +116,8 @@ ActiveRecord::Schema.define(version: 2018_07_14_090426) do
     t.string "renew_token"
     t.boolean "locked", default: false, null: false
     t.boolean "download_my_assets", default: false, null: false
+    t.boolean "download_assets_running", default: false, null: false
+    t.datetime "last_assets_download"
     t.index ["download_my_assets"], name: "index_characters_on_download_my_assets"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
