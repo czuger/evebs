@@ -20,18 +20,18 @@ end
 
 class TradeHubTest < ActiveSupport::TestCase
 
-  test 'Should setup trade hubs' do
-
-    TradeHub.delete_all
-
-    @tu = create( :station )
-    @item = create( :eve_item )
-    EAAL::API.stubs( :new ).returns(TradeHubTestDummy.new(@tu.cpp_station_id, @item.cpp_eve_item_id ) )
-
-    Setup::TradeHubs.new
-
-    EAAL::API.unstub( :new )
-  end
+  # test 'Should setup trade hubs' do
+  #
+  #   TradeHub.delete_all
+  #
+  #   @tu = create( :station )
+  #   @item = create( :eve_item )
+  #   EAAL::API.stubs( :new ).returns(TradeHubTestDummy.new(@tu.cpp_station_id, @item.cpp_eve_item_id ) )
+  #
+  #   Setup::TradeHubs.new
+  #
+  #   EAAL::API.unstub( :new )
+  # end
 
 
 end

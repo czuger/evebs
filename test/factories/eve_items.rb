@@ -3,8 +3,8 @@ FactoryBot.define do
   factory :eve_item do
 
     cost 5
-    involved_in_blueprint true
     name 'Item test'
+    name_lowcase 'item test'
     cpp_eve_item_id 123456
 
     # An example of item with blueprint and market group

@@ -12,7 +12,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update user" do
-    patch users_url, params: { id: :dummy, user: { api_key: @user.api_key, key_user_id: @user.key_user_id, name: @user.name, remove_occuped_places: @user.remove_occuped_places } }
+    patch users_url, params: { id: :dummy, user: { name: @user.name, remove_occuped_places: @user.remove_occuped_places } }
     assert_response :success
   end
 
