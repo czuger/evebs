@@ -34,7 +34,7 @@ class ListItemsController < ApplicationController
     end
 
     if params['filter']
-      @items = @items.where( "lower( name ) like '%#{params['filter']}%'" ).order( 'name' )
+      @items = @items.where( "lower( name ) like '%#{params['filter'].downcase}%'" ).order( 'name' )
     else
       @items = EveItem.none unless my_items_only
     end

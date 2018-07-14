@@ -34,7 +34,6 @@ class Esi::DownloadEveItems < Esi::Download
         item = EveItem.where( cpp_eve_item_id: missing_blueprint_id ).first_or_initialize
 
         item.name = cpp_item['name']
-        item.name_lowcase = item.name.downcase
         item.market_group_id = market_transformation_hash[ cpp_item['market_group_id'] ]
         item.blueprint_id = missing_blueprint_id
         item.save!

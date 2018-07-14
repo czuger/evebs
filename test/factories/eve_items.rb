@@ -4,14 +4,12 @@ FactoryBot.define do
 
     cost 5
     name 'Item test'
-    name_lowcase 'item test'
     cpp_eve_item_id 123456
 
     # An example of item with blueprint and market group
     factory :inferno_fury_cruise_missile do
       cpp_eve_item_id 2621
       name "Inferno Fury Cruise Missile"
-      name_lowcase "inferno fury cruise missile"
       cost 1815252.83
       market_group { FactoryBot.create( :advanced_high_damage_cruise_missiles_market_group ) }
 
@@ -25,7 +23,6 @@ FactoryBot.define do
     factory :mjolnir_fury_cruise_missile do
       cpp_eve_item_id 24535
       name "Mjolnir Fury Cruise Missile"
-      name_lowcase "mjolnir fury cruise missile"
       cost 1815252.83
 
       after(:create) do |eve_item|
@@ -38,7 +35,6 @@ FactoryBot.define do
     factory :inferno_precision_cruise_missile do
       cpp_eve_item_id 2637
       name "Inferno Precision Cruise Missile"
-      name_lowcase "inferno precision cruise missile"
       cost 1815252.83
 
       after(:create) do |eve_item|
@@ -51,7 +47,6 @@ FactoryBot.define do
     factory :dummy_eve_item do
       cpp_eve_item_id 999999
       name "Dummy eve item"
-      name_lowcase "dummy eve item"
     end
 
     # Items required for blueprints
@@ -59,7 +54,6 @@ FactoryBot.define do
     factory :morphite do
       cpp_eve_item_id 11399
       name 'Morphite'
-      name_lowcase 'morphite'
       cost 0
     end
 

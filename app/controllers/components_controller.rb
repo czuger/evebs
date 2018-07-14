@@ -4,7 +4,7 @@ class ComponentsController < ApplicationController
 
   def index
     if params['filter']
-      @components = BlueprintComponent.where( "lower( name ) like '%#{params['filter']}%'" )
+      @components = BlueprintComponent.where( "lower( name ) like '%#{params['filter'].downcase}%'" )
                         .order( 'name' ).paginate(:page => params[:page], :per_page => 20 )
     else
       @components = BlueprintComponent.none.paginate(:page => params[:page], :per_page => 20 )
