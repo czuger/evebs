@@ -8,7 +8,7 @@ class Esi::DownloadMyOrders < Esi::Download
 
   def update
     Banner.p 'About to download users orders'
-    User.where.not( last_used_character_id: nil ).where( watch_my_prices: true ).each do |user|
+    User.where( watch_my_prices: true ).each do |user|
       download_orders user
     end
   end
