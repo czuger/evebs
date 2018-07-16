@@ -21,6 +21,8 @@ class ProductionListsController < ApplicationController
   def update
     params['quantity_to_produce'].each do |qtt|
       unless qtt[1].empty?
+
+        @user = set_user_to_show( @user )
         pl = @user.production_lists.find( qtt[0] )
         corresponding_blueprint = pl.eve_item.blueprint
 
@@ -30,6 +32,8 @@ class ProductionListsController < ApplicationController
         pl.update!( quantity_to_produce: quantity_to_produce, runs_count: runs_count )
       end
     end
+
+    flash[ :notice ] = 'Production list updated successfully'
 
     redirect_to edit_production_list_path( @character )
   end
