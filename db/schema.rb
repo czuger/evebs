@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_14_151539) do
+ActiveRecord::Schema.define(version: 2018_07_16_163335) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -109,6 +109,8 @@ ActiveRecord::Schema.define(version: 2018_07_14_151539) do
     t.boolean "download_my_assets", default: false, null: false
     t.boolean "download_assets_running", default: false, null: false
     t.datetime "last_assets_download"
+    t.bigint "character_pl_share_id"
+    t.index ["character_pl_share_id"], name: "index_characters_on_character_pl_share_id"
     t.index ["download_my_assets"], name: "index_characters_on_download_my_assets"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
@@ -398,6 +400,7 @@ ActiveRecord::Schema.define(version: 2018_07_14_151539) do
   add_foreign_key "bpc_jita_sales_finals", "blueprint_components"
   add_foreign_key "bpc_prices_mins", "blueprint_components"
   add_foreign_key "bpc_prices_mins", "trade_hubs"
+  add_foreign_key "characters", "characters", column: "character_pl_share_id"
   add_foreign_key "characters", "users"
   add_foreign_key "eve_items", "blueprints"
   add_foreign_key "eve_items", "market_groups"

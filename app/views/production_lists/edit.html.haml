@@ -6,7 +6,8 @@
 
     %table.table
       %tr
-        %th
+        - unless @shared_production_list
+          %th
         %th Trade hub
         %th Item
         %th.text-center Volume
@@ -16,7 +17,8 @@
         %th.text-center Quantity to produce
       - @basket_array.each do |basket|
         %tr{ class: cycle( :odd, :even ) }
-          %td= shopping_basket_check_box_shopping_basket( basket )
+          - unless @shared_production_list
+            %td= shopping_basket_check_box_shopping_basket( basket )
           %td= trade_hub_name_with_region_v2( basket )
           %td= link_to( basket['eve_items.name'], item_path( basket['eve_items.id'] ) )
           %td.text-right.information_highlight_left=print_volume(basket['vol_month'])

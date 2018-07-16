@@ -4,8 +4,12 @@ class ProductionListsController < ApplicationController
   before_action :set_character, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
                                        :accept_shared_list_update]
 
+  include Modules::SharedPlList
+
   def edit
-    @basket_active_record = @user.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
+    user_to_show = set_user_to_show( @user )
+
+    @basket_active_record = user_to_show.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
         joins( 'LEFT JOIN prices_advices ON prices_advices.eve_item_id = production_lists.eve_item_id AND prices_advices.trade_hub_id = production_lists.trade_hub_id' )
                                 .order( 'trade_hubs.name', 'eve_items.name' ).paginate( :page => params[:page], :per_page => 20 )
 
@@ -48,10 +52,8 @@ class ProductionListsController < ApplicationController
 
   def accept_shared_list_update
     ActiveRecord::Base.transaction do
-      @character.user.production_lists.delete_all
-
-      new_c = Character.find( params['sending_character_id'] )
-      @character.user.production_lists = new_c.user.production_lists
+      @character.user.production_lists.clear
+      @character.character_pl_share_id = params['sending_character_id']
       @character.save!
 
       ProductionListShareRequest.where( recipient_id: @character.id, sender_id: params['sending_character_id'] ).delete_all
