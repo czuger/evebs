@@ -6,4 +6,4 @@
     - @required_quantities.each do |rq|
       %tr{ class: cycle( :odd, :even ) }
         %td= rq[0][1]
-        %td= rq[1]
+        %td= link_to rq[1], component_path( rq[0][0] )
