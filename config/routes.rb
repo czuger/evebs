@@ -19,7 +19,8 @@ Rails.application.routes.draw do
     post :download_assets_start,  controller: :components_to_buy
   end
 
-  resources :production_lists, only: [ :edit, :update, :create, :destroy ]
+  resources :production_lists, only: [ :edit, :update, :create ]
+  post :remove_production_list_check, controller: :production_lists
 
   resources :components_to_buy, only: [ :show ]
 

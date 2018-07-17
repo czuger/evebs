@@ -7,7 +7,10 @@ module Modules::PriceAdvices::MarginModule
     @user = current_user
     # @prices_array = []
     # @monthly_averages = get_montly_items_averages
-    @shopping_basket = @user.production_list_ids
+
+    @checked_production_list_ids = @user.production_lists.joins(
+        'INNER JOIN prices_advices ON production_lists.trade_hub_id = prices_advices.trade_hub_id AND production_lists.eve_item_id = prices_advices.eve_item_id' )
+      .pluck( 'prices_advices.id' )
 
     # TODO : those variables need to be in the user
     # Monthly volume percent multiplier for margin computation (default 10 %)
@@ -25,9 +28,6 @@ module Modules::PriceAdvices::MarginModule
     else
       batch_size_formula = "FLOOR( vol_month * #{@vol_month_pcent} )"
     end
-
-    # WTF ?
-    # margin_comp_pcent = "((#{price_column_name}*#{batch_size_formula}) - (single_unit_cost*#{batch_size_formula}))"
 
     @items = PricesAdvice.includes( :eve_item, :region ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )
     .where.not( vol_month: nil )

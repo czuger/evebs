@@ -2,7 +2,7 @@ class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
   before_action :set_user, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
-                                       :accept_shared_list_update, :create, :destroy]
+                                       :accept_shared_list_update, :create, :remove_production_list_check]
 
   include Modules::SharedPlList
 
@@ -47,9 +47,10 @@ class ProductionListsController < ApplicationController
     head :ok
   end
 
-  def destroy
+  def remove_production_list_check
     # Used by Ajax only
-    @user.production_lists.find( params[:id] ).destroy!
+    @user.production_lists.where(
+        trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).delete_all
     head :ok
   end
 

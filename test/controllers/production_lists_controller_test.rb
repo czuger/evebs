@@ -39,7 +39,7 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
   test 'remove item from basket' do
     set_pl
     assert_difference 'ProductionList.count', -1 do
-      delete production_list_url( @pl.id )
+      post remove_production_list_check_url, params: { trade_hub_id: @trade_hub.id, eve_item_id: @eve_item.id }
     end
     assert_response :success
   end
