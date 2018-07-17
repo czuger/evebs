@@ -1,6 +1,6 @@
 class AdminToolsController < ApplicationController
 
-  before_action :require_logged_in!, :log_client_activity, :require_admin!, except: [ :denied ]
+  # before_action :require_logged_in!, :log_client_activity, :require_admin!, except: [ :denied ]
 
   # def show
   #   @accounts_counts = User.count

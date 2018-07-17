@@ -34,13 +34,6 @@ module PriceAdvicesHelper
     [ price, batch.floor, margin, margin_pcent ]
   end
 
-  def eve_central_quicklook_link( margin_type, price, item )
-    # if margin_type == :daily
-    #   return link_to( print_isk(price), "https://eve-central.com/home/quicklook.html?typeid=#{item.eve_item.cpp_eve_item_id}&usesystem=#{item.trade_hub.eve_system_id}", target: '_blank' )
-    # end
-    print_isk(price)
-  end
-
   def challenged_prices_highlight_class_low_margin( margin )
     return :danger if margin && margin <= 0
     :warning if margin && margin < 0.2
