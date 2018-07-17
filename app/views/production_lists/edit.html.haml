@@ -1,6 +1,6 @@
 .container
 
-  = form_tag production_list_path( @character ), method: :patch do
+  = form_tag production_list_path( @current_user ), method: :patch do
 
     %h4 Items you checked in the daily earnings screen
 

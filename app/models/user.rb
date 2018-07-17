@@ -13,12 +13,12 @@ class User < ApplicationRecord
   has_many :api_key_errors
   has_many :production_lists, dependent: :destroy
 
-  has_many :characters
-  has_many :bpc_assets, through: :characters
+  has_many :bpc_assets
 
   belongs_to :identity, foreign_key: :uid
 
-  belongs_to :current_character, class_name: 'Character'
+  has_many :production_list_share_requests, foreign_key: :recipient_id
+  has_one :user_pl_share, class_name: 'User', primary_key: :user_pl_share_id, foreign_key: :id
 
   def self.from_omniauth(auth)
     if auth['provider'] == 'developer'
@@ -27,14 +27,7 @@ class User < ApplicationRecord
       user = where(provider: auth.provider, name: auth.info.name).first_or_initialize
       user.provider = auth.provider
       user.name = auth.info.name
-      user.save!
-
-      character = Character.where( user_id: user.id, eve_id: auth.info.name ).first_or_initialize
-      character.name = auth.info.name
-      character.expires_on = Time.now + 3600*24*12*100
-      character.save!
-
-      user.current_character_id = character.id
+      user.expires_on = Time.now + 3600*24*12*100
       user.save!
     else
       # pp auth
@@ -44,23 +37,13 @@ class User < ApplicationRecord
         user.provider = auth.provider
         user.uid = auth.uid
         user.name = auth.info.name
+        user.expires_on = Time.parse(auth.info.expires_on + ' UTC')
+        user.token = auth.credentials.token
+        user.renew_token = auth.credentials.refresh_token
         user.save!
-
-        if auth.info.character_id
-          character = Character.where( user_id: user.id, eve_id: auth.info.character_id ).first_or_initialize
-          character.name = auth.info.name
-          character.expires_on = Time.parse(auth.info.expires_on + ' UTC')
-          character.token = auth.credentials.token
-          character.renew_token = auth.credentials.refresh_token
-          character.save!
-
-          user.current_character_id = character.id
-          user.save!
-        end
       end
     end
 
-    raise "Character is null for #{user.inspect}. Auth : #{auth.inspect}" unless user.current_character
     user
   end
 

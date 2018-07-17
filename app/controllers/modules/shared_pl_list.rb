@@ -1,7 +1,7 @@
 module Modules::SharedPlList
 
   def set_user_to_show( user )
-    @shared_production_list = user.current_character.character_pl_share
-    @shared_production_list ? @shared_production_list.user : user
+    @shared_production_list = user.user_pl_share != nil
+    @shared_production_list ? user.user_pl_share : user
   end
 end

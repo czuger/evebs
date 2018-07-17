@@ -9,7 +9,7 @@ class ComponentsToBuyControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get show' do
-    get components_to_buy_url @user.current_character
+    get components_to_buy_url @user
     assert_response :success
   end
 

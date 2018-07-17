@@ -1,7 +1,7 @@
 class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_character, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
+  before_action :set_user, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
                                        :accept_shared_list_update]
 
   include Modules::SharedPlList

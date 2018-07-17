@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_16_163335) do
+ActiveRecord::Schema.define(version: 2018_07_17_071529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -386,8 +386,13 @@ ActiveRecord::Schema.define(version: 2018_07_16_163335) do
     t.boolean "admin", default: false, null: false
     t.boolean "batch_cap", default: true, null: false
     t.integer "vol_month_pcent", default: 10, null: false
-    t.bigint "current_character_id", null: false
-    t.index ["current_character_id"], name: "index_users_on_current_character_id"
+    t.datetime "expires_on"
+    t.string "token"
+    t.string "renew_token"
+    t.boolean "locked", default: false, null: false
+    t.boolean "download_assets_running", default: false, null: false
+    t.datetime "last_assets_download"
+    t.bigint "user_pl_share_id"
   end
 
   add_foreign_key "blueprint_component_sales_orders", "blueprint_components"
@@ -421,5 +426,5 @@ ActiveRecord::Schema.define(version: 2018_07_16_163335) do
   add_foreign_key "station_details", "stations"
   add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
-  add_foreign_key "users", "characters", column: "current_character_id"
+  add_foreign_key "users", "characters", column: "user_pl_share_id"
 end
