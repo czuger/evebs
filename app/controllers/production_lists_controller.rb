@@ -49,27 +49,20 @@ class ProductionListsController < ApplicationController
   end
 
   def accept_shared_list
-    @shared_lists = ProductionListShareRequest.joins( :sender ).where( recipient_id: @character.id ).pluck( 'characters.name', 'characters.id' )
+    @shared_lists = ProductionListShareRequest.joins( :sender ).where( recipient_id: @user.id ).pluck( 'users.name', 'users.id' )
   end
 
   def accept_shared_list_update
     ActiveRecord::Base.transaction do
-      @character.user.production_lists.clear
-      @character.character_pl_share_id = params['sending_character_id']
-      @character.save!
+      @user.production_lists.clear
+      @user.user_pl_share_id = params['sending_user_id']
+      @user.save!
 
-      ProductionListShareRequest.where( recipient_id: @character.id, sender_id: params['sending_character_id'] ).delete_all
+      ProductionListShareRequest.where( recipient_id: @user.id, sender_id: params['sending_user_id'] ).delete_all
     end
 
-    flash[ :notice ] = 'List successfully imported'
-    redirect_to character_accept_shared_list_path( @character )
+    flash[ :notice ] = 'List successfully linked'
+    redirect_to character_accept_shared_list_path( @user )
   end
-
-  private
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def character_params
-      params.require(:character).permit( :download_my_assets, :locked )
-    end
 
 end

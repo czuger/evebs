@@ -11,7 +11,7 @@ class CharacterToUser < ActiveRecord::Migration[5.2]
     add_column :users, :last_assets_download, :datetime
 
     add_column :users, :user_pl_share_id, :bigint
-    add_foreign_key :users, :characters, column: :user_pl_share_id
+    add_foreign_key :users, :users, column: :user_pl_share_id
 
     remove_column :users, :current_character_id, :bigint
 

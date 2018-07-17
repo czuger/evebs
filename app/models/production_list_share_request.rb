@@ -1,3 +1,3 @@
 class ProductionListShareRequest < ApplicationRecord
-  belongs_to :sender, class_name: 'Character'
+  belongs_to :sender, class_name: 'User'
 end

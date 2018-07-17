@@ -426,5 +426,5 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
   add_foreign_key "station_details", "stations"
   add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
-  add_foreign_key "users", "characters", column: "user_pl_share_id"
+  add_foreign_key "users", "users", column: "user_pl_share_id"
 end
