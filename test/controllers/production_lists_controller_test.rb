@@ -10,10 +10,12 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
     @trade_hub = create( :rens )
 
-    @pl = create( :production_list, user_id: @user.id, eve_item_id: @eve_item.id,
-            trade_hub_id: @trade_hub.id )
-
     @second_user = create( :user )
+  end
+
+  def set_pl
+    @pl = create( :production_list, user_id: @user.id, eve_item_id: @eve_item.id,
+                  trade_hub_id: @trade_hub.id )
   end
 
   test 'should get edit' do
@@ -22,8 +24,24 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should update' do
+    set_pl
     patch production_list_url( @user, params: { quantity_to_produce: { @pl.id => 500 } } )
     assert_redirected_to edit_production_list_url( @user )
+  end
+
+  test 'add item in basket' do
+    assert_difference 'ProductionList.count' do
+      post production_lists_url, params: { trade_hub_id: @trade_hub.id, eve_item_id: @eve_item.id }
+    end
+    assert_response :success
+  end
+
+  test 'remove item from basket' do
+    set_pl
+    assert_difference 'ProductionList.count', -1 do
+      delete production_list_url( @pl.id )
+    end
+    assert_response :success
   end
 
   test 'should get character_share_list' do

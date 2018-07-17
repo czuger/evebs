@@ -2,7 +2,7 @@ class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
   before_action :set_user, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
-                                       :accept_shared_list_update, :add_item_to_production_list]
+                                       :accept_shared_list_update, :create, :destroy]
 
   include Modules::SharedPlList
 
@@ -18,6 +18,7 @@ class ProductionListsController < ApplicationController
                                                          :margin_percent, :id, :quantity_to_produce )
   end
 
+  # This is used to update the price of a production list item
   def update
     params['quantity_to_produce']&.each do |qtt|
       unless qtt[1].empty?
@@ -38,9 +39,18 @@ class ProductionListsController < ApplicationController
     redirect_to edit_production_list_path( @user )
   end
 
-  def add_item_to_production_list
+  # This is used to create a production list item
+  # Used by Ajax only
+  def create
     @user.production_lists.find_or_create_by!(
         trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] )
+    head :ok
+  end
+
+  def destroy
+    # Used by Ajax only
+    @user.production_lists.find( params[:id] ).destroy!
+    head :ok
   end
 
   def update_basket
@@ -83,5 +93,9 @@ class ProductionListsController < ApplicationController
     flash[ :notice ] = 'List successfully linked'
     redirect_to character_accept_shared_list_path( @user )
   end
+
+  private
+
+
 
 end

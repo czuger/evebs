@@ -53,16 +53,4 @@ class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'add item in basket' do
-    assert_difference 'ProductionList.count' do
-      post price_advices_update_basket_url, params: { item_code: "#{@user.id}|#{@trade_hub.id}|#{@eve_item.id}", checked: 'true' }
-    end
-    assert_response :success
-  end
-
-  test 'add remove item from basket' do
-    post price_advices_update_basket_url, params: { item_code: "#{@user.id}|#{@trade_hub.id}|#{@eve_item.id}", checked: 'true' }
-    assert_response :success
-  end
-
 end
