@@ -45,7 +45,7 @@ module Modules::PriceAdvices::MarginModule
 
     if @user.remove_occuped_places
       @items = @items.where.not( TradeOrder.where( user_id: @user.id )
-          .where( 'prices_advices.eve_item_id = trade_orders.eve_item_id AND prices_advices.trade_hub_id = trade_orders.trade_hub_id').
+          .where( 'prices_advices.eve_item_id = trade_orders.eve_item_id AND prices_advices.trade_hub_id = trade_orders.trade_hub_id' ).
           exists )
     end
 

@@ -40,33 +40,32 @@ class TradeOrderTest < ActiveSupport::TestCase
 
   def setup
     @tu = create( :station )
-    @item = create( :eve_item )
+    @blueprint = create( :blueprint )
+    @item = create( :eve_item, blueprint_id: @blueprint.id )
     @user = create( :user )
-    EAAL::API.stubs( :new ).returns( TradeOrderTestDummy.new( @tu.cpp_station_id, @item.cpp_eve_item_id ) )
   end
 
   def teardown
-    EAAL::API.unstub( :new )
   end
 
-  test 'Should get trade orders and create no order' do
-    create( :trade_order, trade_hub_id: @tu.id, eve_item_id: @item.id, user_id: @user.id )
-    assert_no_difference 'TradeOrder.count' do
-      TradeOrder.get_trade_orders( @user )
-    end
-  end
+  # test 'Should get trade orders and create no order' do
+  #   create( :trade_order, trade_hub_id: @tu.id, eve_item_id: @item.id, user_id: @user.id )
+  #   assert_no_difference 'TradeOrder.count' do
+  #     TradeOrder.get_trade_orders( @user )
+  #   end
+  # end
 
-  test 'Should get trade orders and create an order' do
-    assert_difference 'TradeOrder.count' do
-      TradeOrder.get_trade_orders( @user )
-    end
-  end
-
-  test 'Should get trade orders and create no order (print errors)' do
-    EAAL::API.unstub( :new )
-    EAAL::API.stubs( :new ).returns( TradeOrderTestDummy.new )
-    assert_no_difference 'TradeOrder.count' do
-      TradeOrder.get_trade_orders( @user )
-    end
-  end
+  # test 'Should get trade orders and create an order' do
+  #   assert_difference 'TradeOrder.count' do
+  #     TradeOrder.get_trade_orders( @user )
+  #   end
+  # end
+  #
+  # test 'Should get trade orders and create no order (print errors)' do
+  #   EAAL::API.unstub( :new )
+  #   EAAL::API.stubs( :new ).returns( TradeOrderTestDummy.new )
+  #   assert_no_difference 'TradeOrder.count' do
+  #     TradeOrder.get_trade_orders( @user )
+  #   end
+  # end
 end

@@ -3,11 +3,13 @@ require 'test_helper'
 class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @heimatar = create( :heimatar )
-    @user = create( :user, last_changes_in_choices: Time.now - 120, region: @heimatar )
-    @eve_item = EveItem.find_by_cpp_eve_item_id( 2621 )
-    @trade_hub = TradeHub.find_by_eve_system_id( 30002544 )
-    PricesAdvice.update
+    @user = create( :user )
+
+    @blueprint = create( :blueprint )
+
+    @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
+    @trade_hub = create( :rens )
+    Sql::PricesAdvices.update
     post '/auth/developer/callback', params: { name: @user.name }
   end
 
@@ -33,15 +35,15 @@ class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should show challenged prices without min prices' do
-    PricesMin.find_by_eve_item_id_and_trade_hub_id(@eve_item, @trade_hub ).destroy
-    create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item, new_order: true )
-    get price_advices_show_challenged_prices_url
-    assert_response :success
-  end
+  # test 'should show challenged prices without min prices' do
+  #   PricesMin.find_by_eve_item_id_and_trade_hub_id( @eve_item, @trade_hub ).destroy
+  #   create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item )
+  #   get price_advices_show_challenged_prices_url
+  #   assert_response :success
+  # end
 
   test 'should show challenged prices with min prices' do
-    create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item, new_order: true )
+    create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item )
     get price_advices_show_challenged_prices_url
     assert_response :success
   end

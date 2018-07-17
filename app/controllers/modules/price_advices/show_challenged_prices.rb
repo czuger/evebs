@@ -17,7 +17,8 @@ module Modules::PriceAdvices::ShowChallengedPrices
       cost = to.eve_item.cost / prod_qtt
       margin_pcent = ( min_price / cost ) - 1 if cost && min_price
 
-      trade_hub_name = "#{to.trade_hub.name} (#{to.trade_hub.region.name})"
+
+      trade_hub_name = "#{to.trade_hub.name} (#{to.trade_hub.region&.name})"
 
       @compared_prices << {
         trade_hub_name: trade_hub_name, eve_item_name: to.eve_item.name, my_price: to.price,
