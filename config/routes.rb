@@ -19,6 +19,12 @@ Rails.application.routes.draw do
     post :download_assets_start,  controller: :components_to_buy
   end
 
+  resources :production_lists, only: [ :edit, :update ] do
+    delete :item
+  end
+
+  post :add_item_to_production_list, controller: :production_lists
+
   resources :components_to_buy, only: [ :show ]
 
   resources :items, only: [ :show ] do
@@ -34,13 +40,6 @@ Rails.application.routes.draw do
     get :my_items_list
   end
 
-  resources :production_lists, only: [ :edit, :update ] do
-  end
-
-  # resources :jita_margins, only: [ :index, :update ]
-
-  # resources :identities
-
   resource :users, only: [:edit, :update] do
     get :edit_password
     post :change_password
@@ -51,7 +50,6 @@ Rails.application.routes.draw do
     get :advice_prices_monthly
     get :show_challenged_prices
     get :empty_places
-    post :update_basket
   end
 
   resource :choose_trade_hubs, only: [:edit, :update]

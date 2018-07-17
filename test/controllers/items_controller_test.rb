@@ -12,17 +12,17 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     post '/auth/developer/callback', params: { name: @user.name }
   end
 
-  test "should get items costs" do
+  test 'should get items costs' do
     get item_cost_url( @eve_item.id )
     assert_response :success
   end
 
-  test "should show item detail" do
+  test 'should show item detail' do
     get @eve_item.id
     assert_response :success
   end
 
-  test "should show item detail of an item that has no CrestPricesLastMonthAverage information" do
+  test 'should show item detail of an item that has no CrestPricesLastMonthAverage information' do
     # We create a region with no CrestPricesLastMonthAverage informations
     @domain = create( :domain, items: EveItem.all )
     get @eve_item.id

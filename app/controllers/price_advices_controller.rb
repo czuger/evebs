@@ -31,20 +31,6 @@ class PriceAdvicesController < ApplicationController
       .pluck_to_hash( 'trade_hubs.name', 'regions.name', 'eve_items.name', 'eve_items.id', :vol_month, :avg_price, :single_unit_cost )
   end
 
-  def update_basket
-    user_id, trade_hub_id, eve_item_id = params[:item_code].split('|')
-    checked = params[:checked] == 'true'
-
-    if checked
-      unless ProductionList.find_by_user_id_and_trade_hub_id_and_eve_item_id(user_id, trade_hub_id, eve_item_id )
-        ProductionList.create!(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
-      end
-    else
-      sb = ProductionList.where(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id ).delete_all
-    end
-    head :ok
-  end
-
   private
 
   def print_change_warning
@@ -55,17 +41,6 @@ class PriceAdvicesController < ApplicationController
       return "You did recent changes. Some datas can be inacurate. The next data refresh will occur in : #{diff}"
     end
     nil
-  end
-
-  def get_montly_items_averages
-    datas = CrestPricesLastMonthAverage.where( eve_item_id: @user.eve_items, region_id: @user.regions.pluck(:id) ).to_a
-    Hash[datas.map{ |e| [[[e.region_id],[e.eve_item_id]],e]}]
-  end
-
-  def set_regions_names( region_name )
-    @regions_names = [] unless @regions_names
-    @regions_names << region_name unless @regions_names.include?( region_name )
-    @regions_names.sort!
   end
 
   def set_trade_hubs( trade_hub_name )

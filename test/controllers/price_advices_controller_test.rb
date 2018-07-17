@@ -4,13 +4,13 @@ class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     @user = create( :user )
+    post '/auth/developer/callback', params: { name: @user.name }
 
     @blueprint = create( :blueprint )
 
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
     @trade_hub = create( :rens )
-    Sql::PricesAdvices.update
-    post '/auth/developer/callback', params: { name: @user.name }
+    # Sql::PricesAdvices.update
   end
 
   test 'should show prices for current user' do
@@ -42,13 +42,25 @@ class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :success
   # end
 
+  test 'should get empty places' do
+    get price_advices_empty_places_url
+    assert_response :success
+  end
+
   test 'should show challenged prices with min prices' do
     create( :trade_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item )
     get price_advices_show_challenged_prices_url
     assert_response :success
   end
 
-  test 'update basket' do
+  test 'add item in basket' do
+    assert_difference 'ProductionList.count' do
+      post price_advices_update_basket_url, params: { item_code: "#{@user.id}|#{@trade_hub.id}|#{@eve_item.id}", checked: 'true' }
+    end
+    assert_response :success
+  end
+
+  test 'add remove item from basket' do
     post price_advices_update_basket_url, params: { item_code: "#{@user.id}|#{@trade_hub.id}|#{@eve_item.id}", checked: 'true' }
     assert_response :success
   end

@@ -2,7 +2,7 @@ class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
   before_action :set_user, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
-                                       :accept_shared_list_update]
+                                       :accept_shared_list_update, :add_item_to_production_list]
 
   include Modules::SharedPlList
 
@@ -36,6 +36,25 @@ class ProductionListsController < ApplicationController
     flash[ :notice ] = 'Production list updated successfully'
 
     redirect_to edit_production_list_path( @user )
+  end
+
+  def add_item_to_production_list
+    @user.production_lists.find_or_create_by!(
+        trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] )
+  end
+
+  def update_basket
+    user_id, trade_hub_id, eve_item_id = params[:item_code].split('|')
+    checked = params[:checked] == 'true'
+
+    if checked
+      unless ProductionList.find_by_user_id_and_trade_hub_id_and_eve_item_id(user_id, trade_hub_id, eve_item_id )
+        ProductionList.create!(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
+      end
+    else
+      sb = ProductionList.where(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id ).delete_all
+    end
+    head :ok
   end
 
   def share_list
