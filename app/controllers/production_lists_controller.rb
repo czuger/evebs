@@ -19,7 +19,7 @@ class ProductionListsController < ApplicationController
   end
 
   def update
-    params['quantity_to_produce'].each do |qtt|
+    params['quantity_to_produce']&.each do |qtt|
       unless qtt[1].empty?
 
         @user = set_user_to_show( @user )
@@ -35,19 +35,17 @@ class ProductionListsController < ApplicationController
 
     flash[ :notice ] = 'Production list updated successfully'
 
-    redirect_to edit_production_list_path( @character )
+    redirect_to edit_production_list_path( @user )
   end
 
   def share_list
-    @characters = Character.where.not( id: @character.id ).pluck( :name, :id )
+    @users = User.where.not( id: @user.id ).pluck( :name, :id )
   end
 
   def share_list_update
-    params[:character][:id].to_i
-    params[:character_id].to_i
-    ProductionListShareRequest.find_or_create_by!( sender_id: params[:character_id].to_i, recipient_id: params[:character][:id].to_i )
+    ProductionListShareRequest.find_or_create_by!( sender_id: params[:user_id].to_i, recipient_id: params[:user][:id].to_i )
     flash[ :notice ] = 'List sent successfully'
-    redirect_to character_share_list_path( @character )
+    redirect_to character_share_list_path( @user )
   end
 
   def accept_shared_list

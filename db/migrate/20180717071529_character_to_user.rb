@@ -14,5 +14,11 @@ class CharacterToUser < ActiveRecord::Migration[5.2]
     add_foreign_key :users, :characters, column: :user_pl_share_id
 
     remove_column :users, :current_character_id, :bigint
+
+    remove_foreign_key :production_list_share_requests, column: :sender_id
+    remove_foreign_key :production_list_share_requests, column: :recipient_id
+
+    add_foreign_key :production_list_share_requests, :users, column: :sender_id
+    add_foreign_key :production_list_share_requests, :users, column: :recipient_id
   end
 end

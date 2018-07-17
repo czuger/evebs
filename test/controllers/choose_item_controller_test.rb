@@ -4,7 +4,7 @@ class ChooseItemsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @heimatar = create( :heimatar )
-    @user = create( :user, last_changes_in_choices: Time.now - 120, region: @heimatar )
+    @user = create( :user )
     post '/auth/developer/callback', params: { name: @user.name }
     @item = EveItem.find_by_cpp_eve_item_id( 2621 )
   end

@@ -1,10 +1,10 @@
 .container
 
-  = form_tag character_share_list_update_path( @character ) do
+  = form_tag character_share_list_update_path( @user ) do
 
     %h4 You can share your production list to another user (your alt for example)
 
-    = select( :character, :id, @characters, {}, class: 'form-control' )
+    = select( :user, :id, @users, {}, class: 'form-control' )
 
     .row
       .col-md-12.text-center
