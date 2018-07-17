@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :blueprint_component do
+
     factory :component_morphite do
       cpp_eve_item_id 11399
       name 'Morphite'

@@ -1,7 +1,5 @@
 class ComponentsController < ApplicationController
 
-  before_action :require_logged_in!, :log_client_activity
-
   def index
     if params['filter']
       @components = BlueprintComponent.where( "lower( name ) like '%#{params['filter'].downcase}%'" )

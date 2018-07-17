@@ -30,18 +30,18 @@ class ChooseItemsController < ApplicationController
     head :ok
   end
 
-  def select_all_items
-    @user = current_user
-
-    ActiveRecord::Base.transaction do
-      @user.eve_items.clear
-
-      ActiveRecord::Base.connection.execute(
-          "INSERT INTO eve_items_users (user_id, eve_item_id) SELECT #{current_user.id}, id FROM eve_items" )
-
-      @user.update_attribute(:last_changes_in_choices,Time.now)
-    end
-    redirect_to edit_choose_items_path
-  end
+  # def select_all_items
+  #   @user = current_user
+  #
+  #   ActiveRecord::Base.transaction do
+  #     @user.eve_items.clear
+  #
+  #     ActiveRecord::Base.connection.execute(
+  #         "INSERT INTO eve_items_users (user_id, eve_item_id) SELECT #{current_user.id}, id FROM eve_items" )
+  #
+  #     @user.update_attribute(:last_changes_in_choices,Time.now)
+  #   end
+  #   redirect_to edit_choose_items_path
+  # end
 
 end
