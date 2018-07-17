@@ -41,23 +41,6 @@ module PriceAdvicesHelper
     print_isk(price)
   end
 
-  def shopping_basket_check_box( item )
-    id = [ @user.id, item[:trade_hub_id], item[:eve_item_id] ]
-    check_box_tag(
-      "eve_item_#{id.join('_')}", id.join( '|' ),
-      @shopping_basket.include?( [ @user.id, item[:trade_hub_id], item[:eve_item_id ] ] ),
-      { class: :shopping_basket_checkbox }
-    )
-  end
-
-  def shopping_basket_check_box_shopping_basket( basket )
-    id = [ @user.id, basket['trade_hub.id'], basket['eve_item.id'] ]
-    check_box_tag(
-        "eve_item_#{id.join('_')}", id.join( '|' ), true,
-        { class: [:shopping_basket_checkbox, :delete_on_change], 'data-toggle' => :tooltip, title: 'Uncheck to remove item' }
-    )
-  end
-
   def challenged_prices_highlight_class_low_margin( margin )
     return :danger if margin && margin <= 0
     :warning if margin && margin < 0.2

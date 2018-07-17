@@ -43,7 +43,7 @@
           %tr{ class: cycle( :active, nil ) }
             -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
             - region_name = item.region ? item.region.name : ''
-            %td= shopping_basket_check_box( item )
+            %td= production_list_check_box( item )
             - if margin_type == :monthly
               %td.trade_hub_name=item.region.name
             - else

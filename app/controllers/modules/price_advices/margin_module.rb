@@ -7,7 +7,7 @@ module Modules::PriceAdvices::MarginModule
     @user = current_user
     # @prices_array = []
     # @monthly_averages = get_montly_items_averages
-    @shopping_basket = get_shopping_basket
+    @shopping_basket = @user.production_list_ids
 
     # TODO : those variables need to be in the user
     # Monthly volume percent multiplier for margin computation (default 10 %)

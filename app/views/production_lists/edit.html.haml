@@ -18,7 +18,7 @@
       - @basket_array.each do |basket|
         %tr{ class: cycle( :odd, :even ) }
           - unless @shared_production_list
-            %td= shopping_basket_check_box_shopping_basket( basket )
+            %td= production_list_check_box( basket, delete_on_change: true, force_checked: true  )
           %td= trade_hub_name_with_region_v2( basket )
           %td= link_to( basket['eve_items.name'], item_path( basket['eve_items.id'] ) )
           %td.text-right.information_highlight_left=print_volume(basket['vol_month'])
