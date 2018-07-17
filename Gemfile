@@ -93,6 +93,8 @@ group :development, :test do
   gem 'spring'
   gem 'bullet'
   gem 'mocha'
+
+  gem 'rails-controller-testing'
 end
 
 gem 'simplecov', :require => false, :group => :test

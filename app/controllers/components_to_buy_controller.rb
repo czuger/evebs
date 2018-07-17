@@ -19,7 +19,7 @@ class ComponentsToBuyController < ApplicationController
         .group( 'blueprint_components.id', 'blueprint_components.name' ).sum( 'required_qtt * runs_count' )
 
     @required_quantities.each do |k, v|
-      asset = BpcAsset.where( user_id: @user.id, blueprint_component_id: k[0] ).first
+      asset = @user.bpc_assets.where( blueprint_component_id: k[0] ).first
       if asset
         required_quantity = v - asset.quantity
         if required_quantity > 0
@@ -29,15 +29,16 @@ class ComponentsToBuyController < ApplicationController
         end
       end
     end
+
   end
 
   def download_assets
   end
 
   def download_assets_start
-    @character.update( download_assets_running: true )
-    DownloadMyAssetsJob.perform_later @character
-    redirect_to character_download_assets_path( @character )
+    @user.update( download_assets_running: true )
+    DownloadMyAssetsJob.perform_later @user
+    redirect_to character_download_assets_path( @user )
   end
 
 end

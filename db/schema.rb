@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_17_071529) do
+ActiveRecord::Schema.define(version: 2018_07_17_172014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -63,15 +63,14 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
   end
 
   create_table "bpc_assets", force: :cascade do |t|
-    t.bigint "character_id", null: false
     t.bigint "blueprint_component_id", null: false
     t.bigint "station_detail_id"
     t.bigint "quantity", null: false
     t.boolean "touched", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["blueprint_component_id"], name: "index_bpc_assets_on_blueprint_component_id"
-    t.index ["character_id"], name: "index_bpc_assets_on_character_id"
     t.index ["station_detail_id"], name: "index_bpc_assets_on_station_detail_id"
   end
 
@@ -124,7 +123,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "cost"
@@ -144,9 +143,9 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "email", limit: 255
-    t.string "password_digest", limit: 255
+    t.string "name"
+    t.string "email"
+    t.string "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -309,7 +308,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name", limit: 255
+    t.string "name"
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -329,7 +328,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -373,12 +372,12 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
+    t.string "name"
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider", limit: 255
-    t.string "uid", limit: 255
+    t.string "provider"
+    t.string "uid"
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"
@@ -400,8 +399,8 @@ ActiveRecord::Schema.define(version: 2018_07_17_071529) do
   add_foreign_key "blueprint_materials", "blueprint_components"
   add_foreign_key "blueprint_materials", "blueprints"
   add_foreign_key "bpc_assets", "blueprint_components"
-  add_foreign_key "bpc_assets", "characters"
   add_foreign_key "bpc_assets", "station_details"
+  add_foreign_key "bpc_assets", "users"
   add_foreign_key "bpc_jita_sales_finals", "blueprint_components"
   add_foreign_key "bpc_prices_mins", "blueprint_components"
   add_foreign_key "bpc_prices_mins", "trade_hubs"
