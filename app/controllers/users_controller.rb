@@ -33,31 +33,8 @@ class UsersController < ApplicationController
     end
   end
 
-  def edit_password
-  end
-
-  def change_password
-
-    @user = current_user
-    @identity = Identity.find_by( id: @user.uid )
-    @identity.password = params['new_password']
-    @identity.password_confirmation = params['new_password_confirmation']
-    result = @identity.save
-
-    unless result
-      flash[ :alert ] = @identity.errors
-    else
-      flash[ :notice ] = 'Password changed successfully.'
-    end
-
-    redirect_to edit_password_users_path
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = current_user
-    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params

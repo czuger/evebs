@@ -1,9 +1,14 @@
 FactoryBot.define do
   factory :blueprint do
 
+    sequence :name do |n|
+      "Blueprint #{n}"
+    end
+
     nb_runs 1
     prod_qtt 1
     cpp_blueprint_id 50
+    produced_cpp_type_id 123456
 
     factory :inferno_fury_cruise_blueprint do
 

@@ -45,15 +45,15 @@ FactoryBot.define do
 
         amarr = create( :amarr, region: region )
 
-        evaluator.items.each do |item|
-
-          [ amarr ].each do |trade_hub|
-            create( :min_price, trade_hub: trade_hub, eve_item: item )
-          end
-
-          # create( :crest_prices_last_month_average, eve_item: item, region: region )
-
-        end
+        # evaluator.items.each do |item|
+        #
+        #   [ amarr ].each do |trade_hub|
+        #     create( :min_price, trade_hub: trade_hub, eve_item: item )
+        #   end
+        #
+        #   # create( :crest_prices_last_month_average, eve_item: item, region: region )
+        #
+        # end
       end
 
     end

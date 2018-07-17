@@ -12,11 +12,6 @@ FactoryBot.define do
       name "Inferno Fury Cruise Missile"
       cost 1815252.83
       market_group { FactoryBot.create( :advanced_high_damage_cruise_missiles_market_group ) }
-
-      after(:create) do |eve_item|
-        create( :inferno_fury_cruise_blueprint, eve_item: eve_item )
-      end
-
     end
 
     # An example of item with blueprint but no market group
@@ -24,11 +19,6 @@ FactoryBot.define do
       cpp_eve_item_id 24535
       name "Mjolnir Fury Cruise Missile"
       cost 1815252.83
-
-      after(:create) do |eve_item|
-        create( :inferno_fury_cruise_blueprint, eve_item: eve_item )
-      end
-
     end
 
     # An example with no blueprint and no market group
@@ -36,11 +26,6 @@ FactoryBot.define do
       cpp_eve_item_id 2637
       name "Inferno Precision Cruise Missile"
       cost 1815252.83
-
-      after(:create) do |eve_item|
-        create( :inferno_fury_cruise_blueprint, eve_item: eve_item )
-      end
-
     end
 
     # Name says

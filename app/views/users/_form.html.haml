@@ -43,19 +43,19 @@
       .actions
         = f.submit 'Save', class: 'btn btn-default'
 
-%hr
-
-- unless @user.api_key_errors.empty?
-  %table.table
-    %thead
-      %tr.danger
-        %th= 'Last 5 API errors'
-        %th= 'Date'
-    %tbody
-      - @user.api_key_errors.order( 'created_at DESC' ).limit( 5 ).each do |error|
-        %tr.danger
-          %td= error.user_message
-          %td= error.created_at
+-#%hr
+-#
+-#- unless @user.api_key_errors.empty?
+-#  %table.table
+-#    %thead
+-#      %tr.danger
+-#        %th= 'Last 5 API errors'
+-#        %th= 'Date'
+-#    %tbody
+-#      - @user.api_key_errors.order( 'created_at DESC' ).limit( 5 ).each do |error|
+-#        %tr.danger
+-#          %td= error.user_message
+-#          %td= error.created_at
 
 
 
