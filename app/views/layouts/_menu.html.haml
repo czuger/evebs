@@ -52,7 +52,7 @@
             %span.caret
           %ul.dropdown-menu
             %li{ class: active_link( user_sale_orders_path ) }= link_to 'My orders list', user_sale_orders_path
-            %li{ class: active_link( show_challenged_prices_path ) }= link_to 'Challenged prices', show_challenged_prices_path if current_user.watch_my_prices
+            %li{ class: active_link( show_challenged_prices_path ) }= link_to 'Challenged prices', show_challenged_prices_path
 
             %li.divider
             %li{ class: active_link( download_orders_path ) }= link_to 'Download my orders', download_orders_path

@@ -20,29 +20,6 @@ class ComponentsToBuyControllerTest < ActionDispatch::IntegrationTest
   test 'should show components and change nothing' do
     get components_to_buy_url @user
     assert_response :success
-
-    rq = assigns( :required_quantities )
-    assert_equal 7500, rq.values.first
-  end
-
-  test 'should show components and lower assets requirement' do
-    create( :bpc_asset, user_id: @user.id, blueprint_component_id: @blueprint_component.id, quantity: 5000 )
-
-    get components_to_buy_url @user
-    assert_response :success
-
-    rq = assigns( :required_quantities )
-    assert_equal 2500, rq.values.first
-  end
-
-  test 'should show components and remove assets requirement' do
-    create( :bpc_asset, user_id: @user.id, blueprint_component_id: @blueprint_component.id, quantity: 8000 )
-
-    get components_to_buy_url @user
-    assert_response :success
-
-    rq = assigns( :required_quantities )
-    assert_empty rq
   end
 
 end

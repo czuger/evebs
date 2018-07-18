@@ -44,8 +44,8 @@ module Modules::PriceAdvices::MarginModule
     @items = @items.where( 'margin_percent > ?', @user.min_pcent_for_advice ) if @user.min_pcent_for_advice
 
     if @user.remove_occuped_places
-      @items = @items.where.not( @user.trade_orders
-          .where( 'prices_advices.eve_item_id = trade_orders.eve_item_id AND prices_advices.trade_hub_id = trade_orders.trade_hub_id' ).
+      @items = @items.where.not( @user.user_sale_orders
+          .where( 'prices_advices.eve_item_id = user_sale_orders.eve_item_id AND prices_advices.trade_hub_id = user_sale_orders.trade_hub_id' ).
           exists )
     end
 

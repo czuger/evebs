@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :trade_order do
+  factory :user_sale_order do
     price 50
   end
 
