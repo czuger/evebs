@@ -1,0 +1,21 @@
+.container
+
+  %h4
+    My orders list
+
+  %table.table
+    %tr
+      %thead
+        %th
+          Trade hub
+        %th
+          Item
+        %th.text-right
+          Price
+    - @orders_data.each do |orders|
+      %tr
+        %td= trade_hub_from_hash_data(orders)
+        %td= orders['eve_items.name']
+        %td.text-right= print_isk orders['price']
+
+  = will_paginate @orders_active_record

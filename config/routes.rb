@@ -22,6 +22,9 @@ Rails.application.routes.draw do
   resources :production_lists, only: [ :edit, :update, :create ]
   post :remove_production_list_check, controller: :production_lists
 
+  resources :user_sale_orders, only: [ :index ]
+  get :show_challenged_prices, controller: :user_sale_orders
+
   resources :components_to_buy, only: [ :show ]
 
   resources :items, only: [ :show ] do
@@ -45,7 +48,6 @@ Rails.application.routes.draw do
   namespace :price_advices do
     get :advice_prices
     get :advice_prices_monthly
-    get :show_challenged_prices
     get :empty_places
   end
 

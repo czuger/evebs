@@ -32,27 +32,5 @@ class PriceAdvicesController < ApplicationController
 
   private
 
-  def print_change_warning
-    lcic = @user.last_changes_in_choices || Time.new(0)
-    last_check = Time.now.beginning_of_hour
-    if lcic > last_check
-      diff = Time.diff( Time.now, Time.now.end_of_hour, '%N %S' )[:diff]
-      return "You did recent changes. Some datas can be inacurate. The next data refresh will occur in : #{diff}"
-    end
-    nil
-  end
-
-  def set_trade_hubs( trade_hub_name )
-    @trade_hubs_names = [] unless @trade_hubs_names
-    @trade_hubs_names << trade_hub_name unless @trade_hubs_names.include?( trade_hub_name )
-    @trade_hubs_names.sort!
-  end
-
-  def set_items( item_name )
-    @item_names = [] unless @item_names
-    @item_names << item_name unless @item_names.include?( item_name )
-    @item_names.sort!
-  end
-
 end
 

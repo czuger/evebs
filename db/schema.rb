@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_17_172014) do
+ActiveRecord::Schema.define(version: 2018_07_18_060149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -343,18 +343,6 @@ ActiveRecord::Schema.define(version: 2018_07_17_172014) do
     t.index ["user_id"], name: "index_trade_hubs_users_on_user_id"
   end
 
-  create_table "trade_orders", id: :serial, force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "eve_item_id", null: false
-    t.integer "trade_hub_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float "price"
-    t.index ["eve_item_id"], name: "index_trade_orders_on_eve_item_id"
-    t.index ["trade_hub_id"], name: "index_trade_orders_on_trade_hub_id"
-    t.index ["user_id"], name: "index_trade_orders_on_user_id"
-  end
-
   create_table "type_in_regions", force: :cascade do |t|
     t.integer "cpp_region_id", null: false
     t.integer "cpp_type_id", null: false
@@ -369,6 +357,18 @@ ActiveRecord::Schema.define(version: 2018_07_17_172014) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "user"
+  end
+
+  create_table "user_sale_orders", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "eve_item_id", null: false
+    t.integer "trade_hub_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float "price"
+    t.index ["eve_item_id"], name: "index_user_sale_orders_on_eve_item_id"
+    t.index ["trade_hub_id"], name: "index_user_sale_orders_on_trade_hub_id"
+    t.index ["user_id"], name: "index_user_sale_orders_on_user_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

@@ -36,7 +36,7 @@ class Esi::DownloadMyOrders < Esi::Download
       return
     end
 
-    current_trade_orders_id = TradeOrder.pluck( :id )
+    current_trade_orders_id = UserSaleOrder.pluck(:id )
 
     ActiveRecord::Base.transaction do
 
@@ -47,7 +47,7 @@ class Esi::DownloadMyOrders < Esi::Download
         # We can set orders in other hubs than those we have in the database.
         next unless trade_hub_id
 
-        to = TradeOrder.where( user: character.user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
+        to = UserSaleOrder.where(user: character.user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
         to.price = page['price']
         to.save!
 
