@@ -5,12 +5,8 @@ class ProductionListsController < ApplicationController
                                    :accept_shared_list_update, :create, :remove_production_list_check,
                                    :update_shared_list ]
 
-  include Modules::SharedPlList
-
   def edit
-    @user_to_show = set_user_to_show( @user )
-
-    @basket_active_record = @user_to_show.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
+    @basket_active_record = @user.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
         joins( 'LEFT JOIN prices_advices ON prices_advices.eve_item_id = production_lists.eve_item_id AND prices_advices.trade_hub_id = production_lists.trade_hub_id' )
                                 .order( 'trade_hubs.name', 'eve_items.name' ).paginate( :page => params[:page], :per_page => 20 )
 
