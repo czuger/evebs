@@ -83,21 +83,28 @@ class Esi::Download
     result
   end
 
-  def set_auth_token( character=nil )
-    unless character
-      character_id = File.open( 'config/character_id.txt' ).read.to_i
-      character = Character.find_by_eve_id( character_id )
+  def set_auth_token( user=nil )
+
+    p user
+
+    return false unless user.expires_on && user.token && user.renew_token
+
+    unless user
+      user_id = File.open( 'config/character_id.txt' ).read.to_i
+      user = User.find_by_uid( user_id )
     end
 
-    if character.expires_on < Time.now().utc
-      puts "Token expired - #{character.expires_on} < #{Time.now().utc}"
-      renew_token( character )
+    if user.expires_on < Time.now().utc
+      puts "Token expired - #{user.expires_on} < #{Time.now().utc}"
+      renew_token( user )
     end
 
-    @params[:token] = character.token
+    @params[:token] = user.token
+
+    true
   end
 
-  def renew_token( character )
+  def renew_token( user )
     client_id = secret_key = nil
     if File.exists?( 'config/omniauth.yaml' )
       results = YAML.load( File.open( 'config/omniauth.yaml' ).read )
@@ -113,11 +120,11 @@ class Esi::Download
     RestClient.log = 'stdout' if @debug_request
 
     c = RestClient.post 'https://login.eveonline.com/oauth/token',
-                        { grant_type: :refresh_token, refresh_token: character.renew_token },
+                        { grant_type: :refresh_token, refresh_token: user.renew_token },
                         { 'Authorization' => auth_string }
     response = JSON.parse( c.body )
 
-    character.update!( token: response['access_token'], expires_on: Time.now() + response['expires_in'] )
+    user.update!( token: response['access_token'], expires_on: Time.now() + response['expires_in'] )
   end
 
   private

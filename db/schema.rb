@@ -123,7 +123,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_172014) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "cost"
@@ -143,9 +143,9 @@ ActiveRecord::Schema.define(version: 2018_07_17_172014) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "password_digest"
+    t.string "name", limit: 255
+    t.string "email", limit: 255
+    t.string "password_digest", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -308,7 +308,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_172014) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name"
+    t.string "name", limit: 255
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -328,7 +328,7 @@ ActiveRecord::Schema.define(version: 2018_07_17_172014) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -372,12 +372,12 @@ ActiveRecord::Schema.define(version: 2018_07_17_172014) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name"
+    t.string "name", limit: 255
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider"
-    t.string "uid"
+    t.string "provider", limit: 255
+    t.string "uid", limit: 255
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"

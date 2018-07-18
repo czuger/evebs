@@ -37,7 +37,9 @@ class ComponentsToBuyController < ApplicationController
 
   def download_assets_start
     @user.update( download_assets_running: true )
-    DownloadMyAssetsJob.perform_later @user
+
+    Thread.new { Esi::DownloadMyAssets.new.update( @user ) }
+
     redirect_to character_download_assets_path( @user )
   end
 

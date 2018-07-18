@@ -27,7 +27,7 @@ class Esi::DownloadMyOrders < Esi::Download
     character_id = character.eve_id
     @rest_url = "characters/#{character_id}/orders/"
 
-    set_auth_token
+    return unless set_auth_token
 
     pages = get_all_pages
 
