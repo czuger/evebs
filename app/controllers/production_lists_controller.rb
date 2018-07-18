@@ -7,9 +7,9 @@ class ProductionListsController < ApplicationController
   include Modules::SharedPlList
 
   def edit
-    user_to_show = set_user_to_show( @user )
+    @user_to_show = set_user_to_show( @user )
 
-    @basket_active_record = user_to_show.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
+    @basket_active_record = @user_to_show.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
         joins( 'LEFT JOIN prices_advices ON prices_advices.eve_item_id = production_lists.eve_item_id AND prices_advices.trade_hub_id = production_lists.trade_hub_id' )
                                 .order( 'trade_hubs.name', 'eve_items.name' ).paginate( :page => params[:page], :per_page => 20 )
 
@@ -73,7 +73,7 @@ class ProductionListsController < ApplicationController
   end
 
   def share_list_update
-    ProductionListShareRequest.find_or_create_by!( sender_id: params[:user_id].to_i, recipient_id: params[:user][:id].to_i )
+    ProductionListShareRequest.find_or_create_by!( sender_id: params[:character_id].to_i, recipient_id: params[:user][:id].to_i )
     flash[ :notice ] = 'List sent successfully'
     redirect_to character_share_list_path( @user )
   end
@@ -85,7 +85,7 @@ class ProductionListsController < ApplicationController
   def accept_shared_list_update
     ActiveRecord::Base.transaction do
       @user.production_lists.clear
-      @user.user_pl_share_id = params['sending_user_id']
+      @user.update( user_pl_share_id: params['sending_character_id'] )
       @user.save!
 
       ProductionListShareRequest.where( recipient_id: @user.id, sender_id: params['sending_user_id'] ).delete_all

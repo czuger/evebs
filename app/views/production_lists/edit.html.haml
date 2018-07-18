@@ -2,7 +2,10 @@
 
   = form_tag production_list_path( @current_user ), method: :patch do
 
-    %h4 Items you checked in the daily earnings screen
+    %h4
+      Items you checked in the daily earnings screen
+      - if @user.user_pl_share_id
+        = " - shared with #{@user_to_show.name}"
 
     %table.table
       %tr
