@@ -36,9 +36,11 @@ class ComponentsToBuyController < ApplicationController
   end
 
   def download_assets_start
-    @user.update( download_assets_running: true )
+    # @user.update( download_assets_running: true )
 
-    Esi::DownloadMyAssets.new.update( @user )
+    # has to be before DownloadMyAssets
+    Esi::DownloadMyBlueprintsModifications.new.update( @user )
+    # Esi::DownloadMyAssets.new.update( @user )
 
     redirect_to character_download_assets_path( @user )
   end

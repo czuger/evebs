@@ -5,7 +5,6 @@ class PriceAdvicesController < ApplicationController
   before_action :require_logged_in!, :log_client_activity
 
   include Modules::PriceAdvices::MarginModule
-  include Modules::PriceAdvices::ShowChallengedPrices
   include Modules::Nvl
 
   def advice_prices_monthly

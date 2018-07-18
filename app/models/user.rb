@@ -2,6 +2,8 @@ require 'digest'
 
 class User < ApplicationRecord
 
+  has_many :blueprint_modifications
+
   has_and_belongs_to_many :eve_items
   has_and_belongs_to_many :trade_hubs
 

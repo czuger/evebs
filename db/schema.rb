@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_18_083636) do
+ActiveRecord::Schema.define(version: 2018_07_18_093413) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -48,6 +48,16 @@ ActiveRecord::Schema.define(version: 2018_07_18_083636) do
     t.datetime "updated_at", null: false
     t.index ["blueprint_component_id"], name: "index_blueprint_materials_on_blueprint_component_id"
     t.index ["blueprint_id"], name: "index_blueprint_materials_on_blueprint_id"
+  end
+
+  create_table "blueprint_modifications", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "blueprint_id", null: false
+    t.float "percent_modification_value", null: false
+    t.boolean "touched", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "blueprint_id"], name: "index_blueprint_modifications_on_user_id_and_blueprint_id", unique: true
   end
 
   create_table "blueprints", id: :serial, force: :cascade do |t|
@@ -400,6 +410,8 @@ ActiveRecord::Schema.define(version: 2018_07_18_083636) do
   add_foreign_key "blueprint_component_sales_orders", "trade_hubs"
   add_foreign_key "blueprint_materials", "blueprint_components"
   add_foreign_key "blueprint_materials", "blueprints"
+  add_foreign_key "blueprint_modifications", "blueprints"
+  add_foreign_key "blueprint_modifications", "users"
   add_foreign_key "bpc_assets", "blueprint_components"
   add_foreign_key "bpc_assets", "station_details"
   add_foreign_key "bpc_assets", "users"
