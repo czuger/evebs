@@ -1,8 +1,9 @@
 class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user, only: [:edit, :update, :share_list, :share_list_update, :accept_shared_list,
-                                       :accept_shared_list_update, :create, :remove_production_list_check]
+  before_action :set_user, only: [ :edit, :update, :share_list, :share_list_update, :accept_shared_list,
+                                   :accept_shared_list_update, :create, :remove_production_list_check,
+                                   :update_shared_list ]
 
   include Modules::SharedPlList
 
@@ -78,25 +79,45 @@ class ProductionListsController < ApplicationController
     redirect_to character_share_list_path( @user )
   end
 
+  # Show shared lists for share acceptance
   def accept_shared_list
     @shared_lists = ProductionListShareRequest.joins( :sender ).where( recipient_id: @user.id ).pluck( 'users.name', 'users.id' )
   end
 
+  # Update endpoint once you accepted shared list update
   def accept_shared_list_update
     ActiveRecord::Base.transaction do
-      @user.production_lists.clear
       @user.update( user_pl_share_id: params['sending_character_id'] )
       @user.save!
 
       ProductionListShareRequest.where( recipient_id: @user.id, sender_id: params['sending_user_id'] ).delete_all
+      do_update_shared_list
     end
 
     flash[ :notice ] = 'List successfully linked'
     redirect_to character_accept_shared_list_path( @user )
   end
 
+  # Update your shared list from sharer data
+  def update_shared_list
+    do_update_shared_list
+  end
+
   private
 
+  def do_update_shared_list
+    if @user.user_pl_share
 
+      request = File.open( "#{Rails.root}/sql/production_list_controller_update_shared_list.sql" ).read
+
+      ActiveRecord::Base.transaction do
+        @user.production_lists.clear
+
+        ActiveRecord::Base.connection.exec_insert( request, :production_list_controller_update_shared_list,
+                                                   [ [ nil, @user.id ],
+                                                     [ nil,  @user.user_pl_share_id ] ] )
+      end
+    end
+  end
 
 end

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
 
   resources :production_lists, only: [ :edit, :update, :create ]
   post :remove_production_list_check, controller: :production_lists
+  get :update_shared_list, controller: :production_lists
 
 
   resources :user_sale_orders, only: [ :index ]
