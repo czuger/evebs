@@ -115,4 +115,4 @@ gem 'activerecord-import'
 
 gem 'active_record-sequence'
 gem 'pluck_to_hash'
-
+gem 'scenic'

@@ -2,8 +2,13 @@
   %table.table
     %tr
       %th
-      %th
+        Component
+      %th.text-right
+        Quantity
+      %th.text-right
+        Price
     - @required_quantities.each do |rq|
       %tr{ class: cycle( :odd, :even ) }
-        %td= rq[0][1]
-        %td= link_to rq[1], component_path( rq[0][0] )
+        %td= rq.name
+        %td.text-right= link_to print_volume( rq.qtt_to_buy.round ), component_path( rq.id )
+        %td.text-right= print_isk rq.total_cost
