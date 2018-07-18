@@ -19,7 +19,7 @@ namespace :process do
 
         Sql::PricesAdvices.update
 
-        Esi::DownloadMyOrders.new.update()
+        # Esi::DownloadMyOrders.new.update()
       end
 
       Banner.p( 'Finished' )
