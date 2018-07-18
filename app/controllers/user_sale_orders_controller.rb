@@ -1,7 +1,7 @@
 class UserSaleOrdersController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user, only: [:index]
+  before_action :set_user, only: [:index, :download_orders, :download_orders_start]
 
   def index
     @orders_active_record = @user.user_sale_orders.joins( :eve_item, trade_hub: :region )
@@ -42,6 +42,17 @@ class UserSaleOrdersController < ApplicationController
     end
 
     @compared_prices = @compared_prices.sort_by{ |e| [e[:trade_hub_name], e[:eve_item_name]] }
+  end
+
+  def download_orders
+  end
+
+  def download_orders_start
+    @user.update( download_orders_running: true )
+
+    Esi::DownloadMyOrders.new.update( @user )
+
+    redirect_to download_orders_path
   end
 
   private

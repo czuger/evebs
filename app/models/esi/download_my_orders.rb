@@ -6,33 +6,22 @@ class Esi::DownloadMyOrders < Esi::Download
     super( nil, {}, debug_request: debug_request )
   end
 
-  def update
-    Banner.p 'About to download users orders'
-    User.where( watch_my_prices: true ).each do |user|
-      download_orders user
-    end
-  end
+  def update( user )
 
-  private
-
-  def download_orders( user )
-
-    character = user.current_character
-
-    if character.locked
-      puts "#{character.name} is locked. Skipping ..."
+    if user.locked
+      puts "#{user.name} is locked. Skipping ..."
       return
     end
 
-    character_id = character.eve_id
-    @rest_url = "characters/#{character_id}/orders/"
+    user_id = user.uid
+    @rest_url = "characters/#{user_id}/orders/"
 
-    return unless set_auth_token
+    return unless set_auth_token( user )
 
     pages = get_all_pages
 
     unless pages
-      character.update( locked: true )
+      user.update( locked: true )
       return
     end
 
@@ -47,18 +36,20 @@ class Esi::DownloadMyOrders < Esi::Download
         # We can set orders in other hubs than those we have in the database.
         next unless trade_hub_id
 
-        to = UserSaleOrder.where(user: character.user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
+        to = UserSaleOrder.where(user: user, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).first_or_initialize
         to.price = page['price']
         to.save!
 
         current_trade_orders_id.delete( to.id )
 
         if user.remove_occuped_places
-          ProductionList.where(user_id: character.user_id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
+          ProductionList.where(user_id: user.id, eve_item_id: eve_item_id, trade_hub_id: trade_hub_id ).delete_all
         end
       end
 
-      character.user.trade_orders.where( id: current_trade_orders_id ).delete_all
+      user.user_sale_orders.where( id: current_trade_orders_id ).delete_all
+
+      user.update( download_orders_running: false, last_orders_download: Time.now )
 
     end
   end

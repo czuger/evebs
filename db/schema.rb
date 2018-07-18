@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_18_060149) do
+ActiveRecord::Schema.define(version: 2018_07_18_083636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -392,6 +392,8 @@ ActiveRecord::Schema.define(version: 2018_07_18_060149) do
     t.boolean "download_assets_running", default: false, null: false
     t.datetime "last_assets_download"
     t.bigint "user_pl_share_id"
+    t.boolean "download_orders_running", default: false, null: false
+    t.datetime "last_orders_download"
   end
 
   add_foreign_key "blueprint_component_sales_orders", "blueprint_components"
