@@ -4,6 +4,9 @@ class ComponentsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     @component = create( :component_morphite )
+
+    @user = create( :user )
+    post '/auth/developer/callback', params: { name: @user.name }
   end
 
   test 'should get show' do

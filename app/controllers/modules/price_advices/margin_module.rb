@@ -8,9 +8,10 @@ module Modules::PriceAdvices::MarginModule
     # @prices_array = []
     # @monthly_averages = get_montly_items_averages
 
-    @checked_production_list_ids = @user.production_lists.joins(
-        'INNER JOIN prices_advices ON production_lists.trade_hub_id = prices_advices.trade_hub_id AND production_lists.eve_item_id = prices_advices.eve_item_id' )
-      .pluck( 'prices_advices.id' )
+    # @checked_production_list_ids = @user.production_lists.joins(
+    #     'INNER JOIN prices_advices ON production_lists.trade_hub_id = prices_advices.trade_hub_id AND production_lists.eve_item_id = prices_advices.eve_item_id' )
+    #   .pluck( 'prices_advices.id' )
+    set_checked_production_list_ids
 
     # TODO : those variables need to be in the user
     # Monthly volume percent multiplier for margin computation (default 10 %)

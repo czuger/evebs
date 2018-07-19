@@ -18,14 +18,14 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show item detail' do
-    get @eve_item.id
+    get item_url( @eve_item )
     assert_response :success
   end
 
   test 'should show item detail of an item that has no CrestPricesLastMonthAverage information' do
     # We create a region with no CrestPricesLastMonthAverage informations
     @domain = create( :domain, items: EveItem.all )
-    get @eve_item.id
+    get item_url( @eve_item )
     assert_response :success
   end
 

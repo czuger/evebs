@@ -6,6 +6,7 @@ class PriceAdvicesController < ApplicationController
 
   include Modules::PriceAdvices::MarginModule
   include Modules::Nvl
+  include Modules::CheckedProductionListIds
 
   def advice_prices_monthly
     advice_prices_margins( :monthly )
