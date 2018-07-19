@@ -5,6 +5,8 @@
     - if @crafted_component
       \-
       = link_to( print_total_cost_for_items( @crafted_component ), item_cost_path( @crafted_component.id ) )
+      \-
+      = link_to( 'Market data' , item_path( @crafted_component.id ) )
 
   %table.table.table-bordered.sortable
     %thead

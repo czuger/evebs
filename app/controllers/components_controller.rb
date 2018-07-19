@@ -16,8 +16,8 @@ class ComponentsController < ApplicationController
 
   def show
     @component = BlueprintComponent.find( params[ :id ])
-    @min_prices = BpcPricesMin.includes( { trade_hub: :region } ).where( blueprint_component_id: @component.id ).order( 'price' )
 
+    @min_prices = BpcPricesMin.includes( { trade_hub: :region } ).where( blueprint_component_id: @component.id ).order( 'price' )
     @crafted_component = EveItem.find_by_cpp_eve_item_id( @component.cpp_eve_item_id )
   end
 

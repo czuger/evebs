@@ -38,14 +38,15 @@
             Production
             %span.caret
           %ul.dropdown-menu
-            %li{ class: active_link( edit_production_list_path( @current_user ) ) }= link_to 'Production list', edit_production_list_path( @current_user )
-            %li{ class: active_link( character_share_list_path( @current_user ) ) }= link_to 'Share production list', character_share_list_path( @current_user )
-            %li{ class: active_link( character_accept_shared_list_path( @current_user ) ) }= link_to 'Accept shared production list', character_accept_shared_list_path( @current_user )
-            %li{ class: active_link( update_shared_list_path ) }= link_to 'Update shared production list', update_shared_list_path
+            - if @current_user
+              %li{ class: active_link( edit_production_list_path( @current_user ) ) }= link_to 'Production list', edit_production_list_path( @current_user )
+              %li{ class: active_link( character_share_list_path( @current_user ) ) }= link_to 'Share production list', character_share_list_path( @current_user )
+              %li{ class: active_link( character_accept_shared_list_path( @current_user ) ) }= link_to 'Accept shared production list', character_accept_shared_list_path( @current_user )
+              %li{ class: active_link( update_shared_list_path ) }= link_to 'Update shared production list', update_shared_list_path
 
-            %li.divider
-            %li{ class: active_link( character_download_assets_path( @current_user ) ) }= link_to 'Download my assets', character_download_assets_path( @current_user )
-            %li{ class: active_link( components_to_buy_path( @current_user ) ) }= link_to 'Components to buy', components_to_buy_path( @current_user )
+              %li.divider
+              %li{ class: active_link( character_download_assets_path( @current_user ) ) }= link_to 'Download my assets', character_download_assets_path( @current_user )
+              %li{ class: active_link( components_to_buy_path( @current_user ) ) }= link_to 'Components to buy', components_to_buy_path( @current_user )
 
         %li
           = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
@@ -64,8 +65,9 @@
             User
             %span.caret
           %ul.dropdown-menu
-            %li{ class: active_link( edit_users_path ) }= link_to 'Edit user options', edit_users_path
-            %li{ class: active_link( edit_character_path( @current_user ) ) }= link_to 'Edit character options', edit_character_path( @current_user )
+            - if @current_user
+              %li{ class: active_link( edit_users_path ) }= link_to 'Edit user options', edit_users_path
+              %li{ class: active_link( edit_character_path( @current_user ) ) }= link_to 'Edit character options', edit_character_path( @current_user )
             -#%li{ class: active_link( edit_password_users_path ) }= link_to 'Change password', edit_password_users_path
         -#%li= link_to 'Help', '/help.pdf', target: '_blank'
         %li= link_to "Sign out", signout_path, id: "sign_out"
