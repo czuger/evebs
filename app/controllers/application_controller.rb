@@ -12,16 +12,21 @@ class ApplicationController < ActionController::Base
   end
 
   def log_client_activity
-    ip = request.remote_ip
-    action = controller_name + '#' + action_name
-    user = current_user.name if current_user
-    UserActivityLog.create!( ip: ip, action: action, user: user )
+    # ip = request.remote_ip
+    # action = controller_name + '#' + action_name
+    # user = current_user.name if current_user
+    # UserActivityLog.create!( ip: ip, action: action, user: user )
   end
 
   private
 
   def current_user
-    @current_user ||= User.find(session[:user_id]) if session[:user_id] && User.where(id: session[:user_id]).exists?
+    return @current_user if @current_user
+
+    if session[:user_id]
+      @current_user = User.where( id: session[:user_id] ).first
+    end
+
     @current_user
   end
 
