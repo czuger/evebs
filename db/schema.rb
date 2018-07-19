@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_19_075523) do
+ActiveRecord::Schema.define(version: 2018_07_19_075756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -440,4 +440,23 @@ ActiveRecord::Schema.define(version: 2018_07_19_075523) do
   add_foreign_key "structures", "trade_hubs"
   add_foreign_key "trade_hubs", "regions"
   add_foreign_key "users", "users", column: "user_pl_share_id"
+
+  create_view "component_to_buys",  sql_definition: <<-SQL
+      SELECT bc.id,
+      pl.user_id,
+      bc.name,
+      (sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
+      ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.cost) AS total_cost
+     FROM ((((((production_lists pl
+       JOIN eve_items ei ON ((ei.id = pl.eve_item_id)))
+       JOIN blueprints b ON ((ei.blueprint_id = b.id)))
+       JOIN blueprint_materials bm ON ((b.id = bm.blueprint_id)))
+       JOIN blueprint_components bc ON ((bm.blueprint_component_id = bc.id)))
+       LEFT JOIN blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
+       LEFT JOIN bpc_assets ba ON ((bc.id = ba.blueprint_component_id)))
+    WHERE (pl.runs_count IS NOT NULL)
+    GROUP BY bc.id, pl.user_id, bc.name, COALESCE(ba.quantity, (0)::bigint)
+   HAVING ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
+  SQL
+
 end
