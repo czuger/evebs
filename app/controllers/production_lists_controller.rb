@@ -20,7 +20,6 @@ class ProductionListsController < ApplicationController
     params['quantity_to_produce']&.each do |qtt|
       unless qtt[1].empty?
 
-        @user = set_user_to_show( @user )
         pl = @user.production_lists.find( qtt[0] )
         corresponding_blueprint = pl.eve_item.blueprint
 

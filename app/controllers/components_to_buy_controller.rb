@@ -3,11 +3,7 @@ class ComponentsToBuyController < ApplicationController
   before_action :require_logged_in!, :log_client_activity
   before_action :set_user, only: [:show, :download_assets, :download_assets_start]
 
-  include Modules::SharedPlList
-
   def show
-    @user = set_user_to_show( @user )
-
     @required_quantities = @user.component_to_buys
   end
 
