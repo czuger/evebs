@@ -64,6 +64,7 @@ class Esi::DownloadSalesOrders < Esi::Download
       end
 
       SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
+      # SalesOrder.where( closed: true ).delete_all
       BlueprintComponentSalesOrder.where( touched: false ).delete_all
       BpcJitaSalesFinal.where( 'updated_at < ?', Time.now - 1.week ).delete_all
     end
