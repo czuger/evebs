@@ -14,12 +14,12 @@ INSERT INTO prices_advices( eve_item_id, region_id, trade_hub_id, created_at, up
   SELECT eve_items.id, trade_hubs.region_id, trade_hubs.id, now(), now()
   FROM eve_items, trade_hubs, blueprints
   WHERE eve_items.blueprint_id = blueprints.id
-      AND NOT EXISTS (
+        AND NOT EXISTS (
       SELECT NULL FROM prices_advices pa, sales_finals sf
       WHERE pa.eve_item_id = eve_items.id
             AND pa.trade_hub_id = trade_hubs.id
-            AND sf.eve_item_id = eve_items.id
-            AND sf.trade_hub_id = trade_hubs.id );
+            AND sf.eve_item_id = pa.eve_item_id
+            AND sf.trade_hub_id = pa.trade_hub_id );
 
 /* Update all data */
 UPDATE prices_advices pm SET ( vol_month, vol_day, avg_price, updated_at ) = ( mp, mp/30, ap, now() )
