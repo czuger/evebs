@@ -18,15 +18,16 @@ class ProductionListsController < ApplicationController
   # This is used to update the price of a production list item
   def update
     params['quantity_to_produce']&.each do |qtt|
+      pl = @user.production_lists.find( qtt[0] )
       unless qtt[1].empty?
-
-        pl = @user.production_lists.find( qtt[0] )
         corresponding_blueprint = pl.eve_item.blueprint
 
         # Always count in production batches
         runs_count = ( qtt[1].to_f / corresponding_blueprint.prod_qtt ).ceil
         quantity_to_produce = runs_count * corresponding_blueprint.prod_qtt
         pl.update!( quantity_to_produce: quantity_to_produce, runs_count: runs_count )
+      else
+        pl.update!( quantity_to_produce: nil, runs_count: nil )
       end
     end
 
