@@ -5,7 +5,7 @@
 
 /* Removing advices for which we have no sales data */
 DELETE FROM prices_advices pm WHERE NOT EXISTS (
-    SELECT * FROM sales_finals so
+    SELECT 1 FROM sales_finals so
     WHERE pm.trade_hub_id = so.trade_hub_id
           AND pm.eve_item_id = so.eve_item_id );
 
