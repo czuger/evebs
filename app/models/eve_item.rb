@@ -57,7 +57,7 @@ class EveItem < ApplicationRecord
       update_attribute(:cost,nil)
       return
     end
-    update_attribute(:cost,total_cost)
+    update_attribute(:cost,total_cost*Blueprint::TAX_AMOUNT_MULTIPLIER)
   end
 
 end

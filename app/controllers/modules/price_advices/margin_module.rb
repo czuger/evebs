@@ -19,7 +19,7 @@ module Modules::PriceAdvices::MarginModule
     # Monthly volume capped by full batch ?
     @batch_cap = @user.batch_cap
 
-    price_column_name = margin_type == :daily ? :min_price : :avg_price
+    price_column_name = margin_type == :daily ? :min_price : :price_avg_week
 
     # TODO : caution : use coalesce before vol_month because least forget null value
     # give you full_batch_size instead of zero in case of no sold in month
@@ -33,9 +33,7 @@ module Modules::PriceAdvices::MarginModule
     @items = PricesAdvice.includes( :eve_item, :region ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )
     .where.not( vol_month: nil )
 
-    if margin_type == :daily
-      @items = @items.includes( :trade_hub )
-    end
+    @items = @items.includes( :trade_hub )
 
     if @user.min_amount_for_advice
       margin_comp = "((#{price_column_name}*#{batch_size_formula}) - (single_unit_cost*#{batch_size_formula}))"

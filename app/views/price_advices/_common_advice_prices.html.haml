@@ -15,11 +15,7 @@
       %table.table
         %tr
           %th
-          %th
-            - if margin_type == :monthly
-              Region
-            - else
-              Trade hub
+          %th Trade hub
           %th Item
           %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) }
             Volume
@@ -44,10 +40,7 @@
             -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
             - region_name = item.region ? item.region.name : ''
             %td= production_list_check_box( item )
-            - if margin_type == :monthly
-              %td.trade_hub_name=item.region.name
-            - else
-              %td.trade_hub_name=item.trade_hub.name + " (#{item.region.name})"
+            %td.trade_hub_name=item.trade_hub.name + " (#{item.region.name})"
 
             %td.item_name= link_to( item.eve_item.name, item_path( item.eve_item_id ) )
             %td.text-right.information_highlight_left=print_volume(item.vol_month)

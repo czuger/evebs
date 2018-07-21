@@ -30,8 +30,8 @@ class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should advice monthly prices' do
-    get price_advices_advice_prices_monthly_url
+  test 'should advice weekly prices' do
+    get price_advices_advice_prices_weekly_url
     assert_response :success
   end
 

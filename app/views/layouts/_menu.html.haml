@@ -29,9 +29,10 @@
             Earnings
             %span.caret
           %ul.dropdown-menu
-            %li{ class: active_link( price_advices_advice_prices_path ) }= link_to 'Daily', price_advices_advice_prices_path
+            %li{ class: active_link( price_advices_advice_prices_path ) }= link_to 'Immediate', price_advices_advice_prices_path
+            %li{ class: active_link( price_advices_advice_prices_weekly_path ) }= link_to 'Weekly', price_advices_advice_prices_weekly_path
+            %li.divider
             %li{ class: active_link( price_advices_empty_places_path ) }= link_to 'Empty places', price_advices_empty_places_path
-            -#%li{ class: active_link( price_advices_advice_prices_monthly_path ) }= link_to 'Monthly', price_advices_advice_prices_monthly_path
 
         %li
           = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do

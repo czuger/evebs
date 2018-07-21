@@ -8,8 +8,8 @@ class PriceAdvicesController < ApplicationController
   include Modules::Nvl
   include Modules::CheckedProductionListIds
 
-  def advice_prices_monthly
-    advice_prices_margins( :monthly )
+  def advice_prices_weekly
+    advice_prices_margins( :weekly )
   end
 
   def advice_prices
