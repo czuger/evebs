@@ -39,6 +39,7 @@ class Comp::SalesFinals
 
     SalesFinal.import!( sales_dailies )
 
+    SalesFinal.where( "day < now() - interval '1 month'" ).delete_all
   end
 
 end
