@@ -8,48 +8,33 @@ class Esi::DownloadSalesOrders < Esi::Download
   # il faut gérer la disparition de l'ordre. Est ce qu'on s'en fout ?
   # Dans un premier temps oui (oui, on s'en fout), car on ne sait pas
   # si l'ordre a été annulé, timeout ou bien vendu.
-  def update( only_cpp_region_id: nil, cpp_type_id: nil )
+  def update
 
     Banner.p 'About to update min prices'
 
-    @trade_hubs = TradeHub.pluck( :eve_system_id ).to_set
-    regions = Region.all
-
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
-    @cpp_type_id = cpp_type_id
-
-    @sales_orders_ids = SalesOrder.pluck(:order_id, :volume ).to_set
-    @order_ids_present = []
-    puts "@sales_orders_ids.count = #{@sales_orders_ids.count}" if @debug_request
 
     @sales_orders_stored = 0
-
-    @sequence = ActiveRecord::Sequence.new('sales_orders_retrieve_session_id' )
-    @sales_orders_retrieve_session_id = @sequence.next
-
-    puts "@sales_orders_retrieve_session_id = #{@sales_orders_retrieve_session_id}" if @debug_request
 
     ActiveRecord::Base.transaction do
 
       BlueprintComponentSalesOrder.update_all( touched: false )
+      SalesOrder.update_all( touched: false )
 
-      regions.each do |region|
+      Region.all.each do |region|
         cpp_region_id = region.cpp_region_id.to_i
 
         # puts "only_cpp_region_id=#{only_cpp_region_id} vs cpp_region_id=#{cpp_region_id}" if @debug_request
 
-        next if only_cpp_region_id && only_cpp_region_id != cpp_region_id
-
         # next if internal_region_id < 24
         puts "Requesting #{region.name}" if @debug_request
-
         puts "Requesting page #{@params[:page]}" if @params[:page] && @debug_request
+
         @rest_url = "markets/#{cpp_region_id}/orders/"
-
         pages = get_all_pages
-        download_orders( pages )
 
+        download_orders( pages )
       end
 
       @order_ids_present.uniq!
@@ -80,9 +65,7 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     pages.each do |record|
 
-      next unless @trade_hubs.include?(record['system_id'])
-
-      next if @cpp_type_id && record['type_id'] != @cpp_type_id
+      next unless @trade_hub_conversion_hash[record['system_id']]
 
       update_blueprint_component_sales_orders( record )
 
