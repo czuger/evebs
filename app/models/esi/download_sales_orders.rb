@@ -14,9 +14,13 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
+    @blueprint_component_conversion_hash = Hash[ BlueprintComponent.pluck( :cpp_eve_item_id, :id ) ]
 
     @sales_orders_created = 0
     @sales_orders_updated = 0
+
+    @sales_orders_volumes = Hash[ SalesOrder.pluck( :order_id, :volume ) ]
+    @sales_orders_to_touch = []
 
     ActiveRecord::Base.transaction do
 
@@ -44,6 +48,7 @@ class Esi::DownloadSalesOrders < Esi::Download
         end
       end
 
+      touch_unchanged_sales_orders
       remove_old_sales_orders
       SalesFinal.where( 'updated_at < ?', Time.now - 1.month ).delete_all
 
@@ -62,11 +67,12 @@ class Esi::DownloadSalesOrders < Esi::Download
     eve_item_id = @eve_item_conversion_hash[record['type_id']]
     return unless eve_item_id
 
-    so = SalesOrder.where( order_id: record['order_id'] ).first
-
-    if so
+    if @sales_orders_volumes[ record['order_id'] ]
       # If volume is unchanged, then we just touch the order
-      if so.volume != record['volume_remain']
+      if @sales_orders_volumes != record['volume_remain']
+
+        so = SalesOrder.where( order_id: record['order_id'] ).first
+
         # Volume has changed, we create a sales final record
         volume = so.volume - record['volume_remain']
         price = (so.price + record['price']) / 2.0
@@ -76,9 +82,11 @@ class Esi::DownloadSalesOrders < Esi::Download
 
         so.volume = record['volume_remain']
         so.price = record['price']
+        so.touched = true
+        so.save!
+      else
+        @sales_orders_to_touch << record['order_id']
       end
-      so.touched = true
-      so.save!
 
       @sales_orders_updated += 1
 
@@ -87,6 +95,7 @@ class Esi::DownloadSalesOrders < Esi::Download
       issued = DateTime.parse( record['issued'] )
       duration = record['duration']
       end_time = issued + duration.days
+
       so = SalesOrder.create!( day: Time.now, volume: record['volume_remain'], price: record['price'],
                           trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
                           touched: true, issued: issued, duration: duration, end_time: end_time )
@@ -98,6 +107,12 @@ class Esi::DownloadSalesOrders < Esi::Download
         create_sales_final_record( so, record['volume_total'], record['volume_remain'],
                                    record['price'], record['price'] )
       end
+    end
+  end
+
+  def touch_unchanged_sales_orders
+    @sales_orders_to_touch.in_groups_of( 5000 ).each do |order_ids|
+      SalesOrder.where( order_id: order_ids ).update_all( touched: true )
     end
   end
 
@@ -122,33 +137,32 @@ class Esi::DownloadSalesOrders < Esi::Download
 
   def update_blueprint_component_sales_orders( trade_hub_id, record )
 
-    bc = BlueprintComponent.find_by_cpp_eve_item_id( record['type_id'] )
+    bc_id = @blueprint_component_conversion_hash[ record['type_id'] ]
+    return unless bc_id
 
-    if bc
-      # Recording the current blueprint
-      older_bc_so = BlueprintComponentSalesOrder.where( cpp_order_id: record['order_id'] ).first
-      if older_bc_so
-        # We already have an order, we will update it and store the difference
-        if older_bc_so.volume != record['volume_remain']
+    # Recording the current blueprint
+    older_bc_so = BlueprintComponentSalesOrder.where( cpp_order_id: record['order_id'] ).first
+    if older_bc_so
+      # We already have an order, we will update it and store the difference
+      if older_bc_so.volume != record['volume_remain']
 
-          # save the diff into bpc_jita_sales_finals if it is done in jita
-          if record['system_id'] == 30000142
-            sold_volume = older_bc_so.volume - record['volume_remain']
-            sold_price = record['price']
-            BpcJitaSalesFinal.create!( blueprint_component_id: bc.id, volume: sold_volume, price: sold_price,
-                                       cpp_order_id: record['order_id'] )
-          end
-
-          older_bc_so.volume = record['volume_remain']
-          older_bc_so.price = record['price']
+        # save the diff into bpc_jita_sales_finals if it is done in jita
+        if record['system_id'] == 30000142
+          sold_volume = older_bc_so.volume - record['volume_remain']
+          sold_price = record['price']
+          BpcJitaSalesFinal.create!( blueprint_component_id: bc_id, volume: sold_volume, price: sold_price,
+                                     cpp_order_id: record['order_id'] )
         end
 
-        older_bc_so.touched = true
-        older_bc_so.save!
-      else
-        BlueprintComponentSalesOrder.create!( cpp_order_id: record['order_id'], volume: record['volume_remain'],
-           price: record['price'], touched: true, trade_hub_id: trade_hub_id, blueprint_component_id: bc.id )
+        older_bc_so.volume = record['volume_remain']
+        older_bc_so.price = record['price']
       end
+
+      older_bc_so.touched = true
+      older_bc_so.save!
+    else
+      BlueprintComponentSalesOrder.create!( cpp_order_id: record['order_id'], volume: record['volume_remain'],
+         price: record['price'], touched: true, trade_hub_id: trade_hub_id, blueprint_component_id: bc.id )
     end
   end
 end
