@@ -15,7 +15,8 @@ class Esi::DownloadSalesOrders < Esi::Download
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
 
-    @sales_orders_stored = 0
+    @sales_orders_created = 0
+    @sales_orders_updated = 0
 
     ActiveRecord::Base.transaction do
 
@@ -34,78 +35,80 @@ class Esi::DownloadSalesOrders < Esi::Download
         @rest_url = "markets/#{cpp_region_id}/orders/"
         pages = get_all_pages
 
-        download_orders( pages )
+        pages.each do |record|
+          trade_hub_id = @trade_hub_conversion_hash[record['system_id']]
+          next unless trade_hub_id
+
+          update_sales_orders( trade_hub_id, record )
+          update_blueprint_component_sales_orders( trade_hub_id, record )
+        end
       end
 
-      @order_ids_present.uniq!
-
-      # Remove after first test.
-      SalesOrder.update_all( closed: false )
-
-      orders_absent = SalesOrder.distinct.pluck( :order_id ) - @order_ids_present
-
-      orders_absent.in_groups_of( 10000 ) do |g|
-        SalesOrder.where( order_id: g.compact ).update_all( closed: true )
-      end
-
-      # SalesOrder.where( 'day < ?', Time.now - 1.month ).delete_all
-      SalesOrder.where( closed: true ).delete_all
+      SalesOrder.where( touched: false ).delete_all
+      SalesFinal.where( 'updated_at < ?', Time.now - 1.month ).delete_all
 
       BlueprintComponentSalesOrder.where( touched: false ).delete_all
       BpcJitaSalesFinal.where( 'updated_at < ?', Time.now - 1.week ).delete_all
     end
 
-    puts "#{@sales_orders_stored} sales orders stored."
+    puts "Sales orders created : #{@sales_orders_stored}"
+    puts "Sales orders updated : #{@sales_orders_updated}"
   end
 
   private
 
-  def download_orders( pages )
-    @sales_orders = []
+  def update_sales_orders( trade_hub_id, record )
 
-    pages.each do |record|
+    eve_item_id = @eve_item_conversion_hash[record['type_id']]
+    return unless eve_item_id
 
-      next unless @trade_hub_conversion_hash[record['system_id']]
+    so = SalesOrder.where( order_id: record['order_id'] ).first
 
-      update_blueprint_component_sales_orders( record )
+    if so
+      # If volume is unchanged, then we just touch the order
+      if so.volume != record['volume_remain']
+        # Volume has changed, we create a sales final record
+        volume = so.volume - record['volume_remain']
+        price = (so.price + record['price']) / 2.0
 
-      sale_key = [ record['order_id'], record['volume_remain'] ]
-      unless @sales_orders_ids.include?( sale_key )
+        create_sales_final_record( so, so.volume, record['volume_remain'], so.price,
+                                   record['price'] )
 
-        trade_hub_id = @trade_hub_conversion_hash[record['system_id']]
-        unless trade_hub_id
-          puts "Trade hub not found for cpp id #{record['system_id']}"
-          next
-        end
-
-        eve_item_id = @eve_item_conversion_hash[record['type_id']]
-        unless eve_item_id
-          puts "Type id not found for cpp id #{record['type_id']}" if @debug_request
-          next
-        end
-
-        @sales_orders << SalesOrder.new(day: Time.now, volume: record['volume_remain'], price: record['price'],
-          trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
-          retrieve_session_id: @sales_orders_retrieve_session_id, closed: false )
-
-        @sales_orders_stored += 1
-        @sales_orders_ids << sale_key
-
-        if @sales_orders.count == 2000
-          SalesOrder.import!( @sales_orders )
-          @sales_orders = []
-        end
+        so.volume = record['volume_remain']
+        so.price = record['price']
       end
+      so.touched = true
+      so.save!
 
-      @order_ids_present << record['order_id']
+      @sales_orders_updated += 1
+
+    else
+      # We still do not have a SaleOrder with this
+      so = SalesOrder.create!( day: Time.now, volume: record['volume_remain'], price: record['price'],
+                          trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
+                          touched: true )
+
+      @sales_orders_created += 1
+
+      # If we start with a different volume than the initial volume, that mean we missed some selling
+      if record['volume_remain'] != record['volume_total']
+        create_sales_final_record( so, record['volume_total'], record['volume_remain'],
+                                   record['price'], record['price'] )
+      end
     end
-
-    SalesOrder.import @sales_orders
   end
 
-  def update_blueprint_component_sales_orders( record )
+  def create_sales_final_record( so, old_volume, new_volume, old_price, new_price )
+    volume = old_volume - new_volume
+    price = (old_price + new_price) / 2.0
 
-    trade_hub_id = @trade_hub_conversion_hash[record['system_id']]
+    SalesFinal.create!(
+        day: so.day, trade_hub_id: so.trade_hub_id, eve_item_id: so.eve_item_id, volume: volume, price: price,
+        order_id: so.order_id )
+  end
+
+  def update_blueprint_component_sales_orders( trade_hub_id, record )
+
     bc = BlueprintComponent.find_by_cpp_eve_item_id( record['type_id'] )
 
     if bc
