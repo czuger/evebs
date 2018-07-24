@@ -44,7 +44,7 @@ class Esi::DownloadSalesOrders < Esi::Download
         end
       end
 
-      SalesOrder.where( touched: false ).delete_all
+      remove_old_sales_orders
       SalesFinal.where( 'updated_at < ?', Time.now - 1.month ).delete_all
 
       BlueprintComponentSalesOrder.where( touched: false ).delete_all
@@ -84,9 +84,12 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     else
       # We still do not have a SaleOrder with this
+      issued = DateTime.parse( record['issued'] )
+      duration = record['duration']
+      end_time = issued + duration.days
       so = SalesOrder.create!( day: Time.now, volume: record['volume_remain'], price: record['price'],
                           trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
-                          touched: true )
+                          touched: true, issued: issued, duration: duration, end_time: end_time )
 
       @sales_orders_created += 1
 
@@ -96,6 +99,16 @@ class Esi::DownloadSalesOrders < Esi::Download
                                    record['price'], record['price'] )
       end
     end
+  end
+
+  def remove_old_sales_orders
+    # We assume that all old orders are closed as selling. We will have to estimate the orders that failed.
+    SalesOrder.where( touched: false ).where( 'end_time > ?', Time.now ).each do |old_order|
+      create_sales_final_record( old_order, old_order.volume, 0, old_order.price,
+      old_order.price )
+    end
+
+    SalesOrder.where( touched: false ).delete_all
   end
 
   def create_sales_final_record( so, old_volume, new_volume, old_price, new_price )
