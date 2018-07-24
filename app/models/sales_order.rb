@@ -1,6 +1,7 @@
 class SalesOrder < ApplicationRecord
   belongs_to :trade_hub
 
+  # Unique usage, can be removed later
   def self.make_order_id_unique
     ActiveRecord::Base.transaction do
       SalesOrder.pluck( :order_id ).each do |oi|

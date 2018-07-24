@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_24_093847) do
+ActiveRecord::Schema.define(version: 2018_07_24_181213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -280,7 +280,7 @@ ActiveRecord::Schema.define(version: 2018_07_24_093847) do
     t.time "end_time"
     t.boolean "touched", default: false, null: false
     t.index ["eve_item_id"], name: "index_sales_orders_on_eve_item_id"
-    t.index ["order_id", "volume"], name: "index_sales_orders_on_order_id_and_volume", unique: true
+    t.index ["order_id"], name: "index_sales_orders_on_order_id", unique: true
     t.index ["trade_hub_id"], name: "index_sales_orders_on_trade_hub_id"
   end
 
