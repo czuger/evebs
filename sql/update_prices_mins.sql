@@ -17,14 +17,12 @@
 DELETE FROM prices_mins pm WHERE NOT EXISTS (
     SELECT * FROM sales_orders so
     WHERE pm.trade_hub_id = so.trade_hub_id
-    AND pm.eve_item_id = so.eve_item_id
-    AND so.closed = false );
+    AND pm.eve_item_id = so.eve_item_id );
 
 UPDATE prices_mins pm SET ( min_price, updated_at ) = ( mp, now() )
 FROM (
        SELECT MIN( so.price ) mp, so.trade_hub_id ti, so.eve_item_id ei
        FROM sales_orders so
-       WHERE so.closed = false
        GROUP BY so.trade_hub_id, so.eve_item_id ) min_so
 WHERE ti = pm.trade_hub_id
       AND ei = pm.eve_item_id;
@@ -32,7 +30,6 @@ WHERE ti = pm.trade_hub_id
 INSERT INTO prices_mins( trade_hub_id, eve_item_id, min_price, created_at, updated_at )
   SELECT trade_hub_id, eve_item_id, MIN( price ), now(), now()
   FROM sales_orders
-  WHERE closed = false
 AND NOT EXISTS (
 SELECT * FROM prices_mins WHERE trade_hub_id = prices_mins.trade_hub_id AND eve_item_id = prices_mins.eve_item_id
 )
