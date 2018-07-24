@@ -3,5 +3,11 @@ namespace :maintenance do
   task :delete_users_without_characters => :environment do
     User.where( current_character_id: nil ).destroy_all
   end
+
+  desc 'Test computed volumes precision'
+  task :test_monthly_volume => :environment do
+    Esi::JitaVolumeVerification.new.check
+  end
+
 end
 
