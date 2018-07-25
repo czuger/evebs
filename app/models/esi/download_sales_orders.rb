@@ -43,13 +43,18 @@ class Esi::DownloadSalesOrders < Esi::Download
         @rest_url = "markets/#{cpp_region_id}/orders/"
         pages = get_all_pages
 
-        pages.each do |record|
+        orders_to_process_hash = {}
+
+        # pp pages
+
+        pages.sort_by { |e| e['volume'] }.reverse.each do |record|
           trade_hub_id = @trade_hub_conversion_hash[record['system_id']]
           next unless trade_hub_id
 
           update_sales_orders( trade_hub_id, record )
           update_blueprint_component_sales_orders( trade_hub_id, record )
         end
+
       end
 
       touch_unchanged_sales_orders
@@ -98,6 +103,7 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     else
       # We still do not have a SaleOrder with this
+      # issued = DateTime.parse( record['issued'][0..-1] )
       issued = DateTime.parse( record['issued'] )
       duration = record['duration']
       end_time = issued + duration.days
@@ -105,6 +111,8 @@ class Esi::DownloadSalesOrders < Esi::Download
       so = SalesOrder.create!( day: Time.now, volume: record['volume_remain'], price: record['price'],
                           trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
                           touched: true, issued: issued, duration: duration, end_time: end_time )
+
+      @sales_orders_volumes[ so.order_id ] = so.volume
 
       @sales_orders_created += 1
 
@@ -127,7 +135,8 @@ class Esi::DownloadSalesOrders < Esi::Download
 
   def remove_old_sales_orders
     # We assume that all old orders are closed as selling. We will have to estimate the orders that failed.
-    SalesOrder.where( touched: false ).where( 'end_time > ?', Time.now ).each do |old_order|
+    SalesOrder.where( touched: false ).where( 'end_time < ?', Time.now ).each do |old_order|
+      # pp old_order
       create_sales_final_record( old_order, old_order.volume, 0, old_order.price,
       old_order.price )
     end
@@ -174,8 +183,10 @@ class Esi::DownloadSalesOrders < Esi::Download
       end
 
     else
-      BlueprintComponentSalesOrder.create!( cpp_order_id: record['order_id'], volume: record['volume_remain'],
+      bc_so = BlueprintComponentSalesOrder.create!( cpp_order_id: record['order_id'], volume: record['volume_remain'],
          price: record['price'], touched: true, trade_hub_id: trade_hub_id, blueprint_component_id: bc_id )
+
+      @blueprints_sales_orders_volumes[ bc_so.cpp_order_id ] = bc_so.volume
     end
   end
 end
