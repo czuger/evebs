@@ -21,7 +21,7 @@ class PriceAdvicesController < ApplicationController
     @user = current_user
     @empty_places_objects = PricesAdvice.joins( :eve_item, :region, :trade_hub ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )
       .where( min_price: nil ).where.not( vol_month: nil )
-      .where.not( SalesOrder.where( closed: false )
+      .where.not( SalesOrder
          .where( 'prices_advices.eve_item_id = sales_orders.eve_item_id AND prices_advices.trade_hub_id = sales_orders.trade_hub_id' )
             .exists )
       .order( 'vol_month DESC' ).paginate(:page => params[:page], :per_page => 20 )
