@@ -95,11 +95,11 @@ class Esi::DownloadSalesOrders < Esi::Download
         so.price = record['price']
         so.touched = true
         so.save!
+
+        @sales_orders_updated += 1
       else
         @sales_orders_to_touch << record['order_id']
       end
-
-      @sales_orders_updated += 1
 
     else
       # We still do not have a SaleOrder with this
