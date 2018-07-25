@@ -30,7 +30,7 @@ WHERE ti = pm.trade_hub_id
 INSERT INTO prices_mins( trade_hub_id, eve_item_id, min_price, created_at, updated_at )
   SELECT trade_hub_id, eve_item_id, MIN( price ), now(), now()
   FROM sales_orders
-AND NOT EXISTS (
+WHERE NOT EXISTS (
 SELECT * FROM prices_mins WHERE trade_hub_id = prices_mins.trade_hub_id AND eve_item_id = prices_mins.eve_item_id
 )
 GROUP BY trade_hub_id, eve_item_id;
