@@ -5,6 +5,7 @@ FactoryBot.define do
     cost 5
     name 'Item test'
     cpp_eve_item_id 123456
+    blueprint { create( :blueprint ) }
 
     # An example of item with blueprint and market group
     factory :inferno_fury_cruise_missile do

@@ -33,5 +33,7 @@ module EveBusinessServer
       g.stylesheets false
 
     end
+
+    config.active_record.schema_format = :sql
   end
 end

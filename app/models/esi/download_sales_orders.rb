@@ -1,8 +1,9 @@
 class Esi::DownloadSalesOrders < Esi::Download
 
-  def initialize( debug_request: false )
+  def initialize( debug_request: false, silent_output: false )
     super( nil, { order_type: :sell }, debug_request: debug_request )
     # p @errors_limit_remain
+    @silent_output = silent_output
   end
 
   # il faut gérer la disparition de l'ordre. Est ce qu'on s'en fout ?
@@ -10,7 +11,7 @@ class Esi::DownloadSalesOrders < Esi::Download
   # si l'ordre a été annulé, timeout ou bien vendu.
   def update
 
-    Banner.p 'About to update min prices'
+    Banner.p 'About to update min prices' unless @silent_output
 
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
@@ -59,8 +60,8 @@ class Esi::DownloadSalesOrders < Esi::Download
       BpcJitaSalesFinal.where( 'updated_at < ?', Time.now - 1.week ).delete_all
     end
 
-    puts "Sales orders created : #{@sales_orders_stored}"
-    puts "Sales orders updated : #{@sales_orders_updated}"
+    puts "Sales orders created : #{@sales_orders_created}" unless @silent_output
+    puts "Sales orders updated : #{@sales_orders_updated}" unless @silent_output
   end
 
   private
