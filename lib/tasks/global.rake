@@ -36,7 +36,6 @@ namespace :process do
       ActiveRecord::Base.transaction do
         Esi::UpdateVolumeFromHistory.new.update
 
-        Comp::SalesFinals.run
         Sql::PricesAvgWeeks.update
 
         BlueprintComponent.compute_costs
