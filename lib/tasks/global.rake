@@ -34,6 +34,8 @@ namespace :process do
       Crontab.start( :hourly )
 
       ActiveRecord::Base.transaction do
+        Esi::UpdateVolumeFromHistory.new.update
+
         Comp::SalesFinals.run
         Sql::PricesAvgWeeks.update
 

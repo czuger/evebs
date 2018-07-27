@@ -1,8 +1,8 @@
 namespace :process do
 
-  desc 'Download eve markets/histories'
-  task :eve_markets_histories => :environment do
-    Esi::DownloadPricesHistory.new( debug_request: false ).update_table
+  desc 'Update sold volumes from history in PricesAdvice'
+  task :update_volumes_from_history => :environment do
+    Esi::UpdateVolumeFromHistory.new(debug_request: false ).update
   end
 
   desc 'Compute prices history average'

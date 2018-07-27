@@ -613,7 +613,8 @@ CREATE TABLE public.prices_advices (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     margin_percent double precision,
-    price_avg_week double precision
+    price_avg_week double precision,
+    history_volume bigint
 );
 
 
@@ -2533,6 +2534,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180720134043'),
 ('20180724093847'),
 ('20180724181213'),
-('20180725083125');
+('20180725083125'),
+('20180727144320');
 
 
