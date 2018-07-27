@@ -19,15 +19,20 @@ class Esi::UpdateVolumeFromHistory < Esi::Download
 
         @rest_url = "markets/#{the_forge_cpp_id}/history/"
         @params[:type_id]=cpp_id
-        pages = get_all_pages
 
-        pages.reject!{ |e| DateTime.parse( e['date'] ) < Time.now - 1.month }
-        total_volume = pages.map{ |e| e['volume'] }.reduce( :+ )
+        begin
+          pages = get_all_pages
 
-        pa = PricesAdvice.joins( :eve_item, { trade_hub: :region } ).where( 'eve_items.cpp_eve_item_id' => cpp_id )
-                 .where( 'regions.cpp_region_id' => the_forge_cpp_id ).first
+          pages.reject!{ |e| DateTime.parse( e['date'] ) < Time.now - 1.month }
+          total_volume = pages.map{ |e| e['volume'] }.reduce( :+ )
 
-        pa.update!( history_volume: total_volume )
+          pa = PricesAdvice.joins( :eve_item, { trade_hub: :region } ).where( 'eve_items.cpp_eve_item_id' => cpp_id )
+                   .where( 'regions.cpp_region_id' => the_forge_cpp_id ).first
+
+          pa.update!( history_volume: total_volume )
+        rescue Esi::Errors::NotFound
+          # we don't care ...
+        end
       end
     end
   end
