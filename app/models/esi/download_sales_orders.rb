@@ -19,6 +19,10 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     @sales_orders_created = 0
     @sales_orders_updated = 0
+    @sales_orders_deleted = 0
+
+    @sales_finals_created = 0
+    @sales_finals_deleted = 0
 
     @sales_orders_volumes = Hash[ SalesOrder.pluck( :order_id, :volume ) ]
     @sales_orders_to_touch = []
@@ -59,6 +63,8 @@ class Esi::DownloadSalesOrders < Esi::Download
 
       touch_unchanged_sales_orders
       remove_old_sales_orders
+
+      @sales_finals_deleted = SalesFinal.where( 'updated_at < ?', Time.now - 1.month ).count
       SalesFinal.where( 'updated_at < ?', Time.now - 1.month ).delete_all
 
       BlueprintComponentSalesOrder.where( touched: false ).delete_all
@@ -67,6 +73,10 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     puts "Sales orders created : #{@sales_orders_created}" unless @silent_output
     puts "Sales orders updated : #{@sales_orders_updated}" unless @silent_output
+    puts "Sales orders deleted : #{@sales_orders_deleted}" unless @silent_output
+
+    puts "Sales final created : #{@sales_finals_created}" unless @silent_output
+    puts "Sales final deleted : #{@sales_finals_deleted}" unless @silent_output
   end
 
   private
@@ -141,6 +151,7 @@ class Esi::DownloadSalesOrders < Esi::Download
       old_order.price )
     end
 
+    @sales_orders_deleted = SalesOrder.where( touched: false ).count
     SalesOrder.where( touched: false ).delete_all
   end
 
@@ -151,6 +162,8 @@ class Esi::DownloadSalesOrders < Esi::Download
     SalesFinal.create!(
         day: so.day, trade_hub_id: so.trade_hub_id, eve_item_id: so.eve_item_id, volume: volume, price: price,
         order_id: so.order_id )
+
+    @sales_finals_created += 1
   end
 
   def update_blueprint_component_sales_orders( trade_hub_id, record )
