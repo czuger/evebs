@@ -25,9 +25,9 @@ module Modules::PriceAdvices::MarginModule
     # give you full_batch_size instead of zero in case of no sold in month
     # Or add where vol_month is not null
     if @batch_cap
-      batch_size_formula = "LEAST( full_batch_size, FLOOR( vol_month * #{@vol_month_pcent} ) )"
+      batch_size_formula = "LEAST( full_batch_size, FLOOR( history_volume * #{@vol_month_pcent} ) )"
     else
-      batch_size_formula = "FLOOR( vol_month * #{@vol_month_pcent} )"
+      batch_size_formula = "FLOOR( history_volume * #{@vol_month_pcent} )"
     end
 
     @items = PricesAdvice.includes( :eve_item, :region ).where( eve_item: @user.eve_items, trade_hub: @user.trade_hubs )

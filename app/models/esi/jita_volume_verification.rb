@@ -33,6 +33,8 @@ module Esi
         hv = ActionController::Base.helpers.number_to_human history_volume
         vm = ActionController::Base.helpers.number_to_human pa.vol_month
 
+        p pa
+
         puts
         puts "#{e_id.name} - monthly history volume : #{hv}, monthly db volume : #{vm}, pourcentage : #{((pa.vol_month*100.0)/history_volume).round} %"
         puts

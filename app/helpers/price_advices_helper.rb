@@ -24,9 +24,9 @@ module PriceAdvicesHelper
     price = margin_type == :daily ? item.min_price : item.price_avg_week
 
     if @batch_cap
-      batch = [ item.full_batch_size, item.vol_month * @vol_month_pcent ].min
+      batch = [ item.full_batch_size, item.history_volume * @vol_month_pcent ].min
     else
-      batch = item.vol_month * @vol_month_pcent
+      batch = item.history_volume * @vol_month_pcent
     end
 
     margin = ( batch * price ) - ( batch * item.single_unit_cost )
