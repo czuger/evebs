@@ -35,5 +35,6 @@ module EveBusinessServer
     end
 
     config.active_record.schema_format = :sql
+    config.assets.quiet = true
   end
 end
