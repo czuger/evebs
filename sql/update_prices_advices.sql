@@ -40,18 +40,16 @@ AND ei = pm.eve_item_id;
 
 -- start min prices update
 
-UPDATE prices_advices cpa
-SET min_price = mp.min_price, updated_at = now()
-FROM prices_mins mp
-WHERE cpa.eve_item_id = mp.eve_item_id
-AND cpa.trade_hub_id = mp.trade_hub_id;
-
-UPDATE prices_advices cpa
-SET min_price = NULL, updated_at = now()
-WHERE NOT EXISTS (
-    SELECT NULL FROM prices_mins mp
-    WHERE cpa.eve_item_id = mp.eve_item_id
-          AND cpa.trade_hub_id = mp.trade_hub_id );
+WITH t AS (
+  SELECT pm.min_price AS pm_min_price, pa.eve_item_id eid, pa.trade_hub_id pid
+  FROM prices_advices AS pa
+  LEFT join prices_mins AS pm on pa.eve_item_id = pm.eve_item_id AND pa.trade_hub_id = pm.trade_hub_id
+)
+UPDATE prices_advices
+SET min_price = t.pm_min_price, updated_at = now()
+FROM t
+WHERE eve_item_id = t.eid
+AND trade_hub_id = t.pid;
 
 -- end min prices update
 
