@@ -98,7 +98,8 @@ CREATE TABLE public.blueprint_components (
     name character varying NOT NULL,
     cost double precision,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    volume double precision
 );
 
 
@@ -2501,6 +2502,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180727144320'),
 ('20180728063218'),
 ('20180728070253'),
-('20180728080318');
+('20180728080318'),
+('20180728135542');
 
 

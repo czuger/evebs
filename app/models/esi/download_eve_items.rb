@@ -18,6 +18,8 @@ class Esi::DownloadEveItems < Esi::Download
     Banner.p "About to download #{new_ids.count} items."
     updated_items = downloaded_items = 0
 
+    market_transformation_hash = Hash[ MarketGroup..pluck( :cpp_market_group_id, :id ) ]
+
     ActiveRecord::Base.transaction do
       new_ids.each do |missing_blueprint_id|
         @rest_url = "universe/types/#{missing_blueprint_id}/"

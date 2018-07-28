@@ -1,8 +1,10 @@
 class Esi::UpdateBlueprints < Esi::Download
 
-  REJECTED_PATTERNS = ['Sansha', 'Gurista', 'Dark Blood', 'Angel', 'Navy', 'Edition', 'Quafe', 'ORE', 'Serpentis',
-                       'Blood Raiders', 'Thukker Tribe', 'Kador', 'Amastris', 'Tash-Murkon', 'Nugoeihuvi', 'Wiyrkomi',
-                        'Nefantar', 'Krusual', 'Aliastra', 'CONCORD' ]
+  # REJECTED_PATTERNS = ['Sansha', 'Gurista', 'Dark Blood', 'Angel', 'Navy', 'Edition', 'Quafe', 'ORE', 'Serpentis',
+  #                      'Blood Raiders', 'Thukker Tribe', 'Kador', 'Amastris', 'Tash-Murkon', 'Nugoeihuvi', 'Wiyrkomi',
+  #                       'Nefantar', 'Krusual', 'Aliastra', 'CONCORD' ]
+
+  REJECTED_PATTERNS = []
 
   def update
     ActiveRecord::Base.transaction do
@@ -39,8 +41,8 @@ class Esi::UpdateBlueprints < Esi::Download
     Blueprint.where( cpp_blueprint_id: @to_remove_blueprint ).delete_all
     Blueprint.where.not( cpp_blueprint_id: @full_blueprints_id_list ).delete_all
 
-    BlueprintMaterial.where.not(blueprint_id: Blueprint.select(:id ) ).delete_all
-    BlueprintComponent.where.not(id: BlueprintMaterial.select(:component_id ) ).delete_all
+    BlueprintMaterial.where.not(blueprint_id: Blueprint.select( :id ) ).delete_all
+    BlueprintComponent.where.not(id: BlueprintMaterial.select( :blueprint_component_id ) ).delete_all
 
   end
 
@@ -116,10 +118,10 @@ class Esi::UpdateBlueprints < Esi::Download
     @materials.each do |material|
       t_id = material['typeID']
 
-      comp = BlueprintComponent.find_by_cpp_eve_item_id(t_id )
-      unless comp
+      comp = BlueprintComponent.find_by_cpp_eve_item_id( t_id )
+      if !comp || comp.updated_at < Time.now - 7.days
 
-        @rest_url = "universe/types/#{@bp_id}/"
+        @rest_url = "universe/types/#{t_id}/"
 
         begin
           local_page = get_page_retry_on_error
@@ -127,10 +129,13 @@ class Esi::UpdateBlueprints < Esi::Download
           return false
         end
 
-        comp = BlueprintComponent.create!(cpp_eve_item_id: t_id, name: local_page['name'] )
+        comp = BlueprintComponent.where( cpp_eve_item_id: t_id ).first_or_initialize
+        comp.name = local_page['name']
+        comp.volume = local_page['volume']
+        comp.save!
       end
 
-      ar_material = BlueprintMaterial.where(blueprint_id: blueprint.id, component_id: comp.id ).first_or_initialize
+      ar_material = BlueprintMaterial.where(blueprint_id: blueprint.id, blueprint_component_id: comp.id ).first_or_initialize
       ar_material.required_qtt = material['quantity']
       ar_material.save!
     end
