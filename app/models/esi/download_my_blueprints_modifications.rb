@@ -10,14 +10,14 @@ class Esi::DownloadMyBlueprintsModifications < Esi::Download
     ActiveRecord::Base.transaction do
 
       user.blueprint_modifications.update_all( touched: false )
-      download_assets user
+      download_bp_modifications user
       user.blueprint_modifications.where( touched: false ).delete_all
     end
   end
 
   private
 
-  def download_assets( user )
+  def download_bp_modifications( user )
     if user.locked
       puts "#{user.name} is locked. Skipping ..."
       return
