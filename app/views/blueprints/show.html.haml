@@ -1,0 +1,13 @@
+.container
+
+  %table.table.table-bordered.sortable
+    %thead
+      %tr
+        %th.text-center Blueprint name
+        %th.text-center Modifications value
+
+    %tbody
+      - @blueprint_modifications.each do |blueprint_modification|
+        %tr
+          %td.text-left= blueprint_modification.blueprint.name
+          %td.text-center= "%0.2f" % [blueprint_modification.percent_modification_value]

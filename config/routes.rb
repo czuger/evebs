@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   get :download_orders, controller: :user_sale_orders
   post :download_orders_start, controller: :user_sale_orders
 
+  resource :blueprints, only: [:show]
 
   resources :components_to_buy, only: [ :show ]
 
