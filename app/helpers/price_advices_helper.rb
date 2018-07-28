@@ -21,7 +21,7 @@ module PriceAdvicesHelper
   end
 
   def price_n_margin( margin_type, item )
-    margin_type == :daily ? [ item.min_price, item.margin_comp_immediate ] : [ item.price_avg_week, item.margin_com_weekly ]
+    margin_type == :daily ? [ item.min_price, item.margin_comp_immediate ] : [ item.price_avg_week, item.margin_comp_weekly ]
   end
 
   def challenged_prices_highlight_class_low_margin( margin )
