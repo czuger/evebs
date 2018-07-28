@@ -9,7 +9,7 @@
 - else
   %h4
     Assets download finished. Last refresh :
-    = @user.last_assets_download
+    = @user.last_assets_download.localtime
 
 - unless @user.download_assets_running
   = form_tag character_download_assets_start_path( @user ) do

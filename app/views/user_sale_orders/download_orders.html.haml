@@ -9,7 +9,7 @@
 - else
   %h4
     Orders download finished. Last refresh :
-    = @user.last_orders_download
+    = @user.last_orders_download.localtime
 
 - unless @user.download_orders_running
   = form_tag download_orders_start_path do

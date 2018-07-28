@@ -50,7 +50,7 @@ class UserSaleOrdersController < ApplicationController
   def download_orders_start
     @user.update( download_orders_running: true )
 
-    Esi::DownloadMyOrders.new.update( @user )
+    DownloadMyOrdersJob.perform_later( @user )
 
     redirect_to download_orders_path
   end
