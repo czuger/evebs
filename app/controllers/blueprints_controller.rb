@@ -4,7 +4,8 @@ class BlueprintsController < ApplicationController
   before_action :set_user, only: [:show]
 
   def show
-    @blueprint_modifications = @user.blueprint_modifications.joins( :blueprint ).order( 'blueprints.name' ).includes( :blueprint )
+    @blueprint_modifications = @user.blueprint_modifications.joins( :blueprint ).order( 'blueprints.name' )
+                                   .includes( :blueprint ).paginate(:page => params[:page], :per_page => 20 )
   end
 
 end
