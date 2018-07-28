@@ -309,47 +309,6 @@ ALTER SEQUENCE bpc_prices_mins_id_seq OWNED BY bpc_prices_mins.id;
 
 
 --
--- Name: characters; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE characters (
-    id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    name character varying NOT NULL,
-    eve_id integer NOT NULL,
-    expires_on timestamp without time zone NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    token character varying,
-    renew_token character varying,
-    locked boolean DEFAULT false NOT NULL,
-    download_my_assets boolean DEFAULT false NOT NULL,
-    download_assets_running boolean DEFAULT false NOT NULL,
-    last_assets_download timestamp without time zone,
-    character_pl_share_id bigint
-);
-
-
---
--- Name: characters_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE characters_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: characters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE characters_id_seq OWNED BY characters.id;
-
-
---
 -- Name: component_to_buys; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1321,13 +1280,6 @@ ALTER TABLE ONLY bpc_prices_mins ALTER COLUMN id SET DEFAULT nextval('bpc_prices
 
 
 --
--- Name: characters id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY characters ALTER COLUMN id SET DEFAULT nextval('characters_id_seq'::regclass);
-
-
---
 -- Name: crontabs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1550,14 +1502,6 @@ ALTER TABLE ONLY bpc_jita_sales_finals
 
 ALTER TABLE ONLY bpc_prices_mins
     ADD CONSTRAINT bpc_prices_mins_pkey PRIMARY KEY (id);
-
-
---
--- Name: characters characters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY characters
-    ADD CONSTRAINT characters_pkey PRIMARY KEY (id);
 
 
 --
@@ -1848,27 +1792,6 @@ CREATE INDEX index_bpc_prices_mins_on_blueprint_component_id ON bpc_prices_mins 
 --
 
 CREATE INDEX index_bpc_prices_mins_on_trade_hub_id ON bpc_prices_mins USING btree (trade_hub_id);
-
-
---
--- Name: index_characters_on_character_pl_share_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_characters_on_character_pl_share_id ON characters USING btree (character_pl_share_id);
-
-
---
--- Name: index_characters_on_download_my_assets; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_characters_on_download_my_assets ON characters USING btree (download_my_assets);
-
-
---
--- Name: index_characters_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_characters_on_user_id ON characters USING btree (user_id);
 
 
 --
@@ -2254,14 +2177,6 @@ ALTER TABLE ONLY bpc_assets
 
 
 --
--- Name: characters fk_rails_53a8ea746c; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY characters
-    ADD CONSTRAINT fk_rails_53a8ea746c FOREIGN KEY (user_id) REFERENCES users(id);
-
-
---
 -- Name: bpc_assets fk_rails_68943bf535; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2315,14 +2230,6 @@ ALTER TABLE ONLY production_list_share_requests
 
 ALTER TABLE ONLY sales_orders
     ADD CONSTRAINT fk_rails_86221bcddd FOREIGN KEY (trade_hub_id) REFERENCES trade_hubs(id);
-
-
---
--- Name: characters fk_rails_8aa1b2b31d; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY characters
-    ADD CONSTRAINT fk_rails_8aa1b2b31d FOREIGN KEY (character_pl_share_id) REFERENCES characters(id);
 
 
 --
@@ -2595,6 +2502,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180724181213'),
 ('20180725083125'),
 ('20180727144320'),
-('20180728063218');
+('20180728063218'),
+('20180728070253');
 
 
