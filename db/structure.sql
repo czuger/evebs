@@ -695,7 +695,7 @@ CREATE VIEW price_advice_margin_comps AS
                     ELSE floor((((pa.history_volume * ur.vol_month_pcent))::numeric * 0.01))
                 END AS batch_size_formula,
             ur.min_amount_for_advice,
-            ((ur.min_pcent_for_advice)::numeric * 0.01) AS min_pcent_for_advice
+            ur.min_pcent_for_advice
            FROM ((((((prices_advices pa
              JOIN eve_items ei ON ((pa.eve_item_id = ei.id)))
              JOIN trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
@@ -2503,6 +2503,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180725083125'),
 ('20180727144320'),
 ('20180728063218'),
-('20180728070253');
+('20180728070253'),
+('20180728080318');
 
 
