@@ -30,13 +30,14 @@ module Esi
 
         # pp PricesAdvice.where( trade_hub_id: t_id.id, eve_item_id: e_id.id ).all
 
+        pa_vm = pa.vol_month.nil? ? 1 : pa.vol_month
+
         hv = ActionController::Base.helpers.number_to_human history_volume
-        vm = ActionController::Base.helpers.number_to_human pa.vol_month
+        vm = ActionController::Base.helpers.number_to_human pa_vm
 
-        p pa
+        # p pa
 
-        puts
-        puts "#{e_id.name} - monthly history volume : #{hv}, monthly db volume : #{vm}, pourcentage : #{((pa.vol_month*100.0)/history_volume).round} %"
+        puts "#{e_id.name} - monthly db volume / monthly history volume : #{vm} / #{hv}, pourcentage : #{((pa_vm*100.0)/history_volume).round} %"
         puts
 
       end

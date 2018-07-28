@@ -5,7 +5,7 @@ namespace :maintenance do
   end
 
   desc 'Test computed volumes precision'
-  task :test_monthly_volume => :environment do
+  task :test_monthly_volume_in_jita => :environment do
     Esi::JitaVolumeVerification.new.check
   end
 
