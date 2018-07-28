@@ -22,7 +22,7 @@ module Modules::PriceAdvices::MarginModule
 
     if @user.remove_occuped_places
       @items = @items.where.not( @user.user_sale_orders
-          .where( 'prices_advices.eve_item_id = user_sale_orders.eve_item_id AND prices_advices.trade_hub_id = user_sale_orders.trade_hub_id' ).
+          .where( 'price_advice_margin_comps.item_id = user_sale_orders.eve_item_id AND price_advice_margin_comps.trade_hub_id = user_sale_orders.trade_hub_id' ).
           exists )
     end
 

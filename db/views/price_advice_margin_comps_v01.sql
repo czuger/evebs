@@ -4,6 +4,7 @@ FROM ( SELECT
              pa.id,
              ur.id user_id,
              ei.id item_id,
+             tu.id trade_hub_id,
              re.name region_name,
              tu.name trade_hub_name,
              ei.name item_name,
