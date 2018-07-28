@@ -41,8 +41,8 @@ class Esi::UpdateBlueprints < Esi::Download
     Blueprint.where( cpp_blueprint_id: @to_remove_blueprint ).delete_all
     Blueprint.where.not( cpp_blueprint_id: @full_blueprints_id_list ).delete_all
 
-    BlueprintMaterial.where.not(blueprint_id: Blueprint.select( :id ) ).delete_all
-    BlueprintComponent.where.not(id: BlueprintMaterial.select( :blueprint_component_id ) ).delete_all
+    BlueprintMaterial.where.not( blueprint_id: Blueprint.select( :id ) ).delete_all
+    BlueprintComponent.where.not( id: BlueprintMaterial.select( :blueprint_component_id ) ).delete_all
 
   end
 
