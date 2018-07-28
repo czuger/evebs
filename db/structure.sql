@@ -1716,6 +1716,13 @@ CREATE INDEX index_blueprint_component_sales_orders_on_trade_hub_id ON public.bl
 
 
 --
+-- Name: index_blueprint_components_on_cpp_eve_item_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_blueprint_components_on_cpp_eve_item_id ON public.blueprint_components USING btree (cpp_eve_item_id);
+
+
+--
 -- Name: index_blueprint_components_on_lower_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1790,13 +1797,6 @@ CREATE INDEX index_bpc_prices_mins_on_blueprint_component_id ON public.bpc_price
 --
 
 CREATE INDEX index_bpc_prices_mins_on_trade_hub_id ON public.bpc_prices_mins USING btree (trade_hub_id);
-
-
---
--- Name: index_components_on_cpp_eve_item_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_components_on_cpp_eve_item_id ON public.blueprint_components USING btree (cpp_eve_item_id);
 
 
 --
@@ -2503,6 +2503,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180728063218'),
 ('20180728070253'),
 ('20180728080318'),
-('20180728135542');
+('20180728135542'),
+('20180728153458');
 
 
