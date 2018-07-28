@@ -21,17 +21,7 @@ module PriceAdvicesHelper
   end
 
   def price_n_margin( margin_type, item )
-    price = margin_type == :daily ? item.min_price : item.price_avg_week
-
-    if @batch_cap
-      batch = [ item.full_batch_size, item.history_volume * @vol_month_pcent ].min
-    else
-      batch = item.history_volume * @vol_month_pcent
-    end
-
-    margin = ( batch * price ) - ( batch * item.single_unit_cost )
-    margin_pcent = (( batch * price ) / ( batch * item.single_unit_cost )) -1
-    [ price, batch.floor, margin, margin_pcent ]
+    margin_type == :daily ? [ item.min_price, item.margin_comp_immediate ] : [ item.price_avg_week, item.margin_com_weekly ]
   end
 
   def challenged_prices_highlight_class_low_margin( margin )

@@ -38,20 +38,19 @@
         - @items.each do |item|
           %tr{ class: cycle( :active, nil ) }
             -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
-            - region_name = item.region ? item.region.name : ''
             %td= production_list_check_box( item )
-            %td.trade_hub_name=item.trade_hub.name + " (#{item.region.name})"
+            %td.trade_hub_name=item.trade_hub_name + " (#{item.region_name})"
 
-            %td.item_name= link_to( item.eve_item.name, item_path( item.eve_item_id ) )
+            %td.item_name= link_to( item.item_name, item_path( item.item_id ) )
             %td.text-right.information_highlight_left=print_volume(item.history_volume)
-            %td.text-right.information_highlight_left= link_to( print_isk(item.single_unit_cost), item_cost_path( item.eve_item_id ), target: '_blank' )
+            %td.text-right.information_highlight_left= link_to( print_isk(item.single_unit_cost), item_cost_path( item.item_id ), target: '_blank' )
 
-            - price, batch, margin, _ = price_n_margin( margin_type, item )
+            - price, margin = price_n_margin( margin_type, item )
 
             %td.text-right.information_highlight_left= print_isk(price)
             %td.text-right.information_highlight_right=print_pcent_nomultiply( item.margin_percent )
             %td.text-right.information_highlight_right=print_isk( margin )
-            %td.text-right.information_highlight_right=print_volume( batch )
+            %td.text-right.information_highlight_right=print_volume( item.batch_size_formula.round )
 
             - if margin_type == :daily
               %td.text-right.information_highlight_left=print_pcent( item.daily_monthly_pcent )
