@@ -119,7 +119,7 @@ class Esi::UpdateBlueprints < Esi::Download
       t_id = material['typeID']
 
       comp = BlueprintComponent.find_by_cpp_eve_item_id( t_id )
-      if !comp || comp.updated_at < Time.now - 7.days
+      if !comp || comp.updated_at < Time.now
 
         @rest_url = "universe/types/#{t_id}/"
 
