@@ -5,6 +5,8 @@ class ComponentsToBuyController < ApplicationController
 
   def show
     @required_quantities = @user.component_to_buys
+    @total_volume = @user.component_to_buys.sum( :required_volume ).ceil
+    @total_isk = @user.component_to_buys.sum( :total_cost ).ceil
   end
 
   def download_assets

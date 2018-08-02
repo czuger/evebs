@@ -318,7 +318,8 @@ SELECT
     NULL::integer AS user_id,
     NULL::character varying AS name,
     NULL::double precision AS qtt_to_buy,
-    NULL::double precision AS total_cost;
+    NULL::double precision AS total_cost,
+    NULL::double precision AS required_volume;
 
 
 --
@@ -2081,7 +2082,8 @@ CREATE OR REPLACE VIEW public.component_to_buys AS
     pl.user_id,
     bc.name,
     (sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
-    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.cost) AS total_cost
+    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.cost) AS total_cost,
+    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.volume) AS required_volume
    FROM ((((((public.production_lists pl
      JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
      JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
@@ -2505,6 +2507,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180728080318'),
 ('20180728135542'),
 ('20180728153458'),
-('20180802103400');
+('20180802103400'),
+('20180802103855');
 
 
