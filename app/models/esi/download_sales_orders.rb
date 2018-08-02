@@ -50,6 +50,11 @@ class Esi::DownloadSalesOrders < Esi::Download
           pages = get_all_pages
         rescue Esi::Errors::NotFound
           puts "Unable to find data for region #{region.name}"
+
+          # In case we couldn' find data for region, we prevent removing untouched data (cos nothing will be touched for this region)
+          SalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true )
+          BlueprintComponentSalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true )
+
           next
         end
 
