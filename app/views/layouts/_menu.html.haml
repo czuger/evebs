@@ -42,6 +42,7 @@
             - if @current_user
               %li{ class: active_link( edit_production_list_path( @current_user ) ) }= link_to 'Production list', edit_production_list_path( @current_user )
               %li{ class: active_link( components_to_buy_path( @current_user ) ) }= link_to 'Components to buy', components_to_buy_path( @current_user )
+              %li{ class: active_link( components_to_buy_show_raw_path ) }= link_to 'Components to buy - raw', components_to_buy_show_raw_path
 
               %li.divider
 

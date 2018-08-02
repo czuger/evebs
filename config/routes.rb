@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   resource :blueprints, only: [:show]
 
   resources :components_to_buy, only: [ :show ]
+  get :components_to_buy_show_raw,  controller: :components_to_buy
 
   resources :items, only: [ :show ] do
     get :cost

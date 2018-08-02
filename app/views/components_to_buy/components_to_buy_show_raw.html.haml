@@ -1,0 +1,5 @@
+%table
+  - @required_quantities.each do |rq|
+    %tr
+      %td= rq.name
+      %td= rq.qtt_to_buy.round
