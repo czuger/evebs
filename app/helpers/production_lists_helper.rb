@@ -12,6 +12,8 @@ module ProductionListsHelper
     # So item.id does not refer to a single object type and can be used only as a css id, not an internal db id
     if item.is_a? PricesAdvice
       item = { 'trade_hubs.id' => item.trade_hub_id, 'eve_items.id' => item.eve_item_id, 'id' => item.id }
+    elsif item.is_a? PriceAdviceMarginComp
+      item = { 'trade_hubs.id' => item.trade_hub_id, 'eve_items.id' => item.item_id, 'id' => item.id }
     end
 
     classes = [ :shopping_basket_checkbox ]
