@@ -14,7 +14,7 @@
 
       %table.table
         %tr
-          %th
+          %th Prod. list
           %th Trade hub
           %th Item
           %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) }
@@ -38,7 +38,7 @@
         - @items.each do |item|
           %tr{ class: cycle( :active, nil ) }
             -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
-            %td= production_list_check_box( item )
+            %td.text-center= production_list_check_box( item )
             %td.trade_hub_name=item.trade_hub_name + " (#{item.region_name})"
 
             %td.item_name= link_to( item.item_name, item_path( item.item_id ) )

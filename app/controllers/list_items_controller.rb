@@ -2,6 +2,8 @@ class ListItemsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
 
+  include Modules::CheckedProductionListIds
+
   def edit
     items_list false
   end
@@ -26,6 +28,7 @@ class ListItemsController < ApplicationController
   def items_list( my_items_only )
     @user = current_user
     @item_ids = @user.eve_item_ids.uniq.to_set
+    set_checked_production_list_ids
 
     if my_items_only
       @items = @user.eve_items
