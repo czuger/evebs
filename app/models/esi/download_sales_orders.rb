@@ -45,7 +45,13 @@ class Esi::DownloadSalesOrders < Esi::Download
         puts "Requesting page #{@params[:page]}" if @params[:page] && @debug_request
 
         @rest_url = "markets/#{cpp_region_id}/orders/"
-        pages = get_all_pages
+
+        begin
+          pages = get_all_pages
+        rescue Esi::Errors::NotFound
+          puts "Unable to find data for region #{region.name}"
+          next
+        end
 
         orders_to_process_hash = {}
 
