@@ -11,6 +11,7 @@ class ComponentsToBuyController < ApplicationController
 
   def components_to_buy_show_raw
     @required_quantities = @user.component_to_buys
+    render layout: false
   end
 
   def download_assets
