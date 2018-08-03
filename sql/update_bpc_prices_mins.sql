@@ -13,9 +13,9 @@ AND ei = pm.blueprint_component_id;
 
 INSERT INTO bpc_prices_mins( trade_hub_id, blueprint_component_id, price, created_at, updated_at )
   SELECT trade_hub_id, blueprint_component_id, MIN( price ), now(), now()
-  FROM blueprint_component_sales_orders
+  FROM blueprint_component_sales_orders bcso
   WHERE NOT EXISTS (
-    SELECT * FROM bpc_prices_mins WHERE trade_hub_id = bpc_prices_mins.trade_hub_id AND blueprint_component_id = bpc_prices_mins.blueprint_component_id
+    SELECT * FROM bpc_prices_mins WHERE bcso.trade_hub_id = bpc_prices_mins.trade_hub_id AND bcso.blueprint_component_id = bpc_prices_mins.blueprint_component_id
   )
 GROUP BY trade_hub_id, blueprint_component_id;
 
