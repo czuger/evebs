@@ -3,10 +3,12 @@ require 'test_helper'
 class AdminToolsControllerTest < ActionDispatch::IntegrationTest
 
   # def setup
-  #   @user = create( :user, last_changes_in_choices: Time.now - 120, region: @heimatar, admin: true )
+  #   # @component = create( :component_morphite )
+  #   #
+  #   @user = create( :user )
   #   post '/auth/developer/callback', params: { name: @user.name }
   # end
-  #
+
   # test 'should get show' do
   #   get admin_tools_url
   #   assert_response :success

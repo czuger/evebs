@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class JitaMarginsTest < ActionDispatch::IntegrationTest
+class JitaMarginsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     # @component = create( :component_morphite )
