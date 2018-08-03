@@ -33,7 +33,7 @@ class User < ApplicationRecord
       user.expires_on = Time.now + 3600*24*12*100
       user.save!
     else
-      pp auth
+      # pp auth
 
       ActiveRecord::Base.transaction do
         user = where(provider: auth['provider'], uid: auth['uid']).first_or_initialize

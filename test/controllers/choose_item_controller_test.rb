@@ -25,7 +25,7 @@ class ChooseItemsControllerTest < ActionDispatch::IntegrationTest
   test 'should redirect to new session path if not logged in' do
     get signout_url
     get edit_choose_items_url
-    assert_redirected_to new_sessions_path
+    assert_redirected_to '/'
   end
 
 end

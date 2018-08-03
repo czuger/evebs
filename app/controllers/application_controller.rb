@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def require_logged_in!
-    redirect_to new_sessions_path unless current_user
+    redirect_to '/' unless current_user
   end
 
   def require_admin!

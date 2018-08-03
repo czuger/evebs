@@ -16,11 +16,6 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = false
   end
 
-  test 'should get new' do
-    get new_sessions_url
-    assert_response :success
-  end
-
   test 'should get create' do
     post '/auth/eve_online_sso/callback'
     assert_redirected_to price_advices_advice_prices_url
