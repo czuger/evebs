@@ -3,7 +3,7 @@ require 'test_helper'
 class ItemsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @heimatar = create( :heimatar )
+    @jita = create( :jita )
     @blueprint = create( :blueprint )
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
     # @trade_hub = TradeHub.find_by_eve_system_id( 30002544 )
@@ -22,10 +22,13 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should show item detail of an item that has no CrestPricesLastMonthAverage information' do
-    # We create a region with no CrestPricesLastMonthAverage informations
-    @domain = create( :domain, items: EveItem.all )
+  test 'should show item detail of an item.' do
     get item_url( @eve_item )
+    assert_response :success
+  end
+
+  test 'should show trade_hub detail' do
+    get item_trade_hub_detail_url( item_id: @eve_item.id, trade_hub_id: @jita.id )
     assert_response :success
   end
 

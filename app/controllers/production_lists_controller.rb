@@ -51,20 +51,6 @@ class ProductionListsController < ApplicationController
     head :ok
   end
 
-  def update_basket
-    user_id, trade_hub_id, eve_item_id = params[:item_code].split('|')
-    checked = params[:checked] == 'true'
-
-    if checked
-      unless ProductionList.find_by_user_id_and_trade_hub_id_and_eve_item_id(user_id, trade_hub_id, eve_item_id )
-        ProductionList.create!(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id )
-      end
-    else
-      sb = ProductionList.where(user_id: user_id, trade_hub_id: trade_hub_id, eve_item_id: eve_item_id ).delete_all
-    end
-    head :ok
-  end
-
   def share_list
     @users = User.where.not( id: @user.id ).pluck( :name, :id )
   end
