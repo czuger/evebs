@@ -14,6 +14,8 @@ module ProductionListsHelper
       item = { 'trade_hubs.id' => item.trade_hub_id, 'eve_items.id' => item.eve_item_id, 'id' => item.id }
     elsif item.is_a? PriceAdviceMarginComp
       item = { 'trade_hubs.id' => item.trade_hub_id, 'eve_items.id' => item.item_id, 'id' => item.id }
+    elsif item.is_a? EveItem
+      item = { 'trade_hubs.id' => @jita.id, 'eve_items.id' => item.id, 'id' => item.id }
     end
 
     classes = [ :shopping_basket_checkbox ]
@@ -23,7 +25,7 @@ module ProductionListsHelper
 
     check_box_tag(
         "eve_item_#{item['id']}", item['id'],
-        force_checked || @checked_production_list_ids.include?( item['id'] ),
+        force_checked || @checked_production_list_ids.include?( [ item['trade_hubs.id'], item['eve_items.id'] ] ),
         { class: classes, trade_hub_id: item['trade_hubs.id'], eve_item_id: item['eve_items.id'],
           'data-toggle' => :tooltip, title: 'Uncheck to remove item' }
     )

@@ -28,6 +28,8 @@ class ListItemsController < ApplicationController
   def items_list( my_items_only )
     @user = current_user
     @item_ids = @user.eve_item_ids.uniq.to_set
+    @jita = TradeHub.find_by_eve_system_id( 30000142 )
+
     set_checked_production_list_ids
 
     if my_items_only
