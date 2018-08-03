@@ -47,10 +47,4 @@ class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should show challenged prices with min prices' do
-    create( :user_sale_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item )
-    get show_challenged_prices_url
-    assert_response :success
-  end
-
 end

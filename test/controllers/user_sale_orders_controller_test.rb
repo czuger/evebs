@@ -1,7 +1,27 @@
 require 'test_helper'
 
 class UserSaleOrdersControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+
+  def setup
+    @user = create( :user )
+    post '/auth/developer/callback', params: { name: @user.name }
+
+    @blueprint = create( :blueprint )
+
+    @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
+    @trade_hub = create( :rens )
+    # Sql::PricesAdvices.update
+  end
+
+  test 'should show challenged prices with min prices' do
+    create( :user_sale_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item )
+    get show_challenged_prices_url
+    assert_response :success
+  end
+
+  test 'should index' do
+    get user_sale_orders_url
+    assert_response :success
+  end
+
 end

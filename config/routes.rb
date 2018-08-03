@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     get :crest_price_history_update
   end
 
-  resources :characters, only: [ :edit, :update ] do
+  resources :characters, only: [] do
     get :share_list, controller: :production_lists
     post :share_list_update, controller: :production_lists
     get :accept_shared_list, controller: :production_lists
@@ -48,10 +48,7 @@ Rails.application.routes.draw do
     get :my_items_list
   end
 
-  resource :users, only: [:edit, :update] do
-    get :edit_password
-    post :change_password
-  end
+  resource :users, only: [:edit, :update]
 
   namespace :price_advices do
     get :advice_prices
