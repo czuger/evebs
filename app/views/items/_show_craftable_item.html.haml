@@ -8,7 +8,6 @@
   %table.table.table-bordered.sortable
     %thead
       %tr
-        %th Selected
         %th Prod. list
         %th Trade hub
         %th.text-left Current margin
@@ -22,8 +21,8 @@
 
         %tr
 
-          %td= production_list_check_box( ip )
-          %td= production_list_check_box( ip )
+          %td.text-center= production_list_check_box( ip )
+
           %td= trade_hub_name_with_region( ip.trade_hub )
 
           %td.text-right{'data-value' => ( ip.min_price / ip.single_unit_cost - 1 if ip.min_price )}= print_pcent( ip.min_price / ip.single_unit_cost - 1 ) if ip.min_price
