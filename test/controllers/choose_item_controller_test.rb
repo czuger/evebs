@@ -2,20 +2,20 @@ require 'test_helper'
 
 class ChooseItemsControllerTest < ActionDispatch::IntegrationTest
 
-  setup do
-    @heimatar = create( :heimatar )
+  def setup
     @user = create( :user )
     post '/auth/developer/callback', params: { name: @user.name }
-    @item = EveItem.find_by_cpp_eve_item_id( 2621 )
+
+    @item = create( :inferno_fury_cruise_missile )
   end
 
-  # test 'should select an item' do
-  #   post select_items_choose_items_url, params: { item: 'true', id: @item.id, check_state: 'false' }
-  #   @user.eve_items.reload
-  #   assert_difference '@user.reload.eve_items.reload.count' do
-  #     post select_items_choose_items_url, params: { item: 'true', id: @item.id, check_state: 'true' }
-  #   end
-  # end
+  test 'should select an item' do
+    post select_items_choose_items_url, params: { item: 'true', id: @item.id, check_state: 'false' }
+    @user.eve_items.reload
+    assert_difference '@user.reload.eve_items.reload.count' do
+      post select_items_choose_items_url, params: { item: 'true', id: @item.id, check_state: 'true' }
+    end
+  end
 
   test 'should get edit' do
     get edit_choose_items_url
