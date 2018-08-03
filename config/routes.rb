@@ -67,9 +67,6 @@ Rails.application.routes.draw do
     post :select_items
   end
 
-  resource :sessions, only: [:new] do
-  end
-
   match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
   match 'auth/failure', to: 'sessions#failure', via: [:get, :post]
   # match 'auth/failure', to: redirect('/'), via: [:get, :post]

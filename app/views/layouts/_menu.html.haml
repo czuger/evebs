@@ -92,7 +92,9 @@
 
     - else
       %ul.nav.navbar-nav
-        %li= link_to "Sign in", '/sessions/new', id: "sign_in"
+        -#%li= link_to "Sign in", '/sessions/new', id: "sign_in"
+        %li= link_to 'Sign in', '/auth/eve_online_sso'
+
     %ul.nav.navbar-nav
       %li= link_to 'Help', '/help.pdf', target: '_blank'
     .navbar-collapse

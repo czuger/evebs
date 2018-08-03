@@ -36,6 +36,6 @@
   -#      -#%td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
 
   .text-center
-    = button_to "Sign in for custom results", '/sessions/new', id: "sign_in", method: :get, class: 'btn-lg btn-warning'
+    = button_to "Sign in for custom results", '/auth/eve_online_sso', id: 'sign_in', method: :get, class: 'btn-lg btn-warning'
     %h4
       select your items, trade hubs, and more ...

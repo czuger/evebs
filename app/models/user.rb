@@ -25,7 +25,7 @@ class User < ApplicationRecord
 
   def self.from_omniauth(auth)
     if auth['provider'] == 'developer'
-      raise 'Developer mode is allowed only in staging or development mode' unless Rails.env.development? || Rails.env.staging? || Rails.env.test?
+      raise 'Developer mode is allowed only in test mode' unless Rails.env.test?
 
       user = where(provider: auth.provider, name: auth.info.name).first_or_initialize
       user.provider = auth.provider
