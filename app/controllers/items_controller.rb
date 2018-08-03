@@ -6,11 +6,6 @@ class ItemsController < ApplicationController
   include Modules::Nvl
   include Modules::CheckedProductionListIds
 
-  def index
-    @user = current_user
-    @item_ids = @user.eve_item_ids.uniq
-  end
-
   def cost
     @item = EveItem.includes( :blueprint ).find_by( id: params[ :item_id ] )
   end

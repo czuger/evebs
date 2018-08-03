@@ -17,8 +17,13 @@ class ComponentsToBuyControllerTest < ActionDispatch::IntegrationTest
                   trade_hub_id: @trade_hub.id, runs_count: 500 )
   end
 
-  test 'should show components and change nothing' do
+  test 'should show components' do
     get components_to_buy_url @user
+    assert_response :success
+  end
+
+  test 'should show components - raw screen' do
+    get components_to_buy_show_raw_url @user
     assert_response :success
   end
 
