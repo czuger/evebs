@@ -37,6 +37,9 @@ class UsersController < ApplicationController
     end
   end
 
+  def send_my_sales_orders_duplication_request
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
 

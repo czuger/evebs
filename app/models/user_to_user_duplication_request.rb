@@ -1,0 +1,2 @@
+class UserToUserDuplicationRequest < ApplicationRecord
+end

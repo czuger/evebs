@@ -48,7 +48,9 @@ Rails.application.routes.draw do
     get :my_items_list
   end
 
-  resource :users, only: [:edit, :update]
+  resource :users, only: [:edit, :update] do
+    get :send_my_sales_orders_duplication_request
+  end
 
   namespace :price_advices do
     get :advice_prices

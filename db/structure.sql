@@ -1205,6 +1205,39 @@ ALTER SEQUENCE public.user_sale_orders_id_seq OWNED BY public.user_sale_orders.i
 
 
 --
+-- Name: user_to_user_duplication_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_to_user_duplication_requests (
+    id bigint NOT NULL,
+    sender_id integer NOT NULL,
+    receiver_id integer NOT NULL,
+    duplication_type character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: user_to_user_duplication_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_to_user_duplication_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_to_user_duplication_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_to_user_duplication_requests_id_seq OWNED BY public.user_to_user_duplication_requests.id;
+
+
+--
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1431,6 +1464,13 @@ ALTER TABLE ONLY public.user_activity_logs ALTER COLUMN id SET DEFAULT nextval('
 --
 
 ALTER TABLE ONLY public.user_sale_orders ALTER COLUMN id SET DEFAULT nextval('public.user_sale_orders_id_seq'::regclass);
+
+
+--
+-- Name: user_to_user_duplication_requests id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_to_user_duplication_requests ALTER COLUMN id SET DEFAULT nextval('public.user_to_user_duplication_requests_id_seq'::regclass);
 
 
 --
@@ -1686,6 +1726,14 @@ ALTER TABLE ONLY public.user_activity_logs
 
 ALTER TABLE ONLY public.user_sale_orders
     ADD CONSTRAINT user_sale_orders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_to_user_duplication_requests user_to_user_duplication_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_to_user_duplication_requests
+    ADD CONSTRAINT user_to_user_duplication_requests_pkey PRIMARY KEY (id);
 
 
 --
@@ -2047,6 +2095,20 @@ CREATE INDEX index_user_sale_orders_on_user_id ON public.user_sale_orders USING 
 
 
 --
+-- Name: index_user_to_user_duplication_requests_on_receiver_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_to_user_duplication_requests_on_receiver_id ON public.user_to_user_duplication_requests USING btree (receiver_id);
+
+
+--
+-- Name: index_user_to_user_duplication_requests_on_sender_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_to_user_duplication_requests_on_sender_id ON public.user_to_user_duplication_requests USING btree (sender_id);
+
+
+--
 -- Name: market_group_anc_desc_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2170,6 +2232,14 @@ ALTER TABLE ONLY public.structures
 
 
 --
+-- Name: user_to_user_duplication_requests fk_rails_41225de714; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_to_user_duplication_requests
+    ADD CONSTRAINT fk_rails_41225de714 FOREIGN KEY (receiver_id) REFERENCES public.users(id);
+
+
+--
 -- Name: bpc_assets fk_rails_46a1eaaaca; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2239,6 +2309,14 @@ ALTER TABLE ONLY public.sales_orders
 
 ALTER TABLE ONLY public.sales_finals
     ADD CONSTRAINT fk_rails_8d037fe800 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
+
+
+--
+-- Name: user_to_user_duplication_requests fk_rails_aeda0a36f7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_to_user_duplication_requests
+    ADD CONSTRAINT fk_rails_aeda0a36f7 FOREIGN KEY (sender_id) REFERENCES public.users(id);
 
 
 --
@@ -2511,6 +2589,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180802103400'),
 ('20180802103855'),
 ('20180815093119'),
-('20180815094036');
+('20180815094036'),
+('20180815140039');
 
 
