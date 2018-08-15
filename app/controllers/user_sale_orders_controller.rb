@@ -67,6 +67,34 @@ class UserSaleOrdersController < ApplicationController
   end
 
   def get_sent_orders
+    # We should handle the fact that more than one order could be in queu
+    duplication_request = UserToUserDuplicationRequest.where( receiver_id: @user.id, duplication_type: UserToUserDuplicationRequest::SALES_ORDERS ).first
+
+    if duplication_request
+      duplication_request_sender = duplication_request.sender
+
+      ActiveRecord::Base.transaction do
+
+        UserSaleOrder.where( user_id: @user.id ).delete_all
+
+        request = File.open( "#{Rails.root}/sql/user_sale_orders_controller_get_sent_orders.sql" ).read
+
+        ActiveRecord::Base.connection.exec_insert( request, :user_sale_orders_controller_get_sent_orders,
+                                                   [ [ nil, @user.id ],
+                                                     [ nil, duplication_request_sender.id ] ] )
+
+        duplication_request.destroy!
+      end
+
+      flash[ :notice ] = "Sales orders successfully duplicated from #{duplication_request_sender.name}."
+    else
+      flash[ :alert ] = 'No sales orders share found.'
+    end
+
+    redirect_to get_sent_orders_result_path
+  end
+
+  def get_sent_orders_result
   end
 
   private

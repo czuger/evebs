@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   get :send_my_orders, controller: :user_sale_orders, action: :send_my_orders_edit
   post :send_my_orders, controller: :user_sale_orders
   get :get_sent_orders, controller: :user_sale_orders
+  get :get_sent_orders_result, controller: :user_sale_orders
 
   get :show_challenged_prices, controller: :user_sale_orders
 
