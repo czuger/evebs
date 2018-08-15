@@ -1,26 +1,11 @@
 require 'test_helper'
 
-class EsiRequestResult
-
-  def initialize( data )
-    @data = data
-  end
-
-  def read
-    @data[ 'name' ] = ( "name test %f" % rand )
-    return @data.to_json
-  end
-
-  def meta
-    {}
-  end
-
-end
+require_relative 'esi_open_url_request_result'
 
 class DownloadBlueprintsTest < ActiveSupport::TestCase
 
   def setup
-    blueprint_type = EsiRequestResult.new(
+    blueprint_type = EsiOpenUrlRequestResult.new(
         { 'published': true, 'blueprintTypeID': 1, 'quantity': 5, 'typeID': 10, 'volume': 5 } )
 
     @ub = Esi::UpdateBlueprints.new

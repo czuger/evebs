@@ -1,21 +1,6 @@
 require 'test_helper'
 
-class EsiRequestResult
-
-  def initialize( data )
-    @data = data
-  end
-
-  def read
-    # @data[ 'name' ] = ( "name test %f" % rand )
-    return @data.to_json
-  end
-
-  def meta
-    {}
-  end
-
-end
+require_relative 'esi_open_url_request_result'
 
 class DownloadMyBlueprintsModificationsTest < ActiveSupport::TestCase
 
@@ -24,8 +9,8 @@ class DownloadMyBlueprintsModificationsTest < ActiveSupport::TestCase
 
     @bp = create( :blueprint )
 
-    blueprint_type = EsiRequestResult.new(
-        [ { 'type_id' => @bp.cpp_blueprint_id, 'material_efficiency' => 3 } ] )
+    blueprint_type = EsiOpenUrlRequestResult.new(
+        [ { 'type_id' => @bp.cpp_blueprint_id, 'material_efficiency' => 3 } ], add_random_name_to_data: false )
 
     @ub = Esi::DownloadMyBlueprintsModifications.new
     @ub.expects( :set_auth_token ).returns( true )

@@ -75,6 +75,7 @@ class Esi::UpdateBlueprints < Esi::Download
 
     begin
       page = get_page_retry_on_error
+      p page
     rescue Esi::Errors::NotFound
       return false
     end

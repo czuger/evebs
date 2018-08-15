@@ -15,11 +15,11 @@ class ItemsController < ApplicationController
 
     set_checked_production_list_ids
 
-    if @item.prices_advices.exists?
-      @item_prices = @item.prices_advices.includes( { trade_hub: :region } ).order( 'vol_month DESC NULLS LAST, min_price DESC NULLS LAST' )
-    else
-      @min_prices = @item.prices_mins.includes( { trade_hub: :region } ).order( 'min_price ASC NULLS LAST' )
-    end
+    # if @item.prices_advices.exists?
+    @item_prices = @item.prices_advices.includes( { trade_hub: :region } ).order( 'vol_month DESC NULLS LAST, min_price DESC NULLS LAST' )
+    # else
+    #   @min_prices = @item.prices_mins.includes( { trade_hub: :region } ).order( 'min_price ASC NULLS LAST' )
+    # end
   end
 
   def trade_hub_detail
