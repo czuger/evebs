@@ -28,10 +28,10 @@ class UsersController < ApplicationController
           @user.update_attribute(:last_changes_in_choices,Time.now)
 
           flash.now[ :notice ] = 'User updated successfully.'
-          format.html { render :edit }
+          format.html { redirect_to edit_users_path }
         else
           flash.now[ :alert ] = @user.errors
-          format.html { render :edit }
+          format.html { redirect_to edit_users_path }
         end
       end
     end

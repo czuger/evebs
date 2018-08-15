@@ -67,9 +67,8 @@
             %li{ class: active_link( download_orders_path ) }= link_to 'Download my orders', download_orders_path
 
 
-        %li
-          = link_to 'edit_users_path', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-            User
+        %li{ class: active_link( edit_users_path ) }
+          = link_to 'User', edit_users_path
 
         %li= link_to "Sign out", signout_path, id: "sign_out"
         - if current_user.admin
