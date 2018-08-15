@@ -2,25 +2,34 @@ namespace :db do
   namespace :dump do
     namespace :production_to_dev do
 
+      #  use task params :
+      #
+      # desc 'test'
+      # task :test, [ :foo, :bar ]  => [:environment] do|task, args|
+      #   p args.foo
+      # end
+
       desc 'Dump full database from production to dev'
-      task :full => :environment do
+      task :full, [ :use_local_dump, :use_remote_dump ]  => :environment do |task, args|
+
+        p args, args.use_local_dump, (args.use_local_dump != 'y')
 
         use_local_pg_dump = false
         if File.exists?( '/tmp/production.dump' )
-          puts 'There already is a local dump. Do you want to remove it and refresh the dump ? (y/n)'
-          result = STDIN.gets.chomp
-          use_local_pg_dump = (result != 'y')
+          # puts 'There already is a local dump. Do you want to remove it and refresh the dump ? (y/n)'
+          # result = STDIN.gets.chomp
+          use_local_pg_dump = (args.use_local_dump == 'y')
         end
 
         unless use_local_pg_dump
-          puts 'No local dump, retrieving ...'
+          puts 'No local dump, or local dump erase. Retrieving ...'
           `ssh hw [ -e /tmp/production.dump ]`
 
           launch_remote_pg_dump = true
           if $?.to_i == 0
-            puts 'There already is a remote dump. Do you want to remove it and refresh the dump ? (y/n)'
-            result = STDIN.gets.chomp
-            launch_remote_pg_dump = false unless result == 'y'
+            # puts 'There already is a remote dump. Do you want to remove it and refresh the dump ? (y/n)'
+            # result = STDIN.gets.chomp
+            launch_remote_pg_dump = (args.use_remote_dump == 'y')
           end
 
           if launch_remote_pg_dump # file exist
