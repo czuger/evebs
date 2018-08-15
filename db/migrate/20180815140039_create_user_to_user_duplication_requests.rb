@@ -3,7 +3,7 @@ class CreateUserToUserDuplicationRequests < ActiveRecord::Migration[5.2]
     create_table :user_to_user_duplication_requests do |t|
       t.integer :sender_id, null: false, index: true
       t.integer :receiver_id, null: false, index: true
-      t.string :duplication_type, null: false
+      t.integer :duplication_type, null: false, limit: 1
 
       t.timestamps
     end

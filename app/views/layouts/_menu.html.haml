@@ -66,6 +66,10 @@
             %li.divider
             %li{ class: active_link( download_orders_path ) }= link_to 'Download my orders', download_orders_path
 
+            %li.divider
+            %li{ class: active_link( send_my_orders_path ) }= link_to 'Send my orders', send_my_orders_path
+            %li{ class: active_link( get_sent_orders_path ) }= link_to 'Get sent orders', get_sent_orders_path
+
 
         %li{ class: active_link( edit_users_path ) }
           = link_to 'User', edit_users_path

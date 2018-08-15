@@ -25,6 +25,10 @@ Rails.application.routes.draw do
 
 
   resources :user_sale_orders, only: [ :index ]
+  get :send_my_orders, controller: :user_sale_orders, action: :send_my_orders_edit
+  post :send_my_orders, controller: :user_sale_orders
+  get :get_sent_orders, controller: :user_sale_orders
+
   get :show_challenged_prices, controller: :user_sale_orders
 
   get :download_orders, controller: :user_sale_orders
@@ -48,9 +52,7 @@ Rails.application.routes.draw do
     get :my_items_list
   end
 
-  resource :users, only: [:edit, :update] do
-    get :send_my_sales_orders_duplication_request
-  end
+  resource :users, only: [:edit, :update]
 
   namespace :price_advices do
     get :advice_prices

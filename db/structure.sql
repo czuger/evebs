@@ -1212,7 +1212,7 @@ CREATE TABLE public.user_to_user_duplication_requests (
     id bigint NOT NULL,
     sender_id integer NOT NULL,
     receiver_id integer NOT NULL,
-    duplication_type character varying NOT NULL,
+    duplication_type smallint NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );

@@ -1,7 +1,8 @@
 class UserSaleOrdersController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user, only: [:index, :download_orders, :download_orders_start]
+  before_action :set_user, only: [
+      :index, :download_orders, :download_orders_start, :send_my_orders_edit, :send_my_orders, :get_sent_orders ]
 
   def index
     @orders_active_record = @user.user_sale_orders.joins( :eve_item, trade_hub: :region )
@@ -53,6 +54,19 @@ class UserSaleOrdersController < ApplicationController
     DownloadMyOrdersJob.perform_later( @user )
 
     redirect_to download_orders_path
+  end
+
+  def send_my_orders_edit
+    @users = User.where.not( id: @user.id ).pluck( :name, :id )
+  end
+
+  def send_my_orders
+    UserToUserDuplicationRequest.find_or_create_by!( sender_id: @user.id, receiver_id: params[:user][:id].to_i, duplication_type: UserToUserDuplicationRequest::SALES_ORDERS )
+    flash[ :notice ] = 'Share authorisation sent successfully'
+    redirect_to send_my_orders_path
+  end
+
+  def get_sent_orders
   end
 
   private

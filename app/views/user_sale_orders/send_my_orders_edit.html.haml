@@ -1,0 +1,14 @@
+.container
+
+  = form_tag send_my_orders_path( @user ) do
+
+    %h4
+      You can send a sharing authorisation of your selling orders.
+      This authorisation will be available until it is used.
+
+    = select( :user, :id, @users, {}, class: 'form-control' )
+
+    .row
+      .col-md-12.text-center
+        .actions
+          = submit_tag 'Send share authorisation', class: 'btn btn-default'
