@@ -14,7 +14,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test 'should update user' do
     patch users_url, params: { id: :dummy, user: { name: @user.name, remove_occuped_places: @user.remove_occuped_places } }
-    assert_response :success
+    assert_redirected_to edit_users_url
   end
 
 end
