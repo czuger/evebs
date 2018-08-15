@@ -645,7 +645,8 @@ CREATE TABLE public.users (
     last_assets_download timestamp without time zone,
     user_pl_share_id bigint,
     download_orders_running boolean DEFAULT false NOT NULL,
-    last_orders_download timestamp without time zone
+    last_orders_download timestamp without time zone,
+    batch_cap_multiplier integer DEFAULT 1 NOT NULL
 );
 
 
@@ -690,7 +691,7 @@ CREATE VIEW public.price_advice_margin_comps AS
             pa.daily_monthly_pcent,
             pa.margin_percent,
                 CASE
-                    WHEN ur.batch_cap THEN LEAST((pa.full_batch_size)::numeric, floor((((pa.history_volume * ur.vol_month_pcent))::numeric * 0.01)))
+                    WHEN ur.batch_cap THEN LEAST(((pa.full_batch_size * ur.batch_cap_multiplier))::numeric, floor((((pa.history_volume * ur.vol_month_pcent))::numeric * 0.01)))
                     ELSE floor((((pa.history_volume * ur.vol_month_pcent))::numeric * 0.01))
                 END AS batch_size_formula,
             ur.min_amount_for_advice,
@@ -2508,6 +2509,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180728135542'),
 ('20180728153458'),
 ('20180802103400'),
-('20180802103855');
+('20180802103855'),
+('20180815093119'),
+('20180815094036');
 
 

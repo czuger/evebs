@@ -22,15 +22,23 @@
         = f.check_box :watch_my_prices
         = f.label :watch_my_prices
 
+  %hr
+
   .row
+    .col-md-4
+      .form-group
+        = f.label :vol_month_pcent
+        = f.number_field :vol_month_pcent
+
     .col-md-4
       .form-group
         = f.check_box :batch_cap
         = f.label :batch_cap
 
+    .col-md-4
       .form-group
-        = f.label :vol_month_pcent
-        = f.number_field :vol_month_pcent
+        = f.label :batch_cap_multiplier
+        = f.number_field :batch_cap_multiplier
 
   .row
     .col-md-12.text-center

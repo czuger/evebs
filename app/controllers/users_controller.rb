@@ -43,7 +43,8 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:name, :remove_occuped_places, :key_user_id, :api_key, :min_pcent_for_advice,
-                                   :watch_my_prices, :min_amount_for_advice, :batch_cap, :vol_month_pcent )
+                                   :watch_my_prices, :min_amount_for_advice, :batch_cap, :vol_month_pcent,
+          :batch_cap_multiplier )
     end
 
 end
