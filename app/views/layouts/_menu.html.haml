@@ -68,14 +68,9 @@
 
 
         %li
-          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+          = link_to 'edit_users_path', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
             User
-            %span.caret
-          %ul.dropdown-menu
-            - if @current_user
-              %li{ class: active_link( edit_users_path ) }= link_to 'Edit user options', edit_users_path
-            -#%li{ class: active_link( edit_password_users_path ) }= link_to 'Change password', edit_password_users_path
-        -#%li= link_to 'Help', '/help.pdf', target: '_blank'
+
         %li= link_to "Sign out", signout_path, id: "sign_out"
         - if current_user.admin
           %li

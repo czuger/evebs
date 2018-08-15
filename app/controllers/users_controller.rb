@@ -16,13 +16,17 @@ class UsersController < ApplicationController
   def update
     @user = current_user
     respond_to do |format|
+
       # TODO : replace that with something more secure
       # TODO : never trust full update
+
       ActiveRecord::Base.transaction do
         # Need to remove all white spaces, because the string is formatted as 9 999 999,99
         params['user']['min_amount_for_advice'].gsub!( ' ', '' ) if params['user']['min_amount_for_advice']
+
         if @user.update(user_params)
           @user.update_attribute(:last_changes_in_choices,Time.now)
+
           flash.now[ :notice ] = 'User updated successfully.'
           format.html { render :edit }
         else
