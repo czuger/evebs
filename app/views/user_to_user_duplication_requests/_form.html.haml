@@ -1,16 +1,30 @@
-= form_for @user_to_user_duplication_request do |f|
-  - if @user_to_user_duplication_request.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@user_to_user_duplication_request.errors.count, "error")} prohibited this user_to_user_duplication_request from being saved:"
-      %ul
-        - @user_to_user_duplication_request.errors.full_messages.each do |message|
-          %li= message
+.container
 
-  .field
-    = f.label :reciever_id
-    = f.number_field :reciever_id
-  .field
-    = f.label :duplication_type
-    = f.number_field :duplication_type
-  .actions
-    = f.submit 'Save'
+  = form_for @user_to_user_duplication_request do |f|
+    - if @user_to_user_duplication_request.errors.any?
+      #error_explanation
+        %h2= "#{pluralize(@user_to_user_duplication_request.errors.count, "error")} prohibited this user_to_user_duplication_request from being saved:"
+        %ul
+          - @user_to_user_duplication_request.errors.full_messages.each do |message|
+            %li= message
+
+
+    .row
+      .col-md-6
+        .field
+          = f.label :receiver_id
+          = f.select( :receiver_id, @available_users, {}, class: 'form-control' )
+
+      .col-md-6
+        .field
+          = f.label :duplication_type
+          %label{ class: 'radio-inline' }
+            = f.radio_button 'duplication_type', UserToUserDuplicationRequest::SALES_ORDERS, checked: true
+            Sales orders
+
+          %label{ class: 'radio-inline' }
+            = f.radio_button 'duplication_type', UserToUserDuplicationRequest::PRODUCTION_LIST
+            Production list
+
+    .actions
+      = f.submit 'Send duplication authorisation.', class: 'btn btn-default'

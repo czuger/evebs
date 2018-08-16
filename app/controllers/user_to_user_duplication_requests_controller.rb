@@ -1,10 +1,14 @@
 class UserToUserDuplicationRequestsController < ApplicationController
-  before_action :set_user_to_user_duplication_request, only: [:show, :edit, :update, :destroy]
+
+  before_action :require_logged_in!, :log_client_activity
+  before_action :set_user, only: [ :index, :new, :create ]
+  before_action :set_user_to_user_duplication_request, only: [ :destroy ]
 
   # GET /user_to_user_duplication_requests
   # GET /user_to_user_duplication_requests.json
   def index
-    @user_to_user_duplication_requests = UserToUserDuplicationRequest.all
+    @user_to_user_duplication_requests_as_sender = @user.user_to_user_duplication_requests_as_senders.all
+    @user_to_user_duplication_requests_as_reciever = @user.user_to_user_duplication_requests_as_receivers.all
   end
 
   # GET /user_to_user_duplication_requests/1
@@ -15,38 +19,21 @@ class UserToUserDuplicationRequestsController < ApplicationController
   # GET /user_to_user_duplication_requests/new
   def new
     @user_to_user_duplication_request = UserToUserDuplicationRequest.new
-  end
 
-  # GET /user_to_user_duplication_requests/1/edit
-  def edit
+    @available_users = User.where.not( id: @user.id ).pluck( :name, :id )
   end
 
   # POST /user_to_user_duplication_requests
   # POST /user_to_user_duplication_requests.json
   def create
     @user_to_user_duplication_request = UserToUserDuplicationRequest.new(user_to_user_duplication_request_params)
+    @user_to_user_duplication_request.sender_id = @user.id
 
     respond_to do |format|
       if @user_to_user_duplication_request.save
         format.html { redirect_to @user_to_user_duplication_request, notice: 'User to user duplication request was successfully created.' }
-        format.json { render :show, status: :created, location: @user_to_user_duplication_request }
       else
         format.html { render :new }
-        format.json { render json: @user_to_user_duplication_request.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /user_to_user_duplication_requests/1
-  # PATCH/PUT /user_to_user_duplication_requests/1.json
-  def update
-    respond_to do |format|
-      if @user_to_user_duplication_request.update(user_to_user_duplication_request_params)
-        format.html { redirect_to @user_to_user_duplication_request, notice: 'User to user duplication request was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user_to_user_duplication_request }
-      else
-        format.html { render :edit }
-        format.json { render json: @user_to_user_duplication_request.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -69,6 +56,6 @@ class UserToUserDuplicationRequestsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_to_user_duplication_request_params
-      params.require(:user_to_user_duplication_request).permit(:reciever_id, :duplication_type)
+      params.require(:user_to_user_duplication_request).permit(:receiver_id, :duplication_type)
     end
 end

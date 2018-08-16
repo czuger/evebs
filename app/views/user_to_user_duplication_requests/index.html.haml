@@ -10,12 +10,26 @@
       %th
 
   %tbody
-    - @user_to_user_duplication_requests.each do |user_to_user_duplication_request|
+    - @user_to_user_duplication_requests_as_sender.each do |user_to_user_duplication_request|
       %tr
-        %td= user_to_user_duplication_request.reciever_id
+        %td= user_to_user_duplication_request.receiver_id
         %td= user_to_user_duplication_request.duplication_type
-        %td= link_to 'Show', user_to_user_duplication_request
-        %td= link_to 'Edit', edit_user_to_user_duplication_request_path(user_to_user_duplication_request)
+        %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
+
+%table
+  %thead
+    %tr
+      %th Reciever
+      %th Duplication type
+      %th
+      %th
+      %th
+
+  %tbody
+    - @user_to_user_duplication_requests_as_reciever.each do |user_to_user_duplication_request|
+      %tr
+        %td= user_to_user_duplication_request.receiver_id
+        %td= user_to_user_duplication_request.duplication_type
         %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
 
 %br
