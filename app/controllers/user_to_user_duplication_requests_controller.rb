@@ -26,7 +26,7 @@ class UserToUserDuplicationRequestsController < ApplicationController
 
     respond_to do |format|
       if @user_to_user_duplication_request.save
-        format.html { redirect_to user_to_user_duplication_request_params, notice: 'User to user duplication request was successfully created.' }
+        format.html { redirect_to user_to_user_duplication_requests_url, notice: 'User to user duplication request was successfully created.' }
       else
         format.html { render :new }
       end
