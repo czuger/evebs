@@ -7,8 +7,8 @@ class UserToUserDuplicationRequestsController < ApplicationController
   # GET /user_to_user_duplication_requests
   # GET /user_to_user_duplication_requests.json
   def index
-    @user_to_user_duplication_requests_as_sender = @user.user_to_user_duplication_requests_as_senders.all
-    @user_to_user_duplication_requests_as_reciever = @user.user_to_user_duplication_requests_as_receivers.all
+    @user_to_user_duplication_requests_as_sender = @user.user_to_user_duplication_requests_as_senders.all.includes( :receiver )
+    @user_to_user_duplication_requests_as_reciever = @user.user_to_user_duplication_requests_as_receivers.all.includes( :sender )
   end
 
   # GET /user_to_user_duplication_requests/new
