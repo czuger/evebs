@@ -646,7 +646,8 @@ CREATE TABLE public.users (
     user_pl_share_id bigint,
     download_orders_running boolean DEFAULT false NOT NULL,
     last_orders_download timestamp without time zone,
-    batch_cap_multiplier integer DEFAULT 1 NOT NULL
+    batch_cap_multiplier integer DEFAULT 1 NOT NULL,
+    last_duplication_receiver_id integer
 );
 
 
@@ -2590,6 +2591,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180802103855'),
 ('20180815093119'),
 ('20180815094036'),
-('20180815140039');
+('20180815140039'),
+('20180816165159');
 
 

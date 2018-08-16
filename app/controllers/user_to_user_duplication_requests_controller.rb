@@ -14,6 +14,7 @@ class UserToUserDuplicationRequestsController < ApplicationController
   # GET /user_to_user_duplication_requests/new
   def new
     @user_to_user_duplication_request = UserToUserDuplicationRequest.new
+    @user_to_user_duplication_request.receiver_id = @user.last_duplication_receiver_id
 
     @available_users = User.where.not( id: @user.id ).pluck( :name, :id )
   end
@@ -26,6 +27,9 @@ class UserToUserDuplicationRequestsController < ApplicationController
 
     respond_to do |format|
       if @user_to_user_duplication_request.save
+
+        @user.update( last_duplication_receiver_id: @user_to_user_duplication_request.receiver_id )
+
         format.html { redirect_to user_to_user_duplication_requests_url, notice: 'User to user duplication request was successfully created.' }
       else
         format.html { render :new }
