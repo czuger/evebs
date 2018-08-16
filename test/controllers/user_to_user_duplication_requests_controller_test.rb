@@ -2,7 +2,11 @@ require 'test_helper'
 
 class UserToUserDuplicationRequestsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user_to_user_duplication_request = user_to_user_duplication_requests(:one)
+    @user = create( :user )
+    post '/auth/developer/callback', params: { name: @user.name }
+
+    user2 = create( :user )
+    @user_to_user_duplication_request = create( :user_to_user_duplication_request, sender: @user, receiver: user2 )
   end
 
   test "should get index" do
@@ -17,25 +21,10 @@ class UserToUserDuplicationRequestsControllerTest < ActionDispatch::IntegrationT
 
   test "should create user_to_user_duplication_request" do
     assert_difference('UserToUserDuplicationRequest.count') do
-      post user_to_user_duplication_requests_url, params: { user_to_user_duplication_request: { duplication_type: @user_to_user_duplication_request.duplication_type, reciever_id: @user_to_user_duplication_request.reciever_id } }
+      post user_to_user_duplication_requests_url, params: { user_to_user_duplication_request: { duplication_type: @user_to_user_duplication_request.duplication_type, receiver_id: @user_to_user_duplication_request.receiver_id } }
     end
 
     assert_redirected_to user_to_user_duplication_request_url(UserToUserDuplicationRequest.last)
-  end
-
-  test "should show user_to_user_duplication_request" do
-    get user_to_user_duplication_request_url(@user_to_user_duplication_request)
-    assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_user_to_user_duplication_request_url(@user_to_user_duplication_request)
-    assert_response :success
-  end
-
-  test "should update user_to_user_duplication_request" do
-    patch user_to_user_duplication_request_url(@user_to_user_duplication_request), params: { user_to_user_duplication_request: { duplication_type: @user_to_user_duplication_request.duplication_type, reciever_id: @user_to_user_duplication_request.reciever_id } }
-    assert_redirected_to user_to_user_duplication_request_url(@user_to_user_duplication_request)
   end
 
   test "should destroy user_to_user_duplication_request" do
