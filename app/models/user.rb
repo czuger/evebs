@@ -16,6 +16,9 @@ class User < ApplicationRecord
   has_many :api_key_errors
   has_many :production_lists, dependent: :destroy
 
+  has_many :user_to_user_duplication_requests_as_sender, class_name: 'UserToUserDuplicationRequest', foreign_key: :sender_id, dependent: :destroy
+  has_many :user_to_user_duplication_requests_as_receiver, class_name: 'UserToUserDuplicationRequest', foreign_key: :receiver_id, dependent: :destroy
+
   has_many :bpc_assets
 
   belongs_to :identity, foreign_key: :uid

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :user_to_user_duplication_requests
   resource :admin_tools, only: [ :show ] do
     get :denied
     get :activity

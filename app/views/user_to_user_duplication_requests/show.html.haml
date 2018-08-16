@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Reciever:
+  = @user_to_user_duplication_request.reciever_id
+%p
+  %b Duplication type:
+  = @user_to_user_duplication_request.duplication_type
+
+= link_to 'Edit', edit_user_to_user_duplication_request_path(@user_to_user_duplication_request)
+\|
+= link_to 'Back', user_to_user_duplication_requests_path
