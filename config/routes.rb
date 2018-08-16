@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
 
-  resources :user_to_user_duplication_requests
+  resources :user_to_user_duplication_requests, except: [ :edit, :update, :show ] do
+    get :use
+  end
+
+
   resource :admin_tools, only: [ :show ] do
     get :denied
     get :activity

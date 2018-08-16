@@ -1,8 +1,8 @@
 class UserToUserDuplicationRequestsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user, only: [ :index, :new, :create ]
-  before_action :set_user_to_user_duplication_request, only: [ :destroy ]
+  before_action :set_user, only: [ :index, :new, :create, :use ]
+  before_action :set_user_to_user_duplication_request, only: [ :destroy, :use ]
 
   # GET /user_to_user_duplication_requests
   # GET /user_to_user_duplication_requests.json
@@ -42,10 +42,16 @@ class UserToUserDuplicationRequestsController < ApplicationController
     end
   end
 
+  def use
+    @user_to_user_duplication_request.execute_data_duplication!( @user )
+
+    redirect_to user_to_user_duplication_requests_url, notice: "#{@user_to_user_duplication_request.duplication_type_to_s} duplication successfully performed."
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_to_user_duplication_request
-      @user_to_user_duplication_request = UserToUserDuplicationRequest.find(params[:id])
+      @user_to_user_duplication_request = UserToUserDuplicationRequest.find(params[:id] || params[:user_to_user_duplication_request_id] )
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
