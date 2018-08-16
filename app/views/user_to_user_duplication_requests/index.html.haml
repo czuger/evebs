@@ -3,7 +3,7 @@
 %table
   %thead
     %tr
-      %th Reciever
+      %th Receiver
       %th Duplication type
       %th
       %th
@@ -12,14 +12,14 @@
   %tbody
     - @user_to_user_duplication_requests_as_sender.each do |user_to_user_duplication_request|
       %tr
-        %td= user_to_user_duplication_request.receiver_id
-        %td= user_to_user_duplication_request.duplication_type
+        %td= user_to_user_duplication_request.receiver.name
+        %td= user_to_user_duplication_request.duplication_type_to_s
         %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
 
 %table
   %thead
     %tr
-      %th Reciever
+      %th Receiver
       %th Duplication type
       %th
       %th
@@ -28,8 +28,8 @@
   %tbody
     - @user_to_user_duplication_requests_as_reciever.each do |user_to_user_duplication_request|
       %tr
-        %td= user_to_user_duplication_request.receiver_id
-        %td= user_to_user_duplication_request.duplication_type
+        %td= user_to_user_duplication_request.receiver.name
+        %td= user_to_user_duplication_request.duplication_type_to_s
         %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
 
 %br

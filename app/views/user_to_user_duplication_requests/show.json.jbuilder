@@ -1,1 +1,0 @@
-json.partial! "user_to_user_duplication_requests/user_to_user_duplication_request", user_to_user_duplication_request: @user_to_user_duplication_request

@@ -11,11 +11,6 @@ class UserToUserDuplicationRequestsController < ApplicationController
     @user_to_user_duplication_requests_as_reciever = @user.user_to_user_duplication_requests_as_receivers.all
   end
 
-  # GET /user_to_user_duplication_requests/1
-  # GET /user_to_user_duplication_requests/1.json
-  def show
-  end
-
   # GET /user_to_user_duplication_requests/new
   def new
     @user_to_user_duplication_request = UserToUserDuplicationRequest.new
@@ -26,12 +21,12 @@ class UserToUserDuplicationRequestsController < ApplicationController
   # POST /user_to_user_duplication_requests
   # POST /user_to_user_duplication_requests.json
   def create
-    @user_to_user_duplication_request = UserToUserDuplicationRequest.new(user_to_user_duplication_request_params)
+    @user_to_user_duplication_request = UserToUserDuplicationRequest.find_or_initialize_by(user_to_user_duplication_request_params)
     @user_to_user_duplication_request.sender_id = @user.id
 
     respond_to do |format|
       if @user_to_user_duplication_request.save
-        format.html { redirect_to @user_to_user_duplication_request, notice: 'User to user duplication request was successfully created.' }
+        format.html { redirect_to user_to_user_duplication_request_params, notice: 'User to user duplication request was successfully created.' }
       else
         format.html { render :new }
       end
@@ -44,7 +39,6 @@ class UserToUserDuplicationRequestsController < ApplicationController
     @user_to_user_duplication_request.destroy
     respond_to do |format|
       format.html { redirect_to user_to_user_duplication_requests_url, notice: 'User to user duplication request was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
