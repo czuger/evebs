@@ -42,7 +42,7 @@
           %tr
             %td= user_to_user_duplication_request.sender.name
             %td= user_to_user_duplication_request.duplication_type_to_s
-            %td= link_to 'Use', user_to_user_duplication_request_use_path( user_to_user_duplication_request.id ), data: { confirm: 'This will destroy your current data. Are you sure?' }
+            %td= link_to 'Use', user_to_user_duplication_request_use_path( user_to_user_duplication_request.id ) #, data: { confirm: 'This will destroy your current data. Are you sure?' }
             %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
 
   %br
