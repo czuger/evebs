@@ -33,8 +33,9 @@
           %td.text-right.information_highlight_left=print_volume( basket['batch_size_formula']&.round )
           %td.text-right.information_highlight_left=number_field_tag( "quantity_to_produce[#{basket[:id]}]", basket[:quantity_to_produce] )
 
-          - jobs_amount = ( basket[:quantity_to_produce] / basket['full_batch_size'] ).ceil if basket[:quantity_to_produce] && basket['full_batch_size']
+          - jobs_amount = ( basket[:quantity_to_produce].to_f / basket['full_batch_size'] ).ceil if basket[:quantity_to_produce] && basket['full_batch_size']
           - @total_jobs += jobs_amount if jobs_amount
+
           %td.text-right.information_highlight_left= jobs_amount
 
       %tr
