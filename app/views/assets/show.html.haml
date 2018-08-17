@@ -1,5 +1,13 @@
 .container
 
+  = form_tag assets_path, method: :put do
+
+    .row
+      .col-md-6
+        .field
+          = label_tag :receiver_id
+          = select_tag( :selected_station_id, options_for_select( @stations_select_data ), class: 'form-control' )
+
   %table.table
     %tr
       %th
