@@ -5,6 +5,8 @@
     %h4
       Items you checked in the daily earnings screen
 
+    - @total_jobs = 0
+
     %table.table
       %tr
         - unless @shared_production_list
@@ -15,7 +17,9 @@
         %th.text-center Cost
         %th.text-center Price
         %th.text-center Margin
+        %th.text-center Advised quantity
         %th.text-center Quantity to produce
+        %th.text-center Jobs count
       - @basket_array.each do |basket|
         %tr{ class: cycle( :odd, :even ) }
           - unless @shared_production_list
@@ -26,7 +30,22 @@
           %td.text-right.information_highlight_left=print_isk(basket['single_unit_cost'])
           %td.text-right.information_highlight_left=print_isk(basket['min_price'])
           %td.text-right.information_highlight_left=print_pcent_nomultiply( basket['margin_percent'] )
+          %td.text-right.information_highlight_left=print_volume( basket['batch_size_formula']&.round )
           %td.text-right.information_highlight_left=number_field_tag( "quantity_to_produce[#{basket[:id]}]", basket[:quantity_to_produce] )
+
+          - jobs_amount = ( basket[:quantity_to_produce] / basket['full_batch_size'] ).ceil if basket[:quantity_to_produce] && basket['full_batch_size']
+          - @total_jobs += jobs_amount if jobs_amount
+          %td.text-right.information_highlight_left= jobs_amount
+
+      %tr
+        %td.text-left{ colspan: 9 }
+          %b
+            Total jobs
+
+        %td.text-right.information_highlight_left
+          %b
+            = @total_jobs
+
 
       = will_paginate @basket_active_record
 

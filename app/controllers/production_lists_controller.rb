@@ -5,12 +5,15 @@ class ProductionListsController < ApplicationController
 
   def edit
     @basket_active_record = @user.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
-        joins( 'LEFT JOIN prices_advices ON prices_advices.eve_item_id = production_lists.eve_item_id AND prices_advices.trade_hub_id = production_lists.trade_hub_id' )
+        joins( "LEFT JOIN price_advice_margin_comps pa
+                  ON pa.item_id = production_lists.eve_item_id
+                  AND pa.trade_hub_id = production_lists.trade_hub_id
+                  AND pa.user_id = #{@user.id}" )
                                 .order( 'trade_hubs.name', 'eve_items.name' ).paginate( :page => params[:page], :per_page => 20 )
 
     @basket_array = @basket_active_record.pluck_to_hash( 'trade_hubs.name', 'regions.name', 'eve_items.name', 'eve_items.id',
                                                          :vol_month, :min_price, :single_unit_cost, 'trade_hubs.id',
-                                                         :margin_percent, :id, :quantity_to_produce )
+                                                         :margin_percent, :id, :quantity_to_produce, :batch_size_formula, :full_batch_size )
   end
 
   # This is used to update the price of a production list item
