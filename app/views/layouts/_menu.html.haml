@@ -1,25 +1,18 @@
--##topbar
--#  #eve_logo
--#    Eve business server (Beta) - version 0.1-CHANGE_TO_VERSION_NUMBER
+%nav.navbar.navbar-expand-lg.navbar-light.bg-light
+  .navbar-collapse#bs-example-navbar-collapse-1
 
-%nav.navbar.navbar-default
-  .container-fluid
-    -#.navbar-header
-    -#  %a.navbar-brand{ href: '#' }
-    -#    Eve business server (Beta) - version 0.2-CHANGE_TO_VERSION_NUMBER
     - if current_user
-      %ul.nav.navbar-nav
+      %ul.navbar-nav.mr-auto
         -#%li.dropdown
 
-        %li
-          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+        %li.nav-item
+          = link_to '#', class: 'nav-link dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
             Items
-            %span.caret
-          %ul.dropdown-menu
-            %li{ class: active_link( edit_choose_items_path ) }= link_to 'Items tree', edit_choose_items_path
-            %li{ class: active_link( edit_list_items_path ) }= link_to 'All items list', edit_list_items_path
-            %li{ class: active_link( my_items_list_list_items_path ) }= link_to 'My items list', my_items_list_list_items_path
-            %li{ class: active_link( components_path ) }= link_to 'Components list', components_path
+          .dropdown-menu{ 'aria-labelledby' => 'navbarDropdown' }
+            = link_to 'Items tree', edit_choose_items_path, class: active_link( 'dropdown-item', edit_choose_items_path )
+            = link_to 'All items list', edit_list_items_path, class: active_link( 'dropdown-item', edit_list_items_path )
+            = link_to 'My items list', my_items_list_list_items_path, class: active_link( 'dropdown-item', my_items_list_list_items_path )
+            = link_to 'Components list', components_path, class: active_link( 'dropdown-item', components_path )
 
         %li{ class: active_link( edit_choose_trade_hubs_path ) }
           = link_to 'Trade hubs', edit_choose_trade_hubs_path
