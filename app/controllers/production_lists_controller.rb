@@ -1,9 +1,7 @@
 class ProductionListsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user, only: [ :edit, :update, :share_list, :share_list_update, :accept_shared_list,
-                                   :accept_shared_list_update, :create, :remove_production_list_check,
-                                   :update_shared_list ]
+  before_action :set_user, only: [ :edit, :update, :create, :remove_production_list_check ]
 
   def edit
     @basket_active_record = @user.production_lists.joins( :trade_hub, :eve_item, { trade_hub: :region } ).
@@ -49,57 +47,6 @@ class ProductionListsController < ApplicationController
     @user.production_lists.where(
         trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).delete_all
     head :ok
-  end
-
-  def share_list
-    @users = User.where.not( id: @user.id ).pluck( :name, :id )
-  end
-
-  def share_list_update
-    ProductionListShareRequest.find_or_create_by!( sender_id: params[:character_id].to_i, recipient_id: params[:user][:id].to_i )
-    flash[ :notice ] = 'List sent successfully'
-    redirect_to character_share_list_path( @user )
-  end
-
-  # Show shared lists for share acceptance
-  def accept_shared_list
-    @shared_lists = ProductionListShareRequest.joins( :sender ).where( recipient_id: @user.id ).pluck( 'users.name', 'users.id' )
-  end
-
-  # Update endpoint once you accepted shared list update
-  def accept_shared_list_update
-    ActiveRecord::Base.transaction do
-      @user.update( user_pl_share_id: params['sending_character_id'] )
-      @user.save!
-
-      ProductionListShareRequest.where( recipient_id: @user.id, sender_id: params['sending_user_id'] ).delete_all
-      do_update_shared_list
-    end
-
-    flash[ :notice ] = 'List successfully linked'
-    redirect_to character_accept_shared_list_path( @user )
-  end
-
-  # Update your shared list from sharer data
-  def update_shared_list
-    do_update_shared_list
-  end
-
-  private
-
-  def do_update_shared_list
-    if @user.user_pl_share
-
-      request = File.open( "#{Rails.root}/sql/production_list_controller_update_shared_list.sql" ).read
-
-      ActiveRecord::Base.transaction do
-        @user.production_lists.clear
-
-        ActiveRecord::Base.connection.exec_insert( request, :production_list_controller_update_shared_list,
-                                                   [ [ nil, @user.id ],
-                                                     [ nil,  @user.user_pl_share_id ] ] )
-      end
-    end
   end
 
 end

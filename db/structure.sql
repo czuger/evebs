@@ -761,38 +761,6 @@ ALTER SEQUENCE public.prices_mins_id_seq OWNED BY public.prices_mins.id;
 
 
 --
--- Name: production_list_share_requests; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.production_list_share_requests (
-    id bigint NOT NULL,
-    sender_id bigint NOT NULL,
-    recipient_id bigint NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: production_list_share_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.production_list_share_requests_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: production_list_share_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.production_list_share_requests_id_seq OWNED BY public.production_list_share_requests.id;
-
-
---
 -- Name: production_lists; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1370,13 +1338,6 @@ ALTER TABLE ONLY public.prices_mins ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- Name: production_list_share_requests id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.production_list_share_requests ALTER COLUMN id SET DEFAULT nextval('public.production_list_share_requests_id_seq'::regclass);
-
-
---
 -- Name: production_lists id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1615,14 +1576,6 @@ ALTER TABLE ONLY public.prices_advices
 
 ALTER TABLE ONLY public.prices_mins
     ADD CONSTRAINT prices_mins_pkey PRIMARY KEY (id);
-
-
---
--- Name: production_list_share_requests production_list_share_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.production_list_share_requests
-    ADD CONSTRAINT production_list_share_requests_pkey PRIMARY KEY (id);
 
 
 --
@@ -2124,13 +2077,6 @@ CREATE INDEX market_group_desc_idx ON public.market_group_hierarchies USING btre
 
 
 --
--- Name: plsr_unique_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX plsr_unique_index ON public.production_list_share_requests USING btree (recipient_id, sender_id);
-
-
---
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2289,14 +2235,6 @@ ALTER TABLE ONLY public.blueprint_modifications
 
 
 --
--- Name: production_list_share_requests fk_rails_844f9d0f43; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.production_list_share_requests
-    ADD CONSTRAINT fk_rails_844f9d0f43 FOREIGN KEY (recipient_id) REFERENCES public.users(id);
-
-
---
 -- Name: sales_orders fk_rails_86221bcddd; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2334,14 +2272,6 @@ ALTER TABLE ONLY public.bpc_prices_mins
 
 ALTER TABLE ONLY public.prices_advices
     ADD CONSTRAINT fk_rails_b6b5f49d4d FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
-
-
---
--- Name: production_list_share_requests fk_rails_c7348cfe3d; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.production_list_share_requests
-    ADD CONSTRAINT fk_rails_c7348cfe3d FOREIGN KEY (sender_id) REFERENCES public.users(id);
 
 
 --
@@ -2592,6 +2522,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180815093119'),
 ('20180815094036'),
 ('20180815140039'),
-('20180816165159');
+('20180816165159'),
+('20180817092520');
 
 

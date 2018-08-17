@@ -47,12 +47,9 @@
               %li.divider
 
               %li{ class: active_link( character_download_assets_path( @current_user ) ) }= link_to 'Download my assets', character_download_assets_path( @current_user )
-              %li{ class: active_link( update_shared_list_path ) }= link_to 'Update shared production list', update_shared_list_path
 
               %li.divider
 
-              %li{ class: active_link( character_share_list_path( @current_user ) ) }= link_to 'Share production list', character_share_list_path( @current_user )
-              %li{ class: active_link( character_accept_shared_list_path( @current_user ) ) }= link_to 'Accept shared production list', character_accept_shared_list_path( @current_user )
               %li{ class: active_link( blueprints_path ) }= link_to 'My blueprints modifications', blueprints_path
 
         %li

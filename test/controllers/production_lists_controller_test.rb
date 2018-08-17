@@ -44,24 +44,4 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should get character_share_list' do
-    get character_share_list_url( @user )
-    assert_response :success
-  end
-
-  test 'should character_share_list_update' do
-    post character_share_list_update_url( @user, params: { user_id: @user.id, user: { id: @second_user.id } } )
-    assert_redirected_to character_share_list_url( @user )
-  end
-
-  test 'should get accept_shared_list' do
-    get character_accept_shared_list_url( @user )
-    assert_response :success
-  end
-
-  test 'should accept_shared_list_update' do
-    post character_accept_shared_list_update_url( @user, params: { sending_user_id: @second_user.id } )
-    assert_redirected_to character_accept_shared_list_url( @user )
-  end
-
 end

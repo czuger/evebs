@@ -4,7 +4,6 @@ Rails.application.routes.draw do
     get :use
   end
 
-
   resource :admin_tools, only: [ :show ] do
     get :denied
     get :activity
@@ -15,19 +14,12 @@ Rails.application.routes.draw do
   end
 
   resources :characters, only: [] do
-    get :share_list, controller: :production_lists
-    post :share_list_update, controller: :production_lists
-    get :accept_shared_list, controller: :production_lists
-    post :accept_shared_list_update, controller: :production_lists
-
     get :download_assets,  controller: :components_to_buy
     post :download_assets_start,  controller: :components_to_buy
   end
 
   resources :production_lists, only: [ :edit, :update, :create ]
   post :remove_production_list_check, controller: :production_lists
-  get :update_shared_list, controller: :production_lists
-
 
   resources :user_sale_orders, only: [ :index ]
   get :send_my_orders, controller: :user_sale_orders, action: :send_my_orders_edit
