@@ -56,47 +56,6 @@ class UserSaleOrdersController < ApplicationController
     redirect_to download_orders_path
   end
 
-  def send_my_orders_edit
-    @users = User.where.not( id: @user.id ).pluck( :name, :id )
-  end
-
-  def send_my_orders
-    UserToUserDuplicationRequest.find_or_create_by!( sender_id: @user.id, receiver_id: params[:user][:id].to_i, duplication_type: UserToUserDuplicationRequest::SALES_ORDERS )
-    flash[ :notice ] = 'Share authorisation sent successfully'
-    redirect_to send_my_orders_path
-  end
-
-  def get_sent_orders
-    # We should handle the fact that more than one order could be in queu
-    duplication_request = UserToUserDuplicationRequest.where( receiver_id: @user.id, duplication_type: UserToUserDuplicationRequest::SALES_ORDERS ).first
-
-    if duplication_request
-      duplication_request_sender = duplication_request.sender
-
-      ActiveRecord::Base.transaction do
-
-        UserSaleOrder.where( user_id: @user.id ).delete_all
-
-        request = File.open( "#{Rails.root}/sql/user_sale_orders_controller_get_sent_orders.sql" ).read
-
-        ActiveRecord::Base.connection.exec_insert( request, :user_sale_orders_controller_get_sent_orders,
-                                                   [ [ nil, @user.id ],
-                                                     [ nil, duplication_request_sender.id ] ] )
-
-        duplication_request.destroy!
-      end
-
-      flash[ :notice ] = "Sales orders successfully duplicated from #{duplication_request_sender.name}."
-    else
-      flash[ :alert ] = 'No sales orders share found.'
-    end
-
-    redirect_to get_sent_orders_result_path
-  end
-
-  def get_sent_orders_result
-  end
-
   private
 
   def print_change_warning

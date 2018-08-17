@@ -23,9 +23,6 @@ class User < ApplicationRecord
 
   belongs_to :identity, foreign_key: :uid
 
-  has_many :production_list_share_requests, foreign_key: :recipient_id
-  has_one :user_pl_share, class_name: 'User', primary_key: :user_pl_share_id, foreign_key: :id
-
   def self.from_omniauth(auth)
     if auth['provider'] == 'developer'
       raise 'Developer mode is allowed only in test mode' unless Rails.env.test?

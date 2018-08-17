@@ -22,13 +22,7 @@ Rails.application.routes.draw do
   post :remove_production_list_check, controller: :production_lists
 
   resources :user_sale_orders, only: [ :index ]
-  get :send_my_orders, controller: :user_sale_orders, action: :send_my_orders_edit
-  post :send_my_orders, controller: :user_sale_orders
-  get :get_sent_orders, controller: :user_sale_orders
-  get :get_sent_orders_result, controller: :user_sale_orders
-
   get :show_challenged_prices, controller: :user_sale_orders
-
   get :download_orders, controller: :user_sale_orders
   post :download_orders_start, controller: :user_sale_orders
 
