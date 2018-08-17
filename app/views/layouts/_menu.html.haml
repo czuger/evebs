@@ -46,11 +46,8 @@
 
               %li.divider
 
-              %li{ class: active_link( character_download_assets_path( @current_user ) ) }= link_to 'Download my assets', character_download_assets_path( @current_user )
-
-              %li.divider
-
-              %li{ class: active_link( blueprints_path ) }= link_to 'My blueprints modifications', blueprints_path
+              %li{ class: active_link( character_download_assets_path( @current_user ) ) }= link_to 'Download my assets and my blueprints modifications', character_download_assets_path( @current_user )
+              %li{ class: active_link( blueprints_path ) }= link_to 'Show my blueprints modifications', blueprints_path
 
         %li
           = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
