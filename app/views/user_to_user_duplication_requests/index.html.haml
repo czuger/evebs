@@ -42,6 +42,7 @@
           %tr
             %td= user_to_user_duplication_request.sender.name
             %td= user_to_user_duplication_request.duplication_type_to_s
+            -# caution, removing the method: :get causes issue. Even if the method is obvious. Seems that the method argument is required when usin data: :confirm.
             %td= link_to 'Use', user_to_user_duplication_request_use_path( user_to_user_duplication_request.id ), method: :get, data: { confirm: 'This will destroy your current data. Are you sure?' }
             %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
 
