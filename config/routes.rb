@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  resource :assets, only: [ :show, :update ] do
+    get :start_download
+  end
+
   resources :user_to_user_duplication_requests, except: [ :edit, :update, :show ] do
     get :use
   end
@@ -11,11 +15,6 @@ Rails.application.routes.draw do
     get :min_prices_timings_overview
     get :items_users
     get :crest_price_history_update
-  end
-
-  resources :characters, only: [] do
-    get :download_assets,  controller: :components_to_buy
-    post :download_assets_start,  controller: :components_to_buy
   end
 
   resources :production_lists, only: [ :edit, :update, :create ]

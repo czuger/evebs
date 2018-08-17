@@ -1,0 +1,16 @@
+.container
+
+  %table.table
+    %tr
+      %th
+        Station
+      %th
+        Asset
+      %th.text-right
+        Quantity
+
+    - @assets.each do |asset|
+      %tr{ class: cycle( :odd, :even ) }
+        %td= asset.station_detail&.name
+        %td= asset.blueprint_component.name
+        %td.text-right= asset.quantity

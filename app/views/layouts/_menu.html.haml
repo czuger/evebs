@@ -45,8 +45,6 @@
               %li{ class: active_link( components_to_buy_show_raw_path ) }= link_to 'Components to buy - raw', components_to_buy_show_raw_path, target: '_blank'
 
               %li.divider
-
-              %li{ class: active_link( character_download_assets_path( @current_user ) ) }= link_to 'Download my assets and my blueprints modifications', character_download_assets_path( @current_user )
               %li{ class: active_link( blueprints_path ) }= link_to 'Show my blueprints modifications', blueprints_path
 
         %li
@@ -59,6 +57,9 @@
 
             %li.divider
             %li{ class: active_link( download_orders_path ) }= link_to 'Download my orders', download_orders_path
+
+        %li{ class: active_link( assets_path ) }
+          = link_to 'Assets', assets_path
 
         %li{ class: active_link( user_to_user_duplication_requests_path ) }
           = link_to 'Share', user_to_user_duplication_requests_path
