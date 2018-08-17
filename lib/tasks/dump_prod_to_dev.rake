@@ -12,7 +12,7 @@ namespace :db do
       desc 'Dump full database from production to dev'
       task :full, [ :use_local_dump, :use_remote_dump ]  => :environment do |task, args|
 
-        p args, args.use_local_dump, (args.use_local_dump != 'y')
+        # p args, args.use_local_dump, (args.use_local_dump != 'y')
 
         use_local_pg_dump = false
         if File.exists?( '/tmp/production.dump' )
@@ -22,17 +22,17 @@ namespace :db do
         end
 
         unless use_local_pg_dump
-          puts 'No local dump, or local dump erase. Retrieving ...'
+          puts 'No local dump, or local dump erased. Retrieving ...'
           `ssh hw [ -e /tmp/production.dump ]`
 
-          launch_remote_pg_dump = true
+          use_remote_pg_dump = false
           if $?.to_i == 0
             # puts 'There already is a remote dump. Do you want to remove it and refresh the dump ? (y/n)'
             # result = STDIN.gets.chomp
-            launch_remote_pg_dump = (args.use_remote_dump == 'y')
+            use_remote_pg_dump = (args.use_remote_dump == 'y')
           end
 
-          if launch_remote_pg_dump # file exist
+          unless use_remote_pg_dump # file exist
             # Dump and compress it
             puts 'Running pg_dump on remote environment.'
             `ssh hw pg_dump -Fc -n public -T "eve_market_history_archives" -U eve_business_server eve_business_server_production -f /tmp/production.dump`
