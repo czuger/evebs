@@ -1,5 +1,8 @@
-%table
-  - @required_quantities.each do |rq|
-    %tr
-      %td= rq.name
-      %td= rq.qtt_to_buy.round
+-#%table
+-#  - @required_quantities.each do |rq|
+-#    %tr
+-#      %td= rq.name
+-#      %td= rq.qtt_to_buy.round
+
+- @required_quantities.each do |rq|
+  = "#{rq.name}\t#{rq.qtt_to_buy.round}\n".html_safe
