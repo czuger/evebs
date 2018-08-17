@@ -643,7 +643,6 @@ CREATE TABLE public.users (
     locked boolean DEFAULT false NOT NULL,
     download_assets_running boolean DEFAULT false NOT NULL,
     last_assets_download timestamp without time zone,
-    user_pl_share_id bigint,
     download_orders_running boolean DEFAULT false NOT NULL,
     last_orders_download timestamp without time zone,
     batch_cap_multiplier integer DEFAULT 1 NOT NULL,
@@ -2315,14 +2314,6 @@ ALTER TABLE ONLY public.station_details
 
 
 --
--- Name: users fk_rails_f3391600f4; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_rails_f3391600f4 FOREIGN KEY (user_pl_share_id) REFERENCES public.users(id);
-
-
---
 -- Name: bpc_jita_sales_finals fk_rails_f68bf0beb4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2523,6 +2514,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180815094036'),
 ('20180815140039'),
 ('20180816165159'),
-('20180817092520');
+('20180817092520'),
+('20180817093521');
 
 
