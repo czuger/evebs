@@ -2,25 +2,26 @@
   .navbar-collapse#bs-example-navbar-collapse-1
 
     - if current_user
+
       %ul.navbar-nav.mr-auto
-        -#%li.dropdown
+        = dropdown_menu_block( 'Items' ) do
+          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
+          = dropdown_sub_menu_link( 'All items list', edit_list_items_path )
+          = dropdown_sub_menu_link( 'My items list', my_items_list_list_items_path )
+          = dropdown_sub_menu_link( 'Components list', components_path )
+
+        = simple_menu_link( 'Trade hubs', edit_choose_trade_hubs_path )
+
+        = dropdown_menu_block( 'Earnings' ) do
+          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
+          = dropdown_sub_menu_link( 'Weekly', price_advices_advice_prices_weekly_path )
+          = dropdown_sub_menu_link( 'Immediate', price_advices_advice_prices_path )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'Empty places', price_advices_empty_places_path )
 
         %li.nav-item
           = link_to '#', class: 'nav-link dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-            Items
-          .dropdown-menu{ 'aria-labelledby' => 'navbarDropdown' }
-            = link_to 'Items tree', edit_choose_items_path, class: active_link( 'dropdown-item', edit_choose_items_path )
-            = link_to 'All items list', edit_list_items_path, class: active_link( 'dropdown-item', edit_list_items_path )
-            = link_to 'My items list', my_items_list_list_items_path, class: active_link( 'dropdown-item', my_items_list_list_items_path )
-            = link_to 'Components list', components_path, class: active_link( 'dropdown-item', components_path )
-
-        %li{ class: active_link( edit_choose_trade_hubs_path ) }
-          = link_to 'Trade hubs', edit_choose_trade_hubs_path
-
-        %li
-          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
             Earnings
-            %span.caret
           %ul.dropdown-menu
             %li{ class: active_link( price_advices_advice_prices_path ) }= link_to 'Immediate', price_advices_advice_prices_path
             %li{ class: active_link( price_advices_advice_prices_weekly_path ) }= link_to 'Weekly', price_advices_advice_prices_weekly_path
