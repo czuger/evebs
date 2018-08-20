@@ -27,9 +27,13 @@ module ApplicationHelper
     end
   end
 
-  def dropdown_sub_menu_link( menu_text, menu_link='#' )
+  def dropdown_sub_menu_link( menu_text, menu_link='#', in_new_window=false )
     # link_to 'Items tree', edit_choose_items_path, class: active_link( 'dropdown-item', edit_choose_items_path )
-    link_to menu_text, menu_link, class: selected_link_class( 'dropdown-item', menu_link )
+    if in_new_window
+      link_to menu_text, menu_link, class: selected_link_class( 'dropdown-item', menu_link ), target: '_blank'
+    else
+      link_to menu_text, menu_link, class: selected_link_class( 'dropdown-item', menu_link )
+    end
   end
 
 

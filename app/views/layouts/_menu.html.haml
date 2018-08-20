@@ -19,74 +19,52 @@
           .dropdown-divider
           = dropdown_sub_menu_link( 'Empty places', price_advices_empty_places_path )
 
-        %li.nav-item
-          = link_to '#', class: 'nav-link dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-            Earnings
-          %ul.dropdown-menu
-            %li{ class: active_link( price_advices_advice_prices_path ) }= link_to 'Immediate', price_advices_advice_prices_path
-            %li{ class: active_link( price_advices_advice_prices_weekly_path ) }= link_to 'Weekly', price_advices_advice_prices_weekly_path
-            %li.divider
-            %li{ class: active_link( price_advices_empty_places_path ) }= link_to 'Empty places', price_advices_empty_places_path
+        = dropdown_menu_block( 'Production' ) do
+          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
+          = dropdown_sub_menu_link( 'Production list', edit_production_list_path( @current_user ) )
+          = dropdown_sub_menu_link( 'Components to buy', components_to_buy_path( @current_user ) )
+          = dropdown_sub_menu_link( 'Components to buy - raw', components_to_buy_show_raw_path, true )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'Show my blueprints modifications', blueprints_path )
 
-        %li
-          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-            Production
-            %span.caret
-          %ul.dropdown-menu
-            - if @current_user
-              %li{ class: active_link( edit_production_list_path( @current_user ) ) }= link_to 'Production list', edit_production_list_path( @current_user )
-              %li{ class: active_link( components_to_buy_path( @current_user ) ) }= link_to 'Components to buy', components_to_buy_path( @current_user )
-              %li{ class: active_link( components_to_buy_show_raw_path ) }= link_to 'Components to buy - raw', components_to_buy_show_raw_path, target: '_blank'
+        = dropdown_menu_block( 'Sale orders' ) do
+          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
+          = dropdown_sub_menu_link( 'My orders list', user_sale_orders_path )
+          = dropdown_sub_menu_link( 'Challenged prices', show_challenged_prices_path )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'Download my orders', download_orders_path )
 
-              %li.divider
-              %li{ class: active_link( blueprints_path ) }= link_to 'Show my blueprints modifications', blueprints_path
+        = simple_menu_link( 'Assets', assets_path )
+        = simple_menu_link( 'Share', user_to_user_duplication_requests_path )
+        = simple_menu_link( 'User', edit_users_path )
 
-        %li
-          = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-            Sale orders
-            %span.caret
-          %ul.dropdown-menu
-            %li{ class: active_link( user_sale_orders_path ) }= link_to 'My orders list', user_sale_orders_path
-            %li{ class: active_link( show_challenged_prices_path ) }= link_to 'Challenged prices', show_challenged_prices_path
+        = simple_menu_link( "Sign out", signout_path )
 
-            %li.divider
-            %li{ class: active_link( download_orders_path ) }= link_to 'Download my orders', download_orders_path
-
-        %li{ class: active_link( assets_path ) }
-          = link_to 'Assets', assets_path
-
-        %li{ class: active_link( user_to_user_duplication_requests_path ) }
-          = link_to 'Share', user_to_user_duplication_requests_path
-
-        %li{ class: active_link( edit_users_path ) }
-          = link_to 'User', edit_users_path
-
-        %li= link_to "Sign out", signout_path, id: "sign_out"
-        - if current_user.admin
-          %li
-            = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
-              Admin
-              %span.caret
-            %ul.dropdown-menu
-              %li{ class: active_link( admin_tools_path ) }= link_to 'Raw datas', admin_tools_path
-              %li{ class: active_link( items_users_admin_tools_path ) }= link_to 'Items users', items_users_admin_tools_path
-              %li{ class: active_link( activity_admin_tools_path ) }= link_to 'Activity graph', activity_admin_tools_path, data: { turbolinks: false }
-              %li{ class: active_link( min_prices_timings_admin_tools_path ) }= link_to 'Min prices timings', min_prices_timings_admin_tools_path, data: { turbolinks: false }
-              %li{ class: active_link( min_prices_timings_overview_admin_tools_path ) }= link_to 'Min prices timings overveiw', min_prices_timings_overview_admin_tools_path, data: { turbolinks: false }
-              %li{ class: active_link( crest_price_history_update_admin_tools_path ) }= link_to 'Crest prices update timings', crest_price_history_update_admin_tools_path, data: { turbolinks: false }
+        -#%li= link_to "Sign out", signout_path, id: "sign_out"
+        -#- if current_user.admin
+        -#  %li
+        -#    = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown', role: 'button', 'aria-haspopup' => true, 'aria-expanded' => false do
+        -#      Admin
+        -#      %span.caret
+        -#    %ul.dropdown-menu
+        -#      %li{ class: active_link( admin_tools_path ) }= link_to 'Raw datas', admin_tools_path
+        -#      %li{ class: active_link( items_users_admin_tools_path ) }= link_to 'Items users', items_users_admin_tools_path
+        -#      %li{ class: active_link( activity_admin_tools_path ) }= link_to 'Activity graph', activity_admin_tools_path, data: { turbolinks: false }
+        -#      %li{ class: active_link( min_prices_timings_admin_tools_path ) }= link_to 'Min prices timings', min_prices_timings_admin_tools_path, data: { turbolinks: false }
+        -#      %li{ class: active_link( min_prices_timings_overview_admin_tools_path ) }= link_to 'Min prices timings overveiw', min_prices_timings_overview_admin_tools_path, data: { turbolinks: false }
+        -#      %li{ class: active_link( crest_price_history_update_admin_tools_path ) }= link_to 'Crest prices update timings', crest_price_history_update_admin_tools_path, data: { turbolinks: false }
 
     - else
-      %ul.nav.navbar-nav
+      %ul.navbar-nav.mr-auto
         -#%li= link_to "Sign in", '/sessions/new', id: "sign_in"
-        %li= link_to 'Sign in', '/auth/eve_online_sso'
+        = simple_menu_link( 'Sign in', '/auth/eve_online_sso' )
 
-    %ul.nav.navbar-nav
-      %li= link_to 'Help', '/help.pdf', target: '_blank'
-    .navbar-collapse
-      %p.nav.navbar-text.navbar-right.small
-        - if @current_user
-          Logged as
-          = @current_user.name
-          \|
-        version 0.5-CHANGE_TO_VERSION_NUMBER
+    -#%ul.nav.navbar-nav
+    -#  %li= link_to 'Help', '/help.pdf', target: '_blank'
+
+    - if @current_user
+      Logged as
+      = @current_user.name
+      \|
+    version 0.5-CHANGE_TO_VERSION_NUMBER
 
