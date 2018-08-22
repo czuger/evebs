@@ -1,4 +1,9 @@
 .container
+
+  - if @required_quantities.empty?
+    .my-3
+      You have no items to buy. This can be because you didn't select a production station in the assets menu.
+
   %table.table
     %tr
       %th

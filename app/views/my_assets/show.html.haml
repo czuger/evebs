@@ -3,7 +3,7 @@
   = form_tag set_assets_station_my_assets_path, class: 'form-inline my-4' do
     - unless @stations_select_data.empty?
       = label_tag :asset_station_id, 'Assets station', class: 'mr-3'
-      = select_tag( :asset_station_id, options_for_select( @stations_select_data, @selected_station_id ), class: 'form-control mr-3' )
+      = select_tag( :asset_station_id, options_for_select( @stations_select_data, @selected_station_id ), :include_blank => true, class: 'form-control mr-3' )
       = button_tag( 'Set station', class: 'btn btn-secondary mr-3' )
 
     - if @user.download_assets_running
