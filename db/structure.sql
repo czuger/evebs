@@ -2156,13 +2156,14 @@ CREATE OR REPLACE VIEW public.component_to_buys AS
     (sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
     ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.cost) AS total_cost,
     ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.volume) AS required_volume
-   FROM ((((((public.production_lists pl
+   FROM (((((((public.production_lists pl
      JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
      JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
      JOIN public.blueprint_materials bm ON ((b.id = bm.blueprint_id)))
      JOIN public.blueprint_components bc ON ((bm.blueprint_component_id = bc.id)))
+     JOIN public.users ue ON ((pl.user_id = ue.id)))
      LEFT JOIN public.blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
-     LEFT JOIN public.bpc_assets ba ON ((bc.id = ba.blueprint_component_id)))
+     LEFT JOIN public.bpc_assets ba ON (((bc.id = ba.blueprint_component_id) AND (ba.station_detail_id = ue.selected_assets_station_id))))
   WHERE (pl.runs_count IS NOT NULL)
   GROUP BY bc.id, pl.user_id, bc.name, COALESCE(ba.quantity, (0)::bigint)
  HAVING ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
@@ -2604,6 +2605,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180817092520'),
 ('20180817093521'),
 ('20180822094022'),
-('20180822104400');
+('20180822104400'),
+('20180822110028');
 
 
