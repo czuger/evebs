@@ -21,8 +21,8 @@
 
         = dropdown_menu_block( 'Production' ) do
           -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
-          = dropdown_sub_menu_link( 'Production list', edit_production_list_path( @current_user ) )
-          = dropdown_sub_menu_link( 'Components to buy', components_to_buy_path( @current_user ) )
+          = dropdown_sub_menu_link( 'Production list', edit_production_list_path( current_user ) )
+          = dropdown_sub_menu_link( 'Components to buy', components_to_buy_path( current_user ) )
           = dropdown_sub_menu_link( 'Components to buy - raw', components_to_buy_show_raw_path, true )
           .dropdown-divider
           = dropdown_sub_menu_link( 'Show my blueprints modifications', blueprints_path )
