@@ -47,7 +47,8 @@ gem 'time_diff'
 
 gem 'actionpack-page_caching'
 
-gem 'will_paginate', '~> 3.1.0'
+# gem 'will_paginate', '~> 3.1.0'
+gem 'will_paginate-bootstrap4'
 
 gem 'bootstrap', '~> 4.1.3'
 
