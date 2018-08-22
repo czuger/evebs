@@ -22,6 +22,7 @@ class User < ApplicationRecord
   has_many :bpc_assets
   has_many :bpc_assets_stations
   has_many :bpc_assets_stations_details, through: :bpc_assets_stations, source: :station_detail
+  has_many :bpc_assets_download_errors
 
   belongs_to :identity, foreign_key: :uid
 

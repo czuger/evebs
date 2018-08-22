@@ -19,8 +19,12 @@ class Esi::DownloadMyAssets < Esi::Download
     ActiveRecord::Base.transaction do
 
       user.bpc_assets.update_all( touched: false )
+      user.bpc_assets_stations.update_all( touched: false )
+
       download_assets user
+
       user.bpc_assets.where( touched: false ).delete_all
+      user.bpc_assets_stations.where( touched: false ).delete_all
 
       user.update( download_assets_running: false, last_assets_download: Time.now )
     end
@@ -62,6 +66,13 @@ class Esi::DownloadMyAssets < Esi::Download
         to.quantity = asset['quantity']
         to.touched = true
         to.save!
+
+        if trade_hub_id
+          bas = BpcAssetsStation.where( user_id: user.id, station_detail_id: trade_hub_id ).first_or_initialize
+          bas.touched = true
+          bas.save!
+        end
+
       end
     end
   end
