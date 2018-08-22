@@ -9,7 +9,10 @@
     - if @user.download_assets_running
       Assets download is running. Please refresh in a while ...
     - else
-      = link_to 'Update assets', my_assets_path, method: :put, class: 'btn btn-secondary'
+      - if @data_available_in > 0
+        = "Data cached in ESI for . New data available in #{Time.at(@data_available_in).strftime('%M m %S s')}."
+      - else
+        = link_to 'Update assets', my_assets_path, method: :put, class: 'btn btn-secondary'
 
     -#.row.mb-3
     -#  .col-3

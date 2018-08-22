@@ -6,6 +6,7 @@ class MyAssetsController < ApplicationController
   def show
     @assets = @user.bpc_assets.includes( :station_detail, :blueprint_component )
     @stations_select_data = @user.bpc_assets_stations_details.map{ |e| [ e.name, e.id ] }.sort
+    @data_available_in = (@user.last_assets_download + BpcAsset::CACHE_DURATION - Time.now).round
   end
 
   def update
