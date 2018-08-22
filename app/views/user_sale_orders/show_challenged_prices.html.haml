@@ -34,6 +34,7 @@
             - delta = ( cp[:min_price] - cp[:my_price] ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
             %td.text-right{ class: challenged_prices_highlight_class_my_price_to_min_price_delta( delta ) }
               = print_isk( delta ) if delta
+
             -#%td.text-center
             -#  %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})", class: 'btn btn-default' }
             -#    Show Market Details
