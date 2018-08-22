@@ -20,6 +20,8 @@ class User < ApplicationRecord
   has_many :user_to_user_duplication_requests_as_receivers, class_name: 'UserToUserDuplicationRequest', foreign_key: :receiver_id, dependent: :destroy
 
   has_many :bpc_assets
+  has_many :bpc_assets_stations
+  has_many :bpc_assets_stations_details, through: :bpc_assets_stations, source: :station_detail
 
   belongs_to :identity, foreign_key: :uid
 

@@ -241,6 +241,39 @@ ALTER SEQUENCE public.bpc_assets_id_seq OWNED BY public.bpc_assets.id;
 
 
 --
+-- Name: bpc_assets_stations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.bpc_assets_stations (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    station_detail_id bigint NOT NULL,
+    touched boolean DEFAULT false NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: bpc_assets_stations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.bpc_assets_stations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: bpc_assets_stations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.bpc_assets_stations_id_seq OWNED BY public.bpc_assets_stations.id;
+
+
+--
 -- Name: bpc_jita_sales_finals; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1267,6 +1300,13 @@ ALTER TABLE ONLY public.bpc_assets ALTER COLUMN id SET DEFAULT nextval('public.b
 
 
 --
+-- Name: bpc_assets_stations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bpc_assets_stations ALTER COLUMN id SET DEFAULT nextval('public.bpc_assets_stations_id_seq'::regclass);
+
+
+--
 -- Name: bpc_jita_sales_finals id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1487,6 +1527,14 @@ ALTER TABLE ONLY public.blueprints
 
 ALTER TABLE ONLY public.bpc_assets
     ADD CONSTRAINT bpc_assets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: bpc_assets_stations bpc_assets_stations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bpc_assets_stations
+    ADD CONSTRAINT bpc_assets_stations_pkey PRIMARY KEY (id);
 
 
 --
@@ -1779,6 +1827,20 @@ CREATE INDEX index_bpc_assets_on_blueprint_component_id ON public.bpc_assets USI
 --
 
 CREATE INDEX index_bpc_assets_on_station_detail_id ON public.bpc_assets USING btree (station_detail_id);
+
+
+--
+-- Name: index_bpc_assets_stations_on_station_detail_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_bpc_assets_stations_on_station_detail_id ON public.bpc_assets_stations USING btree (station_detail_id);
+
+
+--
+-- Name: index_bpc_assets_stations_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_bpc_assets_stations_on_user_id ON public.bpc_assets_stations USING btree (user_id);
 
 
 --
@@ -2250,6 +2312,14 @@ ALTER TABLE ONLY public.sales_finals
 
 
 --
+-- Name: bpc_assets_stations fk_rails_a00a2978d6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bpc_assets_stations
+    ADD CONSTRAINT fk_rails_a00a2978d6 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- Name: user_to_user_duplication_requests fk_rails_aeda0a36f7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2271,6 +2341,14 @@ ALTER TABLE ONLY public.bpc_prices_mins
 
 ALTER TABLE ONLY public.prices_advices
     ADD CONSTRAINT fk_rails_b6b5f49d4d FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
+
+
+--
+-- Name: bpc_assets_stations fk_rails_c219097b39; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bpc_assets_stations
+    ADD CONSTRAINT fk_rails_c219097b39 FOREIGN KEY (station_detail_id) REFERENCES public.station_details(id);
 
 
 --
@@ -2515,6 +2593,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180815140039'),
 ('20180816165159'),
 ('20180817092520'),
-('20180817093521');
+('20180817093521'),
+('20180822094022');
 
 

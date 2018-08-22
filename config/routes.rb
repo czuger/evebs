@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
-  resource :assets, only: [ :show, :update ] do
-    get :start_download
+  resource :my_assets, only: [:show, :update ] do
+    post :set_assets_station
   end
 
   resources :user_to_user_duplication_requests, except: [ :edit, :update, :show ] do
