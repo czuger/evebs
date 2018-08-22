@@ -5,7 +5,6 @@ class DownloadMyAssetsJob < ApplicationJob
   def perform( user )
     puts "Downloading assets for #{user.name}"
 
-    # Esi::DownloadMyBlueprintsModifications.new.update( user )
     Esi::DownloadMyAssets.new.update( user )
   end
 

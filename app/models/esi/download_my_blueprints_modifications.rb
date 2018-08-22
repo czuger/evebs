@@ -12,6 +12,8 @@ class Esi::DownloadMyBlueprintsModifications < Esi::Download
       user.blueprint_modifications.update_all( touched: false )
       download_bp_modifications user
       user.blueprint_modifications.where( touched: false ).delete_all
+
+      user.update( download_blueprints_running: false, last_blueprints_download: Time.now )
     end
   end
 
