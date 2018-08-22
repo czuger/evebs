@@ -1,16 +1,16 @@
 .container
 
-  = form_tag '/my_assets', class: 'form-inline my-4' do
+  = form_tag set_assets_station_my_assets_path, class: 'form-inline my-4' do
     - unless @stations_select_data.empty?
       = label_tag :asset_station_id, 'Assets stations', class: 'mr-3'
-      = select_tag( :asset_station_id, options_for_select( @stations_select_data ), class: 'form-control mr-3' )
+      = select_tag( :asset_station_id, options_for_select( @stations_select_data, @selected_station_id ), class: 'form-control mr-3' )
       = button_tag( 'Set station', class: 'btn btn-secondary mr-3' )
 
     - if @user.download_assets_running
       Assets download is running. Please refresh in a while ...
     - else
       - if @data_available_in > 0
-        = "Data cached in ESI for . New data available in #{Time.at(@data_available_in).strftime('%M m %S s')}."
+        = "Data cached in ESI service. New data available in #{Time.at(@data_available_in).strftime('%M m %S s')}."
       - else
         = link_to 'Update assets', my_assets_path, method: :put, class: 'btn btn-secondary'
 

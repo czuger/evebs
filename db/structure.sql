@@ -679,7 +679,8 @@ CREATE TABLE public.users (
     download_orders_running boolean DEFAULT false NOT NULL,
     last_orders_download timestamp without time zone,
     batch_cap_multiplier integer DEFAULT 1 NOT NULL,
-    last_duplication_receiver_id integer
+    last_duplication_receiver_id integer,
+    selected_assets_station_id bigint
 );
 
 
@@ -2240,6 +2241,14 @@ ALTER TABLE ONLY public.structures
 
 
 --
+-- Name: users fk_rails_3e0634e4d9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_3e0634e4d9 FOREIGN KEY (selected_assets_station_id) REFERENCES public.station_details(id);
+
+
+--
 -- Name: user_to_user_duplication_requests fk_rails_41225de714; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2594,6 +2603,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180816165159'),
 ('20180817092520'),
 ('20180817093521'),
-('20180822094022');
+('20180822094022'),
+('20180822104400');
 
 
