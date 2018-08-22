@@ -6,6 +6,9 @@ class BlueprintsController < ApplicationController
   def show
     @blueprint_modifications = @user.blueprint_modifications.joins( :blueprint ).order( 'blueprints.name' )
                                    .includes( :blueprint ).paginate(:page => params[:page], :per_page => 20 )
+
+    lbd = @user.last_blueprints_download ? @user.last_blueprints_download : Time.at( 0 )
+    @data_available_in = (lbd + BpcAsset::CACHE_DURATION - Time.now).round
   end
 
 end

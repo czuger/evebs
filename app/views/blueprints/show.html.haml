@@ -1,9 +1,18 @@
 .container
 
-  %table.table.table-bordered.sortable
+  .my-4
+    - if @user.download_assets_running
+      Blueprints download is running. Please refresh in a while ...
+    - else
+      - if @data_available_in > 0
+        = "Data cached. New data available in #{Time.at(@data_available_in).strftime('%Mm %Ss')}."
+      - else
+        = link_to 'Update blueprints', my_assets_path, method: :put, class: 'btn btn-secondary'
+
+  %table.table.table-hover.table-sm
     %thead
       %tr
-        %th.text-center Blueprint name
+        %th Blueprint name
         %th.text-center Modifications value
 
     %tbody

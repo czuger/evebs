@@ -5,7 +5,6 @@
 
       %ul.navbar-nav.mr-auto
         = dropdown_menu_block( 'Items' ) do
-          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
           = dropdown_sub_menu_link( 'All items list', edit_list_items_path )
           = dropdown_sub_menu_link( 'My items list', my_items_list_list_items_path )
           = dropdown_sub_menu_link( 'Components list', components_path )
@@ -13,29 +12,27 @@
         = simple_menu_link( 'Trade hubs', edit_choose_trade_hubs_path )
 
         = dropdown_menu_block( 'Earnings' ) do
-          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
           = dropdown_sub_menu_link( 'Weekly', price_advices_advice_prices_weekly_path )
           = dropdown_sub_menu_link( 'Immediate', price_advices_advice_prices_path )
           .dropdown-divider
           = dropdown_sub_menu_link( 'Empty places', price_advices_empty_places_path )
 
         = dropdown_menu_block( 'Production' ) do
-          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
           = dropdown_sub_menu_link( 'Production list', edit_production_list_path( current_user ) )
           = dropdown_sub_menu_link( 'Components to buy', components_to_buy_path( current_user ) )
           = dropdown_sub_menu_link( 'Components to buy - raw', components_to_buy_show_raw_path, true )
-          .dropdown-divider
-          = dropdown_sub_menu_link( 'Show my blueprints modifications', blueprints_path )
 
         = dropdown_menu_block( 'Sale orders' ) do
-          -#= dropdown_menu_link( 'Items tree', edit_choose_items_path )
           = dropdown_sub_menu_link( 'My orders list', user_sale_orders_path )
           = dropdown_sub_menu_link( 'Challenged prices', show_challenged_prices_path )
           .dropdown-divider
           = dropdown_sub_menu_link( 'Download my orders', download_orders_path )
 
-        = simple_menu_link( 'Assets', my_assets_path )
-        = simple_menu_link( 'Share', user_to_user_duplication_requests_path )
+        = dropdown_menu_block( 'Misc' ) do
+          = dropdown_sub_menu_link( 'Share', user_to_user_duplication_requests_path )
+          = dropdown_sub_menu_link( 'Assets', my_assets_path )
+          = dropdown_sub_menu_link( 'Blueprints', blueprints_path )
+
         = simple_menu_link( 'User', edit_users_path )
 
         = simple_menu_link( "Sign out", signout_path )

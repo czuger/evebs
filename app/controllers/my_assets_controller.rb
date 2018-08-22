@@ -6,7 +6,10 @@ class MyAssetsController < ApplicationController
   def show
     @selected_station_id = @user.selected_assets_station_id
     @stations_select_data = @user.bpc_assets_stations_details.map{ |e| [ e.name, e.id ] }.sort
-    @data_available_in = (@user.last_assets_download + BpcAsset::CACHE_DURATION - Time.now).round
+
+    lad = @user.last_assets_download ? @user.last_assets_download : Time.at( 0 )
+    @data_available_in = (lad + BpcAsset::CACHE_DURATION - Time.now).round
+
     @assets = @selected_station_id ? @user.bpc_assets.where( station_detail_id: @selected_station_id ).includes( :station_detail, :blueprint_component ).order( 'quantity DESC' ) : []
   end
 
