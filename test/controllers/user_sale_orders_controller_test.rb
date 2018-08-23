@@ -15,11 +15,11 @@ class UserSaleOrdersControllerTest < ActionDispatch::IntegrationTest
 
   test 'should show challenged prices with min prices' do
     create( :user_sale_order, user: @user, trade_hub: @trade_hub, eve_item: @eve_item )
-    get show_challenged_prices_url
+    get user_sale_orders_url
     assert_response :success
   end
 
-  test 'should index' do
+  test 'should show challenged prices without min prices' do
     get user_sale_orders_url
     assert_response :success
   end

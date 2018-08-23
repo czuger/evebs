@@ -86,7 +86,7 @@ class Esi::DownloadSalesOrders < Esi::Download
 
       # Temporary to remove unused users.
       UserSaleOrder.distinct.pluck( :user_id ).each do |uid|
-        User.where( id: uid ).delete_all unless User.where( id: uid ).exists?
+        UserSaleOrder.where( user_id: uid ).delete_all unless User.where( id: uid ).exists?
       end
 
     end
