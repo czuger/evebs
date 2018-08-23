@@ -1,13 +1,13 @@
-.container
+= form_tag production_list_path( @current_user ), method: :patch do
 
-  = form_tag production_list_path( @current_user ), method: :patch do
-
+  .my-4
     %h4
       Items you checked in the daily earnings screen
 
-    - @total_jobs = 0
+  - @total_jobs = 0
 
-    %table.table
+  %table.table.table-hover.table-sm
+    %thead
       %tr
         - unless @shared_production_list
           %th
@@ -20,6 +20,7 @@
         %th.text-center Advised quantity
         %th.text-center Quantity to produce
         %th.text-center Jobs count
+    %tbody
       - @basket_array.each do |basket|
         %tr{ class: cycle( :odd, :even ) }
           - unless @shared_production_list
@@ -43,14 +44,14 @@
           %b
             Total jobs
 
-        %td.text-right.information_highlight_left
+        %td.text-center.information_highlight_left
           %b
             = @total_jobs
 
 
       = will_paginate @basket_active_record
 
-    .row
-      .col-md-12.text-center
-        .actions
-          = submit_tag 'Save', class: 'btn btn-default'
+  .row
+    .col-md-12.text-center
+      .actions
+        = submit_tag 'Save', class: 'btn btn-secondary'
