@@ -7,10 +7,19 @@ class UserSaleOrdersController < ApplicationController
     @user = current_user
     @print_change_warning=print_change_warning
 
+    @selected_trade_hub_id = params['trade_hub_id']
+    @selected_eve_item_id = params['eve_item_id']
+
     @trade_hubs_names = @user.user_sale_order_details.distinct.order( :trade_hub_name ).pluck( :trade_hub_name, :trade_hub_id )
-    @item_names = @user.user_sale_order_details.distinct.order( :eve_item_name ).pluck( :eve_item_name, :eve_item_id )
+
+    @item_names = @user.user_sale_order_details.distinct.order( :eve_item_name )
+    @item_names = @item_names.where( trade_hub_id: @selected_trade_hub_id ) if @selected_trade_hub_id
+    @item_names = @item_names.pluck( :eve_item_name, :eve_item_id )
 
     @compared_prices = @user.user_sale_order_details.order( :trade_hub_name, :eve_item_name )
+
+    @compared_prices = @compared_prices.where( trade_hub_id: @selected_trade_hub_id ) if @selected_trade_hub_id
+    @compared_prices = @compared_prices.where( eve_item_id: @selected_eve_item_id ) if @selected_eve_item_id
 
     lod = @user.last_orders_download ? @user.last_orders_download : Time.at( 0 )
     @data_available_in = (lod + UserSaleOrder::CACHE_DURATION - Time.now).round

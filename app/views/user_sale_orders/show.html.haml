@@ -6,11 +6,11 @@
         .ml-3
           = label_tag 'select_trade_hubs', 'Trade hubs'
         .ml-3
-          = select( 'select', 'trade_hub_id', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
+          = select_tag( :select_trade_hubs, options_for_select( @trade_hubs_names, @selected_trade_hub_id ), :include_blank => true, class: 'form-control' )
         .ml-3
           = label_tag 'select_items', 'Items'
         .ml-3
-          = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
+          = select_tag( :select_items, options_for_select( @item_names, @selected_eve_item_id ), :include_blank => true, class: 'form-control' )
 
       .ml-3
         - if @user.download_orders_running
@@ -54,3 +54,5 @@
             -#  %button{ onclick: "CCPEVE.setDestination(#{cp[:trade_hub_cpp_id]})" , class: 'btn btn-default' }
             -#    Set Destination
 
+= hidden_field_tag :selected_trade_hub_id, @selected_trade_hub_id
+= hidden_field_tag :selected_eve_item_id, @selected_eve_item_id
