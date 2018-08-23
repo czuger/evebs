@@ -21,8 +21,10 @@ class Esi::DownloadSalesOrders < Esi::Download
     @sales_orders_updated = 0
     @sales_orders_deleted = 0
 
+    @sales_orders_over_time = 0
+
     @sales_finals_created = 0
-    @sales_finals_deleted = 0
+    sales_finals_deleted = 0
 
     @sales_orders_volumes = Hash[ SalesOrder.pluck( :order_id, :volume ) ]
     @sales_orders_to_touch = []
@@ -52,8 +54,8 @@ class Esi::DownloadSalesOrders < Esi::Download
           puts "Unable to find data for region #{region.name}"
 
           # In case we couldn' find data for region, we prevent removing untouched data (cos nothing will be touched for this region)
-          SalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true )
-          BlueprintComponentSalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true )
+          SalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true, updated_at: Time.now )
+          BlueprintComponentSalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true, updated_at: Time.now )
 
           next
         end
@@ -75,8 +77,9 @@ class Esi::DownloadSalesOrders < Esi::Download
       touch_unchanged_sales_orders
       remove_old_sales_orders
 
-      @sales_finals_deleted = SalesFinal.where( 'updated_at < ?', Time.now - 1.month ).count
-      SalesFinal.where( 'updated_at < ?', Time.now - 1.month ).delete_all
+      sales_finals_to_delete = SalesFinal.where( 'updated_at < ?', Time.now - 1.month )
+      sales_finals_deleted = sales_finals_to_delete.count
+      sales_finals_to_delete.delete_all
 
       BlueprintComponentSalesOrder.where( touched: false ).delete_all
       BpcJitaSalesFinal.where( 'updated_at < ?', Time.now - 1.week ).delete_all
@@ -85,9 +88,10 @@ class Esi::DownloadSalesOrders < Esi::Download
     puts "Sales orders created : #{@sales_orders_created}" unless @silent_output
     puts "Sales orders updated : #{@sales_orders_updated}" unless @silent_output
     puts "Sales orders deleted : #{@sales_orders_deleted}" unless @silent_output
+    puts "Sales orders that failed out of time : #{@sales_orders_over_time}" unless @silent_output
 
     puts "Sales final created : #{@sales_finals_created}" unless @silent_output
-    puts "Sales final deleted : #{@sales_finals_deleted}" unless @silent_output
+    puts "Sales final deleted : #{sales_finals_deleted}" unless @silent_output
   end
 
   private
@@ -101,6 +105,11 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     if sov
       # If volume is unchanged, then we just touch the order
+
+      issued = DateTime.parse( record['issued'] )
+      duration = record['duration']
+      end_time = issued + duration.days
+
       if sov != record['volume_remain']
 
         so = SalesOrder.where( order_id: record['order_id'] ).first
@@ -115,6 +124,9 @@ class Esi::DownloadSalesOrders < Esi::Download
         so.volume = record['volume_remain']
         so.price = record['price']
         so.touched = true
+        so.issued = issued
+        so.duration = duration
+        so.end_time = end_time
         so.save!
 
         @sales_orders_updated += 1
@@ -124,11 +136,6 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     else
       # We still do not have a SaleOrder with this
-      # issued = DateTime.parse( record['issued'][0..-1] )
-      issued = DateTime.parse( record['issued'] )
-      duration = record['duration']
-      end_time = issued + duration.days
-
       so = SalesOrder.create!( day: Time.now, volume: record['volume_remain'], price: record['price'],
                           trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
                           touched: true, issued: issued, duration: duration, end_time: end_time )
@@ -150,7 +157,7 @@ class Esi::DownloadSalesOrders < Esi::Download
       SalesOrder.where( order_id: order_ids ).update_all( touched: true )
     end
     @blueprints_sales_orders_to_touch.in_groups_of( 5000 ).each do |order_ids|
-      BlueprintComponentSalesOrder.where( cpp_order_id: order_ids ).update_all( touched: true )
+      BlueprintComponentSalesOrder.where( cpp_order_id: order_ids ).update_all( touched: true, updated_at: Time.now )
     end
   end
 
@@ -162,8 +169,11 @@ class Esi::DownloadSalesOrders < Esi::Download
       old_order.price )
     end
 
-    @sales_orders_deleted = SalesOrder.where( touched: false ).count
-    SalesOrder.where( touched: false ).delete_all
+    @sales_orders_over_time = SalesOrder.where( touched: false ).where( 'end_time >= ?', Time.now ).count
+
+    sales_orders_to_delete = SalesOrder.where( touched: false )
+    @sales_orders_deleted = sales_orders_to_delete.count
+    sales_orders_to_delete.delete_all
   end
 
   def create_sales_final_record( so, old_volume, new_volume, old_price, new_price )
@@ -171,7 +181,7 @@ class Esi::DownloadSalesOrders < Esi::Download
     price = (old_price + new_price) / 2.0
 
     SalesFinal.create!(
-        day: so.day, trade_hub_id: so.trade_hub_id, eve_item_id: so.eve_item_id, volume: volume, price: price,
+        day: Time.now, trade_hub_id: so.trade_hub_id, eve_item_id: so.eve_item_id, volume: volume, price: price,
         order_id: so.order_id )
 
     @sales_finals_created += 1
