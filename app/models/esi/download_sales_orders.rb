@@ -83,6 +83,12 @@ class Esi::DownloadSalesOrders < Esi::Download
 
       BlueprintComponentSalesOrder.where( touched: false ).delete_all
       BpcJitaSalesFinal.where( 'updated_at < ?', Time.now - 1.week ).delete_all
+
+      # Temporary to remove unused users.
+      UserSaleOrder.distinct.pluck( :user_id ).each do |uid|
+        User.where( id: uid ).delete_all unless User.where( id: uid ).exists?
+      end
+
     end
 
     puts "Sales orders created : #{@sales_orders_created}" unless @silent_output
