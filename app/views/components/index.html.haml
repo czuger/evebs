@@ -2,24 +2,21 @@
 
   = render partial: 'shared/errors'
 
-  %h3
-    Enter the name of the component you are looking for
-
   = form_tag components_path, method: :get do
 
-    .form-group
-      .row
-        .col-md-10
+    .my-4
+      .form-inline
+        .mr-3
           = text_field_tag :filter, @filter, class: 'form-control'
+        .mr-3
+          = button_tag :filter, class: 'btn btn-secondary'
 
-        .col-md-2
-          = button_tag :filter, class: 'form-control'
-
-    %table.table.table-bordered
+    %table.table.table-hover.table-sm
       %thead
         %tr
           %th
             Name
+          %th
 
       %tbody
         - @components.each do |component|
