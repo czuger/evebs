@@ -1,8 +1,8 @@
 .container-fluid
 
-  - if @trade_hubs_names && @item_names
-    .my-3
-      .form-inline
+  .my-4
+    .form-inline
+      - if @trade_hubs_names && @item_names
         .ml-3
           = label_tag 'select_trade_hubs', 'Trade hubs'
         .ml-3
@@ -11,6 +11,15 @@
           = label_tag 'select_items', 'Items'
         .ml-3
           = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
+
+      .ml-3
+        - if @user.download_orders_running
+          Sales orders download is running. Please refresh in a while ...
+        - else
+          - if @data_available_in > 0
+            = "Data cached. New data available in #{Time.at(@data_available_in).strftime('%Mm %Ss')}."
+          - else
+            = link_to 'Update orders', user_sale_orders_path, method: :put, class: 'btn btn-secondary'
 
   .row
     .col-md-12

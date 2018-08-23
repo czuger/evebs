@@ -1,19 +1,9 @@
 class UserSaleOrdersController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user, only: [
-      :index, :download_orders, :download_orders_start, :send_my_orders_edit, :send_my_orders, :get_sent_orders ]
+  before_action :set_user
 
-  def index
-    @orders_active_record = @user.user_sale_orders.joins( :eve_item, trade_hub: :region )
-      .order( 'trade_hubs.name', 'eve_items.name' ).paginate( :page => params[:page], :per_page => 20 )
-
-    @orders_data = @orders_active_record.pluck_to_hash(
-        'trade_hubs.name', 'regions.name', 'eve_items.name', 'eve_items.id', :price )
-
-  end
-
-  def show_challenged_prices
+  def show
     @user = current_user
     @print_change_warning=print_change_warning
 
@@ -39,21 +29,18 @@ class UserSaleOrdersController < ApplicationController
 
       set_trade_hubs( trade_hub_name )
       set_items( to.eve_item.name )
-
     end
 
     @compared_prices = @compared_prices.sort_by{ |e| [e[:trade_hub_name], e[:eve_item_name]] }
+
+    lod = @user.last_orders_download ? @user.last_orders_download : Time.at( 0 )
+    @data_available_in = (lod + UserSaleOrder::CACHE_DURATION - Time.now).round
   end
 
-  def download_orders
-  end
-
-  def download_orders_start
+  def update
     @user.update( download_orders_running: true )
-
     DownloadMyOrdersJob.perform_later( @user )
-
-    redirect_to download_orders_path
+    redirect_to user_sale_orders_path
   end
 
   private

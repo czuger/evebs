@@ -20,10 +20,7 @@ Rails.application.routes.draw do
   resources :production_lists, only: [ :edit, :update, :create ]
   post :remove_production_list_check, controller: :production_lists
 
-  resources :user_sale_orders, only: [ :index ]
-  get :show_challenged_prices, controller: :user_sale_orders
-  get :download_orders, controller: :user_sale_orders
-  post :download_orders_start, controller: :user_sale_orders
+  resource :user_sale_orders, only: [ :show, :update ]
 
   resource :blueprints, only: [:show, :update]
 
