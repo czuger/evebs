@@ -2,17 +2,17 @@ FactoryBot.define do
   factory :user do
 
     # Important for OmniauthTests
-    provider :developer
+    provider {:developer}
 
     sequence :name do |n|
       "User #{n}"
     end
 
-    remove_occuped_places true
-    min_pcent_for_advice 10
-    min_amount_for_advice 10000000
+    remove_occuped_places {true}
+    min_pcent_for_advice {10}
+    min_amount_for_advice {10000000}
 
-    uid 12345677
+    uid {12345677}
 
     # identity
     #

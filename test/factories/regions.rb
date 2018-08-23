@@ -2,17 +2,17 @@ FactoryBot.define do
 
   factory :region do
 
-    cpp_region_id '123456'
-    name 'Region test'
+    cpp_region_id {'123456'}
+    name {'Region test'}
 
     factory :the_forge do
-      cpp_region_id '10000002'
-      name 'The forge'
+      cpp_region_id {'10000002'}
+      name {'The forge'}
     end
 
     factory :heimatar do
-      cpp_region_id '10000030'
-      name 'Heimatar'
+      cpp_region_id {'10000030'}
+      name {'Heimatar'}
 
       # after(:create) do |region|
       #
@@ -39,8 +39,8 @@ FactoryBot.define do
     # A region where we have no crest data. If we pass items: EveItem.all to create( :domain )
     # Then the evaluator.items loop will create data for each items (EveItem.all or any other item array you give as an argument)
     factory :domain do
-      cpp_region_id '10000043'
-      name 'Domain'
+      cpp_region_id {'10000043'}
+      name {'Domain'}
 
       transient do
         items { [] }

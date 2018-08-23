@@ -6,7 +6,7 @@ FactoryBot.define do
       blueprint { FactoryBot.create( :blueprint ) }
       blueprint_component { FactoryBot.create( :component_morphite ) }
 
-      required_qtt 15
+      required_qtt {15}
     end
   end
 end
