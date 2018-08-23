@@ -1190,6 +1190,33 @@ CREATE TABLE public.user_sale_orders (
 
 
 --
+-- Name: user_sale_order_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.user_sale_order_details AS
+ SELECT uso.id,
+    uso.user_id,
+    ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
+    ei.name AS eve_item_name,
+    uso.price AS my_price,
+    pm.min_price,
+    ei.cost,
+    b.prod_qtt,
+    s1.unit_cost,
+    ((pm.min_price / s1.unit_cost) - (1)::double precision) AS margin_pcent,
+    uso.eve_item_id,
+    ei.cpp_eve_item_id,
+    tu.eve_system_id
+   FROM (((((public.user_sale_orders uso
+     JOIN public.eve_items ei ON ((ei.id = uso.eve_item_id)))
+     JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
+     JOIN public.trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
+     JOIN public.regions r ON ((tu.region_id = r.id)))
+     LEFT JOIN public.prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id)))),
+    LATERAL ( SELECT (ei.cost / (b.prod_qtt)::double precision)) s1(unit_cost);
+
+
+--
 -- Name: user_sale_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2609,6 +2636,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180822094022'),
 ('20180822104400'),
 ('20180822110028'),
-('20180822165603');
+('20180822165603'),
+('20180823092423');
 
 

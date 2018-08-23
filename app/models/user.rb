@@ -12,7 +12,10 @@ class User < ApplicationRecord
   has_many :blueprints, through: :eve_items
   has_many :blueprint_materials, through: :blueprints
   has_many :blueprint_components, through: :materials
+
   has_many :user_sale_orders, dependent: :destroy
+  has_many :user_sale_order_details
+
   has_many :api_key_errors
   has_many :production_lists, dependent: :destroy
 

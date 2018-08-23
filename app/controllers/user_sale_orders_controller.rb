@@ -10,6 +10,9 @@ class UserSaleOrdersController < ApplicationController
     @trade_orders = @user.user_sale_orders.includes( { eve_item: :blueprint }, { trade_hub: :region } )
     @compared_prices = []
 
+    mp_keys = @trade_orders.map{ |to| [ to.eve_item_id, to.trade_hub_id ] }
+    mp_results = PricesMin.where( )
+
     @trade_orders.each do |to|
       min_price = PricesMin.find_by_eve_item_id_and_trade_hub_id(to.eve_item_id, to.trade_hub_id )
 
