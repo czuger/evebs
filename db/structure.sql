@@ -1204,7 +1204,9 @@ CREATE VIEW public.user_sale_order_details AS
     b.prod_qtt,
     s1.unit_cost,
     ((pm.min_price / s1.unit_cost) - (1)::double precision) AS margin_pcent,
+    (pm.min_price - uso.price) AS price_delta,
     uso.eve_item_id,
+    uso.trade_hub_id,
     ei.cpp_eve_item_id,
     tu.eve_system_id
    FROM (((((public.user_sale_orders uso

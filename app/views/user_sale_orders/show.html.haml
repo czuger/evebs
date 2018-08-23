@@ -6,7 +6,7 @@
         .ml-3
           = label_tag 'select_trade_hubs', 'Trade hubs'
         .ml-3
-          = select( 'select', 'trade_hubs', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
+          = select( 'select', 'trade_hub_id', @trade_hubs_names, {include_blank: 'All'}, class: 'form-control' )
         .ml-3
           = label_tag 'select_items', 'Items'
         .ml-3
@@ -26,7 +26,7 @@
       %h3
         Challenged prices
 
-      %table.table
+      %table.table.table-hover.table-sm
         %tr
           %th Trade hub
           %th Item
@@ -37,16 +37,15 @@
           %th.text-center Diff
           -#%th{ colspan: 2 }
         - @compared_prices.each do |cp|
-          %tr{ class: cycle( :odd, :even ) }
-            %td.trade_hub_name.text-center=cp[:trade_hub_name]
-            %td.item_name= link_to( cp[:eve_item_name], item_url( cp[:eve_item_id] ) )
-            %td.text-right=print_isk( cp[:cost] )
-            %td.text-right=print_isk( cp[:min_price] )
-            %td.text-right{ class: challenged_prices_highlight_class_low_margin( cp[:margin_pcent] ) }=print_pcent( cp[:margin_pcent] )
-            %td.text-right=print_isk( cp[:my_price] )
-            - delta = ( cp[:min_price] - cp[:my_price] ) if cp[:min_price] && cp[:my_price] && cp[:min_price].class != String
-            %td.text-right{ class: challenged_prices_highlight_class_my_price_to_min_price_delta( delta ) }
-              = print_isk( delta ) if delta
+          %tr
+            %td.trade_hub_name=cp.trade_hub_name
+            %td.item_name= link_to( cp.eve_item_name, item_url( cp.eve_item_id ) )
+            %td.text-right=print_isk( cp.cost )
+            %td.text-right=print_isk( cp.min_price )
+            %td.text-right{ class: challenged_prices_highlight_class_low_margin( cp.margin_pcent ) }=print_pcent( cp.margin_pcent )
+            %td.text-right=print_isk( cp.my_price )
+            %td.text-right{ class: challenged_prices_highlight_class_my_price_to_min_price_delta( cp.price_delta ) }
+              = print_isk( cp.price_delta )
 
             -#%td.text-center
             -#  %button{ onclick: "CCPEVE.showMarketDetails(#{cp[:eve_item_cpp_id]})", class: 'btn btn-default' }
