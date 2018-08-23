@@ -1183,9 +1183,9 @@ CREATE TABLE public.user_sale_orders (
     user_id integer NOT NULL,
     eve_item_id integer NOT NULL,
     trade_hub_id integer NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    price double precision
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    price double precision NOT NULL
 );
 
 
@@ -2353,6 +2353,14 @@ ALTER TABLE ONLY public.sales_finals
 
 
 --
+-- Name: user_sale_orders fk_rails_94365f7fb0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_sale_orders
+    ADD CONSTRAINT fk_rails_94365f7fb0 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
+
+
+--
 -- Name: bpc_assets_stations fk_rails_a00a2978d6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2406,6 +2414,22 @@ ALTER TABLE ONLY public.sales_orders
 
 ALTER TABLE ONLY public.prices_advices
     ADD CONSTRAINT fk_rails_ccdf67e46e FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
+
+
+--
+-- Name: user_sale_orders fk_rails_cf4b559877; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_sale_orders
+    ADD CONSTRAINT fk_rails_cf4b559877 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: user_sale_orders fk_rails_d8144e7823; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_sale_orders
+    ADD CONSTRAINT fk_rails_d8144e7823 FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
 
 
 --
@@ -2639,6 +2663,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180822104400'),
 ('20180822110028'),
 ('20180822165603'),
-('20180823092423');
+('20180823092423'),
+('20180823140710'),
+('20180823141927');
 
 
