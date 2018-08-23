@@ -109,12 +109,12 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     sov = @sales_orders_volumes[ record['order_id'] ]
 
+    issued = DateTime.parse( record['issued'] )
+    duration = record['duration']
+    end_time = issued + duration.days
+
     if sov
       # If volume is unchanged, then we just touch the order
-
-      issued = DateTime.parse( record['issued'] )
-      duration = record['duration']
-      end_time = issued + duration.days
 
       if sov != record['volume_remain']
 
