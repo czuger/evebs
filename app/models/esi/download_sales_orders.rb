@@ -1,7 +1,7 @@
 class Esi::DownloadSalesOrders < Esi::Download
 
   def initialize( debug_request: false, silent_output: false )
-    super( nil, { order_type: :sell }, debug_request: debug_request )
+    super( nil, {}, debug_request: debug_request )
     # p @errors_limit_remain
     @silent_output = silent_output
   end
@@ -23,6 +23,8 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     @sales_orders_over_time = 0
 
+    @buy_orders_created_or_updated = 0
+
     @sales_finals_created = 0
     sales_finals_deleted = 0
 
@@ -36,6 +38,7 @@ class Esi::DownloadSalesOrders < Esi::Download
 
       BlueprintComponentSalesOrder.update_all( touched: false )
       SalesOrder.update_all( touched: false )
+      BuyOrder.update_all( touched: false )
 
       Region.all.each do |region|
         cpp_region_id = region.cpp_region_id.to_i
@@ -54,8 +57,8 @@ class Esi::DownloadSalesOrders < Esi::Download
           puts "Unable to find data for region #{region.name}"
 
           # In case we couldn' find data for region, we prevent removing untouched data (cos nothing will be touched for this region)
-          SalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true, updated_at: Time.now )
-          BlueprintComponentSalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true, updated_at: Time.now )
+          SalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true )
+          BlueprintComponentSalesOrder.where( trade_hub_id: region.trade_hub_ids ).update_all( touched: true )
 
           next
         end
@@ -68,7 +71,15 @@ class Esi::DownloadSalesOrders < Esi::Download
           trade_hub_id = @trade_hub_conversion_hash[record['system_id']]
           next unless trade_hub_id
 
-          update_sales_orders( trade_hub_id, record )
+          # pp record
+
+          unless record['is_buy_order']
+            update_sales_orders( trade_hub_id, record )
+          else
+            update_buy_order( trade_hub_id, record )
+          end
+
+
           update_blueprint_component_sales_orders( trade_hub_id, record )
         end
 
@@ -77,17 +88,21 @@ class Esi::DownloadSalesOrders < Esi::Download
       touch_unchanged_sales_orders
       remove_old_sales_orders
 
-      sales_finals_to_delete = SalesFinal.where( 'updated_at < ?', Time.now - 1.month )
+      sales_finals_to_delete = SalesFinal.where( 'day < ?', Time.now - 1.month )
       sales_finals_deleted = sales_finals_to_delete.count
       sales_finals_to_delete.delete_all
 
+      buy_orders_to_delete = BuyOrder.where( touched: false )
+      buy_orders_deleted = buy_orders_to_delete.count
+      buy_orders_to_delete.delete_all
+
       BlueprintComponentSalesOrder.where( touched: false ).delete_all
-      BpcJitaSalesFinal.where( 'updated_at < ?', Time.now - 1.week ).delete_all
+      BpcJitaSalesFinal.where( 'created_at < ?', Time.now - 1.week ).delete_all
 
       # Temporary to remove unused users.
-      UserSaleOrder.distinct.pluck( :user_id ).each do |uid|
-        UserSaleOrder.where( user_id: uid ).delete_all unless User.where( id: uid ).exists?
-      end
+      # UserSaleOrder.distinct.pluck( :user_id ).each do |uid|
+      #   UserSaleOrder.where( user_id: uid ).delete_all unless User.where( id: uid ).exists?
+      # end
 
     end
 
@@ -98,9 +113,34 @@ class Esi::DownloadSalesOrders < Esi::Download
 
     puts "Sales final created : #{@sales_finals_created}" unless @silent_output
     puts "Sales final deleted : #{sales_finals_deleted}" unless @silent_output
+
+    puts "Buy orders created or updated : #{@buy_orders_created_or_updated}" unless @silent_output
+    puts "Buy orders deleted : #{buy_orders_deleted}" unless @silent_output
   end
 
   private
+
+  def update_buy_order( trade_hub_id, record )
+
+    eve_item_id = @eve_item_conversion_hash[record['type_id']]
+    return unless eve_item_id
+
+    issued = DateTime.parse( record['issued'] )
+    duration = record['duration']
+    end_time = issued + duration.days
+
+    so = BuyOrder.where( order_id: record['order_id'] ).first_or_initialize
+
+    so.volume_remain = record['volume_remain']
+    so.price = record['price']
+    so.touched = true
+    so.end_time = end_time
+    so.trade_hub_id = trade_hub_id
+    so.eve_item_id = eve_item_id
+    so.save!
+
+    @buy_orders_created_or_updated += 1
+  end
 
   def update_sales_orders( trade_hub_id, record )
 
@@ -163,7 +203,7 @@ class Esi::DownloadSalesOrders < Esi::Download
       SalesOrder.where( order_id: order_ids ).update_all( touched: true )
     end
     @blueprints_sales_orders_to_touch.in_groups_of( 5000 ).each do |order_ids|
-      BlueprintComponentSalesOrder.where( cpp_order_id: order_ids ).update_all( touched: true, updated_at: Time.now )
+      BlueprintComponentSalesOrder.where( cpp_order_id: order_ids ).update_all( touched: true )
     end
   end
 
