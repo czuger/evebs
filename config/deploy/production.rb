@@ -5,7 +5,6 @@ server 'nw', roles: %w{app web db}
 
 set :keep_releases, 3
 
-
 # before 'deploy:publishing', 'deploy:before_publish_tasks' do
 #   on 'hw' do
 #     # Centralized pids management

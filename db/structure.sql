@@ -360,6 +360,40 @@ CREATE TABLE public.buy_orders (
 
 
 --
+-- Name: buy_orders_analytics; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.buy_orders_analytics (
+    id bigint NOT NULL,
+    trade_hub_id bigint NOT NULL,
+    eve_item_id bigint NOT NULL,
+    approx_max_price double precision,
+    over_approx_max_price_volume bigint,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: buy_orders_analytics_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.buy_orders_analytics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: buy_orders_analytics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.buy_orders_analytics_id_seq OWNED BY public.buy_orders_analytics.id;
+
+
+--
 -- Name: buy_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1397,6 +1431,13 @@ ALTER TABLE ONLY public.buy_orders ALTER COLUMN id SET DEFAULT nextval('public.b
 
 
 --
+-- Name: buy_orders_analytics id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buy_orders_analytics ALTER COLUMN id SET DEFAULT nextval('public.buy_orders_analytics_id_seq'::regclass);
+
+
+--
 -- Name: crontabs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1627,6 +1668,14 @@ ALTER TABLE ONLY public.bpc_jita_sales_finals
 
 ALTER TABLE ONLY public.bpc_prices_mins
     ADD CONSTRAINT bpc_prices_mins_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: buy_orders_analytics buy_orders_analytics_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buy_orders_analytics
+    ADD CONSTRAINT buy_orders_analytics_pkey PRIMARY KEY (id);
 
 
 --
@@ -1946,6 +1995,13 @@ CREATE INDEX index_bpc_prices_mins_on_blueprint_component_id ON public.bpc_price
 --
 
 CREATE INDEX index_bpc_prices_mins_on_trade_hub_id ON public.bpc_prices_mins USING btree (trade_hub_id);
+
+
+--
+-- Name: index_buy_orders_analytics_on_trade_hub_id_and_eve_item_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_buy_orders_analytics_on_trade_hub_id_and_eve_item_id ON public.buy_orders_analytics USING btree (trade_hub_id, eve_item_id);
 
 
 --
@@ -2331,6 +2387,14 @@ ALTER TABLE ONLY public.eve_items
 
 
 --
+-- Name: buy_orders_analytics fk_rails_35a8cb6031; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buy_orders_analytics
+    ADD CONSTRAINT fk_rails_35a8cb6031 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
+
+
+--
 -- Name: structures fk_rails_38f8c90abc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2528,6 +2592,14 @@ ALTER TABLE ONLY public.trade_hubs
 
 ALTER TABLE ONLY public.sales_finals
     ADD CONSTRAINT fk_rails_e934079200 FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
+
+
+--
+-- Name: buy_orders_analytics fk_rails_e970106908; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.buy_orders_analytics
+    ADD CONSTRAINT fk_rails_e970106908 FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
 
 
 --
@@ -2748,6 +2820,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180823092423'),
 ('20180823140710'),
 ('20180823141927'),
-('20180824065727');
+('20180824065727'),
+('20180824093831');
 
 
