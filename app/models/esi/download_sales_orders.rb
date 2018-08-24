@@ -24,6 +24,7 @@ class Esi::DownloadSalesOrders < Esi::Download
     @sales_orders_over_time = 0
 
     @buy_orders_created_or_updated = 0
+    buy_orders_deleted = 0
 
     @sales_finals_created = 0
     sales_finals_deleted = 0
