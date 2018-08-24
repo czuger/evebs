@@ -76,12 +76,10 @@ class Esi::DownloadSalesOrders < Esi::Download
 
           unless record['is_buy_order']
             update_sales_orders( trade_hub_id, record )
+            update_blueprint_component_sales_orders( trade_hub_id, record )
           else
             update_buy_order( trade_hub_id, record )
           end
-
-
-          update_blueprint_component_sales_orders( trade_hub_id, record )
         end
 
       end
