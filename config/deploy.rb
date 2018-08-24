@@ -15,7 +15,7 @@ set :deploy_to, "/var/www/eve_business_server"
 set :keep_releases, 2
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads'
-append :linked_files, 'config/database.yml', 'config/secrets.yml', 'db/eve.db', 'config/omniauth.yaml', 'data/items_tree.json', 'config/email.txt', 'config/character_id.txt'
+append :linked_files, 'config/database.yml', 'config/secrets.yml', 'config/omniauth.yaml', 'config/email.txt', 'config/character_id.txt'
 
 namespace :deploy do
 

@@ -62,6 +62,9 @@ group :development, :test do
 
   gem 'capistrano3-puma', '3.1.1'
 
+  gem 'ed25519', '~> 1.2'
+  gem 'bcrypt_pbkdf', '~> 1.0'
+
   gem 'factory_bot_rails', '~> 4.0'
 
   gem 'spring'
