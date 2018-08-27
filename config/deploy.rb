@@ -30,7 +30,10 @@ namespace :deploy do
 
   task :update_version_number do
     on roles( :app ) do
-      execute( "sed -i \"s/CHANGE_TO_VERSION_NUMBER/`wc -l #{fetch(:deploy_to)}/revisions.log | awk '{ print $1 }'`/g\" #{fetch(:release_path)}/app/views/layouts/_menu.html.haml" )
+      # Old version, keep it for fun
+      # execute( "sed -i \"s/CHANGE_TO_VERSION_NUMBER/`wc -l #{fetch(:deploy_to)}/revisions.log | awk '{ print $1 }'`/g\" #{fetch(:release_path)}/app/views/layouts/_menu.html.haml" )
+      execute "cd #{fetch(:deploy_to)}/repo; git rev-list --count HEAD > git_commit_count.txt"
+      execute( "sed -i \"s/CHANGE_TO_VERSION_NUMBER/`cat #{fetch(:deploy_to)}/repo/git_commit_count.txt`/g\" #{fetch(:release_path)}/app/views/layouts/_menu.html.haml" )
     end
   end
 
