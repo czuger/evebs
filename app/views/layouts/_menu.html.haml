@@ -12,6 +12,8 @@
         = simple_menu_link( 'Trade hubs', edit_choose_trade_hubs_path )
 
         = dropdown_menu_block( 'Earnings' ) do
+          = dropdown_sub_menu_link( 'Buy orders', buy_orders_path )
+          .dropdown-divider
           = dropdown_sub_menu_link( 'Weekly', price_advices_advice_prices_weekly_path )
           = dropdown_sub_menu_link( 'Immediate', price_advices_advice_prices_path )
           .dropdown-divider

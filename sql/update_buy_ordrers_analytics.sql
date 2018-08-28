@@ -15,15 +15,36 @@ UPDATE buy_orders_analytics boa SET over_approx_max_price_volume =
         AND bo.eve_item_id = boa.eve_item_id
   GROUP BY trade_hub_id, eve_item_id );
 
-UPDATE buy_orders_analytics boa SET ( single_unit_cost, single_unit_margin, estimated_volume_margin ) =
-( SELECT single_unit_cost, boa.approx_max_price - single_unit_cost,
-    ( boa.approx_max_price - single_unit_cost ) * over_approx_max_price_volume
+UPDATE buy_orders_analytics boa SET ( single_unit_cost, single_unit_margin, estimated_volume_margin, per_job_margin,
+                                      per_job_run_margin, final_margin ) =
+( SELECT single_unit_cost,
+    boa.approx_max_price - single_unit_cost,
+    ( boa.approx_max_price - single_unit_cost ) * over_approx_max_price_volume,
+    ( boa.approx_max_price - single_unit_cost ) * ( bp.prod_qtt * bp.nb_runs ),
+    ( boa.approx_max_price - single_unit_cost ) * bp.prod_qtt,
+    LEAST(
+    ( boa.approx_max_price - single_unit_cost ) * over_approx_max_price_volume,
+    ( boa.approx_max_price - single_unit_cost ) * ( bp.prod_qtt * bp.nb_runs )
+  )
   FROM prices_advices pa
+    LEFT JOIN eve_items ei ON pa.eve_item_id = ei.id
+    LEFT JOIN blueprints bp ON ei.blueprint_id = bp.id
   WHERE pa.trade_hub_id = boa.trade_hub_id
   AND pa.eve_item_id = boa.eve_item_id );
 
 -- Avant de faire fonctionner ça il faut rajouter une colonne prix à l'unité dans eve item
 -- Il faudra également la suprimer de prices advices, il faut une source unique.
-SELECT boa.trade_hub_id, boa.eve_item_id, ei.name, boa.approx_max_price, boa.over_approx_max_price_volume, ei.cost
-FROM eve_items ei
-  JOIN buy_orders_analytics boa ON ei.id = boa.eve_item_id
+SELECT boa.id, u.id user_id, boa.trade_hub_id, boa.eve_item_id, tu.name, ei.name, approx_max_price,
+  single_unit_cost, single_unit_margin, final_margin,
+  per_job_margin, CEIL( final_margin / per_job_margin ) job_count,
+  per_job_run_margin, FLOOR( final_margin / per_job_run_margin ) runs,
+  FLOOR( final_margin / per_job_run_margin ) * per_job_run_margin true_margin,
+  estimated_volume_margin, over_approx_max_price_volume
+FROM buy_orders_analytics boa
+  JOIN eve_items ei ON ei.id = boa.eve_item_id
+  JOIN trade_hubs tu ON boa.trade_hub_id = tu.id
+  JOIN trade_hubs_users thu ON boa.trade_hub_id = thu.trade_hub_id
+  JOIN eve_items_users eiu ON boa.eve_item_id = eiu.eve_item_id
+  JOIN users u ON thu.user_id = u.id AND eiu.user_id = u.id
+WHERE final_margin > 0
+ORDER BY final_margin DESC;

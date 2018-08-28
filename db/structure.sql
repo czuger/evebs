@@ -370,7 +370,13 @@ CREATE TABLE public.buy_orders_analytics (
     approx_max_price double precision,
     over_approx_max_price_volume bigint,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    single_unit_cost double precision,
+    single_unit_margin double precision,
+    estimated_volume_margin double precision,
+    per_job_margin double precision,
+    per_job_run_margin double precision,
+    final_margin double precision
 );
 
 
@@ -391,6 +397,140 @@ CREATE SEQUENCE public.buy_orders_analytics_id_seq
 --
 
 ALTER SEQUENCE public.buy_orders_analytics_id_seq OWNED BY public.buy_orders_analytics.id;
+
+
+--
+-- Name: eve_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.eve_items (
+    id integer NOT NULL,
+    cpp_eve_item_id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    cost double precision,
+    market_group_id integer,
+    blueprint_id bigint NOT NULL
+);
+
+
+--
+-- Name: eve_items_users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.eve_items_users (
+    id integer NOT NULL,
+    user_id integer,
+    eve_item_id integer
+);
+
+
+--
+-- Name: regions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.regions (
+    id integer NOT NULL,
+    cpp_region_id character varying NOT NULL,
+    name character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: trade_hubs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.trade_hubs (
+    id integer NOT NULL,
+    eve_system_id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    region_id integer,
+    "inner" boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: trade_hubs_users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.trade_hubs_users (
+    id integer NOT NULL,
+    user_id integer,
+    trade_hub_id integer
+);
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    name character varying(255),
+    remove_occuped_places boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    provider character varying(255),
+    uid character varying(255),
+    last_changes_in_choices timestamp without time zone,
+    min_pcent_for_advice integer,
+    watch_my_prices boolean,
+    min_amount_for_advice double precision,
+    admin boolean DEFAULT false NOT NULL,
+    batch_cap boolean DEFAULT true NOT NULL,
+    vol_month_pcent integer DEFAULT 10 NOT NULL,
+    expires_on timestamp without time zone,
+    token character varying,
+    renew_token character varying,
+    locked boolean DEFAULT false NOT NULL,
+    download_assets_running boolean DEFAULT false NOT NULL,
+    last_assets_download timestamp without time zone,
+    download_orders_running boolean DEFAULT false NOT NULL,
+    last_orders_download timestamp without time zone,
+    batch_cap_multiplier integer DEFAULT 1 NOT NULL,
+    last_duplication_receiver_id integer,
+    selected_assets_station_id bigint,
+    download_blueprints_running boolean DEFAULT false NOT NULL,
+    last_blueprints_download timestamp without time zone
+);
+
+
+--
+-- Name: buy_orders_analytics_results; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.buy_orders_analytics_results AS
+ SELECT boa.id,
+    u.id AS user_id,
+    boa.trade_hub_id,
+    boa.eve_item_id,
+    ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
+    ei.name AS eve_item_name,
+    boa.approx_max_price,
+    boa.single_unit_cost,
+    boa.single_unit_margin,
+    boa.final_margin,
+    boa.per_job_margin,
+    ceil((boa.final_margin / boa.per_job_margin)) AS job_count,
+    boa.per_job_run_margin,
+    floor((boa.final_margin / boa.per_job_run_margin)) AS runs,
+    (floor((boa.final_margin / boa.per_job_run_margin)) * boa.per_job_run_margin) AS true_margin,
+    boa.estimated_volume_margin,
+    boa.over_approx_max_price_volume
+   FROM ((((((public.buy_orders_analytics boa
+     JOIN public.eve_items ei ON ((ei.id = boa.eve_item_id)))
+     JOIN public.trade_hubs tu ON ((boa.trade_hub_id = tu.id)))
+     JOIN public.trade_hubs_users thu ON ((boa.trade_hub_id = thu.trade_hub_id)))
+     JOIN public.eve_items_users eiu ON ((boa.eve_item_id = eiu.eve_item_id)))
+     JOIN public.users u ON (((thu.user_id = u.id) AND (eiu.user_id = u.id))))
+     JOIN public.regions r ON ((tu.region_id = r.id)))
+  WHERE (boa.final_margin > (0)::double precision)
+  ORDER BY boa.final_margin DESC;
 
 
 --
@@ -478,22 +618,6 @@ ALTER SEQUENCE public.crontabs_id_seq OWNED BY public.crontabs.id;
 
 
 --
--- Name: eve_items; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.eve_items (
-    id integer NOT NULL,
-    cpp_eve_item_id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    cost double precision,
-    market_group_id integer,
-    blueprint_id bigint NOT NULL
-);
-
-
---
 -- Name: eve_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -510,17 +634,6 @@ CREATE SEQUENCE public.eve_items_id_seq
 --
 
 ALTER SEQUENCE public.eve_items_id_seq OWNED BY public.eve_items.id;
-
-
---
--- Name: eve_items_users; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.eve_items_users (
-    id integer NOT NULL,
-    user_id integer,
-    eve_item_id integer
-);
 
 
 --
@@ -680,80 +793,6 @@ CREATE TABLE public.prices_advices (
     margin_percent double precision,
     price_avg_week double precision,
     history_volume bigint
-);
-
-
---
--- Name: regions; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.regions (
-    id integer NOT NULL,
-    cpp_region_id character varying NOT NULL,
-    name character varying NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: trade_hubs; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.trade_hubs (
-    id integer NOT NULL,
-    eve_system_id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    region_id integer,
-    "inner" boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: trade_hubs_users; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.trade_hubs_users (
-    id integer NOT NULL,
-    user_id integer,
-    trade_hub_id integer
-);
-
-
---
--- Name: users; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.users (
-    id integer NOT NULL,
-    name character varying(255),
-    remove_occuped_places boolean,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    provider character varying(255),
-    uid character varying(255),
-    last_changes_in_choices timestamp without time zone,
-    min_pcent_for_advice integer,
-    watch_my_prices boolean,
-    min_amount_for_advice double precision,
-    admin boolean DEFAULT false NOT NULL,
-    batch_cap boolean DEFAULT true NOT NULL,
-    vol_month_pcent integer DEFAULT 10 NOT NULL,
-    expires_on timestamp without time zone,
-    token character varying,
-    renew_token character varying,
-    locked boolean DEFAULT false NOT NULL,
-    download_assets_running boolean DEFAULT false NOT NULL,
-    last_assets_download timestamp without time zone,
-    download_orders_running boolean DEFAULT false NOT NULL,
-    last_orders_download timestamp without time zone,
-    batch_cap_multiplier integer DEFAULT 1 NOT NULL,
-    last_duplication_receiver_id integer,
-    selected_assets_station_id bigint,
-    download_blueprints_running boolean DEFAULT false NOT NULL,
-    last_blueprints_download timestamp without time zone
 );
 
 
@@ -2821,6 +2860,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180823140710'),
 ('20180823141927'),
 ('20180824065727'),
-('20180824093831');
+('20180824093831'),
+('20180828060637'),
+('20180828090606');
 
 
