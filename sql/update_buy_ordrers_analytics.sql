@@ -15,6 +15,13 @@ UPDATE buy_orders_analytics boa SET over_approx_max_price_volume =
         AND bo.eve_item_id = boa.eve_item_id
   GROUP BY trade_hub_id, eve_item_id );
 
+UPDATE buy_orders_analytics boa SET ( single_unit_cost, single_unit_margin, estimated_volume_margin ) =
+( SELECT single_unit_cost, boa.approx_max_price - single_unit_cost,
+    ( boa.approx_max_price - single_unit_cost ) * over_approx_max_price_volume
+  FROM prices_advices pa
+  WHERE pa.trade_hub_id = boa.trade_hub_id
+  AND pa.eve_item_id = boa.eve_item_id );
+
 -- Avant de faire fonctionner ça il faut rajouter une colonne prix à l'unité dans eve item
 -- Il faudra également la suprimer de prices advices, il faut une source unique.
 SELECT boa.trade_hub_id, boa.eve_item_id, ei.name, boa.approx_max_price, boa.over_approx_max_price_volume, ei.cost
