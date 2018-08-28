@@ -19,6 +19,8 @@ namespace :process do
 
         Sql::PricesAdvices.update
 
+        Sql::BuyOrdersAnalyticsUpdate.update
+
         # Esi::DownloadMyOrders.new.update()
       end
 
