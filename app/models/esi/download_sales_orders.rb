@@ -154,8 +154,8 @@ class Esi::DownloadSalesOrders < Esi::Download
         bo_on_db.eve_item_id = eve_item_id
         bo_on_db.save!
 
-        BuyOrder.where( order_id: record['order_id'] ).update!(
-           volume_remain: record['volume_remain'], price: record['price'], end_time: time,
+        BuyOrder.where( order_id: record['order_id'] ).update_all(
+           volume_remain: record['volume_remain'], price: record['price'], end_time: end_time, updated_at: DateTime.now
         )
 
         @buy_orders_updated += 1
