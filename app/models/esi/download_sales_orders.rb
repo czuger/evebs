@@ -31,7 +31,8 @@ class Esi::DownloadSalesOrders < Esi::Download
     @sales_finals_created = 0
     sales_finals_deleted = 0
 
-    @sales_orders_volumes = Hash[ SalesOrder.pluck( :order_id, :volume ) ]
+    @sales_orders_volumes = SalesOrder.pluck( :order_id, :volume_remain, :price, :end_time )
+    @sales_orders_volumes = Hash[ @sales_orders_volumes.map{ |e| [ e[0], { vol: e[1], p: e[2], end_t: e[3] } ] } ]
     @sales_orders_to_touch = []
 
     @buy_orders_volumes = BuyOrder.pluck( :order_id, :volume_remain, :price, :end_time )
@@ -188,7 +189,7 @@ class Esi::DownloadSalesOrders < Esi::Download
     if sov
       # If volume is unchanged, then we just touch the order
 
-      if sov != record['volume_remain']
+      if sov[:vol] != record['volume_remain'] || sov[:p] != record['price'] || sov[:end_t] != end_time
 
         so = SalesOrder.where( order_id: record['order_id'] ).first
 
