@@ -31,7 +31,7 @@ class Esi::DownloadSalesOrders < Esi::Download
     @sales_finals_created = 0
     sales_finals_deleted = 0
 
-    @sales_orders_volumes = SalesOrder.pluck( :order_id, :volume_remain, :price, :end_time )
+    @sales_orders_volumes = SalesOrder.pluck( :order_id, :volume, :price, :end_time )
     @sales_orders_volumes = Hash[ @sales_orders_volumes.map{ |e| [ e[0], { vol: e[1], p: e[2], end_t: e[3] } ] } ]
     @sales_orders_to_touch = []
 
