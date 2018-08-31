@@ -23,7 +23,7 @@ namespace :db do
 
         unless use_local_pg_dump
           puts 'No local dump, or local dump erased. Retrieving ...'
-          `ssh hw [ -e /tmp/production.dump ]`
+          `ssh nw [ -e /tmp/production.dump ]`
 
           use_remote_pg_dump = false
           if $?.to_i == 0
@@ -35,11 +35,11 @@ namespace :db do
           unless use_remote_pg_dump # file exist
             # Dump and compress it
             puts 'Running pg_dump on remote environment.'
-            `ssh hw pg_dump -Fc -n public -T "eve_market_history_archives" -U eve_business_server eve_business_server_production -f /tmp/production.dump`
+            `ssh nw pg_dump -Fc -n public -T "eve_market_history_archives" -U eve_business_server eve_business_server_production -f /tmp/production.dump`
           end
           # Get the remote file
           puts 'Retrieving remote dump'
-          `scp hw:/tmp/production.dump /tmp/`
+          `scp nw:/tmp/production.dump /tmp/`
         end
 
         puts 'Dropping database'
