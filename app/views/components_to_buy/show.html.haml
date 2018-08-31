@@ -16,8 +16,8 @@
         Volume
     - @required_quantities.each do |rq|
       %tr{ class: cycle( :odd, :even ) }
-        %td= rq.name
-        %td.text-right= link_to print_volume( rq.qtt_to_buy.round ), component_path( rq.id )
+        %td= link_to rq.name, component_path( rq.id )
+        %td.text-right= print_volume( rq.qtt_to_buy.round )
         %td.text-right= print_isk rq.total_cost
         %td.text-right= print_volume rq.required_volume.round
 
