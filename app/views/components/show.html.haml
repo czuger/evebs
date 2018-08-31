@@ -1,5 +1,12 @@
 .container
 
+  %h3
+    = link_to( @component.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{@component.cpp_eve_item_id}", :target => '_blank' )
+    \-
+    = link_to( print_total_cost_for_items( @crafted_component ), item_cost_path( @crafted_component.id ) )
+    \-
+    = link_to( 'Market data' , item_path( @crafted_component.id ) )
+
   %table.table.table-bordered.sortable
     %thead
       %tr
