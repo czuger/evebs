@@ -21,7 +21,7 @@
       %tbody
         - @components.each do |component|
           %tr
-            %th= link_to( component.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{component.cpp_eve_item_id}", :target => '_blank' )
+            %th= link_to( component.name, "https://eveinfo.com/item/#{component.cpp_eve_item_id}", :target => '_blank' )
             %th= link_to( 'Min prices in trades hubs', component_path( component ) )
 
   = will_paginate @components

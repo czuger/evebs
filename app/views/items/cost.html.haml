@@ -2,7 +2,7 @@
 
   %h3
     Production cost estimation for
-    = link_to( @item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{@item.cpp_eve_item_id}", :target => '_blank' )
+    = link_to( @item.name, "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
     = print_total_cost_for_items( @item )
 
   - total_for_batch = 0
