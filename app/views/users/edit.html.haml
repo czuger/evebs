@@ -5,37 +5,31 @@
 
     .row
 
-      .col-md-3
+      .col
         .form-group
           = f.label :min_pcent_for_advice
           = f.text_field :min_pcent_for_advice, size: 5, class: 'form-control'
+
+      .col
         .form-group
           = f.label :min_amount_for_advice
           = f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ), class: 'form-control' )
 
-    .row
-      .col-md-4
+      .col
         .form-group
           = f.label :vol_month_pcent
-          = f.number_field :vol_month_pcent
+          = f.number_field :vol_month_pcent, class: 'form-control'
 
-      .col-md-4
-        .form-group
-          = f.check_box :batch_cap
-          = f.label :batch_cap
-
-      .col-md-4
+      .col
         .form-group
           = f.label :batch_cap_multiplier
-          = f.number_field :batch_cap_multiplier
+          = f.number_field :batch_cap_multiplier, class: 'form-control'
 
-    %hr
-
-      .form-group
-        = f.label :remove_occuped_places
-        = check_box_tag :test, 1, false, 'data-toggle' => 'toggle', class: 'toggle'
+    .form-group
+      = f.label :batch_cap
+      = f.check_box :batch_cap, 'data-toggle' => 'toggle'
 
     .row
       .col-md-12.text-center
         .actions
-          = f.submit 'Save', class: 'btn btn-default'
+          = f.submit 'Save', class: 'btn btn-secondary'
