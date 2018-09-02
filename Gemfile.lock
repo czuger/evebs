@@ -1,5 +1,6 @@
-PATH
-  remote: ../bootstrap-toggle-rails
+GIT
+  remote: https://github.com/czuger/bootstrap-toggle-rails
+  revision: 8540ac377dafd22da901b3429de6c5949d81e821
   specs:
     bootstrap-toggle-rails (2.2.1.1)
 
@@ -62,9 +63,6 @@ GEM
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
-    bootstrap-tooltip-rails (0.1)
-      rails (>= 3.1)
-      thor
     builder (3.2.3)
     bullet (5.7.6)
       activesupport (>= 3.0.0)
@@ -318,7 +316,6 @@ DEPENDENCIES
   bcrypt_pbkdf (~> 1.0)
   bootstrap (~> 4.1.3)
   bootstrap-toggle-rails!
-  bootstrap-tooltip-rails
   bullet
   capistrano (>= 3.11)
   capistrano-rails (~> 1.3)
