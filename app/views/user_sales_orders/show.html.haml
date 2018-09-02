@@ -45,18 +45,17 @@
 
       %table.table.table-hover.table-sm
         %tr
-          %th Trade hub
-          - if @selected_trade_hub_id
-            = fa_icon :filter
-          %th Item
-          - if @selected_eve_item_id
-            = fa_icon :filter
+          %th
+            Trade hub
+            = filter_icon @selected_trade_hub_id
+          %th
+            Item
+            = filter_icon @selected_eve_item_id
           %th.text-center Cost
           %th.text-center Min price
           %th.text-center
             Min price margin
-            - if @user.sales_orders_show_margin_min
-              = fa_icon :filter
+            = filter_icon @user.sales_orders_show_margin_min
           %th.text-center My price
           %th.text-center Diff
           -#%th{ colspan: 2 }

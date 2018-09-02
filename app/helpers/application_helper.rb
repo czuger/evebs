@@ -40,5 +40,8 @@ module ApplicationHelper
     fa_icon 'question-circle', 'data-toggle' => 'tooltip', title: t( '.tooltips.' + tt_code.to_s )
   end
 
+  def filter_icon( data )
+    fa_icon :filter if data
+  end
 
 end
