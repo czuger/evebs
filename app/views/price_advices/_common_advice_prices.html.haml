@@ -41,7 +41,7 @@
             %td.trade_hub_name=item.trade_hub_name + " (#{item.region_name})"
 
             %td.item_name= link_to( item.item_name, item_path( item.item_id ) )
-            %td.text-right.information_highlight_left=print_volume(item.history_volume)
+            %td.text-right.information_highlight_left=print_volume(item.vol_month)
             %td.text-right.information_highlight_left= link_to( print_isk(item.single_unit_cost), item_cost_path( item.item_id ), target: '_blank' )
 
             - price, margin = price_n_margin( margin_type, item )

@@ -792,8 +792,7 @@ CREATE TABLE public.prices_advices (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     margin_percent double precision,
-    price_avg_week double precision,
-    history_volume bigint
+    price_avg_week double precision
 );
 
 
@@ -813,7 +812,6 @@ CREATE VIEW public.price_advice_margin_comps AS
     prices_advices_sub_1.min_price,
     prices_advices_sub_1.price_avg_week,
     prices_advices_sub_1.vol_month,
-    prices_advices_sub_1.history_volume,
     prices_advices_sub_1.full_batch_size,
     prices_advices_sub_1.daily_monthly_pcent,
     prices_advices_sub_1.margin_percent,
@@ -833,13 +831,12 @@ CREATE VIEW public.price_advice_margin_comps AS
             pa.min_price,
             pa.price_avg_week,
             pa.vol_month,
-            pa.history_volume,
             pa.full_batch_size,
             pa.daily_monthly_pcent,
             pa.margin_percent,
                 CASE
-                    WHEN ur.batch_cap THEN LEAST(((pa.full_batch_size * ur.batch_cap_multiplier))::numeric, floor((((pa.history_volume * ur.vol_month_pcent))::numeric * 0.01)))
-                    ELSE floor((((pa.history_volume * ur.vol_month_pcent))::numeric * 0.01))
+                    WHEN ur.batch_cap THEN LEAST(((pa.full_batch_size * ur.batch_cap_multiplier))::numeric, floor((((pa.vol_month * ur.vol_month_pcent))::numeric * 0.01)))
+                    ELSE floor((((pa.vol_month * ur.vol_month_pcent))::numeric * 0.01))
                 END AS batch_size_formula,
             ur.min_amount_for_advice,
             ur.min_pcent_for_advice
@@ -850,7 +847,7 @@ CREATE VIEW public.price_advice_margin_comps AS
              JOIN public.trade_hubs_users thu ON ((thu.trade_hub_id = pa.trade_hub_id)))
              JOIN public.eve_items_users eiu ON ((eiu.eve_item_id = pa.eve_item_id)))
              JOIN public.users ur ON ((thu.user_id = ur.id)))
-          WHERE ((pa.history_volume IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
+          WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
 
 
 --
@@ -2864,6 +2861,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180824093831'),
 ('20180828060637'),
 ('20180828090606'),
-('20180902090458');
+('20180902090458'),
+('20180902114156'),
+('20180902114405');
 
 
