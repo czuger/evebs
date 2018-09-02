@@ -34,7 +34,7 @@ class UserSalesOrdersController < ApplicationController
   def update
     @user.update( download_orders_running: true )
     DownloadMyOrdersJob.perform_later( @user )
-    redirect_to user_sale_orders_path
+    redirect_to user_sales_orders_path
   end
 
   private
