@@ -81,3 +81,6 @@ gem 'activerecord-import'
 gem 'active_record-sequence'
 gem 'pluck_to_hash'
 gem 'scenic'
+
+
+gem 'bootstrap-toggle-rails', path: '../bootstrap-toggle-rails'

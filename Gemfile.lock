@@ -5,6 +5,11 @@ GIT
     rails_bootstrap_sortable (2.0.0)
       momentjs-rails (~> 2, >= 2.8.3)
 
+PATH
+  remote: ../bootstrap-toggle-rails
+  specs:
+    bootstrap-toggle-rails (2.2.1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -317,6 +322,7 @@ DEPENDENCIES
   autoprefixer-rails (= 8.6.5)
   bcrypt_pbkdf (~> 1.0)
   bootstrap (~> 4.1.3)
+  bootstrap-toggle-rails!
   bullet
   capistrano (>= 3.11)
   capistrano-rails (~> 1.3)
