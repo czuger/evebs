@@ -1,4 +1,4 @@
-class UserSaleOrdersController < ApplicationController
+class UserSalesOrdersController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
   before_action :set_user
