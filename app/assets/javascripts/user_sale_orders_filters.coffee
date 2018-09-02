@@ -16,7 +16,7 @@ set_user_sale_orders_filters = ->
 
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname.match( /user_sale_orders/ )
+    if window.location.pathname.match( /user_sales_orders/ )
       set_user_sale_orders_filters()
 )
 

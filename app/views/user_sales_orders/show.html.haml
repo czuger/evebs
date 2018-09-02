@@ -46,7 +46,11 @@
       %table.table.table-hover.table-sm
         %tr
           %th Trade hub
+          - if @selected_trade_hub_id
+            = fa_icon :filter
           %th Item
+          - if @selected_eve_item_id
+            = fa_icon :filter
           %th.text-center Cost
           %th.text-center Min price
           %th.text-center
