@@ -219,7 +219,7 @@ class Esi::DownloadSalesOrders < Esi::Download
                           trade_hub_id: trade_hub_id, eve_item_id: eve_item_id, order_id: record['order_id'],
                           touched: true, issued: issued, duration: duration, end_time: end_time )
 
-      @sales_orders_volumes[ so.order_id ] = so.volume
+      @sales_orders_volumes[ so.order_id ] = { vol: so.volume, p: so.price, end_t: so.end_time }
 
       @sales_orders_created += 1
 

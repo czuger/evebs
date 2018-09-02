@@ -18,7 +18,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should get create' do
     post '/auth/eve_online_sso/callback'
-    assert_redirected_to price_advices_advice_prices_url
+    assert_redirected_to buy_orders_url
   end
 
   test 'should get destroy' do
