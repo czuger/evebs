@@ -83,7 +83,6 @@ gem 'bootstrap', '~> 4.1.3'
 
 gem 'will_paginate-bootstrap4'
 
-gem 'bootstrap-tooltip-rails'
 gem 'font-awesome-rails'
 
 gem 'bootstrap-toggle-rails', path: '../bootstrap-toggle-rails'

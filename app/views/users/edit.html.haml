@@ -8,13 +8,15 @@
       .col
         .form-group
           = f.label :min_pcent_for_advice
-          = fa_icon 'question-circle'
+          = help_tooltip :min_pcent_for_advice
 
           = f.text_field :min_pcent_for_advice, size: 5, class: 'form-control'
 
       .col
         .form-group
           = f.label :min_amount_for_advice
+          = help_tooltip :min_amount_for_advice
+
           = f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ), class: 'form-control' )
 
       .col

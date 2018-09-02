@@ -1,5 +1,5 @@
-#enable_tooltips = ->
-#  $('[data-toggle="tooltip"]').tooltip({html: true})
-#  return
-#
-#$(document).on('turbolinks:load', enable_tooltips )
+enable_tooltips = ->
+  $('[data-toggle="tooltip"]').tooltip()
+  return
+
+$(document).on('turbolinks:load', enable_tooltips )

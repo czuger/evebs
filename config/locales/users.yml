@@ -1,0 +1,7 @@
+en:
+  users:
+    edit:
+      tooltips:
+        min_pcent_for_advice: Remove all advices that give you a margin percent lower than "Min pcent for advice"
+        min_amount_for_advice: Remove all advices that give you a margin amount lower than "Min amount for advice"
+
