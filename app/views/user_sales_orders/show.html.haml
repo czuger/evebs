@@ -5,12 +5,16 @@
       - if @trade_hubs_names && @item_names
         .ml-3
           = label_tag 'select_trade_hubs', 'Trade hubs'
+        .ml-1
           = help_tooltip :select_trade_hubs
-        .ml-3
+        .ml-1
           = select_tag( :select_trade_hubs, options_for_select( @trade_hubs_names, @selected_trade_hub_id ), :include_blank => true, class: 'form-control' )
+
         .ml-3
           = label_tag 'select_items', 'Items'
-        .ml-3
+        .ml-1
+          = help_tooltip :select_items
+        .ml-1
           = select_tag( :select_items, options_for_select( @item_names, @selected_eve_item_id ), :include_blank => true, class: 'form-control' )
 
       .ml-3
@@ -21,6 +25,18 @@
             = "Data cached. New data available in #{Time.at(@data_available_in).strftime('%Mm %Ss')}."
           - else
             = link_to 'Update orders', user_sales_orders_path, method: :put, class: 'btn btn-secondary'
+
+    .my-4
+      = form_for @user, url: update_user_sales_orders_margin_filter_users_path do |f|
+        .form-inline
+          .ml-3
+            = f.label :sales_orders_show_margin_min, 'Margin min'
+          .ml-1
+            = help_tooltip :sales_orders_show_margin_min
+          .ml-1
+            = f.number_field :sales_orders_show_margin_min, class: 'form-control'
+          .ml-3
+            = f.submit 'Update margin min', class: 'form-control btn-secondary'
 
   .row
     .col-md-12
@@ -33,7 +49,10 @@
           %th Item
           %th.text-center Cost
           %th.text-center Min price
-          %th.text-center Min price margin
+          %th.text-center
+            Min price margin
+            - if @user.sales_orders_show_margin_min
+              = fa_icon :filter
           %th.text-center My price
           %th.text-center Diff
           -#%th{ colspan: 2 }

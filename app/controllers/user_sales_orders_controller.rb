@@ -10,13 +10,19 @@ class UserSalesOrdersController < ApplicationController
     @selected_trade_hub_id = params['trade_hub_id']
     @selected_eve_item_id = params['eve_item_id']
 
-    @trade_hubs_names = @user.user_sale_order_details.distinct.order( :trade_hub_name ).pluck( :trade_hub_name, :trade_hub_id )
+    filtered_users_sales_order_details = @user.user_sale_order_details
 
-    @item_names = @user.user_sale_order_details.distinct.order( :eve_item_name )
+    if @user.sales_orders_show_margin_min
+      filtered_users_sales_order_details = filtered_users_sales_order_details.where( 'margin_pcent > ?', @user.sales_orders_show_margin_min * 0.01 )
+    end
+
+    @trade_hubs_names = filtered_users_sales_order_details.distinct.order( :trade_hub_name ).pluck( :trade_hub_name, :trade_hub_id )
+
+    @item_names = filtered_users_sales_order_details.distinct.order( :eve_item_name )
     @item_names = @item_names.where( trade_hub_id: @selected_trade_hub_id ) if @selected_trade_hub_id
     @item_names = @item_names.pluck( :eve_item_name, :eve_item_id )
 
-    @compared_prices = @user.user_sale_order_details.order( :trade_hub_name, :eve_item_name )
+    @compared_prices = filtered_users_sales_order_details.order( :trade_hub_name, :eve_item_name )
 
     @compared_prices = @compared_prices.where( trade_hub_id: @selected_trade_hub_id ) if @selected_trade_hub_id
     @compared_prices = @compared_prices.where( eve_item_id: @selected_eve_item_id ) if @selected_eve_item_id

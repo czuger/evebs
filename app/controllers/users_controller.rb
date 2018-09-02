@@ -1,10 +1,7 @@
 class UsersController < ApplicationController
 
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
-
-  before_action :require_logged_in!, except: [ :helps ]
-
-  before_action :log_client_activity
+  before_action :require_logged_in!
+  before_action :set_user
 
   # GET /users/1/edit
   def edit
@@ -35,6 +32,12 @@ class UsersController < ApplicationController
         end
       end
     end
+  end
+
+  def update_user_sales_orders_margin_filter
+    p = params.require(:user).permit(:sales_orders_show_margin_min)
+    @user.update!(p)
+    redirect_to user_sales_orders_path
   end
 
   private

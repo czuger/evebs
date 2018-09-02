@@ -496,7 +496,8 @@ CREATE TABLE public.users (
     last_duplication_receiver_id integer,
     selected_assets_station_id bigint,
     download_blueprints_running boolean DEFAULT false NOT NULL,
-    last_blueprints_download timestamp without time zone
+    last_blueprints_download timestamp without time zone,
+    sales_orders_show_margin_min integer
 );
 
 
@@ -2862,6 +2863,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180824065727'),
 ('20180824093831'),
 ('20180828060637'),
-('20180828090606');
+('20180828090606'),
+('20180902090458');
 
 

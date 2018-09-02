@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resources :production_lists, only: [ :edit, :update, :create ]
   post :remove_production_list_check, controller: :production_lists
 
-  resource :user_sale_orders, only: [ :show, :update ]
+  resource :user_sales_orders, only: [:show, :update ]
 
   resource :blueprints, only: [:show, :update]
 
@@ -42,7 +42,9 @@ Rails.application.routes.draw do
     get :my_items_list
   end
 
-  resource :users, only: [:edit, :update]
+  resource :users, only: [:edit, :update] do
+    patch :update_user_sales_orders_margin_filter
+  end
 
   namespace :price_advices do
     get :advice_prices

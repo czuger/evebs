@@ -1,0 +1,7 @@
+en:
+  user_sales_orders:
+    show:
+      tooltips:
+        select_trade_hubs: Filter your orders for a single trade hub
+        select_items: Filter your orders for a single item
+        sales_orders_show_margin_min: Filter only the orders with a margin superior to "Margin min" (in percent)
