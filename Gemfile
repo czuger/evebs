@@ -38,7 +38,7 @@ gem 'haml-rails'
 gem 'omniauth'
 gem 'omniauth-eve_online-sso'
 
-gem 'lazy_high_charts'
+# gem 'lazy_high_charts'
 
 gem 'rest-client'
 
@@ -47,13 +47,10 @@ gem 'time_diff'
 
 gem 'actionpack-page_caching'
 
-# gem 'will_paginate', '~> 3.1.0'
-gem 'will_paginate-bootstrap4'
-
-gem 'bootstrap', '~> 4.1.3'
+# gem 'will_paginate', '~> 3.1.0
 
 gem 'momentjs-rails'
-gem 'rails_bootstrap_sortable', :git => 'https://github.com/czuger/rails_bootstrap_sortable'
+# gem 'rails_bootstrap_sortable', :git => 'https://github.com/czuger/rails_bootstrap_sortable'
 
 group :development, :test do
   gem 'capistrano', '>= 3.11'
@@ -82,6 +79,12 @@ gem 'active_record-sequence'
 gem 'pluck_to_hash'
 gem 'scenic'
 
+gem 'bootstrap', '~> 4.1.3'
+
+gem 'will_paginate-bootstrap4'
+
+gem 'bootstrap-tooltip-rails'
+gem 'font-awesome-rails'
 
 gem 'bootstrap-toggle-rails', path: '../bootstrap-toggle-rails'
 # gem 'bootstrap-toggle-rails', :git => 'https://github.com/czuger/bootstrap-toggle-rails'

@@ -37,5 +37,8 @@ module EveBusinessServer
     config.active_record.schema_format = :sql
     config.active_job.queue_adapter = :async
     config.assets.quiet = true
+
+    # This is required to be able to use fonts in the assets pipeline
+    # config.assets.paths << Rails.root.join("app", "assets", "fonts")
   end
 end
