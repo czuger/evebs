@@ -17,9 +17,9 @@ namespace :process do
         Sql::PricesMins.update
         BpcPricesMin.feed_table
 
-        Sql::PricesAdvices.update
+        Sql::UpdatePricesAdvices.update
 
-        Sql::BuyOrdersAnalyticsUpdate.update
+        Sql::UpdateBuyOrdersAnalytics.update
 
         # Esi::DownloadMyOrders.new.update()
       end
@@ -38,7 +38,7 @@ namespace :process do
       ActiveRecord::Base.transaction do
         Esi::UpdateVolumeFromHistory.new.update
 
-        Sql::PricesAvgWeeks.update
+        Sql::UpdatePricesAvgWeeks.update
 
         BlueprintComponent.compute_costs
         EveItem.compute_cost_for_all_items
