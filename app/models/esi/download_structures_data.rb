@@ -35,7 +35,7 @@ module Esi
 
           @rest_url = "universe/structures/#{structure_id}/"
 
-          structure_data = get_page
+          structure_data = get_page_retry_on_error
 
           structures_types[ structure_data[ 'type_id' ] ] ||= 0
           structures_types[ structure_data[ 'type_id' ] ] += 1
