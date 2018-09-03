@@ -30,4 +30,13 @@ namespace :data_setup do
   task :find_station => :environment do
     Esi::IndustryStationFinder.new.fill_station_table
   end
+
+  namespace :data_setup do
+    desc "Update the structures "
+    task :structures => :environment do
+      Esi::UpdateStructures.new( debug_request: false ).update
+    end
+  end
+
+
 end

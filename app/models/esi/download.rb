@@ -85,7 +85,7 @@ class Esi::Download
 
   def set_auth_token( user=nil )
 
-    p user
+    # p user
 
     return false unless user.expires_on && user.token && user.renew_token
 
@@ -103,6 +103,8 @@ class Esi::Download
 
     true
   end
+
+  private
 
   def renew_token( user )
     client_id = secret_key = nil
@@ -126,8 +128,6 @@ class Esi::Download
 
     user.update!( token: response['access_token'], expires_on: Time.now() + response['expires_in'] )
   end
-
-  private
 
   def error_handling( e )
     puts "Requesting #{@rest_url}, #{@params.inspect} got #{e}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
