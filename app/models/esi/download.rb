@@ -6,7 +6,7 @@ class Esi::Download
   ESI_BASE_URL='https://esi.tech.ccp.is/latest/'
   ESI_DATA_SOURCE={ datasource: :tranquility }
 
-  def initialize( rest_url = nil, params = {}, debug_request: false )
+  def initialize( rest_url = nil, params = {}, debug_request: false)
     @debug_request = debug_request
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
@@ -133,11 +133,15 @@ class Esi::Download
     puts "Requesting #{@rest_url}, #{@params.inspect} got #{e}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     STDOUT.flush
 
-    if e.is_a? Esi::Errors::Forbidden
-      p @forbidden_count
-      @forbidden_count += 1
-      return false if @forbidden_count > 5
-    elsif e.is_a? Esi::Errors::NotFound
+    e.error_hook
+
+    # if e.is_a? Esi::Errors::Forbidden
+    #   p @forbidden_count
+    #   @forbidden_count += 1
+    #   return false if @forbidden_count > 5
+    # els
+
+    if e.is_a? Esi::Errors::NotFound
       raise e
     elsif e.kind_of? Esi::Errors::Base
       e.pause

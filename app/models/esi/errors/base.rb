@@ -21,4 +21,7 @@ class Esi::Errors::Base < RuntimeError
     sleep 3
   end
 
+  def error_hook
+  end
+
 end
