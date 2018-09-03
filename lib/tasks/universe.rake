@@ -33,7 +33,7 @@ namespace :data_setup do
 
   desc "Update the structures "
   task :structures => :environment do
-    Esi::UpdateStructures.new( debug_request: false ).update
+    Esi::DownloadStructuresData.new( debug_request: false ).update
   end
 
 
