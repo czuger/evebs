@@ -42,7 +42,7 @@ class Esi::DownloadVolumeFromHistory < Esi::Download
       @rest_url = "markets/#{region.cpp_region_id}/history/"
       @params[:type_id]=type_id
 
-      get_all_pages.each do |record|
+      get_page_retry_on_error.each do |record|
         evm = EveMarketVolume.where( region_id: region.id, eve_item_id: item_id ).first_or_initialize
 
         # p record
