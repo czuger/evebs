@@ -18,10 +18,22 @@ class Esi::Download
     url = build_url
     puts "Fetching : #{url}" if @debug_request
 
-    begin
-      @request = open( url )
-    rescue => e
-      Esi::Errors::Base.dispatch( e )
+    loop do
+      begin
+        @request = open( url )
+        break
+      rescue => e
+        error = Esi::Errors::Base.dispatch( e )
+        error_print( error )
+
+        if error.retry?
+          error.pause
+          next
+        else
+          raise error
+        end
+
+      end
     end
 
     set_headers
@@ -31,16 +43,7 @@ class Esi::Download
   end
 
   def get_page_retry_on_error( page_number=nil )
-    loop do
-      page = nil
-      begin
-        page = get_page
-      rescue => e
-        error_handling e
-        next
-      end
-      return page
-    end
+    get_page( page_number )
   end
 
   def get_all_pages
@@ -50,13 +53,7 @@ class Esi::Download
     loop do
       puts "Requesting page #{@params[:page]}/#{@pages_count}" if @debug_request
 
-      pages = nil
-      begin
-        pages = get_page
-      rescue => e
-        return false unless error_handling( e )
-        next
-      end
+      pages = get_page
 
       unless pages.empty?
         result += pages if pages.is_a? Array
@@ -129,27 +126,9 @@ class Esi::Download
     user.update!( token: response['access_token'], expires_on: Time.now() + response['expires_in'] )
   end
 
-  def error_handling( e )
+  def error_print( e )
     puts "Requesting #{@rest_url}, #{@params.inspect} got #{e}, limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     STDOUT.flush
-
-    e.error_hook
-
-    # if e.is_a? Esi::Errors::Forbidden
-    #   p @forbidden_count
-    #   @forbidden_count += 1
-    #   return false if @forbidden_count > 5
-    # els
-
-    if e.is_a? Esi::Errors::NotFound
-      raise e
-    elsif e.kind_of? Esi::Errors::Base
-      e.pause
-    else
-      sleep 10
-    end
-
-    true
   end
 
   def set_headers

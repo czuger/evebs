@@ -1,27 +1,26 @@
 class Esi::Errors::Base < RuntimeError
 
   def self.dispatch( exception )
+    error = exception
+
     case exception.message
     when '504 Gateway Timeout'
-      raise Esi::Errors::GatewayTimeout
+      error = Esi::Errors::GatewayTimeout.new
     when '502 Bad Gateway'
-      raise Esi::Errors::BadGateway
+      error = Esi::Errors::BadGateway.new
     when '403 Forbidden'
-      raise Esi::Errors::Forbidden
+      error = Esi::Errors::Forbidden.new
     when '420 status code 420'
-      raise Esi::Errors::ErrorLimited
+      error = Esi::Errors::ErrorLimited.new
     when '404 Not Found'
-      raise Esi::Errors::NotFound
-    else
-      raise exception
+      error = Esi::Errors::NotFound.new
     end
+
+    error
   end
 
-  def pause
-    sleep 3
-  end
-
-  def error_hook
+  def retry?
+    false
   end
 
 end

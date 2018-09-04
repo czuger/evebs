@@ -5,5 +5,9 @@ module Esi::Errors
       sleep 30
     end
 
+    def retry?
+      true
+    end
+
   end
 end
