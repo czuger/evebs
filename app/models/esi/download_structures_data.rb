@@ -46,7 +46,7 @@ module Esi
             systeme_data = get_page
             puts "In #{systeme_data['name']}"
 
-            @rest_url = "universe/systems/#{structure_data[ 'owner_id' ]}/"
+            @rest_url = "corporations/#{structure_data[ 'owner_id' ]}/"
             corpo_data = get_page
             puts "Owned by #{corpo_data['name']}"
           end
