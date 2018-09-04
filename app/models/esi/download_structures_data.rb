@@ -34,11 +34,22 @@ module Esi
           end
 
           @rest_url = "universe/structures/#{structure_id}/"
-
           structure_data = get_page_retry_on_error
 
           structures_types[ structure_data[ 'type_id' ] ] ||= 0
           structures_types[ structure_data[ 'type_id' ] ] += 1
+
+          if structure_data[ 'type_id' ] == 35834
+            puts "Found a Keepstar named #{structure_data[ 'name' ]}"
+
+            @rest_url = "universe/systems/#{structure_data[ 'solar_system_id' ]}/"
+            systeme_data = get_page
+            puts "In #{systeme_data['name']}"
+
+            @rest_url = "universe/systems/#{structure_data[ 'owner_id' ]}/"
+            corpo_data = get_page
+            puts "Owned by #{corpo_data['name']}"
+          end
 
           next unless solars_systems.include?( structure_data[ 'solar_system_id' ] )
 
@@ -50,7 +61,12 @@ module Esi
         end
       end
 
-      pp structures_types
+      structures_types.each do |type_id, amount|
+        @rest_url = "universe/types/#{type_id}/"
+        type_info = get_page
+
+        puts "#{type_info['name']} (#{type_id}) : #{amount}"
+      end
 
     end
 
