@@ -42,7 +42,7 @@ class Esi::UpdateBlueprints < Esi::Download
     Blueprint.where.not( cpp_blueprint_id: @full_blueprints_id_list ).delete_all
 
     BlueprintMaterial.where.not( blueprint_id: Blueprint.select( :id ) ).delete_all
-    BlueprintComponent.where.not( id: BlueprintMaterial.select( :blueprint_component_id ) ).delete_all
+    EveItem.where.not( id: BlueprintMaterial.select( :blueprint_component_id ) ).delete_all
 
   end
 
@@ -119,7 +119,7 @@ class Esi::UpdateBlueprints < Esi::Download
     @materials.each do |material|
       t_id = material['typeID']
 
-      comp = BlueprintComponent.find_by_cpp_eve_item_id( t_id )
+      comp = EveItem.find_by_cpp_eve_item_id( t_id )
       if !comp || comp.updated_at < Time.now - 7.days
 
         @rest_url = "universe/types/#{t_id}/"
@@ -130,7 +130,7 @@ class Esi::UpdateBlueprints < Esi::Download
           return false
         end
 
-        comp = BlueprintComponent.where( cpp_eve_item_id: t_id ).first_or_initialize
+        comp = EveItem.where( cpp_eve_item_id: t_id ).first_or_initialize
         comp.name = local_page['name']
         comp.volume = local_page['volume']
         comp.save!
