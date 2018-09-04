@@ -4,8 +4,8 @@
     %tr
       %th Trade hub
       %th Item
-      %th.text-center Approx max buy price
-      %th.text-center Single unit cost
+      -#%th.text-center Approx max buy price
+      -#%th.text-center Single unit cost
       %th.text-center Single unit margin
       %th.text-center Estimated buy volume
       %th.text-center Job count
@@ -15,9 +15,11 @@
       %tr
         %td.trade_hub_name=cp.trade_hub_name
         %td.item_name= link_to( cp.eve_item_name, item_url( cp.eve_item_id ) )
-        %td.text-right=print_isk( cp.approx_max_price )
-        %td.text-right=print_isk( cp.single_unit_cost )
-        %td.text-right=print_isk( cp.single_unit_margin )
+        -#%td.text-right=print_isk( cp.approx_max_price )
+        -#%td.text-right=print_isk( cp.single_unit_cost )
+        %td.text-right{ 'data-toggle' => 'tooltip', title: "<p>Single unit cost : <br>#{print_isk( cp.single_unit_cost )}</p><p>Approx max buy price : <br>#{print_isk( cp.approx_max_price )}</p>" }
+          = print_isk( cp.single_unit_margin )
+
         %td.text-right=print_volume( cp.over_approx_max_price_volume )
         %td.text-right= cp.job_count.round
         %td.text-right= cp.runs.round
