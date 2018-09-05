@@ -59,10 +59,15 @@ namespace :process do
 
       Process::SetEveItemDepthLevel.new.set
 
+      Esi::DownloadMarketGroups.new.download
+
       ActiveRecord::Base.transaction do
+        Process::UpdateMarketGroups.new.update
         Process::UpdateBlueprints.new.update
         Process::UpdateEveItems.new.update
         Process::UpdateBlueprintMaterials.new.update
+
+        # Need to move json generation into a proper Process and call it there
       end
 
       Banner.p( 'Finished' )

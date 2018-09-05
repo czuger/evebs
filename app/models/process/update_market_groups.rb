@@ -20,7 +20,14 @@ module Process
         mg.save!
       end
 
-      market_groups_to_destroy_ids = MarketGroup.pluck( :cpp_market_group_id ) - market_groups.keys
+      used_market_group_ids = Set.new
+
+      market_groups.keys.each do |key|
+        used_market_group_ids << key
+        used_market_group_ids += MarketGroup.find_by_cpp_market_group_id( key ).ancestors.map{ |a| a.cpp_market_group_id }
+      end
+
+      market_groups_to_destroy_ids = MarketGroup.pluck( :cpp_market_group_id ) - used_market_group_ids.to_a
       MarketGroup.where( cpp_market_group_id: market_groups_to_destroy_ids ).destroy_all
 
     end

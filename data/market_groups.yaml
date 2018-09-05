@@ -3,14 +3,42 @@
   :market_group_id: 61
   :name: Caldari
   :parent_group_id: 5
+5:
+  :market_group_id: 5
+  :name: Standard Frigates
+  :parent_group_id: 1361
+1361:
+  :market_group_id: 1361
+  :name: Frigates
+  :parent_group_id: 4
+4:
+  :market_group_id: 4
+  :name: Ships
+  :parent_group_id: 
 75:
   :market_group_id: 75
   :name: Caldari
   :parent_group_id: 6
+6:
+  :market_group_id: 6
+  :name: Standard Cruisers
+  :parent_group_id: 1367
+1367:
+  :market_group_id: 1367
+  :name: Cruisers
+  :parent_group_id: 4
 80:
   :market_group_id: 80
   :name: Caldari
   :parent_group_id: 7
+7:
+  :market_group_id: 7
+  :name: Standard Battleships
+  :parent_group_id: 1376
+1376:
+  :market_group_id: 1376
+  :name: Battleships
+  :parent_group_id: 4
 64:
   :market_group_id: 64
   :name: Minmatar
@@ -27,10 +55,30 @@
   :market_group_id: 1039
   :name: Mining Lasers
   :parent_group_id: 1713
+1713:
+  :market_group_id: 1713
+  :name: Harvest Equipment
+  :parent_group_id: 9
+9:
+  :market_group_id: 9
+  :name: Ship Equipment
+  :parent_group_id: 
 1888:
   :market_group_id: 1888
   :name: Gallente
   :parent_group_id: 65
+65:
+  :market_group_id: 65
+  :name: Advanced Components
+  :parent_group_id: 1035
+1035:
+  :market_group_id: 1035
+  :name: Components
+  :parent_group_id: 475
+475:
+  :market_group_id: 475
+  :name: Manufacture & Research
+  :parent_group_id: 
 802:
   :market_group_id: 802
   :name: Amarr
@@ -43,6 +91,14 @@
   :market_group_id: 640
   :name: Light Missile Launchers
   :parent_group_id: 140
+140:
+  :market_group_id: 140
+  :name: Missile Launchers
+  :parent_group_id: 10
+10:
+  :market_group_id: 10
+  :name: Turrets & Bays
+  :parent_group_id: 9
 642:
   :market_group_id: 642
   :name: Heavy Launchers
@@ -55,22 +111,54 @@
   :market_group_id: 921
   :name: Standard Cruise Missiles
   :parent_group_id: 580
+580:
+  :market_group_id: 580
+  :name: Cruise Missiles
+  :parent_group_id: 114
+114:
+  :market_group_id: 114
+  :name: Missiles
+  :parent_group_id: 11
+11:
+  :market_group_id: 11
+  :name: Ammunition & Charges
+  :parent_group_id: 
 924:
   :market_group_id: 924
   :name: Standard Heavy Missiles
   :parent_group_id: 581
+581:
+  :market_group_id: 581
+  :name: Heavy Missiles
+  :parent_group_id: 114
 920:
   :market_group_id: 920
   :name: Standard Light Missiles
   :parent_group_id: 117
+117:
+  :market_group_id: 117
+  :name: Light Missiles
+  :parent_group_id: 114
 574:
   :market_group_id: 574
   :name: Small
   :parent_group_id: 559
+559:
+  :market_group_id: 559
+  :name: Autocannons
+  :parent_group_id: 87
+87:
+  :market_group_id: 87
+  :name: Projectile Turrets
+  :parent_group_id: 10
 577:
   :market_group_id: 577
   :name: Small
   :parent_group_id: 560
+560:
+  :market_group_id: 560
+  :name: Artillery Cannons
+  :parent_group_id: 87
 575:
   :market_group_id: 575
   :name: Medium
@@ -91,10 +179,22 @@
   :market_group_id: 570
   :name: Small
   :parent_group_id: 558
+558:
+  :market_group_id: 558
+  :name: Pulse Lasers
+  :parent_group_id: 88
+88:
+  :market_group_id: 88
+  :name: Energy Turrets
+  :parent_group_id: 10
 567:
   :market_group_id: 567
   :name: Small
   :parent_group_id: 557
+557:
+  :market_group_id: 557
+  :name: Beam Lasers
+  :parent_group_id: 88
 568:
   :market_group_id: 568
   :name: Medium
@@ -115,6 +215,14 @@
   :market_group_id: 113
   :name: Small
   :parent_group_id: 845
+845:
+  :market_group_id: 845
+  :name: Standard Ammo
+  :parent_group_id: 99
+99:
+  :market_group_id: 99
+  :name: Projectile Ammo
+  :parent_group_id: 11
 112:
   :market_group_id: 112
   :name: Medium
@@ -135,6 +243,10 @@
   :market_group_id: 396
   :name: Caldari
   :parent_group_id: 391
+391:
+  :market_group_id: 391
+  :name: Shuttles
+  :parent_group_id: 4
 74:
   :market_group_id: 74
   :name: Amarr
@@ -147,6 +259,14 @@
   :market_group_id: 84
   :name: Caldari
   :parent_group_id: 8
+8:
+  :market_group_id: 8
+  :name: Standard Industrial Ships
+  :parent_group_id: 1382
+1382:
+  :market_group_id: 1382
+  :name: Industrial Ships
+  :parent_group_id: 4
 83:
   :market_group_id: 83
   :name: Gallente
@@ -167,6 +287,14 @@
   :market_group_id: 815
   :name: Gallente
   :parent_group_id: 812
+812:
+  :market_group_id: 812
+  :name: Titans
+  :parent_group_id: 1381
+1381:
+  :market_group_id: 1381
+  :name: Capital Ships
+  :parent_group_id: 4
 781:
   :market_group_id: 781
   :name: Standard Capital Ship Components
@@ -175,6 +303,14 @@
   :market_group_id: 605
   :name: Small
   :parent_group_id: 551
+551:
+  :market_group_id: 551
+  :name: Shield Extenders
+  :parent_group_id: 554
+554:
+  :market_group_id: 554
+  :name: Shield
+  :parent_group_id: 9
 803:
   :market_group_id: 803
   :name: Caldari
@@ -187,10 +323,18 @@
   :market_group_id: 609
   :name: Small
   :parent_group_id: 552
+552:
+  :market_group_id: 552
+  :name: Shield Boosters
+  :parent_group_id: 554
 131:
   :market_group_id: 131
   :name: Microwarpdrives
   :parent_group_id: 52
+52:
+  :market_group_id: 52
+  :name: 'Propulsion '
+  :parent_group_id: 9
 542:
   :market_group_id: 542
   :name: Afterburners
@@ -203,6 +347,10 @@
   :market_group_id: 711
   :name: Cargo Scanners
   :parent_group_id: 1708
+1708:
+  :market_group_id: 1708
+  :name: Scanning Equipment
+  :parent_group_id: 9
 713:
   :market_group_id: 713
   :name: Ship Scanners
@@ -215,18 +363,38 @@
   :market_group_id: 1936
   :name: Warp Scramblers
   :parent_group_id: 657
+657:
+  :market_group_id: 657
+  :name: Electronic Warfare
+  :parent_group_id: 9
 646:
   :market_group_id: 646
   :name: Gyrostabilizers
   :parent_group_id: 143
+143:
+  :market_group_id: 143
+  :name: Weapon Upgrades
+  :parent_group_id: 10
 1049:
   :market_group_id: 1049
   :name: 'Small '
   :parent_group_id: 134
+134:
+  :market_group_id: 134
+  :name: Armor Repairers
+  :parent_group_id: 14
+14:
+  :market_group_id: 14
+  :name: 'Hull & Armor '
+  :parent_group_id: 9
 1053:
   :market_group_id: 1053
   :name: Small
   :parent_group_id: 538
+538:
+  :market_group_id: 538
+  :name: Hull Repairers
+  :parent_group_id: 14
 683:
   :market_group_id: 683
   :name: Stasis Webifiers
@@ -235,22 +403,50 @@
   :market_group_id: 695
   :name: Small
   :parent_group_id: 663
+663:
+  :market_group_id: 663
+  :name: Remote Capacitor Transmitters
+  :parent_group_id: 655
+655:
+  :market_group_id: 655
+  :name: Engineering Equipment
+  :parent_group_id: 9
 692:
   :market_group_id: 692
   :name: Small
   :parent_group_id: 662
+662:
+  :market_group_id: 662
+  :name: Energy Nosferatu
+  :parent_group_id: 655
 689:
   :market_group_id: 689
   :name: Small
   :parent_group_id: 661
+661:
+  :market_group_id: 661
+  :name: Energy Neutralizers
+  :parent_group_id: 655
 564:
   :market_group_id: 564
   :name: Small
   :parent_group_id: 555
+555:
+  :market_group_id: 555
+  :name: Railguns
+  :parent_group_id: 86
+86:
+  :market_group_id: 86
+  :name: Hybrid Turrets
+  :parent_group_id: 10
 561:
   :market_group_id: 561
   :name: Small
   :parent_group_id: 556
+556:
+  :market_group_id: 556
+  :name: Blasters
+  :parent_group_id: 86
 562:
   :market_group_id: 562
   :name: Medium
@@ -271,14 +467,30 @@
   :market_group_id: 700
   :name: Medium
   :parent_group_id: 668
+668:
+  :market_group_id: 668
+  :name: Capacitor Boosters
+  :parent_group_id: 655
 1696:
   :market_group_id: 1696
   :name: Adaptive Shield Hardeners
   :parent_group_id: 553
+553:
+  :market_group_id: 553
+  :name: Shield Hardeners
+  :parent_group_id: 554
 107:
   :market_group_id: 107
   :name: Small
   :parent_group_id: 848
+848:
+  :market_group_id: 848
+  :name: Standard Charges
+  :parent_group_id: 100
+100:
+  :market_group_id: 100
+  :name: Hybrid Charges
+  :parent_group_id: 11
 108:
   :market_group_id: 108
   :name: Medium
@@ -291,6 +503,14 @@
   :market_group_id: 102
   :name: Small
   :parent_group_id: 851
+851:
+  :market_group_id: 851
+  :name: Standard Crystals
+  :parent_group_id: 101
+101:
+  :market_group_id: 101
+  :name: Frequency Crystals
+  :parent_group_id: 11
 103:
   :market_group_id: 103
   :name: Medium
@@ -307,6 +527,10 @@
   :market_group_id: 703
   :name: Small
   :parent_group_id: 664
+664:
+  :market_group_id: 664
+  :name: Capacitor Batteries
+  :parent_group_id: 655
 665:
   :market_group_id: 665
   :name: Capacitor Rechargers
@@ -315,10 +539,18 @@
   :market_group_id: 1668
   :name: EM Resistance Plating
   :parent_group_id: 540
+540:
+  :market_group_id: 540
+  :name: Resistance Plating
+  :parent_group_id: 14
 670:
   :market_group_id: 670
   :name: Automated Targeting Systems
   :parent_group_id: 656
+656:
+  :market_group_id: 656
+  :name: Electronics and Sensor Upgrades
+  :parent_group_id: 9
 678:
   :market_group_id: 678
   :name: ECM Bursts
@@ -331,10 +563,22 @@
   :market_group_id: 839
   :name: Heavy Attack Drones
   :parent_group_id: 159
+159:
+  :market_group_id: 159
+  :name: Combat Drones
+  :parent_group_id: 157
+157:
+  :market_group_id: 157
+  :name: Drones
+  :parent_group_id: 
 914:
   :market_group_id: 914
   :name: Standard Auto-Targeting
   :parent_group_id: 115
+115:
+  :market_group_id: 115
+  :name: Auto-Targeting
+  :parent_group_id: 114
 158:
   :market_group_id: 158
   :name: Mining Drones
@@ -343,14 +587,26 @@
   :market_group_id: 922
   :name: Standard Rockets
   :parent_group_id: 118
+118:
+  :market_group_id: 118
+  :name: Rockets
+  :parent_group_id: 114
 923:
   :market_group_id: 923
   :name: Standard Torpedoes
   :parent_group_id: 387
+387:
+  :market_group_id: 387
+  :name: Torpedoes
+  :parent_group_id: 114
 1087:
   :market_group_id: 1087
   :name: Overdrives
   :parent_group_id: 132
+132:
+  :market_group_id: 132
+  :name: Propulsion Upgrades
+  :parent_group_id: 52
 666:
   :market_group_id: 666
   :name: Capacitor Flux Coils
@@ -383,6 +639,10 @@
   :market_group_id: 1197
   :name: Expanded Cargoholds
   :parent_group_id: 135
+135:
+  :market_group_id: 135
+  :name: Hull Upgrades
+  :parent_group_id: 14
 1195:
   :market_group_id: 1195
   :name: Reinforced Bulkheads
@@ -411,10 +671,18 @@
   :market_group_id: 382
   :name: Small
   :parent_group_id: 141
+141:
+  :market_group_id: 141
+  :name: Smartbombs
+  :parent_group_id: 9
 1691:
   :market_group_id: 1691
   :name: EM Resistance Amplifiers
   :parent_group_id: 550
+550:
+  :market_group_id: 550
+  :name: Shield Resistance Amplifiers
+  :parent_group_id: 554
 641:
   :market_group_id: 641
   :name: Rapid Light Missile Launchers
@@ -503,14 +771,34 @@
   :market_group_id: 973
   :name: Advanced Anti-Ship Heavy Assault Missile
   :parent_group_id: 968
+968:
+  :market_group_id: 968
+  :name: Heavy Assault Missiles
+  :parent_group_id: 114
 1275:
   :market_group_id: 1275
   :name: Infrastructure Hubs
   :parent_group_id: 1272
+1272:
+  :market_group_id: 1272
+  :name: Sovereignty Structures
+  :parent_group_id: 477
+477:
+  :market_group_id: 477
+  :name: Structures
+  :parent_group_id: 
 481:
   :market_group_id: 481
   :name: Electronic Warfare Batteries
   :parent_group_id: 480
+480:
+  :market_group_id: 480
+  :name: Weapon Batteries
+  :parent_group_id: 1285
+1285:
+  :market_group_id: 1285
+  :name: Starbase Structures
+  :parent_group_id: 477
 1935:
   :market_group_id: 1935
   :name: Warp Disruptors
@@ -555,6 +843,10 @@
   :market_group_id: 715
   :name: Magnetometric Jammers
   :parent_group_id: 677
+677:
+  :market_group_id: 677
+  :name: Electronic Counter Measures
+  :parent_group_id: 657
 716:
   :market_group_id: 716
   :name: Ladar Jammers
@@ -615,6 +907,14 @@
   :market_group_id: 1310
   :name: Heavy Fighters
   :parent_group_id: 2410
+2410:
+  :market_group_id: 2410
+  :name: Carrier-based Fighters
+  :parent_group_id: 2236
+2236:
+  :market_group_id: 2236
+  :name: Fighters
+  :parent_group_id: 157
 1390:
   :market_group_id: 1390
   :name: ORE
@@ -623,10 +923,18 @@
   :market_group_id: 1392
   :name: Faction Carrier
   :parent_group_id: 817
+817:
+  :market_group_id: 817
+  :name: Carriers
+  :parent_group_id: 1381
 1623:
   :market_group_id: 1623
   :name: Special Edition Assault Frigates
   :parent_group_id: 1612
+1612:
+  :market_group_id: 1612
+  :name: Special Edition Ships
+  :parent_group_id: 4
 1621:
   :market_group_id: 1621
   :name: Special Edition Heavy Assault Cruisers
@@ -643,6 +951,10 @@
   :market_group_id: 1056
   :name: Capital
   :parent_group_id: 537
+537:
+  :market_group_id: 537
+  :name: Remote Armor Repairers
+  :parent_group_id: 14
 1051:
   :market_group_id: 1051
   :name: Large
@@ -655,6 +967,10 @@
   :market_group_id: 600
   :name: Capital
   :parent_group_id: 128
+128:
+  :market_group_id: 128
+  :name: Remote Shield Boosters
+  :parent_group_id: 554
 771:
   :market_group_id: 771
   :name: Extra Large
@@ -739,6 +1055,10 @@
   :market_group_id: 1410
   :name: Orbital Infrastructure
   :parent_group_id: 1320
+1320:
+  :market_group_id: 1320
+  :name: Planetary Infrastructure
+  :parent_group_id: 
 381:
   :market_group_id: 381
   :name: Large
@@ -747,6 +1067,10 @@
   :market_group_id: 1062
   :name: Large
   :parent_group_id: 1018
+1018:
+  :market_group_id: 1018
+  :name: Remote Hull Repairers
+  :parent_group_id: 14
 1085:
   :market_group_id: 1085
   :name: Warp Disruption Field Generators
@@ -783,6 +1107,14 @@
   :market_group_id: 470
   :name: Amarr
   :parent_group_id: 469
+469:
+  :market_group_id: 469
+  :name: Standard Battlecruisers
+  :parent_group_id: 1374
+1374:
+  :market_group_id: 1374
+  :name: Battlecruisers
+  :parent_group_id: 4
 471:
   :market_group_id: 471
   :name: Caldari
@@ -819,6 +1151,18 @@
   :market_group_id: 1223
   :name: Medium Engineering Rigs
   :parent_group_id: 961
+961:
+  :market_group_id: 961
+  :name: Engineering Rigs
+  :parent_group_id: 1111
+1111:
+  :market_group_id: 1111
+  :name: Rigs
+  :parent_group_id: 955
+955:
+  :market_group_id: 955
+  :name: Ship and Module Modifications
+  :parent_group_id: 
 1224:
   :market_group_id: 1224
   :name: Large Engineering Rigs
@@ -827,6 +1171,10 @@
   :market_group_id: 1416
   :name: Reactive Armor Hardeners
   :parent_group_id: 535
+535:
+  :market_group_id: 535
+  :name: Armor Hardeners
+  :parent_group_id: 14
 1426:
   :market_group_id: 1426
   :name: Target Breaker
@@ -867,14 +1215,30 @@
   :market_group_id: 423
   :name: Gallente
   :parent_group_id: 420
+420:
+  :market_group_id: 420
+  :name: Covert Ops
+  :parent_group_id: 1364
+1364:
+  :market_group_id: 1364
+  :name: Advanced Frigates
+  :parent_group_id: 1361
 1068:
   :market_group_id: 1068
   :name: Gallente
   :parent_group_id: 1065
+1065:
+  :market_group_id: 1065
+  :name: Electronic Attack Frigates
+  :parent_group_id: 1364
 401:
   :market_group_id: 401
   :name: Caldari
   :parent_group_id: 399
+399:
+  :market_group_id: 399
+  :name: Interceptors
+  :parent_group_id: 1364
 424:
   :market_group_id: 424
   :name: Minmatar
@@ -911,6 +1275,10 @@
   :market_group_id: 1684
   :name: Energized EM Plating
   :parent_group_id: 541
+541:
+  :market_group_id: 541
+  :name: Energized Plating
+  :parent_group_id: 14
 1682:
   :market_group_id: 1682
   :name: Energized Explosive Plating
@@ -939,6 +1307,10 @@
   :market_group_id: 1676
   :name: 1600mm Armor Plate
   :parent_group_id: 133
+133:
+  :market_group_id: 133
+  :name: Armor Plates
+  :parent_group_id: 14
 1672:
   :market_group_id: 1672
   :name: 100mm Armor Plate
@@ -983,6 +1355,10 @@
   :market_group_id: 433
   :name: Amarr
   :parent_group_id: 432
+432:
+  :market_group_id: 432
+  :name: Assault Frigates
+  :parent_group_id: 1364
 436:
   :market_group_id: 436
   :name: Minmatar
@@ -1051,6 +1427,10 @@
   :market_group_id: 1907
   :name: R.Db
   :parent_group_id: 1872
+1872:
+  :market_group_id: 1872
+  :name: Research Equipment
+  :parent_group_id: 475
 1620:
   :market_group_id: 1620
   :name: Special Edition Battleships
@@ -1059,6 +1439,14 @@
   :market_group_id: 830
   :name: Caldari
   :parent_group_id: 824
+824:
+  :market_group_id: 824
+  :name: Recon Ships
+  :parent_group_id: 1368
+1368:
+  :market_group_id: 1368
+  :name: Advanced Cruisers
+  :parent_group_id: 1367
 836:
   :market_group_id: 836
   :name: Minmatar
@@ -1075,6 +1463,10 @@
   :market_group_id: 441
   :name: Minmatar
   :parent_group_id: 437
+437:
+  :market_group_id: 437
+  :name: Logistics
+  :parent_group_id: 1368
 439:
   :market_group_id: 439
   :name: Caldari
@@ -1091,10 +1483,18 @@
   :market_group_id: 450
   :name: Caldari
   :parent_group_id: 448
+448:
+  :market_group_id: 448
+  :name: Heavy Assault Cruisers
+  :parent_group_id: 1368
 1072:
   :market_group_id: 1072
   :name: Caldari
   :parent_group_id: 1070
+1070:
+  :market_group_id: 1070
+  :name: Heavy Interdiction Cruisers
+  :parent_group_id: 1368
 452:
   :market_group_id: 452
   :name: Minmatar
@@ -1155,30 +1555,58 @@
   :market_group_id: 405
   :name: 'Warp Disruption Fields '
   :parent_group_id: 404
+404:
+  :market_group_id: 404
+  :name: Deployable Structures
+  :parent_group_id: 477
 868:
   :market_group_id: 868
   :name: Small
   :parent_group_id: 852
+852:
+  :market_group_id: 852
+  :name: Advanced Beam Laser Crystals
+  :parent_group_id: 101
 871:
   :market_group_id: 871
   :name: Small
   :parent_group_id: 853
+853:
+  :market_group_id: 853
+  :name: Advanced Pulse Laser Crystals
+  :parent_group_id: 101
 859:
   :market_group_id: 859
   :name: Small
   :parent_group_id: 847
+847:
+  :market_group_id: 847
+  :name: Advanced Autocannon Ammo
+  :parent_group_id: 99
 862:
   :market_group_id: 862
   :name: Small
   :parent_group_id: 849
+849:
+  :market_group_id: 849
+  :name: Advanced Blaster Charges
+  :parent_group_id: 100
 865:
   :market_group_id: 865
   :name: Small
   :parent_group_id: 850
+850:
+  :market_group_id: 850
+  :name: Advanced Railgun Charges
+  :parent_group_id: 100
 856:
   :market_group_id: 856
   :name: Small
   :parent_group_id: 846
+846:
+  :market_group_id: 846
+  :name: Advanced Artillery Ammo
+  :parent_group_id: 99
 757:
   :market_group_id: 757
   :name: Target Painters
@@ -1187,6 +1615,14 @@
   :market_group_id: 631
   :name: Caldari
   :parent_group_id: 629
+629:
+  :market_group_id: 629
+  :name: Transport Ships
+  :parent_group_id: 1385
+1385:
+  :market_group_id: 1385
+  :name: Advanced Industrial Ships
+  :parent_group_id: 1382
 630:
   :market_group_id: 630
   :name: Amarr
@@ -1259,6 +1695,14 @@
   :market_group_id: 465
   :name: Amarr
   :parent_group_id: 464
+464:
+  :market_group_id: 464
+  :name: Standard Destroyers
+  :parent_group_id: 1372
+1372:
+  :market_group_id: 1372
+  :name: Destroyers
+  :parent_group_id: 4
 466:
   :market_group_id: 466
   :name: Caldari
@@ -1279,6 +1723,10 @@
   :market_group_id: 494
   :name: Mining Barges
   :parent_group_id: 1384
+1384:
+  :market_group_id: 1384
+  :name: Mining Barges
+  :parent_group_id: 4
 1040:
   :market_group_id: 1040
   :name: Strip Miners
@@ -1287,14 +1735,26 @@
   :market_group_id: 1366
   :name: Navy Faction
   :parent_group_id: 1362
+1362:
+  :market_group_id: 1362
+  :name: Faction Frigates
+  :parent_group_id: 1361
 1370:
   :market_group_id: 1370
   :name: Navy Faction
   :parent_group_id: 1369
+1369:
+  :market_group_id: 1369
+  :name: Faction Cruisers
+  :parent_group_id: 1367
 1379:
   :market_group_id: 1379
   :name: Navy Faction
   :parent_group_id: 1378
+1378:
+  :market_group_id: 1378
+  :name: Faction Battleships
+  :parent_group_id: 1376
 504:
   :market_group_id: 504
   :name: Extra Large
@@ -1319,6 +1779,10 @@
   :market_group_id: 1193
   :name: Standard XL Torpedoes
   :parent_group_id: 505
+505:
+  :market_group_id: 505
+  :name: XL Torpedoes
+  :parent_group_id: 114
 1365:
   :market_group_id: 1365
   :name: Pirate Faction
@@ -1331,6 +1795,10 @@
   :market_group_id: 762
   :name: Amarr
   :parent_group_id: 761
+761:
+  :market_group_id: 761
+  :name: Dreadnoughts
+  :parent_group_id: 1381
 765:
   :market_group_id: 765
   :name: Minmatar
@@ -1347,6 +1815,10 @@
   :market_group_id: 767
   :name: Amarr
   :parent_group_id: 766
+766:
+  :market_group_id: 766
+  :name: Freighters
+  :parent_group_id: 1381
 768:
   :market_group_id: 768
   :name: Caldari
@@ -1363,6 +1835,10 @@
   :market_group_id: 1641
   :name: Cynosural Field Generators
   :parent_group_id: 779
+779:
+  :market_group_id: 779
+  :name: Fleet Assistance Modules
+  :parent_group_id: 9
 971:
   :market_group_id: 971
   :name: Standard Heavy Assault Missiles
@@ -1371,10 +1847,22 @@
   :market_group_id: 1865
   :name: Station Components
   :parent_group_id: 1021
+1021:
+  :market_group_id: 1021
+  :name: Outpost Components
+  :parent_group_id: 1035
 1076:
   :market_group_id: 1076
   :name: Amarr
   :parent_group_id: 1075
+1075:
+  :market_group_id: 1075
+  :name: Black Ops
+  :parent_group_id: 1377
+1377:
+  :market_group_id: 1377
+  :name: Advanced Battleships
+  :parent_group_id: 1376
 1078:
   :market_group_id: 1078
   :name: Gallente
@@ -1391,6 +1879,14 @@
   :market_group_id: 831
   :name: Gallente
   :parent_group_id: 822
+822:
+  :market_group_id: 822
+  :name: Command Ships
+  :parent_group_id: 1375
+1375:
+  :market_group_id: 1375
+  :name: Advanced Battlecruisers
+  :parent_group_id: 1374
 834:
   :market_group_id: 834
   :name: Minmatar
@@ -1407,6 +1903,14 @@
   :market_group_id: 826
   :name: Amarr
   :parent_group_id: 823
+823:
+  :market_group_id: 823
+  :name: Interdictors
+  :parent_group_id: 1373
+1373:
+  :market_group_id: 1373
+  :name: Advanced Destroyers
+  :parent_group_id: 1372
 835:
   :market_group_id: 835
   :name: Minmatar
@@ -1439,6 +1943,10 @@
   :market_group_id: 1201
   :name: Interdiction Probes
   :parent_group_id: 120
+120:
+  :market_group_id: 120
+  :name: Probes
+  :parent_group_id: 11
 1937:
   :market_group_id: 1937
   :name: Interdiction Sphere Launchers
@@ -1491,6 +1999,10 @@
   :market_group_id: 2270
   :name: Minmatar
   :parent_group_id: 912
+912:
+  :market_group_id: 912
+  :name: Superweapons
+  :parent_group_id: 10
 2267:
   :market_group_id: 2267
   :name: Amarr
@@ -1515,14 +2027,34 @@
   :market_group_id: 2491
   :name: Blue Pill
   :parent_group_id: 2488
+2488:
+  :market_group_id: 2488
+  :name: Booster Slot 01
+  :parent_group_id: 977
+977:
+  :market_group_id: 977
+  :name: Booster
+  :parent_group_id: 24
+24:
+  :market_group_id: 24
+  :name: Implants & Boosters
+  :parent_group_id: 
 2500:
   :market_group_id: 2500
   :name: Crash
   :parent_group_id: 2490
+2490:
+  :market_group_id: 2490
+  :name: Booster Slot 03
+  :parent_group_id: 977
 2498:
   :market_group_id: 2498
   :name: Sooth Sayer
   :parent_group_id: 2489
+2489:
+  :market_group_id: 2489
+  :name: Booster Slot 02
+  :parent_group_id: 977
 2497:
   :market_group_id: 2497
   :name: Frentix
@@ -1555,6 +2087,10 @@
   :market_group_id: 1208
   :name: Large Armor Rigs
   :parent_group_id: 956
+956:
+  :market_group_id: 956
+  :name: Armor Rigs
+  :parent_group_id: 1111
 1715:
   :market_group_id: 1715
   :name: Salvagers
@@ -1563,46 +2099,90 @@
   :market_group_id: 1784
   :name: Large Resource Processing Rigs
   :parent_group_id: 1779
+1779:
+  :market_group_id: 1779
+  :name: Resource Processing Rigs
+  :parent_group_id: 1111
 1236:
   :market_group_id: 1236
   :name: Large Shield Rigs
   :parent_group_id: 965
+965:
+  :market_group_id: 965
+  :name: Shield Rigs
+  :parent_group_id: 1111
 1215:
   :market_group_id: 1215
   :name: Large Drone Rigs
   :parent_group_id: 958
+958:
+  :market_group_id: 958
+  :name: Drone Rigs
+  :parent_group_id: 1111
 1221:
   :market_group_id: 1221
   :name: Large Electronics Superiority Rigs
   :parent_group_id: 960
+960:
+  :market_group_id: 960
+  :name: Electronics Superiority Rigs
+  :parent_group_id: 1111
 1788:
   :market_group_id: 1788
   :name: Large Scanning Rigs
   :parent_group_id: 1780
+1780:
+  :market_group_id: 1780
+  :name: Scanning Rigs
+  :parent_group_id: 1111
 1227:
   :market_group_id: 1227
   :name: Large Energy Weapon Rigs
   :parent_group_id: 962
+962:
+  :market_group_id: 962
+  :name: Energy Weapon Rigs
+  :parent_group_id: 1111
 1230:
   :market_group_id: 1230
   :name: Large Hybrid Weapon Rigs
   :parent_group_id: 963
+963:
+  :market_group_id: 963
+  :name: Hybrid Weapon Rigs
+  :parent_group_id: 1111
 1233:
   :market_group_id: 1233
   :name: Large Missile Launcher Rigs
   :parent_group_id: 964
+964:
+  :market_group_id: 964
+  :name: Missile Launcher Rigs
+  :parent_group_id: 1111
 1239:
   :market_group_id: 1239
   :name: Large Projectile Weapon Rigs
   :parent_group_id: 979
+979:
+  :market_group_id: 979
+  :name: Projectile Weapon Rigs
+  :parent_group_id: 1111
 1212:
   :market_group_id: 1212
   :name: Large Astronautic Rigs
   :parent_group_id: 957
+957:
+  :market_group_id: 957
+  :name: Astronautic Rigs
+  :parent_group_id: 1111
 1792:
   :market_group_id: 1792
   :name: Large Targeting Rigs
   :parent_group_id: 1781
+1781:
+  :market_group_id: 1781
+  :name: Targeting Rigs
+  :parent_group_id: 1111
 1222:
   :market_group_id: 1222
   :name: Small Engineering Rigs
@@ -1619,6 +2199,10 @@
   :market_group_id: 1658
   :name: Station Containers
   :parent_group_id: 379
+379:
+  :market_group_id: 379
+  :name: Cargo Containers
+  :parent_group_id: 404
 2249:
   :market_group_id: 2249
   :name: Burst Projectors
@@ -1635,14 +2219,26 @@
   :market_group_id: 1048
   :name: ORE
   :parent_group_id: 1047
+1047:
+  :market_group_id: 1047
+  :name: Capital Industrial Ships
+  :parent_group_id: 1381
 2336:
   :market_group_id: 2336
   :name: ORE
   :parent_group_id: 2335
+2335:
+  :market_group_id: 2335
+  :name: Industrial Command Ships
+  :parent_group_id: 1382
 1081:
   :market_group_id: 1081
   :name: Amarr
   :parent_group_id: 1080
+1080:
+  :market_group_id: 1080
+  :name: Marauders
+  :parent_group_id: 1377
 1083:
   :market_group_id: 1083
   :name: Gallente
@@ -1659,10 +2255,18 @@
   :market_group_id: 1091
   :name: Caldari
   :parent_group_id: 1089
+1089:
+  :market_group_id: 1089
+  :name: Jump Freighters
+  :parent_group_id: 1381
 1885:
   :market_group_id: 1885
   :name: Caldari
   :parent_group_id: 1883
+1883:
+  :market_group_id: 1883
+  :name: Advanced Capital Components
+  :parent_group_id: 1035
 1093:
   :market_group_id: 1093
   :name: Minmatar
@@ -1695,6 +2299,10 @@
   :market_group_id: 1140
   :name: Caldari
   :parent_group_id: 1138
+1138:
+  :market_group_id: 1138
+  :name: Strategic Cruisers
+  :parent_group_id: 1368
 1147:
   :market_group_id: 1147
   :name: Subsystem Components
@@ -1859,6 +2467,10 @@
   :market_group_id: 1287
   :name: Standard XL Cruise Missiles
   :parent_group_id: 1316
+1316:
+  :market_group_id: 1316
+  :name: XL Cruise Missiles
+  :parent_group_id: 114
 116:
   :market_group_id: 116
   :name: Defender
@@ -1899,6 +2511,10 @@
   :market_group_id: 1661
   :name: Special Edition Commodities
   :parent_group_id: 1659
+1659:
+  :market_group_id: 1659
+  :name: Special Edition Assets
+  :parent_group_id: 
 1702:
   :market_group_id: 1702
   :name: Personal Hangar Arrays
@@ -1907,6 +2523,10 @@
   :market_group_id: 1704
   :name: Navy Faction
   :parent_group_id: 1703
+1703:
+  :market_group_id: 1703
+  :name: Faction Battlecruisers
+  :parent_group_id: 1374
 1709:
   :market_group_id: 1709
   :name: Scanning Upgrades
@@ -1951,6 +2571,14 @@
   :market_group_id: 618
   :name: Implant Slot 01
   :parent_group_id: 532
+532:
+  :market_group_id: 532
+  :name: Attribute Enhancers
+  :parent_group_id: 27
+27:
+  :market_group_id: 27
+  :name: Implants
+  :parent_group_id: 24
 619:
   :market_group_id: 619
   :name: Implant Slot 02
@@ -1971,6 +2599,14 @@
   :market_group_id: 1506
   :name: Implant Slot 06
   :parent_group_id: 1472
+1472:
+  :market_group_id: 1472
+  :name: Faction Omega Implants
+  :parent_group_id: 531
+531:
+  :market_group_id: 531
+  :name: Skill Hardwiring
+  :parent_group_id: 27
 1847:
   :market_group_id: 1847
   :name: Encounter Surveillance Systems
@@ -2003,6 +2639,10 @@
   :market_group_id: 1952
   :name: Amarr
   :parent_group_id: 1951
+1951:
+  :market_group_id: 1951
+  :name: Tactical Destroyers
+  :parent_group_id: 1373
 1950:
   :market_group_id: 1950
   :name: ORE
@@ -2023,6 +2663,10 @@
   :market_group_id: 1284
   :name: Military Upgrades
   :parent_group_id: 1276
+1276:
+  :market_group_id: 1276
+  :name: Infrastructure Upgrades
+  :parent_group_id: 1272
 1283:
   :market_group_id: 1283
   :name: Industrial Upgrades
@@ -2051,10 +2695,18 @@
   :market_group_id: 2013
   :name: Unknown Components
   :parent_group_id: 19
+19:
+  :market_group_id: 19
+  :name: Trade Goods
+  :parent_group_id: 
 2201:
   :market_group_id: 2201
   :name: Standard Citadels
   :parent_group_id: 2199
+2199:
+  :market_group_id: 2199
+  :name: Citadels
+  :parent_group_id: 477
 2324:
   :market_group_id: 2324
   :name: Engineering Complexes
@@ -2067,22 +2719,46 @@
   :market_group_id: 2229
   :name: Guided Bomb Launchers
   :parent_group_id: 2209
+2209:
+  :market_group_id: 2209
+  :name: Structure Weapons
+  :parent_group_id: 2202
+2202:
+  :market_group_id: 2202
+  :name: Structure Equipment
+  :parent_group_id: 
 2234:
   :market_group_id: 2234
   :name: Ballistic Control Systems
   :parent_group_id: 2227
+2227:
+  :market_group_id: 2227
+  :name: Weapon Upgrades
+  :parent_group_id: 2209
 2232:
   :market_group_id: 2232
   :name: Citadel Service Modules
   :parent_group_id: 2210
+2210:
+  :market_group_id: 2210
+  :name: Service Modules
+  :parent_group_id: 2202
 2218:
   :market_group_id: 2218
   :name: CPU Upgrades
   :parent_group_id: 2207
+2207:
+  :market_group_id: 2207
+  :name: Electronics and Sensor Upgrades
+  :parent_group_id: 2202
 2221:
   :market_group_id: 2221
   :name: Point Defense Batteries
   :parent_group_id: 2208
+2208:
+  :market_group_id: 2208
+  :name: Engineering Equipment
+  :parent_group_id: 2202
 2228:
   :market_group_id: 2228
   :name: Doomsday Devices
@@ -2095,6 +2771,10 @@
   :market_group_id: 2211
   :name: Electronic Counter Measures
   :parent_group_id: 2206
+2206:
+  :market_group_id: 2206
+  :name: Electronic Warfare
+  :parent_group_id: 2202
 2223:
   :market_group_id: 2223
   :name: Energy Neutralizers
@@ -2107,6 +2787,10 @@
   :market_group_id: 2230
   :name: Structure Anticapital Launcher
   :parent_group_id: 2226
+2226:
+  :market_group_id: 2226
+  :name: Missile Launchers
+  :parent_group_id: 2209
 2231:
   :market_group_id: 2231
   :name: Structure Antisubcapital Launcher
@@ -2139,6 +2823,14 @@
   :market_group_id: 2348
   :name: Large Structure Engineering Rigs
   :parent_group_id: 2340
+2340:
+  :market_group_id: 2340
+  :name: Structure Engineering Rigs
+  :parent_group_id: 2203
+2203:
+  :market_group_id: 2203
+  :name: Structure Modifications
+  :parent_group_id: 
 2349:
   :market_group_id: 2349
   :name: X-Large Structure Engineering Rigs
@@ -2147,6 +2839,10 @@
   :market_group_id: 2344
   :name: Medium Structure Combat Rigs
   :parent_group_id: 2205
+2205:
+  :market_group_id: 2205
+  :name: Structure Combat Rigs
+  :parent_group_id: 2203
 2345:
   :market_group_id: 2345
   :name: Large Structure Combat Rigs
@@ -2163,6 +2859,10 @@
   :market_group_id: 2131
   :name: Caldari
   :parent_group_id: 2125
+2125:
+  :market_group_id: 2125
+  :name: Command Destroyers
+  :parent_group_id: 1373
 2126:
   :market_group_id: 2126
   :name: Amarr
@@ -2199,6 +2899,10 @@
   :market_group_id: 2147
   :name: Amarr
   :parent_group_id: 2146
+2146:
+  :market_group_id: 2146
+  :name: Logistics Frigates
+  :parent_group_id: 1364
 2148:
   :market_group_id: 2148
   :name: Caldari
@@ -2283,6 +2987,10 @@
   :market_group_id: 2272
   :name: Amarr
   :parent_group_id: 2271
+2271:
+  :market_group_id: 2271
+  :name: Force Auxiliaries
+  :parent_group_id: 1381
 2273:
   :market_group_id: 2273
   :name: Caldari
@@ -2335,6 +3043,10 @@
   :market_group_id: 2298
   :name: Armor Command Burst Charges
   :parent_group_id: 2297
+2297:
+  :market_group_id: 2297
+  :name: Command Burst Charges
+  :parent_group_id: 11
 2299:
   :market_group_id: 2299
   :name: Information Command Burst Charges
@@ -2379,22 +3091,46 @@
   :market_group_id: 2417
   :name: CONCORD
   :parent_group_id: 2416
+2416:
+  :market_group_id: 2416
+  :name: Flag Cruisers
+  :parent_group_id: 1368
 1126:
   :market_group_id: 1126
   :name: Amarr Defensive Subsystems
   :parent_group_id: 1610
+1610:
+  :market_group_id: 1610
+  :name: Amarr Subsystems
+  :parent_group_id: 1112
+1112:
+  :market_group_id: 1112
+  :name: Subsystems
+  :parent_group_id: 955
 1127:
   :market_group_id: 1127
   :name: Caldari Defensive Subsystems
   :parent_group_id: 1625
+1625:
+  :market_group_id: 1625
+  :name: Caldari Subsystems
+  :parent_group_id: 1112
 1129:
   :market_group_id: 1129
   :name: Gallente Defensive Subsystems
   :parent_group_id: 1627
+1627:
+  :market_group_id: 1627
+  :name: Gallente Subsystems
+  :parent_group_id: 1112
 1128:
   :market_group_id: 1128
   :name: Minmatar Defensive Subsystems
   :parent_group_id: 1626
+1626:
+  :market_group_id: 1626
+  :name: Minmatar Subsystems
+  :parent_group_id: 1112
 1130:
   :market_group_id: 1130
   :name: Amarr Offensive Subsystems
@@ -2447,6 +3183,10 @@
   :market_group_id: 2342
   :name: Large Structure Resource Processing Rigs
   :parent_group_id: 2204
+2204:
+  :market_group_id: 2204
+  :name: Structure Resource Processing Rigs
+  :parent_group_id: 2203
 2341:
   :market_group_id: 2341
   :name: Medium Structure Resource Processing Rigs
@@ -2459,6 +3199,10 @@
   :market_group_id: 1773
   :name: Implant Slot 09
   :parent_group_id: 1763
+1763:
+  :market_group_id: 1763
+  :name: Scanning Implants
+  :parent_group_id: 531
 2408:
   :market_group_id: 2408
   :name: Structure Burst Projectors
@@ -2467,6 +3211,10 @@
   :market_group_id: 2411
   :name: Standup Light Fighters
   :parent_group_id: 2409
+2409:
+  :market_group_id: 2409
+  :name: Structure-based Fighters
+  :parent_group_id: 2236
 2413:
   :market_group_id: 2413
   :name: Standup Support Fighters
@@ -2491,18 +3239,38 @@
   :market_group_id: 2426
   :name: Triglavian
   :parent_group_id: 2425
+2425:
+  :market_group_id: 2425
+  :name: Precursor Frigates
+  :parent_group_id: 1361
 2428:
   :market_group_id: 2428
   :name: Triglavian
   :parent_group_id: 2427
+2427:
+  :market_group_id: 2427
+  :name: Precursor Cruisers
+  :parent_group_id: 1367
 2430:
   :market_group_id: 2430
   :name: Triglavian
   :parent_group_id: 2429
+2429:
+  :market_group_id: 2429
+  :name: Precursor Battleships
+  :parent_group_id: 1376
 2433:
   :market_group_id: 2433
   :name: Small
   :parent_group_id: 2432
+2432:
+  :market_group_id: 2432
+  :name: Entropic Disintegrators
+  :parent_group_id: 2431
+2431:
+  :market_group_id: 2431
+  :name: Precursor Turrets
+  :parent_group_id: 10
 2434:
   :market_group_id: 2434
   :name: Medium
@@ -2519,10 +3287,22 @@
   :market_group_id: 2465
   :name: Small
   :parent_group_id: 2463
+2463:
+  :market_group_id: 2463
+  :name: Standard Exotic Plasma Charges
+  :parent_group_id: 2462
+2462:
+  :market_group_id: 2462
+  :name: Exotic Plasma Charges
+  :parent_group_id: 11
 2468:
   :market_group_id: 2468
   :name: Small
   :parent_group_id: 2464
+2464:
+  :market_group_id: 2464
+  :name: Advanced Exotic Plasma Charges
+  :parent_group_id: 2462
 2466:
   :market_group_id: 2466
   :name: Medium
