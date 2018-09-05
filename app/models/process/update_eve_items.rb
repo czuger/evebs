@@ -19,7 +19,10 @@ module Process
         on_db_item.name = type[:name]
         on_db_item.blueprint_id = @blueprint_cpp_to_syntetic_key_conversion_hash[type[:cpp_eve_item_id]]
 
-        on_db_item.save!
+        on_db_item.production_level = type[:production_level]
+        on_db_item.base_item = type[:base_item]
+
+        on_db_item.save
       end
     end
   end
