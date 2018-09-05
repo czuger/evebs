@@ -62,7 +62,7 @@ CREATE TABLE public.blueprint_materials (
     required_qtt integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    eve_items_id bigint NOT NULL
+    eve_item_id bigint NOT NULL
 );
 
 
@@ -166,7 +166,7 @@ CREATE TABLE public.bpc_assets (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     user_id bigint NOT NULL,
-    eve_items_id bigint NOT NULL
+    eve_item_id bigint NOT NULL
 );
 
 
@@ -1784,10 +1784,10 @@ CREATE INDEX index_blueprint_materials_on_blueprint_id ON public.blueprint_mater
 
 
 --
--- Name: index_blueprint_materials_on_eve_items_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_blueprint_materials_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_blueprint_materials_on_eve_items_id ON public.blueprint_materials USING btree (eve_items_id);
+CREATE INDEX index_blueprint_materials_on_eve_item_id ON public.blueprint_materials USING btree (eve_item_id);
 
 
 --
@@ -1812,10 +1812,10 @@ CREATE UNIQUE INDEX index_blueprints_on_produced_cpp_type_id ON public.blueprint
 
 
 --
--- Name: index_bpc_assets_on_eve_items_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_bpc_assets_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_bpc_assets_on_eve_items_id ON public.bpc_assets USING btree (eve_items_id);
+CREATE INDEX index_bpc_assets_on_eve_item_id ON public.bpc_assets USING btree (eve_item_id);
 
 
 --
@@ -2163,11 +2163,11 @@ ALTER TABLE ONLY public.eve_market_volumes
 
 
 --
--- Name: bpc_assets fk_rails_08f8b59e96; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: blueprint_materials fk_rails_0206fd6697; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.bpc_assets
-    ADD CONSTRAINT fk_rails_08f8b59e96 FOREIGN KEY (eve_items_id) REFERENCES public.eve_items(id);
+ALTER TABLE ONLY public.blueprint_materials
+    ADD CONSTRAINT fk_rails_0206fd6697 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
 
 
 --
@@ -2267,6 +2267,14 @@ ALTER TABLE ONLY public.buy_orders
 
 
 --
+-- Name: bpc_assets fk_rails_5259447fe3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bpc_assets
+    ADD CONSTRAINT fk_rails_5259447fe3 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
+
+
+--
 -- Name: buy_orders fk_rails_536e5663b6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2328,14 +2336,6 @@ ALTER TABLE ONLY public.sales_finals
 
 ALTER TABLE ONLY public.user_sale_orders
     ADD CONSTRAINT fk_rails_94365f7fb0 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
-
-
---
--- Name: blueprint_materials fk_rails_9ea7a83f4a; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_materials
-    ADD CONSTRAINT fk_rails_9ea7a83f4a FOREIGN KEY (eve_items_id) REFERENCES public.eve_items(id);
 
 
 --
@@ -2639,7 +2639,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180904063731'),
 ('20180904064749'),
 ('20180904065442'),
-('20180904071330'),
 ('20180905130609');
 
 

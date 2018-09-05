@@ -9,7 +9,7 @@ module Process
 
       lowest_production_level = 0
 
-      @blueprint_cpp_to_syntetic_key_conversion_hash = Hash[ Blueprint.pluck( :produced_cpp_type_id, :id ) ]
+      blueprint_cpp_to_syntetic_key_conversion_hash = Hash[ Blueprint.pluck( :produced_cpp_type_id, :id ) ]
 
       types_to_destroy = EveItem.pluck( :cpp_eve_item_id ) - types.keys
       EveItem.where( cpp_eve_item_id: types_to_destroy ).destroy_all
@@ -19,7 +19,7 @@ module Process
 
         on_db_item.volume = type[:volume]
         on_db_item.name = type[:name]
-        on_db_item.blueprint_id = @blueprint_cpp_to_syntetic_key_conversion_hash[type[:cpp_eve_item_id]]
+        on_db_item.blueprint_id = blueprint_cpp_to_syntetic_key_conversion_hash[type[:cpp_eve_item_id]]
 
         on_db_item.production_level = type[:production_level]
         lowest_production_level = [ lowest_production_level, type[:production_level] ].min

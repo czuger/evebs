@@ -62,6 +62,7 @@ namespace :process do
       ActiveRecord::Base.transaction do
         Process::UpdateBlueprints.new.update
         Process::UpdateEveItems.new.update
+        Process::UpdateBlueprintMaterials.new.update
       end
 
       Banner.p( 'Finished' )
