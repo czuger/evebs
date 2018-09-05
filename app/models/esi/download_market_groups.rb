@@ -30,6 +30,8 @@ class Esi::DownloadMarketGroups < Esi::Download
         puts "#{check_count} markets checked" if check_count % 100 == 0
       end
 
+      raise unless market_data['name'] && !market_data['name'].empty?
+
       market_groups_hash[m_id] = { market_group_id: market_data['market_group_id'], name: market_data['name'],
                                    parent_group_id: market_data['parent_group_id']}
 
