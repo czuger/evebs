@@ -1,0 +1,2541 @@
+---
+61:
+  :market_group_id: 61
+  :name: Caldari
+  :parent_group_id: 5
+75:
+  :market_group_id: 75
+  :name: Caldari
+  :parent_group_id: 6
+80:
+  :market_group_id: 80
+  :name: Caldari
+  :parent_group_id: 7
+64:
+  :market_group_id: 64
+  :name: Minmatar
+  :parent_group_id: 5
+73:
+  :market_group_id: 73
+  :name: Minmatar
+  :parent_group_id: 6
+78:
+  :market_group_id: 78
+  :name: Minmatar
+  :parent_group_id: 7
+1039:
+  :market_group_id: 1039
+  :name: Mining Lasers
+  :parent_group_id: 1713
+1888:
+  :market_group_id: 1888
+  :name: Gallente
+  :parent_group_id: 65
+802:
+  :market_group_id: 802
+  :name: Amarr
+  :parent_group_id: 65
+1908:
+  :market_group_id: 1908
+  :name: R.A.M.
+  :parent_group_id: 1035
+640:
+  :market_group_id: 640
+  :name: Light Missile Launchers
+  :parent_group_id: 140
+642:
+  :market_group_id: 642
+  :name: Heavy Launchers
+  :parent_group_id: 140
+644:
+  :market_group_id: 644
+  :name: Torpedo Launchers
+  :parent_group_id: 140
+921:
+  :market_group_id: 921
+  :name: Standard Cruise Missiles
+  :parent_group_id: 580
+924:
+  :market_group_id: 924
+  :name: Standard Heavy Missiles
+  :parent_group_id: 581
+920:
+  :market_group_id: 920
+  :name: Standard Light Missiles
+  :parent_group_id: 117
+574:
+  :market_group_id: 574
+  :name: Small
+  :parent_group_id: 559
+577:
+  :market_group_id: 577
+  :name: Small
+  :parent_group_id: 560
+575:
+  :market_group_id: 575
+  :name: Medium
+  :parent_group_id: 559
+578:
+  :market_group_id: 578
+  :name: Medium
+  :parent_group_id: 560
+576:
+  :market_group_id: 576
+  :name: Large
+  :parent_group_id: 559
+579:
+  :market_group_id: 579
+  :name: Large
+  :parent_group_id: 560
+570:
+  :market_group_id: 570
+  :name: Small
+  :parent_group_id: 558
+567:
+  :market_group_id: 567
+  :name: Small
+  :parent_group_id: 557
+568:
+  :market_group_id: 568
+  :name: Medium
+  :parent_group_id: 557
+572:
+  :market_group_id: 572
+  :name: Medium
+  :parent_group_id: 558
+573:
+  :market_group_id: 573
+  :name: Large
+  :parent_group_id: 558
+569:
+  :market_group_id: 569
+  :name: Large
+  :parent_group_id: 557
+113:
+  :market_group_id: 113
+  :name: Small
+  :parent_group_id: 845
+112:
+  :market_group_id: 112
+  :name: Medium
+  :parent_group_id: 845
+109:
+  :market_group_id: 109
+  :name: Large
+  :parent_group_id: 845
+72:
+  :market_group_id: 72
+  :name: Amarr
+  :parent_group_id: 5
+77:
+  :market_group_id: 77
+  :name: Gallente
+  :parent_group_id: 5
+396:
+  :market_group_id: 396
+  :name: Caldari
+  :parent_group_id: 391
+74:
+  :market_group_id: 74
+  :name: Amarr
+  :parent_group_id: 6
+76:
+  :market_group_id: 76
+  :name: Gallente
+  :parent_group_id: 6
+84:
+  :market_group_id: 84
+  :name: Caldari
+  :parent_group_id: 8
+83:
+  :market_group_id: 83
+  :name: Gallente
+  :parent_group_id: 8
+82:
+  :market_group_id: 82
+  :name: Minmatar
+  :parent_group_id: 8
+81:
+  :market_group_id: 81
+  :name: Gallente
+  :parent_group_id: 7
+79:
+  :market_group_id: 79
+  :name: Amarr
+  :parent_group_id: 7
+815:
+  :market_group_id: 815
+  :name: Gallente
+  :parent_group_id: 812
+781:
+  :market_group_id: 781
+  :name: Standard Capital Ship Components
+  :parent_group_id: 1035
+605:
+  :market_group_id: 605
+  :name: Small
+  :parent_group_id: 551
+803:
+  :market_group_id: 803
+  :name: Caldari
+  :parent_group_id: 65
+126:
+  :market_group_id: 126
+  :name: Shield Rechargers
+  :parent_group_id: 554
+609:
+  :market_group_id: 609
+  :name: Small
+  :parent_group_id: 552
+131:
+  :market_group_id: 131
+  :name: Microwarpdrives
+  :parent_group_id: 52
+542:
+  :market_group_id: 542
+  :name: Afterburners
+  :parent_group_id: 52
+1889:
+  :market_group_id: 1889
+  :name: Minmatar
+  :parent_group_id: 65
+711:
+  :market_group_id: 711
+  :name: Cargo Scanners
+  :parent_group_id: 1708
+713:
+  :market_group_id: 713
+  :name: Ship Scanners
+  :parent_group_id: 1708
+714:
+  :market_group_id: 714
+  :name: Survey Scanners
+  :parent_group_id: 1708
+1936:
+  :market_group_id: 1936
+  :name: Warp Scramblers
+  :parent_group_id: 657
+646:
+  :market_group_id: 646
+  :name: Gyrostabilizers
+  :parent_group_id: 143
+1049:
+  :market_group_id: 1049
+  :name: 'Small '
+  :parent_group_id: 134
+1053:
+  :market_group_id: 1053
+  :name: Small
+  :parent_group_id: 538
+683:
+  :market_group_id: 683
+  :name: Stasis Webifiers
+  :parent_group_id: 657
+695:
+  :market_group_id: 695
+  :name: Small
+  :parent_group_id: 663
+692:
+  :market_group_id: 692
+  :name: Small
+  :parent_group_id: 662
+689:
+  :market_group_id: 689
+  :name: Small
+  :parent_group_id: 661
+564:
+  :market_group_id: 564
+  :name: Small
+  :parent_group_id: 555
+561:
+  :market_group_id: 561
+  :name: Small
+  :parent_group_id: 556
+562:
+  :market_group_id: 562
+  :name: Medium
+  :parent_group_id: 556
+565:
+  :market_group_id: 565
+  :name: Medium
+  :parent_group_id: 555
+563:
+  :market_group_id: 563
+  :name: Large
+  :parent_group_id: 556
+566:
+  :market_group_id: 566
+  :name: Large
+  :parent_group_id: 555
+700:
+  :market_group_id: 700
+  :name: Medium
+  :parent_group_id: 668
+1696:
+  :market_group_id: 1696
+  :name: Adaptive Shield Hardeners
+  :parent_group_id: 553
+107:
+  :market_group_id: 107
+  :name: Small
+  :parent_group_id: 848
+108:
+  :market_group_id: 108
+  :name: Medium
+  :parent_group_id: 848
+106:
+  :market_group_id: 106
+  :name: Large
+  :parent_group_id: 848
+102:
+  :market_group_id: 102
+  :name: Small
+  :parent_group_id: 851
+103:
+  :market_group_id: 103
+  :name: Medium
+  :parent_group_id: 851
+105:
+  :market_group_id: 105
+  :name: Large
+  :parent_group_id: 851
+139:
+  :market_group_id: 139
+  :name: Cap Booster Charges
+  :parent_group_id: 11
+703:
+  :market_group_id: 703
+  :name: Small
+  :parent_group_id: 664
+665:
+  :market_group_id: 665
+  :name: Capacitor Rechargers
+  :parent_group_id: 655
+1668:
+  :market_group_id: 1668
+  :name: EM Resistance Plating
+  :parent_group_id: 540
+670:
+  :market_group_id: 670
+  :name: Automated Targeting Systems
+  :parent_group_id: 656
+678:
+  :market_group_id: 678
+  :name: ECM Bursts
+  :parent_group_id: 657
+672:
+  :market_group_id: 672
+  :name: Passive Targeting Systems
+  :parent_group_id: 656
+839:
+  :market_group_id: 839
+  :name: Heavy Attack Drones
+  :parent_group_id: 159
+914:
+  :market_group_id: 914
+  :name: Standard Auto-Targeting
+  :parent_group_id: 115
+158:
+  :market_group_id: 158
+  :name: Mining Drones
+  :parent_group_id: 157
+922:
+  :market_group_id: 922
+  :name: Standard Rockets
+  :parent_group_id: 118
+923:
+  :market_group_id: 923
+  :name: Standard Torpedoes
+  :parent_group_id: 387
+1087:
+  :market_group_id: 1087
+  :name: Overdrives
+  :parent_group_id: 132
+666:
+  :market_group_id: 666
+  :name: Capacitor Flux Coils
+  :parent_group_id: 655
+687:
+  :market_group_id: 687
+  :name: Shield Flux Coils
+  :parent_group_id: 554
+1667:
+  :market_group_id: 1667
+  :name: Explosive Resistance Plating
+  :parent_group_id: 540
+1669:
+  :market_group_id: 1669
+  :name: Layered Plating
+  :parent_group_id: 14
+1666:
+  :market_group_id: 1666
+  :name: Kinetic Resistance Plating
+  :parent_group_id: 540
+1665:
+  :market_group_id: 1665
+  :name: Thermal Resistance Plating
+  :parent_group_id: 540
+1670:
+  :market_group_id: 1670
+  :name: Adaptive Resistance Plating
+  :parent_group_id: 540
+1197:
+  :market_group_id: 1197
+  :name: Expanded Cargoholds
+  :parent_group_id: 135
+1195:
+  :market_group_id: 1195
+  :name: Reinforced Bulkheads
+  :parent_group_id: 135
+659:
+  :market_group_id: 659
+  :name: Reactor Control Units
+  :parent_group_id: 655
+1086:
+  :market_group_id: 1086
+  :name: Inertial Stabilizers
+  :parent_group_id: 132
+688:
+  :market_group_id: 688
+  :name: Shield Power Relays
+  :parent_group_id: 554
+667:
+  :market_group_id: 667
+  :name: Capacitor Power Relays
+  :parent_group_id: 655
+658:
+  :market_group_id: 658
+  :name: Power Diagnostic Systems
+  :parent_group_id: 655
+382:
+  :market_group_id: 382
+  :name: Small
+  :parent_group_id: 141
+1691:
+  :market_group_id: 1691
+  :name: EM Resistance Amplifiers
+  :parent_group_id: 550
+641:
+  :market_group_id: 641
+  :name: Rapid Light Missile Launchers
+  :parent_group_id: 140
+85:
+  :market_group_id: 85
+  :name: Amarr
+  :parent_group_id: 8
+704:
+  :market_group_id: 704
+  :name: Medium
+  :parent_group_id: 664
+705:
+  :market_group_id: 705
+  :name: Large
+  :parent_group_id: 664
+615:
+  :market_group_id: 615
+  :name: Damage Controls
+  :parent_group_id: 14
+838:
+  :market_group_id: 838
+  :name: Medium Scout Drones
+  :parent_group_id: 159
+837:
+  :market_group_id: 837
+  :name: Light Scout Drones
+  :parent_group_id: 159
+1694:
+  :market_group_id: 1694
+  :name: Explosive Shield Hardeners
+  :parent_group_id: 553
+1693:
+  :market_group_id: 1693
+  :name: Kinetic Shield Hardeners
+  :parent_group_id: 553
+1695:
+  :market_group_id: 1695
+  :name: EM Shield Hardeners
+  :parent_group_id: 553
+1692:
+  :market_group_id: 1692
+  :name: Thermal Shield Hardeners
+  :parent_group_id: 553
+1690:
+  :market_group_id: 1690
+  :name: Explosive Resistance Amplifiers
+  :parent_group_id: 550
+1688:
+  :market_group_id: 1688
+  :name: Thermal Resistance Amplifiers
+  :parent_group_id: 550
+1689:
+  :market_group_id: 1689
+  :name: Kinetic Resistance Amplifiers
+  :parent_group_id: 550
+1196:
+  :market_group_id: 1196
+  :name: Nanofiber Internal Structures
+  :parent_group_id: 135
+927:
+  :market_group_id: 927
+  :name: Advanced High Damage Light Missiles
+  :parent_group_id: 117
+925:
+  :market_group_id: 925
+  :name: Advanced High Damage Cruise Missiles
+  :parent_group_id: 580
+926:
+  :market_group_id: 926
+  :name: Advanced High Damage Heavy Missiles
+  :parent_group_id: 581
+918:
+  :market_group_id: 918
+  :name: Advanced High Precision Cruise Missiles
+  :parent_group_id: 580
+917:
+  :market_group_id: 917
+  :name: Advanced High Precision Light Missiles
+  :parent_group_id: 117
+919:
+  :market_group_id: 919
+  :name: Advanced High Precision Heavy Missiles
+  :parent_group_id: 581
+973:
+  :market_group_id: 973
+  :name: Advanced Anti-Ship Heavy Assault Missile
+  :parent_group_id: 968
+1275:
+  :market_group_id: 1275
+  :name: Infrastructure Hubs
+  :parent_group_id: 1272
+481:
+  :market_group_id: 481
+  :name: Electronic Warfare Batteries
+  :parent_group_id: 480
+1935:
+  :market_group_id: 1935
+  :name: Warp Disruptors
+  :parent_group_id: 657
+1273:
+  :market_group_id: 1273
+  :name: Territorial Claim Units
+  :parent_group_id: 1272
+1103:
+  :market_group_id: 1103
+  :name: Nanite Repair Paste
+  :parent_group_id: 11
+484:
+  :market_group_id: 484
+  :name: Ship Maintenance Arrays
+  :parent_group_id: 1285
+485:
+  :market_group_id: 485
+  :name: Shield Hardening Arrays
+  :parent_group_id: 1285
+679:
+  :market_group_id: 679
+  :name: Remote Sensor Dampeners
+  :parent_group_id: 657
+478:
+  :market_group_id: 478
+  :name: Control Towers
+  :parent_group_id: 1285
+506:
+  :market_group_id: 506
+  :name: Corporate Hangar Array
+  :parent_group_id: 1285
+1013:
+  :market_group_id: 1013
+  :name: Cynosural Generator Array
+  :parent_group_id: 1285
+1012:
+  :market_group_id: 1012
+  :name: Cynosural System Jammer
+  :parent_group_id: 1285
+715:
+  :market_group_id: 715
+  :name: Magnetometric Jammers
+  :parent_group_id: 677
+716:
+  :market_group_id: 716
+  :name: Ladar Jammers
+  :parent_group_id: 677
+717:
+  :market_group_id: 717
+  :name: Gravimetric Jammers
+  :parent_group_id: 677
+718:
+  :market_group_id: 718
+  :name: Radar Jammers
+  :parent_group_id: 677
+1009:
+  :market_group_id: 1009
+  :name: Energy Neutralization Batteries
+  :parent_group_id: 480
+691:
+  :market_group_id: 691
+  :name: Heavy
+  :parent_group_id: 661
+1011:
+  :market_group_id: 1011
+  :name: 'Jump Bridge '
+  :parent_group_id: 1285
+929:
+  :market_group_id: 929
+  :name: Advanced Long Range Torpedoes
+  :parent_group_id: 387
+595:
+  :market_group_id: 595
+  :name: Hybrid Batteries
+  :parent_group_id: 480
+594:
+  :market_group_id: 594
+  :name: Projectile Batteries
+  :parent_group_id: 480
+931:
+  :market_group_id: 931
+  :name: Advanced Anti-Ship Torpedoes
+  :parent_group_id: 387
+930:
+  :market_group_id: 930
+  :name: Advanced Anti-Ship Rockets
+  :parent_group_id: 118
+479:
+  :market_group_id: 479
+  :name: Missile Batteries
+  :parent_group_id: 480
+643:
+  :market_group_id: 643
+  :name: Cruise Launchers
+  :parent_group_id: 140
+596:
+  :market_group_id: 596
+  :name: Laser Batteries
+  :parent_group_id: 480
+1310:
+  :market_group_id: 1310
+  :name: Heavy Fighters
+  :parent_group_id: 2410
+1390:
+  :market_group_id: 1390
+  :name: ORE
+  :parent_group_id: 8
+1392:
+  :market_group_id: 1392
+  :name: Faction Carrier
+  :parent_group_id: 817
+1623:
+  :market_group_id: 1623
+  :name: Special Edition Assault Frigates
+  :parent_group_id: 1612
+1621:
+  :market_group_id: 1621
+  :name: Special Edition Heavy Assault Cruisers
+  :parent_group_id: 1612
+1050:
+  :market_group_id: 1050
+  :name: Medium
+  :parent_group_id: 134
+1052:
+  :market_group_id: 1052
+  :name: Capital
+  :parent_group_id: 134
+1056:
+  :market_group_id: 1056
+  :name: Capital
+  :parent_group_id: 537
+1051:
+  :market_group_id: 1051
+  :name: Large
+  :parent_group_id: 134
+778:
+  :market_group_id: 778
+  :name: Capital
+  :parent_group_id: 552
+600:
+  :market_group_id: 600
+  :name: Capital
+  :parent_group_id: 128
+771:
+  :market_group_id: 771
+  :name: Extra Large
+  :parent_group_id: 556
+772:
+  :market_group_id: 772
+  :name: Extra Large
+  :parent_group_id: 555
+774:
+  :market_group_id: 774
+  :name: Extra Large
+  :parent_group_id: 558
+773:
+  :market_group_id: 773
+  :name: Extra Large
+  :parent_group_id: 557
+777:
+  :market_group_id: 777
+  :name: XL Launchers
+  :parent_group_id: 140
+699:
+  :market_group_id: 699
+  :name: Small
+  :parent_group_id: 668
+775:
+  :market_group_id: 775
+  :name: Extra Large
+  :parent_group_id: 560
+776:
+  :market_group_id: 776
+  :name: Extra Large
+  :parent_group_id: 559
+701:
+  :market_group_id: 701
+  :name: Heavy
+  :parent_group_id: 668
+910:
+  :market_group_id: 910
+  :name: Capital
+  :parent_group_id: 663
+1718:
+  :market_group_id: 1718
+  :name: Analyzers
+  :parent_group_id: 1708
+603:
+  :market_group_id: 603
+  :name: Small
+  :parent_group_id: 128
+602:
+  :market_group_id: 602
+  :name: Medium
+  :parent_group_id: 128
+601:
+  :market_group_id: 601
+  :name: Large
+  :parent_group_id: 128
+1054:
+  :market_group_id: 1054
+  :name: Medium
+  :parent_group_id: 538
+1055:
+  :market_group_id: 1055
+  :name: Large
+  :parent_group_id: 538
+814:
+  :market_group_id: 814
+  :name: Caldari
+  :parent_group_id: 812
+606:
+  :market_group_id: 606
+  :name: Medium
+  :parent_group_id: 551
+608:
+  :market_group_id: 608
+  :name: Large
+  :parent_group_id: 551
+383:
+  :market_group_id: 383
+  :name: Medium
+  :parent_group_id: 141
+1410:
+  :market_group_id: 1410
+  :name: Orbital Infrastructure
+  :parent_group_id: 1320
+381:
+  :market_group_id: 381
+  :name: Large
+  :parent_group_id: 141
+1062:
+  :market_group_id: 1062
+  :name: Large
+  :parent_group_id: 1018
+1085:
+  :market_group_id: 1085
+  :name: Warp Disruption Field Generators
+  :parent_group_id: 657
+872:
+  :market_group_id: 872
+  :name: Tractor Beams
+  :parent_group_id: 656
+660:
+  :market_group_id: 660
+  :name: Auxiliary Power Controls
+  :parent_group_id: 655
+1014:
+  :market_group_id: 1014
+  :name: Bomb Launchers
+  :parent_group_id: 10
+712:
+  :market_group_id: 712
+  :name: Scan Probe Launchers
+  :parent_group_id: 1708
+801:
+  :market_group_id: 801
+  :name: Siege Modules
+  :parent_group_id: 143
+1061:
+  :market_group_id: 1061
+  :name: Medium
+  :parent_group_id: 1018
+1060:
+  :market_group_id: 1060
+  :name: Small
+  :parent_group_id: 1018
+470:
+  :market_group_id: 470
+  :name: Amarr
+  :parent_group_id: 469
+471:
+  :market_group_id: 471
+  :name: Caldari
+  :parent_group_id: 469
+472:
+  :market_group_id: 472
+  :name: Gallente
+  :parent_group_id: 469
+473:
+  :market_group_id: 473
+  :name: Minmatar
+  :parent_group_id: 469
+1870:
+  :market_group_id: 1870
+  :name: Fuel Blocks
+  :parent_group_id: 1035
+1614:
+  :market_group_id: 1614
+  :name: Special Edition Industrial Ships
+  :parent_group_id: 1612
+1650:
+  :market_group_id: 1650
+  :name: Micro Jump Drives
+  :parent_group_id: 52
+611:
+  :market_group_id: 611
+  :name: Large
+  :parent_group_id: 552
+938:
+  :market_group_id: 938
+  :name: Drone Upgrades
+  :parent_group_id: 9
+1223:
+  :market_group_id: 1223
+  :name: Medium Engineering Rigs
+  :parent_group_id: 961
+1224:
+  :market_group_id: 1224
+  :name: Large Engineering Rigs
+  :parent_group_id: 961
+1416:
+  :market_group_id: 1416
+  :name: Reactive Armor Hardeners
+  :parent_group_id: 535
+1426:
+  :market_group_id: 1426
+  :name: Target Breaker
+  :parent_group_id: 657
+648:
+  :market_group_id: 648
+  :name: Magnetic Field Stabilizers
+  :parent_group_id: 143
+639:
+  :market_group_id: 639
+  :name: Rocket Launchers
+  :parent_group_id: 140
+610:
+  :market_group_id: 610
+  :name: Medium
+  :parent_group_id: 552
+612:
+  :market_group_id: 612
+  :name: Extra Large
+  :parent_group_id: 552
+1699:
+  :market_group_id: 1699
+  :name: Special Edition Cruisers
+  :parent_group_id: 1612
+395:
+  :market_group_id: 395
+  :name: Gallente
+  :parent_group_id: 391
+394:
+  :market_group_id: 394
+  :name: Minmatar
+  :parent_group_id: 391
+393:
+  :market_group_id: 393
+  :name: Amarr
+  :parent_group_id: 391
+423:
+  :market_group_id: 423
+  :name: Gallente
+  :parent_group_id: 420
+1068:
+  :market_group_id: 1068
+  :name: Gallente
+  :parent_group_id: 1065
+401:
+  :market_group_id: 401
+  :name: Caldari
+  :parent_group_id: 399
+424:
+  :market_group_id: 424
+  :name: Minmatar
+  :parent_group_id: 420
+400:
+  :market_group_id: 400
+  :name: Amarr
+  :parent_group_id: 399
+421:
+  :market_group_id: 421
+  :name: Amarr
+  :parent_group_id: 420
+1066:
+  :market_group_id: 1066
+  :name: Amarr
+  :parent_group_id: 1065
+422:
+  :market_group_id: 422
+  :name: Caldari
+  :parent_group_id: 420
+1067:
+  :market_group_id: 1067
+  :name: Caldari
+  :parent_group_id: 1065
+403:
+  :market_group_id: 403
+  :name: Minmatar
+  :parent_group_id: 399
+402:
+  :market_group_id: 402
+  :name: Gallente
+  :parent_group_id: 399
+1684:
+  :market_group_id: 1684
+  :name: Energized EM Plating
+  :parent_group_id: 541
+1682:
+  :market_group_id: 1682
+  :name: Energized Explosive Plating
+  :parent_group_id: 541
+1687:
+  :market_group_id: 1687
+  :name: Energized Armor Layering
+  :parent_group_id: 14
+1685:
+  :market_group_id: 1685
+  :name: Energized Kinetic Plating
+  :parent_group_id: 541
+1683:
+  :market_group_id: 1683
+  :name: Energized Thermal Plating
+  :parent_group_id: 541
+1686:
+  :market_group_id: 1686
+  :name: Energized Adaptive Plating
+  :parent_group_id: 541
+1678:
+  :market_group_id: 1678
+  :name: Thermal Armor Hardeners
+  :parent_group_id: 535
+1676:
+  :market_group_id: 1676
+  :name: 1600mm Armor Plate
+  :parent_group_id: 133
+1672:
+  :market_group_id: 1672
+  :name: 100mm Armor Plate
+  :parent_group_id: 133
+1673:
+  :market_group_id: 1673
+  :name: 200mm Armor Plate
+  :parent_group_id: 133
+1674:
+  :market_group_id: 1674
+  :name: 400mm Armor Plate
+  :parent_group_id: 133
+1675:
+  :market_group_id: 1675
+  :name: 800mm Armor Plate
+  :parent_group_id: 133
+1681:
+  :market_group_id: 1681
+  :name: EM Armor Hardeners
+  :parent_group_id: 535
+1680:
+  :market_group_id: 1680
+  :name: Explosive Armor Hardeners
+  :parent_group_id: 535
+1679:
+  :market_group_id: 1679
+  :name: Kinetic Armor Hardeners
+  :parent_group_id: 535
+1059:
+  :market_group_id: 1059
+  :name: Small
+  :parent_group_id: 537
+1058:
+  :market_group_id: 1058
+  :name: Medium
+  :parent_group_id: 537
+1057:
+  :market_group_id: 1057
+  :name: Large
+  :parent_group_id: 537
+433:
+  :market_group_id: 433
+  :name: Amarr
+  :parent_group_id: 432
+436:
+  :market_group_id: 436
+  :name: Minmatar
+  :parent_group_id: 432
+434:
+  :market_group_id: 434
+  :name: Caldari
+  :parent_group_id: 432
+1069:
+  :market_group_id: 1069
+  :name: Minmatar
+  :parent_group_id: 1065
+613:
+  :market_group_id: 613
+  :name: Boost Amplifiers
+  :parent_group_id: 552
+813:
+  :market_group_id: 813
+  :name: Amarr
+  :parent_group_id: 812
+647:
+  :market_group_id: 647
+  :name: Heat Sinks
+  :parent_group_id: 143
+1088:
+  :market_group_id: 1088
+  :name: Warp Core Stabilizers
+  :parent_group_id: 132
+680:
+  :market_group_id: 680
+  :name: Weapon Disruptors
+  :parent_group_id: 657
+707:
+  :market_group_id: 707
+  :name: Tracking Enhancers
+  :parent_group_id: 143
+708:
+  :market_group_id: 708
+  :name: Remote Tracking Computers
+  :parent_group_id: 143
+676:
+  :market_group_id: 676
+  :name: CPU Upgrades
+  :parent_group_id: 656
+671:
+  :market_group_id: 671
+  :name: Sensor Boosters
+  :parent_group_id: 656
+706:
+  :market_group_id: 706
+  :name: Tracking Computers
+  :parent_group_id: 143
+719:
+  :market_group_id: 719
+  :name: Multi Spectrum Jammers
+  :parent_group_id: 677
+669:
+  :market_group_id: 669
+  :name: Signal Amplifiers
+  :parent_group_id: 656
+673:
+  :market_group_id: 673
+  :name: Remote Sensor Boosters
+  :parent_group_id: 656
+1907:
+  :market_group_id: 1907
+  :name: R.Db
+  :parent_group_id: 1872
+1620:
+  :market_group_id: 1620
+  :name: Special Edition Battleships
+  :parent_group_id: 1612
+830:
+  :market_group_id: 830
+  :name: Caldari
+  :parent_group_id: 824
+836:
+  :market_group_id: 836
+  :name: Minmatar
+  :parent_group_id: 824
+827:
+  :market_group_id: 827
+  :name: Amarr
+  :parent_group_id: 824
+833:
+  :market_group_id: 833
+  :name: Gallente
+  :parent_group_id: 824
+441:
+  :market_group_id: 441
+  :name: Minmatar
+  :parent_group_id: 437
+439:
+  :market_group_id: 439
+  :name: Caldari
+  :parent_group_id: 437
+438:
+  :market_group_id: 438
+  :name: Amarr
+  :parent_group_id: 437
+440:
+  :market_group_id: 440
+  :name: Gallente
+  :parent_group_id: 437
+450:
+  :market_group_id: 450
+  :name: Caldari
+  :parent_group_id: 448
+1072:
+  :market_group_id: 1072
+  :name: Caldari
+  :parent_group_id: 1070
+452:
+  :market_group_id: 452
+  :name: Minmatar
+  :parent_group_id: 448
+449:
+  :market_group_id: 449
+  :name: Amarr
+  :parent_group_id: 448
+451:
+  :market_group_id: 451
+  :name: Gallente
+  :parent_group_id: 448
+1074:
+  :market_group_id: 1074
+  :name: Minmatar
+  :parent_group_id: 1070
+1071:
+  :market_group_id: 1071
+  :name: Amarr
+  :parent_group_id: 1070
+1073:
+  :market_group_id: 1073
+  :name: Gallente
+  :parent_group_id: 1070
+435:
+  :market_group_id: 435
+  :name: Gallente
+  :parent_group_id: 432
+697:
+  :market_group_id: 697
+  :name: Large
+  :parent_group_id: 663
+675:
+  :market_group_id: 675
+  :name: Cloaking Devices
+  :parent_group_id: 656
+696:
+  :market_group_id: 696
+  :name: Medium
+  :parent_group_id: 663
+693:
+  :market_group_id: 693
+  :name: Medium
+  :parent_group_id: 662
+694:
+  :market_group_id: 694
+  :name: Heavy
+  :parent_group_id: 662
+690:
+  :market_group_id: 690
+  :name: Medium
+  :parent_group_id: 661
+645:
+  :market_group_id: 645
+  :name: Ballistic Control Systems
+  :parent_group_id: 143
+405:
+  :market_group_id: 405
+  :name: 'Warp Disruption Fields '
+  :parent_group_id: 404
+868:
+  :market_group_id: 868
+  :name: Small
+  :parent_group_id: 852
+871:
+  :market_group_id: 871
+  :name: Small
+  :parent_group_id: 853
+859:
+  :market_group_id: 859
+  :name: Small
+  :parent_group_id: 847
+862:
+  :market_group_id: 862
+  :name: Small
+  :parent_group_id: 849
+865:
+  :market_group_id: 865
+  :name: Small
+  :parent_group_id: 850
+856:
+  :market_group_id: 856
+  :name: Small
+  :parent_group_id: 846
+757:
+  :market_group_id: 757
+  :name: Target Painters
+  :parent_group_id: 657
+631:
+  :market_group_id: 631
+  :name: Caldari
+  :parent_group_id: 629
+630:
+  :market_group_id: 630
+  :name: Amarr
+  :parent_group_id: 629
+633:
+  :market_group_id: 633
+  :name: Minmatar
+  :parent_group_id: 629
+632:
+  :market_group_id: 632
+  :name: Gallente
+  :parent_group_id: 629
+854:
+  :market_group_id: 854
+  :name: Large
+  :parent_group_id: 846
+855:
+  :market_group_id: 855
+  :name: Medium
+  :parent_group_id: 846
+858:
+  :market_group_id: 858
+  :name: Medium
+  :parent_group_id: 847
+857:
+  :market_group_id: 857
+  :name: Large
+  :parent_group_id: 847
+861:
+  :market_group_id: 861
+  :name: Medium
+  :parent_group_id: 849
+860:
+  :market_group_id: 860
+  :name: Large
+  :parent_group_id: 849
+864:
+  :market_group_id: 864
+  :name: Medium
+  :parent_group_id: 850
+863:
+  :market_group_id: 863
+  :name: Large
+  :parent_group_id: 850
+870:
+  :market_group_id: 870
+  :name: Medium
+  :parent_group_id: 853
+869:
+  :market_group_id: 869
+  :name: Large
+  :parent_group_id: 853
+867:
+  :market_group_id: 867
+  :name: Medium
+  :parent_group_id: 852
+866:
+  :market_group_id: 866
+  :name: Large
+  :parent_group_id: 852
+698:
+  :market_group_id: 698
+  :name: Micro
+  :parent_group_id: 668
+380:
+  :market_group_id: 380
+  :name: Micro
+  :parent_group_id: 141
+465:
+  :market_group_id: 465
+  :name: Amarr
+  :parent_group_id: 464
+466:
+  :market_group_id: 466
+  :name: Caldari
+  :parent_group_id: 464
+467:
+  :market_group_id: 467
+  :name: Gallente
+  :parent_group_id: 464
+468:
+  :market_group_id: 468
+  :name: Minmatar
+  :parent_group_id: 464
+1038:
+  :market_group_id: 1038
+  :name: Ice Harvesters
+  :parent_group_id: 1713
+494:
+  :market_group_id: 494
+  :name: Mining Barges
+  :parent_group_id: 1384
+1040:
+  :market_group_id: 1040
+  :name: Strip Miners
+  :parent_group_id: 1713
+1366:
+  :market_group_id: 1366
+  :name: Navy Faction
+  :parent_group_id: 1362
+1370:
+  :market_group_id: 1370
+  :name: Navy Faction
+  :parent_group_id: 1369
+1379:
+  :market_group_id: 1379
+  :name: Navy Faction
+  :parent_group_id: 1378
+504:
+  :market_group_id: 504
+  :name: Extra Large
+  :parent_group_id: 848
+502:
+  :market_group_id: 502
+  :name: Extra Large
+  :parent_group_id: 845
+503:
+  :market_group_id: 503
+  :name: Extra Large
+  :parent_group_id: 851
+1371:
+  :market_group_id: 1371
+  :name: Pirate Faction
+  :parent_group_id: 1369
+1380:
+  :market_group_id: 1380
+  :name: Pirate Faction
+  :parent_group_id: 1378
+1193:
+  :market_group_id: 1193
+  :name: Standard XL Torpedoes
+  :parent_group_id: 505
+1365:
+  :market_group_id: 1365
+  :name: Pirate Faction
+  :parent_group_id: 1362
+593:
+  :market_group_id: 593
+  :name: Mining Crystals
+  :parent_group_id: 11
+762:
+  :market_group_id: 762
+  :name: Amarr
+  :parent_group_id: 761
+765:
+  :market_group_id: 765
+  :name: Minmatar
+  :parent_group_id: 761
+764:
+  :market_group_id: 764
+  :name: Gallente
+  :parent_group_id: 761
+763:
+  :market_group_id: 763
+  :name: Caldari
+  :parent_group_id: 761
+767:
+  :market_group_id: 767
+  :name: Amarr
+  :parent_group_id: 766
+768:
+  :market_group_id: 768
+  :name: Caldari
+  :parent_group_id: 766
+769:
+  :market_group_id: 769
+  :name: Gallente
+  :parent_group_id: 766
+770:
+  :market_group_id: 770
+  :name: Minmatar
+  :parent_group_id: 766
+1641:
+  :market_group_id: 1641
+  :name: Cynosural Field Generators
+  :parent_group_id: 779
+971:
+  :market_group_id: 971
+  :name: Standard Heavy Assault Missiles
+  :parent_group_id: 968
+1865:
+  :market_group_id: 1865
+  :name: Station Components
+  :parent_group_id: 1021
+1076:
+  :market_group_id: 1076
+  :name: Amarr
+  :parent_group_id: 1075
+1078:
+  :market_group_id: 1078
+  :name: Gallente
+  :parent_group_id: 1075
+1077:
+  :market_group_id: 1077
+  :name: Caldari
+  :parent_group_id: 1075
+1079:
+  :market_group_id: 1079
+  :name: Minmatar
+  :parent_group_id: 1075
+831:
+  :market_group_id: 831
+  :name: Gallente
+  :parent_group_id: 822
+834:
+  :market_group_id: 834
+  :name: Minmatar
+  :parent_group_id: 822
+828:
+  :market_group_id: 828
+  :name: Caldari
+  :parent_group_id: 822
+825:
+  :market_group_id: 825
+  :name: Amarr
+  :parent_group_id: 822
+826:
+  :market_group_id: 826
+  :name: Amarr
+  :parent_group_id: 823
+835:
+  :market_group_id: 835
+  :name: Minmatar
+  :parent_group_id: 823
+832:
+  :market_group_id: 832
+  :name: Gallente
+  :parent_group_id: 823
+829:
+  :market_group_id: 829
+  :name: Caldari
+  :parent_group_id: 823
+935:
+  :market_group_id: 935
+  :name: Mining Upgrades
+  :parent_group_id: 1713
+874:
+  :market_group_id: 874
+  :name: Exhumers
+  :parent_group_id: 1384
+843:
+  :market_group_id: 843
+  :name: Combat Utility Drones
+  :parent_group_id: 157
+842:
+  :market_group_id: 842
+  :name: Logistic Drones
+  :parent_group_id: 157
+1201:
+  :market_group_id: 1201
+  :name: Interdiction Probes
+  :parent_group_id: 120
+1937:
+  :market_group_id: 1937
+  :name: Interdiction Sphere Launchers
+  :parent_group_id: 657
+821:
+  :market_group_id: 821
+  :name: Minmatar
+  :parent_group_id: 817
+840:
+  :market_group_id: 840
+  :name: Light Fighters
+  :parent_group_id: 2410
+841:
+  :market_group_id: 841
+  :name: Electronic Warfare Drones
+  :parent_group_id: 157
+911:
+  :market_group_id: 911
+  :name: Sentry Drones
+  :parent_group_id: 159
+1642:
+  :market_group_id: 1642
+  :name: Clone Vat Bays
+  :parent_group_id: 779
+818:
+  :market_group_id: 818
+  :name: Amarr
+  :parent_group_id: 817
+816:
+  :market_group_id: 816
+  :name: Minmatar
+  :parent_group_id: 812
+820:
+  :market_group_id: 820
+  :name: Gallente
+  :parent_group_id: 817
+819:
+  :market_group_id: 819
+  :name: Caldari
+  :parent_group_id: 817
+1640:
+  :market_group_id: 1640
+  :name: Jump Portal Generators
+  :parent_group_id: 779
+928:
+  :market_group_id: 928
+  :name: Advanced Long Range Rockets
+  :parent_group_id: 118
+2270:
+  :market_group_id: 2270
+  :name: Minmatar
+  :parent_group_id: 912
+2267:
+  :market_group_id: 2267
+  :name: Amarr
+  :parent_group_id: 912
+2268:
+  :market_group_id: 2268
+  :name: Caldari
+  :parent_group_id: 912
+2269:
+  :market_group_id: 2269
+  :name: Gallente
+  :parent_group_id: 912
+972:
+  :market_group_id: 972
+  :name: Advanced Long Range Heavy Assault Missiles
+  :parent_group_id: 968
+1037:
+  :market_group_id: 1037
+  :name: Gas Cloud Harvesters
+  :parent_group_id: 1713
+2491:
+  :market_group_id: 2491
+  :name: Blue Pill
+  :parent_group_id: 2488
+2500:
+  :market_group_id: 2500
+  :name: Crash
+  :parent_group_id: 2490
+2498:
+  :market_group_id: 2498
+  :name: Sooth Sayer
+  :parent_group_id: 2489
+2497:
+  :market_group_id: 2497
+  :name: Frentix
+  :parent_group_id: 2489
+2493:
+  :market_group_id: 2493
+  :name: Mindflood
+  :parent_group_id: 2488
+2496:
+  :market_group_id: 2496
+  :name: Drop
+  :parent_group_id: 2489
+2494:
+  :market_group_id: 2494
+  :name: X-Instinct
+  :parent_group_id: 2488
+2492:
+  :market_group_id: 2492
+  :name: Exile
+  :parent_group_id: 2488
+967:
+  :market_group_id: 967
+  :name: Signal Distortion Amplifier
+  :parent_group_id: 677
+974:
+  :market_group_id: 974
+  :name: Heavy Assault Launchers
+  :parent_group_id: 140
+1208:
+  :market_group_id: 1208
+  :name: Large Armor Rigs
+  :parent_group_id: 956
+1715:
+  :market_group_id: 1715
+  :name: Salvagers
+  :parent_group_id: 1713
+1784:
+  :market_group_id: 1784
+  :name: Large Resource Processing Rigs
+  :parent_group_id: 1779
+1236:
+  :market_group_id: 1236
+  :name: Large Shield Rigs
+  :parent_group_id: 965
+1215:
+  :market_group_id: 1215
+  :name: Large Drone Rigs
+  :parent_group_id: 958
+1221:
+  :market_group_id: 1221
+  :name: Large Electronics Superiority Rigs
+  :parent_group_id: 960
+1788:
+  :market_group_id: 1788
+  :name: Large Scanning Rigs
+  :parent_group_id: 1780
+1227:
+  :market_group_id: 1227
+  :name: Large Energy Weapon Rigs
+  :parent_group_id: 962
+1230:
+  :market_group_id: 1230
+  :name: Large Hybrid Weapon Rigs
+  :parent_group_id: 963
+1233:
+  :market_group_id: 1233
+  :name: Large Missile Launcher Rigs
+  :parent_group_id: 964
+1239:
+  :market_group_id: 1239
+  :name: Large Projectile Weapon Rigs
+  :parent_group_id: 979
+1212:
+  :market_group_id: 1212
+  :name: Large Astronautic Rigs
+  :parent_group_id: 957
+1792:
+  :market_group_id: 1792
+  :name: Large Targeting Rigs
+  :parent_group_id: 1781
+1222:
+  :market_group_id: 1222
+  :name: Small Engineering Rigs
+  :parent_group_id: 961
+1730:
+  :market_group_id: 1730
+  :name: Capital Armor Rigs
+  :parent_group_id: 956
+1206:
+  :market_group_id: 1206
+  :name: Small Armor Rigs
+  :parent_group_id: 956
+1658:
+  :market_group_id: 1658
+  :name: Station Containers
+  :parent_group_id: 379
+2249:
+  :market_group_id: 2249
+  :name: Burst Projectors
+  :parent_group_id: 657
+1015:
+  :market_group_id: 1015
+  :name: Bombs
+  :parent_group_id: 11
+1063:
+  :market_group_id: 1063
+  :name: Capital
+  :parent_group_id: 1018
+1048:
+  :market_group_id: 1048
+  :name: ORE
+  :parent_group_id: 1047
+2336:
+  :market_group_id: 2336
+  :name: ORE
+  :parent_group_id: 2335
+1081:
+  :market_group_id: 1081
+  :name: Amarr
+  :parent_group_id: 1080
+1083:
+  :market_group_id: 1083
+  :name: Gallente
+  :parent_group_id: 1080
+1084:
+  :market_group_id: 1084
+  :name: Minmatar
+  :parent_group_id: 1080
+1082:
+  :market_group_id: 1082
+  :name: Caldari
+  :parent_group_id: 1080
+1091:
+  :market_group_id: 1091
+  :name: Caldari
+  :parent_group_id: 1089
+1885:
+  :market_group_id: 1885
+  :name: Caldari
+  :parent_group_id: 1883
+1093:
+  :market_group_id: 1093
+  :name: Minmatar
+  :parent_group_id: 1089
+1887:
+  :market_group_id: 1887
+  :name: Minmatar
+  :parent_group_id: 1883
+1092:
+  :market_group_id: 1092
+  :name: Gallente
+  :parent_group_id: 1089
+1886:
+  :market_group_id: 1886
+  :name: Gallente
+  :parent_group_id: 1883
+1090:
+  :market_group_id: 1090
+  :name: Amarr
+  :parent_group_id: 1089
+1884:
+  :market_group_id: 1884
+  :name: Amarr
+  :parent_group_id: 1883
+1094:
+  :market_group_id: 1094
+  :name: Scripts
+  :parent_group_id: 11
+1140:
+  :market_group_id: 1140
+  :name: Caldari
+  :parent_group_id: 1138
+1147:
+  :market_group_id: 1147
+  :name: Subsystem Components
+  :parent_group_id: 1035
+1139:
+  :market_group_id: 1139
+  :name: Amarr
+  :parent_group_id: 1138
+1141:
+  :market_group_id: 1141
+  :name: Gallente
+  :parent_group_id: 1138
+1142:
+  :market_group_id: 1142
+  :name: Minmatar
+  :parent_group_id: 1138
+1199:
+  :market_group_id: 1199
+  :name: Scan Probes
+  :parent_group_id: 120
+1618:
+  :market_group_id: 1618
+  :name: Special Edition Shuttles
+  :parent_group_id: 1612
+1207:
+  :market_group_id: 1207
+  :name: Medium Armor Rigs
+  :parent_group_id: 956
+1782:
+  :market_group_id: 1782
+  :name: Small Resource Processing Rigs
+  :parent_group_id: 1779
+1783:
+  :market_group_id: 1783
+  :name: Medium Resource Processing Rigs
+  :parent_group_id: 1779
+1785:
+  :market_group_id: 1785
+  :name: Capital Resource Processing Rigs
+  :parent_group_id: 1779
+1210:
+  :market_group_id: 1210
+  :name: Small Astronautic Rigs
+  :parent_group_id: 957
+1211:
+  :market_group_id: 1211
+  :name: Medium Astronautic Rigs
+  :parent_group_id: 957
+1740:
+  :market_group_id: 1740
+  :name: Capital Astronautic Rigs
+  :parent_group_id: 957
+1786:
+  :market_group_id: 1786
+  :name: Small Scanning Rigs
+  :parent_group_id: 1780
+1787:
+  :market_group_id: 1787
+  :name: Medium Scanning Rigs
+  :parent_group_id: 1780
+1789:
+  :market_group_id: 1789
+  :name: Capital Scanning Rigs
+  :parent_group_id: 1780
+1736:
+  :market_group_id: 1736
+  :name: Capital Engineering Rigs
+  :parent_group_id: 961
+1219:
+  :market_group_id: 1219
+  :name: Small Electronics Superiority Rigs
+  :parent_group_id: 960
+1220:
+  :market_group_id: 1220
+  :name: Medium Electronics Superiority Rigs
+  :parent_group_id: 960
+1737:
+  :market_group_id: 1737
+  :name: Capital Electronics Superiority Rigs
+  :parent_group_id: 960
+1790:
+  :market_group_id: 1790
+  :name: Small Targeting Rigs
+  :parent_group_id: 1781
+1791:
+  :market_group_id: 1791
+  :name: Medium Targeting Rigs
+  :parent_group_id: 1781
+1793:
+  :market_group_id: 1793
+  :name: Capital Targeting Rigs
+  :parent_group_id: 1781
+1225:
+  :market_group_id: 1225
+  :name: Small Energy Weapon Rigs
+  :parent_group_id: 962
+1226:
+  :market_group_id: 1226
+  :name: Medium Energy Weapon Rigs
+  :parent_group_id: 962
+1735:
+  :market_group_id: 1735
+  :name: Capital Energy Weapon Rigs
+  :parent_group_id: 962
+1228:
+  :market_group_id: 1228
+  :name: Small Hybrid Weapon Rigs
+  :parent_group_id: 963
+1229:
+  :market_group_id: 1229
+  :name: Medium Hybrid Weapon Rigs
+  :parent_group_id: 963
+1734:
+  :market_group_id: 1734
+  :name: Capital Hybrid Weapon Rigs
+  :parent_group_id: 963
+1231:
+  :market_group_id: 1231
+  :name: Small Missile Launcher Rigs
+  :parent_group_id: 964
+1232:
+  :market_group_id: 1232
+  :name: Medium Missile Launcher Rigs
+  :parent_group_id: 964
+1733:
+  :market_group_id: 1733
+  :name: Capital Missile Launcher Rigs
+  :parent_group_id: 964
+1237:
+  :market_group_id: 1237
+  :name: Small Projectile Weapon Rigs
+  :parent_group_id: 979
+1238:
+  :market_group_id: 1238
+  :name: Medium Projectile Weapon Rigs
+  :parent_group_id: 979
+1731:
+  :market_group_id: 1731
+  :name: Capital Projectile Weapon Rigs
+  :parent_group_id: 979
+1234:
+  :market_group_id: 1234
+  :name: Small Shield Rigs
+  :parent_group_id: 965
+1235:
+  :market_group_id: 1235
+  :name: Medium Shield Rigs
+  :parent_group_id: 965
+1732:
+  :market_group_id: 1732
+  :name: Capital Shield Rigs
+  :parent_group_id: 965
+1213:
+  :market_group_id: 1213
+  :name: Small Drone Rigs
+  :parent_group_id: 958
+1214:
+  :market_group_id: 1214
+  :name: Medium Drone Rigs
+  :parent_group_id: 958
+1287:
+  :market_group_id: 1287
+  :name: Standard XL Cruise Missiles
+  :parent_group_id: 1316
+116:
+  :market_group_id: 116
+  :name: Defender
+  :parent_group_id: 114
+1624:
+  :market_group_id: 1624
+  :name: Special Edition Logistics
+  :parent_group_id: 1612
+1200:
+  :market_group_id: 1200
+  :name: Survey Probes
+  :parent_group_id: 120
+1657:
+  :market_group_id: 1657
+  :name: Standard Containers
+  :parent_group_id: 379
+1653:
+  :market_group_id: 1653
+  :name: Freight Containers
+  :parent_group_id: 379
+1651:
+  :market_group_id: 1651
+  :name: Secure Containers
+  :parent_group_id: 379
+1652:
+  :market_group_id: 1652
+  :name: Audit Log Containers
+  :parent_group_id: 379
+1616:
+  :market_group_id: 1616
+  :name: ORE
+  :parent_group_id: 5
+1646:
+  :market_group_id: 1646
+  :name: Salvage Drones
+  :parent_group_id: 157
+1661:
+  :market_group_id: 1661
+  :name: Special Edition Commodities
+  :parent_group_id: 1659
+1702:
+  :market_group_id: 1702
+  :name: Personal Hangar Arrays
+  :parent_group_id: 1285
+1704:
+  :market_group_id: 1704
+  :name: Navy Faction
+  :parent_group_id: 1703
+1709:
+  :market_group_id: 1709
+  :name: Scanning Upgrades
+  :parent_group_id: 1708
+1717:
+  :market_group_id: 1717
+  :name: Survey Probe Launchers
+  :parent_group_id: 1708
+1739:
+  :market_group_id: 1739
+  :name: Capital Drone Rigs
+  :parent_group_id: 958
+1698:
+  :market_group_id: 1698
+  :name: Special Edition Battlecruisers
+  :parent_group_id: 1612
+1837:
+  :market_group_id: 1837
+  :name: Special Edition Recon Ships
+  :parent_group_id: 1612
+1838:
+  :market_group_id: 1838
+  :name: Special Edition Covert Ops
+  :parent_group_id: 1612
+1827:
+  :market_group_id: 1827
+  :name: Rapid Heavy Missile Launchers
+  :parent_group_id: 140
+1831:
+  :market_group_id: 1831
+  :name: Mobile Depots
+  :parent_group_id: 404
+1832:
+  :market_group_id: 1832
+  :name: Mobile Cynosural Inhibitors
+  :parent_group_id: 404
+1833:
+  :market_group_id: 1833
+  :name: Mobile Tractor Units
+  :parent_group_id: 404
+618:
+  :market_group_id: 618
+  :name: Implant Slot 01
+  :parent_group_id: 532
+619:
+  :market_group_id: 619
+  :name: Implant Slot 02
+  :parent_group_id: 532
+620:
+  :market_group_id: 620
+  :name: Implant Slot 03
+  :parent_group_id: 532
+622:
+  :market_group_id: 622
+  :name: Implant Slot 05
+  :parent_group_id: 532
+621:
+  :market_group_id: 621
+  :name: Implant Slot 04
+  :parent_group_id: 532
+1506:
+  :market_group_id: 1506
+  :name: Implant Slot 06
+  :parent_group_id: 1472
+1847:
+  :market_group_id: 1847
+  :name: Encounter Surveillance Systems
+  :parent_group_id: 404
+1845:
+  :market_group_id: 1845
+  :name: Mobile Scan Inhibitors
+  :parent_group_id: 404
+1844:
+  :market_group_id: 1844
+  :name: Mobile Micro Jump Units
+  :parent_group_id: 404
+1932:
+  :market_group_id: 1932
+  :name: Special Edition Interceptors
+  :parent_group_id: 1612
+1924:
+  :market_group_id: 1924
+  :name: Expedition Frigates
+  :parent_group_id: 1364
+1931:
+  :market_group_id: 1931
+  :name: Warp Accelerators
+  :parent_group_id: 132
+1941:
+  :market_group_id: 1941
+  :name: Jump Economizers
+  :parent_group_id: 132
+1952:
+  :market_group_id: 1952
+  :name: Amarr
+  :parent_group_id: 1951
+1950:
+  :market_group_id: 1950
+  :name: ORE
+  :parent_group_id: 766
+1953:
+  :market_group_id: 1953
+  :name: Minmatar
+  :parent_group_id: 1951
+2018:
+  :market_group_id: 2018
+  :name: Entosis Links
+  :parent_group_id: 1708
+2021:
+  :market_group_id: 2021
+  :name: Caldari
+  :parent_group_id: 1951
+1284:
+  :market_group_id: 1284
+  :name: Military Upgrades
+  :parent_group_id: 1276
+1283:
+  :market_group_id: 1283
+  :name: Industrial Upgrades
+  :parent_group_id: 1276
+1282:
+  :market_group_id: 1282
+  :name: Strategic Upgrades
+  :parent_group_id: 1276
+2034:
+  :market_group_id: 2034
+  :name: Gallente
+  :parent_group_id: 1951
+2033:
+  :market_group_id: 2033
+  :name: Missile Guidance Enhancers
+  :parent_group_id: 143
+2115:
+  :market_group_id: 2115
+  :name: Special Edition Heavy Interdiction Cruisers
+  :parent_group_id: 1612
+2032:
+  :market_group_id: 2032
+  :name: Missile Guidance Computers
+  :parent_group_id: 143
+2013:
+  :market_group_id: 2013
+  :name: Unknown Components
+  :parent_group_id: 19
+2201:
+  :market_group_id: 2201
+  :name: Standard Citadels
+  :parent_group_id: 2199
+2324:
+  :market_group_id: 2324
+  :name: Engineering Complexes
+  :parent_group_id: 477
+2327:
+  :market_group_id: 2327
+  :name: Refineries
+  :parent_group_id: 477
+2229:
+  :market_group_id: 2229
+  :name: Guided Bomb Launchers
+  :parent_group_id: 2209
+2234:
+  :market_group_id: 2234
+  :name: Ballistic Control Systems
+  :parent_group_id: 2227
+2232:
+  :market_group_id: 2232
+  :name: Citadel Service Modules
+  :parent_group_id: 2210
+2218:
+  :market_group_id: 2218
+  :name: CPU Upgrades
+  :parent_group_id: 2207
+2221:
+  :market_group_id: 2221
+  :name: Point Defense Batteries
+  :parent_group_id: 2208
+2228:
+  :market_group_id: 2228
+  :name: Doomsday Devices
+  :parent_group_id: 2209
+2233:
+  :market_group_id: 2233
+  :name: Resource Processing Service Modules
+  :parent_group_id: 2210
+2211:
+  :market_group_id: 2211
+  :name: Electronic Counter Measures
+  :parent_group_id: 2206
+2223:
+  :market_group_id: 2223
+  :name: Energy Neutralizers
+  :parent_group_id: 2208
+2235:
+  :market_group_id: 2235
+  :name: Missile Guidance Enhancers
+  :parent_group_id: 2227
+2230:
+  :market_group_id: 2230
+  :name: Structure Anticapital Launcher
+  :parent_group_id: 2226
+2231:
+  :market_group_id: 2231
+  :name: Structure Antisubcapital Launcher
+  :parent_group_id: 2226
+2222:
+  :market_group_id: 2222
+  :name: Reactor Control Units
+  :parent_group_id: 2208
+2212:
+  :market_group_id: 2212
+  :name: Remote Sensor Dampeners
+  :parent_group_id: 2206
+2213:
+  :market_group_id: 2213
+  :name: Stasis Webifiers
+  :parent_group_id: 2206
+2214:
+  :market_group_id: 2214
+  :name: Target Painters
+  :parent_group_id: 2206
+2215:
+  :market_group_id: 2215
+  :name: Weapon Disruptors
+  :parent_group_id: 2206
+2216:
+  :market_group_id: 2216
+  :name: Warp Disruptors
+  :parent_group_id: 2206
+2348:
+  :market_group_id: 2348
+  :name: Large Structure Engineering Rigs
+  :parent_group_id: 2340
+2349:
+  :market_group_id: 2349
+  :name: X-Large Structure Engineering Rigs
+  :parent_group_id: 2340
+2344:
+  :market_group_id: 2344
+  :name: Medium Structure Combat Rigs
+  :parent_group_id: 2205
+2345:
+  :market_group_id: 2345
+  :name: Large Structure Combat Rigs
+  :parent_group_id: 2205
+2346:
+  :market_group_id: 2346
+  :name: X-Large Structure Combat Rigs
+  :parent_group_id: 2205
+2219:
+  :market_group_id: 2219
+  :name: Signal Amplifiers
+  :parent_group_id: 2207
+2131:
+  :market_group_id: 2131
+  :name: Caldari
+  :parent_group_id: 2125
+2126:
+  :market_group_id: 2126
+  :name: Amarr
+  :parent_group_id: 2125
+2132:
+  :market_group_id: 2132
+  :name: Gallente
+  :parent_group_id: 2125
+2133:
+  :market_group_id: 2133
+  :name: Minmatar
+  :parent_group_id: 2125
+2135:
+  :market_group_id: 2135
+  :name: Micro Jump Field Generators
+  :parent_group_id: 52
+2197:
+  :market_group_id: 2197
+  :name: Structure Anticapital Missiles
+  :parent_group_id: 114
+2196:
+  :market_group_id: 2196
+  :name: Structure Antisubcapital Missiles
+  :parent_group_id: 114
+2198:
+  :market_group_id: 2198
+  :name: Structure Guided Bombs
+  :parent_group_id: 11
+2151:
+  :market_group_id: 2151
+  :name: Ice Mining Lasers
+  :parent_group_id: 1713
+2147:
+  :market_group_id: 2147
+  :name: Amarr
+  :parent_group_id: 2146
+2148:
+  :market_group_id: 2148
+  :name: Caldari
+  :parent_group_id: 2146
+2149:
+  :market_group_id: 2149
+  :name: Gallente
+  :parent_group_id: 2146
+2150:
+  :market_group_id: 2150
+  :name: Minmatar
+  :parent_group_id: 2146
+2200:
+  :market_group_id: 2200
+  :name: Faction Citadels
+  :parent_group_id: 2199
+2250:
+  :market_group_id: 2250
+  :name: Capital
+  :parent_group_id: 661
+2251:
+  :market_group_id: 2251
+  :name: Capital
+  :parent_group_id: 662
+2154:
+  :market_group_id: 2154
+  :name: Stasis Grapplers
+  :parent_group_id: 657
+2247:
+  :market_group_id: 2247
+  :name: Rapid Torpedo Launchers
+  :parent_group_id: 140
+2259:
+  :market_group_id: 2259
+  :name: Advanced Long Range XL Torpedoes
+  :parent_group_id: 505
+2258:
+  :market_group_id: 2258
+  :name: Advanced Anti-Ship XL Torpedoes
+  :parent_group_id: 505
+2260:
+  :market_group_id: 2260
+  :name: Advanced High Precision XL Cruise Missiles
+  :parent_group_id: 1316
+2261:
+  :market_group_id: 2261
+  :name: Advanced High Damage XL Cruise Missiles
+  :parent_group_id: 1316
+2253:
+  :market_group_id: 2253
+  :name: Extra Large
+  :parent_group_id: 847
+2252:
+  :market_group_id: 2252
+  :name: Extra Large
+  :parent_group_id: 846
+2254:
+  :market_group_id: 2254
+  :name: Extra Large
+  :parent_group_id: 849
+2255:
+  :market_group_id: 2255
+  :name: Extra Large
+  :parent_group_id: 850
+2256:
+  :market_group_id: 2256
+  :name: Extra Large
+  :parent_group_id: 853
+2257:
+  :market_group_id: 2257
+  :name: Extra Large
+  :parent_group_id: 852
+2239:
+  :market_group_id: 2239
+  :name: Support Fighters
+  :parent_group_id: 2410
+2276:
+  :market_group_id: 2276
+  :name: Non-Racial
+  :parent_group_id: 912
+2272:
+  :market_group_id: 2272
+  :name: Amarr
+  :parent_group_id: 2271
+2273:
+  :market_group_id: 2273
+  :name: Caldari
+  :parent_group_id: 2271
+2274:
+  :market_group_id: 2274
+  :name: Gallente
+  :parent_group_id: 2271
+2275:
+  :market_group_id: 2275
+  :name: Minmatar
+  :parent_group_id: 2271
+2241:
+  :market_group_id: 2241
+  :name: Capital
+  :parent_group_id: 551
+2240:
+  :market_group_id: 2240
+  :name: 25000mm Armor Plate
+  :parent_group_id: 133
+2244:
+  :market_group_id: 2244
+  :name: Capital
+  :parent_group_id: 538
+2242:
+  :market_group_id: 2242
+  :name: Capital
+  :parent_group_id: 664
+2243:
+  :market_group_id: 2243
+  :name: Capital
+  :parent_group_id: 668
+2245:
+  :market_group_id: 2245
+  :name: Scriptable Armor Hardeners
+  :parent_group_id: 535
+2246:
+  :market_group_id: 2246
+  :name: Scriptable Shield Hardeners
+  :parent_group_id: 553
+2288:
+  :market_group_id: 2288
+  :name: Faction Dreadnoughts
+  :parent_group_id: 761
+2287:
+  :market_group_id: 2287
+  :name: Faction Titans
+  :parent_group_id: 812
+2298:
+  :market_group_id: 2298
+  :name: Armor Command Burst Charges
+  :parent_group_id: 2297
+2299:
+  :market_group_id: 2299
+  :name: Information Command Burst Charges
+  :parent_group_id: 2297
+2300:
+  :market_group_id: 2300
+  :name: Mining Foreman Burst Charges
+  :parent_group_id: 2297
+2301:
+  :market_group_id: 2301
+  :name: Shield Command Burst Charges
+  :parent_group_id: 2297
+2302:
+  :market_group_id: 2302
+  :name: Skirmish Command Burst Charges
+  :parent_group_id: 2297
+2325:
+  :market_group_id: 2325
+  :name: ORE
+  :parent_group_id: 912
+1633:
+  :market_group_id: 1633
+  :name: Command Bursts
+  :parent_group_id: 779
+2332:
+  :market_group_id: 2332
+  :name: Engineering Service Modules
+  :parent_group_id: 2210
+2347:
+  :market_group_id: 2347
+  :name: Medium Structure Engineering Rigs
+  :parent_group_id: 2340
+2351:
+  :market_group_id: 2351
+  :name: Defender Launchers
+  :parent_group_id: 140
+2357:
+  :market_group_id: 2357
+  :name: Faction Force Auxiliaries
+  :parent_group_id: 2271
+2417:
+  :market_group_id: 2417
+  :name: CONCORD
+  :parent_group_id: 2416
+1126:
+  :market_group_id: 1126
+  :name: Amarr Defensive Subsystems
+  :parent_group_id: 1610
+1127:
+  :market_group_id: 1127
+  :name: Caldari Defensive Subsystems
+  :parent_group_id: 1625
+1129:
+  :market_group_id: 1129
+  :name: Gallente Defensive Subsystems
+  :parent_group_id: 1627
+1128:
+  :market_group_id: 1128
+  :name: Minmatar Defensive Subsystems
+  :parent_group_id: 1626
+1130:
+  :market_group_id: 1130
+  :name: Amarr Offensive Subsystems
+  :parent_group_id: 1610
+1131:
+  :market_group_id: 1131
+  :name: Caldari Offensive Subsystems
+  :parent_group_id: 1625
+1132:
+  :market_group_id: 1132
+  :name: Gallente Offensive Subsystems
+  :parent_group_id: 1627
+1133:
+  :market_group_id: 1133
+  :name: Minmatar Offensive Subsystems
+  :parent_group_id: 1626
+1134:
+  :market_group_id: 1134
+  :name: Amarr Propulsion Subsystems
+  :parent_group_id: 1610
+1135:
+  :market_group_id: 1135
+  :name: Caldari Propulsion Subsystems
+  :parent_group_id: 1625
+1136:
+  :market_group_id: 1136
+  :name: Gallente Propulsion Subsystems
+  :parent_group_id: 1627
+1137:
+  :market_group_id: 1137
+  :name: Minmatar Propulsion Subsystems
+  :parent_group_id: 1626
+1122:
+  :market_group_id: 1122
+  :name: Amarr Core Subsystems
+  :parent_group_id: 1610
+1123:
+  :market_group_id: 1123
+  :name: Caldari Core Subsystems
+  :parent_group_id: 1625
+1124:
+  :market_group_id: 1124
+  :name: Gallente Core Subsystems
+  :parent_group_id: 1627
+1125:
+  :market_group_id: 1125
+  :name: Minmatar Core Subsystems
+  :parent_group_id: 1626
+2342:
+  :market_group_id: 2342
+  :name: Large Structure Resource Processing Rigs
+  :parent_group_id: 2204
+2341:
+  :market_group_id: 2341
+  :name: Medium Structure Resource Processing Rigs
+  :parent_group_id: 2204
+2343:
+  :market_group_id: 2343
+  :name: X-Large Structure Resource Processing Rigs
+  :parent_group_id: 2204
+1773:
+  :market_group_id: 1773
+  :name: Implant Slot 09
+  :parent_group_id: 1763
+2408:
+  :market_group_id: 2408
+  :name: Structure Burst Projectors
+  :parent_group_id: 2206
+2411:
+  :market_group_id: 2411
+  :name: Standup Light Fighters
+  :parent_group_id: 2409
+2413:
+  :market_group_id: 2413
+  :name: Standup Support Fighters
+  :parent_group_id: 2409
+2412:
+  :market_group_id: 2412
+  :name: Standup Heavy Fighters
+  :parent_group_id: 2409
+2224:
+  :market_group_id: 2224
+  :name: Capacitor Batteries
+  :parent_group_id: 2208
+2220:
+  :market_group_id: 2220
+  :name: Capacitor Power Relays
+  :parent_group_id: 2208
+2414:
+  :market_group_id: 2414
+  :name: Armor Reinforcers
+  :parent_group_id: 2208
+2426:
+  :market_group_id: 2426
+  :name: Triglavian
+  :parent_group_id: 2425
+2428:
+  :market_group_id: 2428
+  :name: Triglavian
+  :parent_group_id: 2427
+2430:
+  :market_group_id: 2430
+  :name: Triglavian
+  :parent_group_id: 2429
+2433:
+  :market_group_id: 2433
+  :name: Small
+  :parent_group_id: 2432
+2434:
+  :market_group_id: 2434
+  :name: Medium
+  :parent_group_id: 2432
+2435:
+  :market_group_id: 2435
+  :name: Large
+  :parent_group_id: 2432
+2471:
+  :market_group_id: 2471
+  :name: Entropic Radiation Sinks
+  :parent_group_id: 143
+2465:
+  :market_group_id: 2465
+  :name: Small
+  :parent_group_id: 2463
+2468:
+  :market_group_id: 2468
+  :name: Small
+  :parent_group_id: 2464
+2466:
+  :market_group_id: 2466
+  :name: Medium
+  :parent_group_id: 2463
+2469:
+  :market_group_id: 2469
+  :name: Medium
+  :parent_group_id: 2464
+2467:
+  :market_group_id: 2467
+  :name: Large
+  :parent_group_id: 2463
+2470:
+  :market_group_id: 2470
+  :name: Large
+  :parent_group_id: 2464

@@ -1,58 +1,41 @@
 class Esi::DownloadMarketGroups < Esi::Download
 
-  def initialize( debug_request: false )
-    super( 'markets/groups/', {}, debug_request: debug_request )
-  end
+  def download
+    Banner.p 'About to download market groups'
 
-  def update
-    Banner.p 'About to update market groups'
+    types = YAML::load_file('data/types.yaml')
 
-    groups_updated = 0
-    groups_created = 0
-    market_groups = get_all_pages.to_a
-    # pp market_groups
+    # Remove the compact order once the item without market id are removed.
+    market_group_ids = types.values.select{ |t| t[:base_item] == false }.map{ |t| t[:market_group_id] }.uniq.compact
+    market_groups_hash = {}
 
-    ActiveRecord::Base.transaction do
-
-      Banner.p 'About to download market groups data'
-
-      market_groups.each do |mg|
-        @rest_url = "markets/groups/#{mg}"
-
-        get_all_pages.each do |group_info|
-          # p group_info
-          group_created = false
-          group = MarketGroup.where( cpp_market_group_id: group_info['market_group_id'] ).first_or_initialize do
-            group_created = true
-            groups_created += 1
-          end
-
-          group.name = group_info['name']
-          group.cpp_parent_market_group_id = group_info['parent_group_id']
-
-          group.save!
-          groups_updated += 1 unless group_created
-
-          unless group_info['types'].empty?
-            EveItem.where( cpp_eve_item_id: group_info['types'] ).update_all( market_group_id: group.id )
-          end
-        end
-      end
-
-      Banner.p 'About to update market groups hierarchy'
-      MarketGroup.all.each do |mg|
-        mg.parent_id = MarketGroup.find_by_cpp_market_group_id( mg.cpp_parent_market_group_id )&.id
-        begin
-          mg.save
-        rescue => e
-          p e
-          raise e
-        end
-
-      end
+    if @verbose_output
+      puts "#{market_group_ids.count} market groups to check."
+      check_count = 0
     end
 
-    puts "#{groups_updated} groups updated #{groups_created} groups created"
+    market_group_ids.each do |m_id|
+
+      @rest_url = "markets/groups/#{m_id}"
+
+      begin
+        market_data = get_page( 1 )
+      rescue Esi::Errors::NotFound
+        puts "Data not found for market id : #{t}"
+        next
+      end
+
+      if @verbose_output
+        check_count += 1
+        puts "#{check_count} markets checked" if check_count % 100 == 0
+      end
+
+      market_groups_hash[m_id] = { market_group_id: market_data['market_group_id'], name: market_data['name'],
+                                   parent_group_id: market_data['parent_group_id']}
+
+    end
+
+    File.open('data/market_groups.yaml', 'w') {|f| f.write market_groups_hash.to_yaml }
 
   end
 end

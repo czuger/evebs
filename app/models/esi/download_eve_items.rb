@@ -28,7 +28,7 @@ class Esi::DownloadEveItems < Esi::Download
         puts "#{check_count} types checked" if check_count % 100 == 0
       end
 
-      next unless type_remote_data['published']
+      next unless type_remote_data['published'] && type_remote_data['market_group_id']
 
       types[t] = { cpp_eve_item_id: t, name: type_remote_data['name'],
                    market_group_id: type_remote_data['market_group_id'], volume: type_remote_data['volume'] }
