@@ -10,38 +10,41 @@ module Process
 
       Banner.p 'About to set eve item depth level'
 
-      blueprints = YAML::load_file('data/blueprints.yaml')
-      final_blueprints_list = []
+      blueprints = YAML::load_file('data/parsed_blueprints.yaml')
+      materials_use = {}
 
-      blueprints.each do |bp|
+      blueprints.values.each do |bp|
+        bp[:materials].each do |m|
+          materials_use[ m[:type_id] ] = bp[:produced_cpp_type_id]
 
-        blueprint_id, blueprint_data = bp
-        if blueprint_data['activities']['manufacturing']
-          materials = blueprint_data['activities']['manufacturing']['materials']
-          products = blueprint_data['activities']['manufacturing']['products']
-
-          # pp bp unless materials
-          next unless materials
-
-          # pp bp unless products
-          next unless products
-
-          if products.count > 1
-            puts 'Blueprint produce more than one item.'
+          if m[:type_id] == bp[:produced_cpp_type_id]
+            puts "Material loop detcted in blueprint id #{bp[:cpp_blueprint_id]}."
             pp bp
-            next
+            exit
           end
-
-          materials.map!{ |m| { quantity: m[ 'quantity' ], type_id: m[ 'typeID' ] } }
-
-          final_blueprints_list << {
-              cpp_blueprint_id: blueprint_id,  produced_cpp_type_id: products.first['typeID'], nb_runs: blueprint_data['maxProductionLimit'],
-              prod_qtt: products.first['quantity'], materials: materials }
         end
       end
 
-      File.open('data/parsed_blueprints.yaml', 'w') {|f| f.write final_blueprints_list.to_yaml }
-    end
+      types = YAML::load_file('data/types.yaml')
+      types.each do |type_id, type|
+        type[:production_level] = 0
 
+        loop do
+          materials_use_id = materials_use[ type[:cpp_eve_item_id] ]
+          p materials_use_id
+          if materials_use_id
+            type[:production_level] += 1
+            materials_use_id = materials_use[ materials_use_id ]
+          else
+            break
+          end
+        end
+      end
+
+      File.open('data/types.yaml', 'w') {|f| f.write types.to_yaml }
+
+      p :finished
+
+    end
   end
 end

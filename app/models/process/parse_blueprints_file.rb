@@ -30,6 +30,16 @@ module Process
 
           materials.map!{ |m| { quantity: m[ 'quantity' ], type_id: m[ 'typeID' ] } }
 
+          material_loop = false
+          materials.each do |m|
+            if m[:type_id] == products.first['typeID']
+              puts "Blueprint #{blueprint_id} produce a required material. Production loop. Blueprint skipped."
+              material_loop = true
+              break
+            end
+          end
+          next if material_loop
+
           final_blueprints_hash[blueprint_id] = {
               cpp_blueprint_id: blueprint_id,  produced_cpp_type_id: products.first['typeID'], nb_runs: blueprint_data['maxProductionLimit'],
               prod_qtt: products.first['quantity'], materials: materials }

@@ -18644,3 +18644,43 @@
   :name: Mystic L
   :market_group_id: 2470
   :volume: 0.1
+47912:
+  :cpp_eve_item_id: 47912
+  :name: Light Compact Entropic Disintegrator
+  :market_group_id: 2433
+  :volume: 5.0
+47913:
+  :cpp_eve_item_id: 47913
+  :name: Light Scoped Entropic Disintegrator
+  :market_group_id: 2433
+  :volume: 5.0
+47916:
+  :cpp_eve_item_id: 47916
+  :name: Heavy Compact Entropic Disintegrator
+  :market_group_id: 2434
+  :volume: 10.0
+47917:
+  :cpp_eve_item_id: 47917
+  :name: Heavy Scoped Entropic Disintegrator
+  :market_group_id: 2434
+  :volume: 10.0
+47920:
+  :cpp_eve_item_id: 47920
+  :name: Supratidal Compact Entropic Disintegrator
+  :market_group_id: 2435
+  :volume: 20.0
+47921:
+  :cpp_eve_item_id: 47921
+  :name: Supratidal Scoped Entropic Disintegrator
+  :market_group_id: 2435
+  :volume: 20.0
+48635:
+  :cpp_eve_item_id: 48635
+  :name: Tiamat
+  :market_group_id: 1837
+  :volume: 118000.0
+48636:
+  :cpp_eve_item_id: 48636
+  :name: Hydra
+  :market_group_id: 1838
+  :volume: 28600.0
