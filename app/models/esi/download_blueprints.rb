@@ -38,7 +38,7 @@ module Esi
           next
         end
 
-        bp['name'] = bp_remote_data['name']
+        bp[:name] = bp_remote_data['name']
 
         add_items_to_check( bp )
       end
