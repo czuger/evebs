@@ -25,6 +25,8 @@ module Process
         lowest_production_level = [ lowest_production_level, type[:production_level] ].min
         on_db_item.base_item = type[:base_item]
 
+        on_db_item.market_group_id = type[:market_group_id]
+
         on_db_item.save
       end
 

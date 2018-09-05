@@ -1,9 +1,5 @@
 class Esi::UpdateMarketGroups < Esi::Download
 
-  def initialize( debug_request: false )
-    super( 'markets/groups/', {}, debug_request: debug_request )
-  end
-
   def update
     Banner.p 'About to update market groups'
 
