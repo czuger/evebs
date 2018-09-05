@@ -1,4 +1,4 @@
-module Esi
+module Process
 
   class ParseBlueprintsFile
 
@@ -7,7 +7,7 @@ module Esi
       Banner.p 'About to parse cpp blueprint file'
 
       blueprints = YAML::load_file('data/blueprints.yaml')
-      final_blueprints_list = []
+      final_blueprints_hash = {}
 
       blueprints.each do |bp|
 
@@ -30,13 +30,13 @@ module Esi
 
           materials.map!{ |m| { quantity: m[ 'quantity' ], type_id: m[ 'typeID' ] } }
 
-          final_blueprints_list << {
+          final_blueprints_hash[blueprint_id] = {
               cpp_blueprint_id: blueprint_id,  produced_cpp_type_id: products.first['typeID'], nb_runs: blueprint_data['maxProductionLimit'],
               prod_qtt: products.first['quantity'], materials: materials }
         end
       end
 
-      File.open('data/parsed_blueprints.yaml', 'w') {|f| f.write final_blueprints_list.to_yaml }
+      File.open('data/parsed_blueprints.yaml', 'w') {|f| f.write final_blueprints_hash.to_yaml }
     end
 
   end

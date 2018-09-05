@@ -2,7 +2,7 @@ module Esi
 
   class DownloadBlueprints < Download
 
-    def check
+    def download
       Banner.p 'About to download blueprints extra data'
 
       blueprints = YAML::load_file('data/parsed_blueprints.yaml')
@@ -14,7 +14,7 @@ module Esi
         check_count = 0
       end
 
-      blueprints.each do |bp|
+      blueprints.values.each do |bp|
 
         if @verbose_output
           check_count += 1

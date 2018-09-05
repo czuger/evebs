@@ -24,7 +24,7 @@ class Esi::UpdateBlueprints < Esi::Download
     bp_count = blueprints.count
     bp_processed = 0
 
-    blueprints.each do |blueprint|
+    blueprints.values.each do |blueprint|
 
       bp_processed += 1
       if bp_processed % 100 == 0
