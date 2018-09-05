@@ -1,11 +1,11 @@
 require 'yaml'
 
-namespace :process do
+namespace :data_setup do
 
   desc "Load blueprints and items"
   task :blueprints => :environment do
     Esi::UpdateBlueprints.new( nil ).update
-    Esi::DownloadEveItems.new(debug_request: false ).update
+    # Esi::DownloadEveItems.new(debug_request: false ).update
   end
 
   # TODO : move elements or rename this

@@ -1,49 +1,41 @@
 class Esi::DownloadEveItems < Esi::Download
 
-  def initialize( debug_request: false )
-    super( nil, {}, debug_request: debug_request )
-    # p @errors_limit_remain
-  end
+  def download
 
-  def update
+    Banner.p 'About to download eve items'
 
-    Banner.p 'About to remove unused eve items'
+    type_ids_to_download = YAML::load_file('data/type_ids_to_download.yaml')
+    types = {}
 
-    EveItem.where.not( cpp_eve_item_id: Blueprint.select( :produced_cpp_type_id ) ).destroy_all
-
-    Banner.p 'About to update new eve items list.'
-
-    blueprint_without_corresponding_items = Blueprint.where.not( produced_cpp_type_id: EveItem.select( :cpp_eve_item_id ) )
-
-    Banner.p "About to download #{blueprint_without_corresponding_items.count} items."
-    updated_items = downloaded_items = 0
-
-    market_transformation_hash = Hash[ MarketGroup.pluck( :cpp_market_group_id, :id ) ]
-
-    ActiveRecord::Base.transaction do
-      blueprint_without_corresponding_items.each do |bp|
-        @rest_url = "universe/types/#{bp.produced_cpp_type_id}/"
-        cpp_item = get_page_retry_on_error
-
-        downloaded_items += 1
-
-        if downloaded_items % 10 == 0
-          puts "Downloaded items : #{downloaded_items} / #{blueprint_without_corresponding_items.count}." if @debug_request
-        end
-
-        next unless cpp_item['published']
-
-        item = EveItem.where( cpp_eve_item_id: bp.produced_cpp_type_id ).first_or_initialize
-
-        item.name = cpp_item['name']
-        item.market_group_id = market_transformation_hash[ cpp_item['market_group_id'] ]
-        item.blueprint_id = bp.id
-        item.save!
-
-        updated_items += 1
-      end
+    if @verbose_output
+      puts "#{type_ids_to_download.count} types to check."
+      check_count = 0
     end
 
-    puts "Items downloaded : #{blueprint_without_corresponding_items.count}, items updated : #{updated_items}."
+    type_ids_to_download.each do |t|
+      @rest_url = "universe/types/#{t}/"
+
+      begin
+        type_remote_data = get_page
+
+      rescue Esi::Errors::NotFound
+        puts "Data not found for type id : #{t}"
+        next
+      end
+
+      if @verbose_output
+        check_count += 1
+        puts "#{check_count} types checked" if check_count % 100 == 0
+      end
+
+      next unless type_remote_data['published']
+
+      types[t] = { cpp_eve_item_id: t, name: type_remote_data['name'],
+                   market_group_id: type_remote_data['market_group_id'], volume: type_remote_data['volume'] }
+
+    end
+
+    File.open('data/types.yaml', 'w') {|f| f.write types.to_yaml }
+
   end
 end

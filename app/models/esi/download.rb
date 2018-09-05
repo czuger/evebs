@@ -6,8 +6,9 @@ class Esi::Download
   ESI_BASE_URL='https://esi.tech.ccp.is/latest/'
   ESI_DATA_SOURCE={ datasource: :tranquility }
 
-  def initialize( rest_url = nil, params = {}, debug_request: false)
+  def initialize( rest_url = nil, params = {}, debug_request: false, verbose_output: false )
     @debug_request = debug_request
+    @verbose_output = verbose_output
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
     @forbidden_count = 0

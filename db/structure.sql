@@ -53,67 +53,16 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
--- Name: blueprint_component_sales_orders; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.blueprint_component_sales_orders (
-    id bigint NOT NULL,
-    trade_hub_id bigint NOT NULL,
-    blueprint_component_id bigint NOT NULL,
-    cpp_order_id bigint NOT NULL,
-    volume bigint NOT NULL,
-    price double precision NOT NULL,
-    touched boolean DEFAULT false NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: blueprint_component_sales_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.blueprint_component_sales_orders_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: blueprint_component_sales_orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.blueprint_component_sales_orders_id_seq OWNED BY public.blueprint_component_sales_orders.id;
-
-
---
--- Name: blueprint_components; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.blueprint_components (
-    id integer NOT NULL,
-    cpp_eve_item_id integer NOT NULL,
-    name character varying NOT NULL,
-    cost double precision,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    volume double precision NOT NULL
-);
-
-
---
 -- Name: blueprint_materials; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.blueprint_materials (
     id integer NOT NULL,
     blueprint_id integer NOT NULL,
-    blueprint_component_id integer NOT NULL,
     required_qtt integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    eve_items_id bigint NOT NULL
 );
 
 
@@ -211,13 +160,13 @@ ALTER SEQUENCE public.blueprints_id_seq OWNED BY public.blueprints.id;
 
 CREATE TABLE public.bpc_assets (
     id bigint NOT NULL,
-    blueprint_component_id bigint NOT NULL,
     station_detail_id bigint,
     quantity bigint NOT NULL,
     touched boolean DEFAULT false NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    user_id bigint NOT NULL
+    user_id bigint NOT NULL,
+    eve_items_id bigint NOT NULL
 );
 
 
@@ -271,74 +220,6 @@ CREATE SEQUENCE public.bpc_assets_stations_id_seq
 --
 
 ALTER SEQUENCE public.bpc_assets_stations_id_seq OWNED BY public.bpc_assets_stations.id;
-
-
---
--- Name: bpc_jita_sales_finals; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.bpc_jita_sales_finals (
-    id bigint NOT NULL,
-    blueprint_component_id bigint,
-    volume bigint NOT NULL,
-    price double precision NOT NULL,
-    cpp_order_id bigint NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: bpc_jita_sales_finals_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.bpc_jita_sales_finals_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: bpc_jita_sales_finals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.bpc_jita_sales_finals_id_seq OWNED BY public.bpc_jita_sales_finals.id;
-
-
---
--- Name: bpc_prices_mins; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.bpc_prices_mins (
-    id bigint NOT NULL,
-    trade_hub_id bigint NOT NULL,
-    blueprint_component_id bigint NOT NULL,
-    volume bigint,
-    price double precision NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: bpc_prices_mins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.bpc_prices_mins_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: bpc_prices_mins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.bpc_prices_mins_id_seq OWNED BY public.bpc_prices_mins.id;
 
 
 --
@@ -411,7 +292,8 @@ CREATE TABLE public.eve_items (
     updated_at timestamp without time zone NOT NULL,
     cost double precision,
     market_group_id integer,
-    blueprint_id bigint NOT NULL
+    blueprint_id bigint,
+    volume bigint
 );
 
 
@@ -551,39 +433,6 @@ CREATE SEQUENCE public.buy_orders_id_seq
 --
 
 ALTER SEQUENCE public.buy_orders_id_seq OWNED BY public.buy_orders.id;
-
-
---
--- Name: component_to_buys; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.component_to_buys AS
-SELECT
-    NULL::integer AS id,
-    NULL::integer AS user_id,
-    NULL::character varying AS name,
-    NULL::double precision AS qtt_to_buy,
-    NULL::double precision AS total_cost,
-    NULL::double precision AS required_volume;
-
-
---
--- Name: components_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.components_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: components_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.components_id_seq OWNED BY public.blueprint_components.id;
 
 
 --
@@ -1213,6 +1062,42 @@ ALTER SEQUENCE public.structures_id_seq OWNED BY public.structures.id;
 
 
 --
+-- Name: tmp_download_blueprints; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tmp_download_blueprints (
+    id bigint NOT NULL,
+    blueprint_id bigint,
+    output_material_cpp_id bigint[],
+    name character varying,
+    nb_runs integer,
+    prod_qtt integer,
+    input_materials_cpp_ids bigint[],
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: tmp_download_blueprints_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tmp_download_blueprints_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tmp_download_blueprints_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tmp_download_blueprints_id_seq OWNED BY public.tmp_download_blueprints.id;
+
+
+--
 -- Name: trade_hubs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1331,35 +1216,6 @@ CREATE TABLE public.user_sale_orders (
 
 
 --
--- Name: user_sale_order_details; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.user_sale_order_details AS
- SELECT uso.id,
-    uso.user_id,
-    ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
-    ei.name AS eve_item_name,
-    uso.price AS my_price,
-    pm.min_price,
-    ei.cost,
-    b.prod_qtt,
-    s1.unit_cost,
-    ((pm.min_price / s1.unit_cost) - (1)::double precision) AS margin_pcent,
-    (pm.min_price - uso.price) AS price_delta,
-    uso.eve_item_id,
-    uso.trade_hub_id,
-    ei.cpp_eve_item_id,
-    tu.eve_system_id
-   FROM (((((public.user_sale_orders uso
-     JOIN public.eve_items ei ON ((ei.id = uso.eve_item_id)))
-     JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
-     JOIN public.trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
-     JOIN public.regions r ON ((tu.region_id = r.id)))
-     LEFT JOIN public.prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id)))),
-    LATERAL ( SELECT (ei.cost / (b.prod_qtt)::double precision)) s1(unit_cost);
-
-
---
 -- Name: user_sale_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1431,20 +1287,6 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: blueprint_component_sales_orders id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_component_sales_orders ALTER COLUMN id SET DEFAULT nextval('public.blueprint_component_sales_orders_id_seq'::regclass);
-
-
---
--- Name: blueprint_components id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_components ALTER COLUMN id SET DEFAULT nextval('public.components_id_seq'::regclass);
-
-
---
 -- Name: blueprint_materials id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1477,20 +1319,6 @@ ALTER TABLE ONLY public.bpc_assets ALTER COLUMN id SET DEFAULT nextval('public.b
 --
 
 ALTER TABLE ONLY public.bpc_assets_stations ALTER COLUMN id SET DEFAULT nextval('public.bpc_assets_stations_id_seq'::regclass);
-
-
---
--- Name: bpc_jita_sales_finals id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_jita_sales_finals ALTER COLUMN id SET DEFAULT nextval('public.bpc_jita_sales_finals_id_seq'::regclass);
-
-
---
--- Name: bpc_prices_mins id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_prices_mins ALTER COLUMN id SET DEFAULT nextval('public.bpc_prices_mins_id_seq'::regclass);
 
 
 --
@@ -1627,6 +1455,13 @@ ALTER TABLE ONLY public.structures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
+-- Name: tmp_download_blueprints id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tmp_download_blueprints ALTER COLUMN id SET DEFAULT nextval('public.tmp_download_blueprints_id_seq'::regclass);
+
+
+--
 -- Name: trade_hubs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1684,14 +1519,6 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
--- Name: blueprint_component_sales_orders blueprint_component_sales_orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_component_sales_orders
-    ADD CONSTRAINT blueprint_component_sales_orders_pkey PRIMARY KEY (id);
-
-
---
 -- Name: blueprint_materials blueprint_materials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1732,22 +1559,6 @@ ALTER TABLE ONLY public.bpc_assets_stations
 
 
 --
--- Name: bpc_jita_sales_finals bpc_jita_sales_finals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_jita_sales_finals
-    ADD CONSTRAINT bpc_jita_sales_finals_pkey PRIMARY KEY (id);
-
-
---
--- Name: bpc_prices_mins bpc_prices_mins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_prices_mins
-    ADD CONSTRAINT bpc_prices_mins_pkey PRIMARY KEY (id);
-
-
---
 -- Name: buy_orders_analytics buy_orders_analytics_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1761,14 +1572,6 @@ ALTER TABLE ONLY public.buy_orders_analytics
 
 ALTER TABLE ONLY public.buy_orders
     ADD CONSTRAINT buy_orders_pkey PRIMARY KEY (id);
-
-
---
--- Name: blueprint_components compenents_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_components
-    ADD CONSTRAINT compenents_pkey PRIMARY KEY (id);
 
 
 --
@@ -1908,6 +1711,14 @@ ALTER TABLE ONLY public.structures
 
 
 --
+-- Name: tmp_download_blueprints tmp_download_blueprints_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tmp_download_blueprints
+    ADD CONSTRAINT tmp_download_blueprints_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: trade_hubs trade_hubs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1964,52 +1775,17 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: index_bcso_blueprint_component; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_bcso_blueprint_component ON public.blueprint_component_sales_orders USING btree (blueprint_component_id);
-
-
---
--- Name: index_blueprint_component_sales_orders_on_cpp_order_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_blueprint_component_sales_orders_on_cpp_order_id ON public.blueprint_component_sales_orders USING btree (cpp_order_id);
-
-
---
--- Name: index_blueprint_component_sales_orders_on_trade_hub_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_blueprint_component_sales_orders_on_trade_hub_id ON public.blueprint_component_sales_orders USING btree (trade_hub_id);
-
-
---
--- Name: index_blueprint_components_on_cpp_eve_item_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_blueprint_components_on_cpp_eve_item_id ON public.blueprint_components USING btree (cpp_eve_item_id);
-
-
---
--- Name: index_blueprint_components_on_lower_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_blueprint_components_on_lower_name ON public.blueprint_components USING btree (lower((name)::text));
-
-
---
--- Name: index_blueprint_materials_on_blueprint_component_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_blueprint_materials_on_blueprint_component_id ON public.blueprint_materials USING btree (blueprint_component_id);
-
-
---
 -- Name: index_blueprint_materials_on_blueprint_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_blueprint_materials_on_blueprint_id ON public.blueprint_materials USING btree (blueprint_id);
+
+
+--
+-- Name: index_blueprint_materials_on_eve_items_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_blueprint_materials_on_eve_items_id ON public.blueprint_materials USING btree (eve_items_id);
 
 
 --
@@ -2034,10 +1810,10 @@ CREATE UNIQUE INDEX index_blueprints_on_produced_cpp_type_id ON public.blueprint
 
 
 --
--- Name: index_bpc_assets_on_blueprint_component_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_bpc_assets_on_eve_items_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_bpc_assets_on_blueprint_component_id ON public.bpc_assets USING btree (blueprint_component_id);
+CREATE INDEX index_bpc_assets_on_eve_items_id ON public.bpc_assets USING btree (eve_items_id);
 
 
 --
@@ -2059,27 +1835,6 @@ CREATE INDEX index_bpc_assets_stations_on_station_detail_id ON public.bpc_assets
 --
 
 CREATE INDEX index_bpc_assets_stations_on_user_id ON public.bpc_assets_stations USING btree (user_id);
-
-
---
--- Name: index_bpc_jita_sales_finals_on_blueprint_component_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_bpc_jita_sales_finals_on_blueprint_component_id ON public.bpc_jita_sales_finals USING btree (blueprint_component_id);
-
-
---
--- Name: index_bpc_prices_mins_on_blueprint_component_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_bpc_prices_mins_on_blueprint_component_id ON public.bpc_prices_mins USING btree (blueprint_component_id);
-
-
---
--- Name: index_bpc_prices_mins_on_trade_hub_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_bpc_prices_mins_on_trade_hub_id ON public.bpc_prices_mins USING btree (trade_hub_id);
 
 
 --
@@ -2398,35 +2153,19 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 
 
 --
--- Name: component_to_buys _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.component_to_buys AS
- SELECT bc.id,
-    pl.user_id,
-    bc.name,
-    (sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
-    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.cost) AS total_cost,
-    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.volume) AS required_volume
-   FROM (((((((public.production_lists pl
-     JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
-     JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
-     JOIN public.blueprint_materials bm ON ((b.id = bm.blueprint_id)))
-     JOIN public.blueprint_components bc ON ((bm.blueprint_component_id = bc.id)))
-     JOIN public.users ue ON ((pl.user_id = ue.id)))
-     LEFT JOIN public.blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
-     LEFT JOIN public.bpc_assets ba ON (((bc.id = ba.blueprint_component_id) AND (ba.station_detail_id = ue.selected_assets_station_id))))
-  WHERE (pl.runs_count IS NOT NULL)
-  GROUP BY bc.id, pl.user_id, bc.name, COALESCE(ba.quantity, (0)::bigint)
- HAVING ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
-
-
---
 -- Name: eve_market_volumes fk_rails_01da9c4169; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.eve_market_volumes
     ADD CONSTRAINT fk_rails_01da9c4169 FOREIGN KEY (region_id) REFERENCES public.regions(id);
+
+
+--
+-- Name: bpc_assets fk_rails_08f8b59e96; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.bpc_assets
+    ADD CONSTRAINT fk_rails_08f8b59e96 FOREIGN KEY (eve_items_id) REFERENCES public.eve_items(id);
 
 
 --
@@ -2443,14 +2182,6 @@ ALTER TABLE ONLY public.production_lists
 
 ALTER TABLE ONLY public.prices_advices
     ADD CONSTRAINT fk_rails_0c863bd6cb FOREIGN KEY (region_id) REFERENCES public.regions(id);
-
-
---
--- Name: blueprint_component_sales_orders fk_rails_0e91d4accb; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_component_sales_orders
-    ADD CONSTRAINT fk_rails_0e91d4accb FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
 
 
 --
@@ -2526,14 +2257,6 @@ ALTER TABLE ONLY public.user_to_user_duplication_requests
 
 
 --
--- Name: bpc_assets fk_rails_46a1eaaaca; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_assets
-    ADD CONSTRAINT fk_rails_46a1eaaaca FOREIGN KEY (blueprint_component_id) REFERENCES public.blueprint_components(id);
-
-
---
 -- Name: buy_orders fk_rails_47f2412094; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2574,14 +2297,6 @@ ALTER TABLE ONLY public.bpc_assets
 
 
 --
--- Name: bpc_prices_mins fk_rails_7537628695; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_prices_mins
-    ADD CONSTRAINT fk_rails_7537628695 FOREIGN KEY (blueprint_component_id) REFERENCES public.blueprint_components(id);
-
-
---
 -- Name: blueprint_modifications fk_rails_7744def0ba; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2614,6 +2329,14 @@ ALTER TABLE ONLY public.user_sale_orders
 
 
 --
+-- Name: blueprint_materials fk_rails_9ea7a83f4a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.blueprint_materials
+    ADD CONSTRAINT fk_rails_9ea7a83f4a FOREIGN KEY (eve_items_id) REFERENCES public.eve_items(id);
+
+
+--
 -- Name: bpc_assets_stations fk_rails_a00a2978d6; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2627,14 +2350,6 @@ ALTER TABLE ONLY public.bpc_assets_stations
 
 ALTER TABLE ONLY public.user_to_user_duplication_requests
     ADD CONSTRAINT fk_rails_aeda0a36f7 FOREIGN KEY (sender_id) REFERENCES public.users(id);
-
-
---
--- Name: bpc_prices_mins fk_rails_b0d0314be6; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_prices_mins
-    ADD CONSTRAINT fk_rails_b0d0314be6 FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
 
 
 --
@@ -2723,30 +2438,6 @@ ALTER TABLE ONLY public.buy_orders_analytics
 
 ALTER TABLE ONLY public.station_details
     ADD CONSTRAINT fk_rails_ec21522142 FOREIGN KEY (station_id) REFERENCES public.stations(id);
-
-
---
--- Name: bpc_jita_sales_finals fk_rails_f68bf0beb4; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.bpc_jita_sales_finals
-    ADD CONSTRAINT fk_rails_f68bf0beb4 FOREIGN KEY (blueprint_component_id) REFERENCES public.blueprint_components(id);
-
-
---
--- Name: blueprint_component_sales_orders fk_rails_f729252d04; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_component_sales_orders
-    ADD CONSTRAINT fk_rails_f729252d04 FOREIGN KEY (blueprint_component_id) REFERENCES public.blueprint_components(id);
-
-
---
--- Name: blueprint_materials fk_rails_f8f740aa48; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.blueprint_materials
-    ADD CONSTRAINT fk_rails_f8f740aa48 FOREIGN KEY (blueprint_component_id) REFERENCES public.blueprint_components(id);
 
 
 --
@@ -2942,6 +2633,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180902090458'),
 ('20180902114156'),
 ('20180902114405'),
-('20180903133836');
+('20180903133836'),
+('20180904063731'),
+('20180904064749'),
+('20180904065442'),
+('20180904071330');
 
 

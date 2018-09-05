@@ -59,7 +59,7 @@ namespace :process do
       Banner.p 'About to download types in regions'
       Esi::DownloadMarketGroups.new( debug_request: false ).update
 
-      Esi::DownloadEveItems.new(debug_request: false ).update
+      Esi::UpdateEveItems.new(debug_request: false ).update
 
       Banner.p 'About to update the table eve_markets_histories'
 
