@@ -10,6 +10,7 @@ module Process
 
       Banner.p 'About to set eve item depth level'
 
+      # Building the material use reverse hash
       blueprints = YAML::load_file('data/parsed_blueprints.yaml')
       materials_use = {}
 
@@ -25,15 +26,21 @@ module Process
         end
       end
 
+      items_production_list = blueprints.values.map{ |bp| bp[:produced_cpp_type_id] }.to_set
+
+      # Computing item production level
       types = YAML::load_file('data/types.yaml')
       types.each do |type_id, type|
         type[:production_level] = 0
+        materials_use_id = materials_use[ type[:cpp_eve_item_id] ]
+
+        # We also mark items that are not produced by blueprints
+        type[:base_item] = items_production_list.include?( type_id ) ? false : true
 
         loop do
-          materials_use_id = materials_use[ type[:cpp_eve_item_id] ]
-          p materials_use_id
+          # p materials_use_id
           if materials_use_id
-            type[:production_level] += 1
+            type[:production_level] -= 1
             materials_use_id = materials_use[ materials_use_id ]
           else
             break
