@@ -12,16 +12,19 @@ namespace :process do
       # Crontab.start( :hourly )
 
       ActiveRecord::Base.transaction do
-        Esi::DownloadSalesOrders.new( debug_request: false ).update
 
-        Sql::PricesMins.update
-        BpcPricesMin.feed_table
+      Process::UpdatePublicTradesOrders.new.update
 
-        Sql::UpdatePricesAdvices.update
-
-        Sql::UpdateBuyOrdersAnalytics.update
-
-        # Esi::DownloadMyOrders.new.update()
+      #   Esi::DownloadSalesOrders.new( debug_request: false ).update
+      #
+      #   Sql::PricesMins.update
+      #   BpcPricesMin.feed_table
+      #
+      #   Sql::UpdatePricesAdvices.update
+      #
+      #   Sql::UpdateBuyOrdersAnalytics.update
+      #
+      #   # Esi::DownloadMyOrders.new.update()
       end
 
       Banner.p( 'Finished' )
