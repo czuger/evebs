@@ -32,34 +32,28 @@ namespace :process do
     desc 'Full process - daily'
     task :daily => :environment do
 
-      # Hourly process should be stopped when daily crontab is on.
-      Crontab.start( :hourly )
 
       ActiveRecord::Base.transaction do
         # Esi::UpdateVolumeFromHistory.new.update
 
         Sql::UpdatePricesAvgWeeks.update
 
-        BlueprintComponent.compute_costs
         EveItem.compute_cost_for_all_items
       end
 
-      Crontab.stop( :hourly )
-
-      # Esi::UpdateStructures.new( debug_request: false ).update
       Banner.p( 'Finished' )
     end
 
     desc 'Full process - weekly'
     task :weekly => :environment do
-      # Process::ParseBlueprintsFile.new.parse
-      #
-      # Esi::DownloadBlueprints.new.download
-      # Esi::DownloadEveItems.new.download
-      #
-      # Process::SetEveItemDepthLevel.new.set
-      #
-      # Esi::DownloadMarketGroups.new.download
+      Process::ParseBlueprintsFile.new.parse
+
+      Esi::DownloadBlueprints.new.download
+      Esi::DownloadEveItems.new.download
+
+      Process::SetEveItemDepthLevel.new.set
+
+      Esi::DownloadMarketGroups.new.download
 
       Process::CleanBlueprints.new.clean
 
