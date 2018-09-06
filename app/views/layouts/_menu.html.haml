@@ -1,5 +1,10 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  .navbar-collapse#bs-example-navbar-collapse-1
+
+  %button.navbar-toggler{ type: 'button', 'data-toggle' => 'collapse', 'data-target' => '#mainMenu',
+    'aria-controls' => 'mainMenu', 'aria-expanded' => 'false', 'aria-label' => 'Toggle navigation' }
+    %span.navbar-toggler-icon
+
+  .collapse.navbar-collapse#mainMenu
 
     - if current_user
 
