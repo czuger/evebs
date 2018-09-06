@@ -103,5 +103,5 @@ $(document).on('turbolinks:load'
   ->
     if window.location.pathname == '/items_tree'
       getTree()
-      setFilter()
+#      setFilter()
 )
