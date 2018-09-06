@@ -52,14 +52,16 @@ namespace :process do
 
     desc 'Full process - weekly'
     task :weekly => :environment do
-      Process::ParseBlueprintsFile.new.parse
+      # Process::ParseBlueprintsFile.new.parse
+      #
+      # Esi::DownloadBlueprints.new.download
+      # Esi::DownloadEveItems.new.download
+      #
+      # Process::SetEveItemDepthLevel.new.set
+      #
+      # Esi::DownloadMarketGroups.new.download
 
-      Esi::DownloadBlueprints.new.download
-      Esi::DownloadEveItems.new.download
-
-      Process::SetEveItemDepthLevel.new.set
-
-      Esi::DownloadMarketGroups.new.download
+      Process::CleanBlueprints.new.clean
 
       ActiveRecord::Base.transaction do
         Process::UpdateMarketGroups.new.update
@@ -67,7 +69,10 @@ namespace :process do
         Process::UpdateEveItems.new.update
         Process::UpdateBlueprintMaterials.new.update
 
-        # Need to move json generation into a proper Process and call it there
+
+        # Even it does not change the DB, we want the DB chances to be available
+        # once the market tree has changed
+        Process::BuildJsonMarketTree.new.build
       end
 
       Banner.p( 'Finished' )

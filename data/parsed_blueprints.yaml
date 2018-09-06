@@ -4901,23 +4901,6 @@
   - :quantity: 1
     :type_id: 2173
   :name: Infiltrator II Blueprint
-2179:
-  :cpp_blueprint_id: 2179
-  :produced_cpp_type_id: 2165
-  :nb_runs: 200
-  :prod_qtt: 100
-  :materials:
-  - :quantity: 1867
-    :type_id: 34
-  - :quantity: 144
-    :type_id: 35
-  - :quantity: 17
-    :type_id: 36
-  - :quantity: 2
-    :type_id: 38
-  - :quantity: 4
-    :type_id: 39
-  :name: Sansha Wrath Cruise Missile Blueprint
 2184:
   :cpp_blueprint_id: 2184
   :produced_cpp_type_id: 2183
@@ -5024,30 +5007,6 @@
   - :quantity: 1
     :type_id: 2203
   :name: Acolyte II Blueprint
-2211:
-  :cpp_blueprint_id: 2211
-  :produced_cpp_type_id: 2210
-  :nb_runs: 200
-  :prod_qtt: 100
-  :materials:
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 1876
-    :type_id: 34
-  - :quantity: 12
-    :type_id: 39
-  :name: Sansha Juggernaut Torpedo Blueprint
-2213:
-  :cpp_blueprint_id: 2213
-  :produced_cpp_type_id: 2212
-  :nb_runs: 300
-  :prod_qtt: 100
-  :materials:
-  - :quantity: 820
-    :type_id: 34
-  - :quantity: 2
-    :type_id: 38
-  :name: Ghost Heavy Missile Blueprint
 2282:
   :cpp_blueprint_id: 2282
   :produced_cpp_type_id: 2281
@@ -8154,15 +8113,6 @@
   - :quantity: 22
     :type_id: 2869
   :name: CONCORD Capital Remote Capacitor Transmitter Blueprint
-3582:
-  :cpp_blueprint_id: 3582
-  :produced_cpp_type_id: 3581
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 3585
-  :name: Purloined Sansha Data Analyzer Blueprint
 3587:
   :cpp_blueprint_id: 3587
   :produced_cpp_type_id: 3586
@@ -8195,19 +8145,6 @@
   - :quantity: 3
     :type_id: 11557
   :name: Small Remote Shield Booster II Blueprint
-3590:
-  :cpp_blueprint_id: 3590
-  :produced_cpp_type_id: 3585
-  :nb_runs: 600
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 3584
-  - :quantity: 1
-    :type_id: 22175
-  - :quantity: 1
-    :type_id: 3583
-  :name: Mangled Sansha Data Analyzer Blueprint
 3597:
   :cpp_blueprint_id: 3597
   :produced_cpp_type_id: 3596
@@ -8430,23 +8367,6 @@
   - :quantity: 8
     :type_id: 40
   :name: Vigil Blueprint
-3794:
-  :cpp_blueprint_id: 3794
-  :produced_cpp_type_id: 3793
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 840
-    :type_id: 34
-  - :quantity: 183
-    :type_id: 35
-  - :quantity: 470
-    :type_id: 36
-  - :quantity: 4
-    :type_id: 37
-  :name: Data Subverter I Blueprint
 3830:
   :cpp_blueprint_id: 3830
   :produced_cpp_type_id: 3829
@@ -8797,15 +8717,6 @@
   - :quantity: 1
     :type_id: 11482
   :name: Large EMP Smartbomb II Blueprint
-4006:
-  :cpp_blueprint_id: 4006
-  :produced_cpp_type_id: 4005
-  :nb_runs: 10
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Scorpion Ishukone Watch Blueprint
 4148:
   :cpp_blueprint_id: 4148
   :produced_cpp_type_id: 4147
@@ -8942,69 +8853,6 @@
   - :quantity: 1
     :type_id: 11483
   :name: Expanded Probe Launcher II Blueprint
-4275:
-  :cpp_blueprint_id: 4275
-  :produced_cpp_type_id: 4274
-  :nb_runs: 10
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 5
-    :type_id: 11399
-  - :quantity: 33
-    :type_id: 16681
-  - :quantity: 12
-    :type_id: 9840
-  - :quantity: 12
-    :type_id: 11541
-  - :quantity: 1
-    :type_id: 22553
-  - :quantity: 1
-    :type_id: 11483
-  - :quantity: 17
-    :type_id: 16682
-  :name: Mining Foreman Link - Harvester Capacitor Efficiency II Blueprint
-4277:
-  :cpp_blueprint_id: 4277
-  :produced_cpp_type_id: 4276
-  :nb_runs: 10
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 5
-    :type_id: 11399
-  - :quantity: 33
-    :type_id: 16681
-  - :quantity: 12
-    :type_id: 9840
-  - :quantity: 12
-    :type_id: 11541
-  - :quantity: 17
-    :type_id: 16682
-  - :quantity: 1
-    :type_id: 11483
-  - :quantity: 1
-    :type_id: 22557
-  :name: Mining Foreman Link - Laser Optimization II Blueprint
-4279:
-  :cpp_blueprint_id: 4279
-  :produced_cpp_type_id: 4278
-  :nb_runs: 10
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 11483
-  - :quantity: 5
-    :type_id: 11399
-  - :quantity: 33
-    :type_id: 16681
-  - :quantity: 12
-    :type_id: 9840
-  - :quantity: 12
-    :type_id: 11541
-  - :quantity: 1
-    :type_id: 22555
-  - :quantity: 17
-    :type_id: 16682
-  :name: Mining Foreman Link - Mining Laser Field Enhancement II Blueprint
 4293:
   :cpp_blueprint_id: 4293
   :produced_cpp_type_id: 4292
@@ -9272,19 +9120,6 @@
   - :quantity: 16
     :type_id: 40
   :name: Miasmos Quafe Ultra Edition Blueprint
-4370:
-  :cpp_blueprint_id: 4370
-  :produced_cpp_type_id: 4369
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 2
-    :type_id: 25600
-  - :quantity: 3
-    :type_id: 25597
-  - :quantity: 2
-    :type_id: 25599
-  :name: Small Targeting Amplifier I Blueprint
 4384:
   :cpp_blueprint_id: 4384
   :produced_cpp_type_id: 4383
@@ -9306,31 +9141,6 @@
   - :quantity: 32
     :type_id: 40
   :name: Large Micro Jump Drive Blueprint
-4387:
-  :cpp_blueprint_id: 4387
-  :produced_cpp_type_id: 4386
-  :nb_runs: 40
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 210226
-    :type_id: 34
-  - :quantity: 63264
-    :type_id: 35
-  - :quantity: 32539
-    :type_id: 36
-  - :quantity: 8751
-    :type_id: 37
-  - :quantity: 2200
-    :type_id: 38
-  - :quantity: 1956
-    :type_id: 39
-  - :quantity: 488
-    :type_id: 40
-  - :quantity: 18
-    :type_id: 3687
-  - :quantity: 7
-    :type_id: 447
-  :name: Mobile Large Jump Disruptor I Blueprint
 4389:
   :cpp_blueprint_id: 4389
   :produced_cpp_type_id: 4388
@@ -9474,23 +9284,6 @@
   - :quantity: 1
     :type_id: 11483
   :name: Drone Damage Amplifier II Blueprint
-4408:
-  :cpp_blueprint_id: 4408
-  :produced_cpp_type_id: 4407
-  :nb_runs: 600
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 2
-    :type_id: 40
-  - :quantity: 4
-    :type_id: 35
-  - :quantity: 3
-    :type_id: 37
-  - :quantity: 3
-    :type_id: 38
-  - :quantity: 2
-    :type_id: 39
-  :name: Shield Booster Fuel Allocation Script Blueprint
 4410:
   :cpp_blueprint_id: 4410
   :produced_cpp_type_id: 4409
@@ -21953,74 +21746,6 @@
   - :quantity: 1
     :type_id: 11483
   :name: Ballistic Control System II Blueprint
-22326:
-  :cpp_blueprint_id: 22326
-  :produced_cpp_type_id: 22325
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 840
-    :type_id: 34
-  - :quantity: 183
-    :type_id: 35
-  - :quantity: 470
-    :type_id: 36
-  - :quantity: 4
-    :type_id: 37
-  :name: "'Daemon' Data Analyzer I Blueprint"
-22328:
-  :cpp_blueprint_id: 22328
-  :produced_cpp_type_id: 22327
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 840
-    :type_id: 34
-  - :quantity: 183
-    :type_id: 35
-  - :quantity: 470
-    :type_id: 36
-  - :quantity: 4
-    :type_id: 37
-  :name: "'Codex' Data Analyzer I Blueprint"
-22330:
-  :cpp_blueprint_id: 22330
-  :produced_cpp_type_id: 22329
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 840
-    :type_id: 34
-  - :quantity: 183
-    :type_id: 35
-  - :quantity: 470
-    :type_id: 36
-  - :quantity: 4
-    :type_id: 37
-  :name: "'Alpha' Data Analyzer I Blueprint"
-22332:
-  :cpp_blueprint_id: 22332
-  :produced_cpp_type_id: 22331
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 840
-    :type_id: 34
-  - :quantity: 183
-    :type_id: 35
-  - :quantity: 470
-    :type_id: 36
-  - :quantity: 4
-    :type_id: 37
-  :name: "'Libram' Data Analyzer I Blueprint"
 22429:
   :cpp_blueprint_id: 22429
   :produced_cpp_type_id: 22428
@@ -22597,57 +22322,6 @@
   - :quantity: 2550
     :type_id: 11545
   :name: Mackinaw Blueprint
-22554:
-  :cpp_blueprint_id: 22554
-  :produced_cpp_type_id: 22553
-  :nb_runs: 50
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 22
-    :type_id: 40
-  - :quantity: 949
-    :type_id: 34
-  - :quantity: 3
-    :type_id: 2346
-  - :quantity: 111
-    :type_id: 37
-  - :quantity: 56
-    :type_id: 38
-  :name: Mining Foreman Link - Harvester Capacitor Efficiency I Blueprint
-22556:
-  :cpp_blueprint_id: 22556
-  :produced_cpp_type_id: 22555
-  :nb_runs: 50
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 22
-    :type_id: 40
-  - :quantity: 949
-    :type_id: 34
-  - :quantity: 3
-    :type_id: 2346
-  - :quantity: 111
-    :type_id: 37
-  - :quantity: 56
-    :type_id: 38
-  :name: Mining Foreman Link - Mining Laser Field Enhancement I Blueprint
-22558:
-  :cpp_blueprint_id: 22558
-  :produced_cpp_type_id: 22557
-  :nb_runs: 50
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 22
-    :type_id: 40
-  - :quantity: 949
-    :type_id: 34
-  - :quantity: 3
-    :type_id: 2346
-  - :quantity: 111
-    :type_id: 37
-  - :quantity: 56
-    :type_id: 38
-  :name: Mining Foreman Link - Laser Optimization I Blueprint
 22573:
   :cpp_blueprint_id: 22573
   :produced_cpp_type_id: 22572
@@ -23186,27 +22860,6 @@
   - :quantity: 8050
     :type_id: 34
   :name: "'Monopoly' Magnetic Field Stabilizer Blueprint"
-22924:
-  :cpp_blueprint_id: 22924
-  :produced_cpp_type_id: 22923
-  :nb_runs: 200
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 2
-    :type_id: 23169
-  - :quantity: 1324
-    :type_id: 34
-  - :quantity: 481
-    :type_id: 35
-  - :quantity: 119
-    :type_id: 36
-  - :quantity: 3
-    :type_id: 23139
-  - :quantity: 3
-    :type_id: 23128
-  - :quantity: 3
-    :type_id: 23129
-  :name: "'Wild' Miner I Blueprint"
 22926:
   :cpp_blueprint_id: 22926
   :produced_cpp_type_id: 22925
@@ -23401,29 +23054,6 @@
   - :quantity: 3
     :type_id: 23130
   :name: "'Love' Medium Remote Armor Repairer Blueprint"
-22952:
-  :cpp_blueprint_id: 22952
-  :produced_cpp_type_id: 22951
-  :nb_runs: 60
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4318
-    :type_id: 34
-  - :quantity: 3256
-    :type_id: 35
-  - :quantity: 2
-    :type_id: 23140
-  - :quantity: 2
-    :type_id: 23142
-  - :quantity: 2
-    :type_id: 23172
-  - :quantity: 1
-    :type_id: 36
-  - :quantity: 1
-    :type_id: 23130
-  - :quantity: 2
-    :type_id: 23132
-  :name: "'Pacifier' Large Remote Armor Repairer Blueprint"
 22954:
   :cpp_blueprint_id: 22954
   :produced_cpp_type_id: 22953
@@ -23537,27 +23167,6 @@
   - :quantity: 163766
     :type_id: 34
   :name: Einherji I Blueprint
-23415:
-  :cpp_blueprint_id: 23415
-  :produced_cpp_type_id: 23414
-  :nb_runs: 200
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 23168
-  - :quantity: 2
-    :type_id: 23138
-  - :quantity: 3
-    :type_id: 35
-  - :quantity: 112
-    :type_id: 36
-  - :quantity: 1
-    :type_id: 37
-  - :quantity: 896
-    :type_id: 34
-  - :quantity: 2
-    :type_id: 23128
-  :name: "'Brotherhood' Small Remote Armor Repairer Blueprint"
 23417:
   :cpp_blueprint_id: 23417
   :produced_cpp_type_id: 23416
@@ -26885,74 +26494,6 @@
   - :quantity: 1
     :type_id: 11483
   :name: Signal Distortion Amplifier II Blueprint
-25584:
-  :cpp_blueprint_id: 25584
-  :produced_cpp_type_id: 25555
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 18
-    :type_id: 21587
-  - :quantity: 11
-    :type_id: 21588
-  - :quantity: 6
-    :type_id: 21589
-  - :quantity: 2
-    :type_id: 21590
-  - :quantity: 1
-    :type_id: 21591
-  :name: Esoteric Data Interface Blueprint
-25585:
-  :cpp_blueprint_id: 25585
-  :produced_cpp_type_id: 25554
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 6
-    :type_id: 23160
-  - :quantity: 2
-    :type_id: 23161
-  - :quantity: 1
-    :type_id: 23162
-  - :quantity: 18
-    :type_id: 23158
-  - :quantity: 11
-    :type_id: 23159
-  :name: Occult Data Interface Blueprint
-25586:
-  :cpp_blueprint_id: 25586
-  :produced_cpp_type_id: 25556
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 18
-    :type_id: 23163
-  - :quantity: 11
-    :type_id: 23164
-  - :quantity: 6
-    :type_id: 23165
-  - :quantity: 2
-    :type_id: 23166
-  - :quantity: 1
-    :type_id: 23167
-  :name: Incognito Data Interface Blueprint
-25587:
-  :cpp_blueprint_id: 25587
-  :produced_cpp_type_id: 25553
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 18
-    :type_id: 21592
-  - :quantity: 11
-    :type_id: 21593
-  - :quantity: 6
-    :type_id: 21594
-  - :quantity: 2
-    :type_id: 21595
-  - :quantity: 1
-    :type_id: 21596
-  :name: Cryptic Data Interface Blueprint
 25716:
   :cpp_blueprint_id: 25716
   :produced_cpp_type_id: 25715
@@ -27000,74 +26541,6 @@
   - :quantity: 1
     :type_id: 11482
   :name: Gas Cloud Harvester II Blueprint
-25852:
-  :cpp_blueprint_id: 25852
-  :produced_cpp_type_id: 25851
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 56
-    :type_id: 23160
-  - :quantity: 22
-    :type_id: 23161
-  - :quantity: 11
-    :type_id: 23162
-  - :quantity: 178
-    :type_id: 23158
-  - :quantity: 111
-    :type_id: 23159
-  :name: Occult Ship Data Interface Blueprint
-25854:
-  :cpp_blueprint_id: 25854
-  :produced_cpp_type_id: 25853
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 178
-    :type_id: 21587
-  - :quantity: 111
-    :type_id: 21588
-  - :quantity: 56
-    :type_id: 21589
-  - :quantity: 22
-    :type_id: 21590
-  - :quantity: 11
-    :type_id: 21591
-  :name: Esoteric Ship Data Interface Blueprint
-25856:
-  :cpp_blueprint_id: 25856
-  :produced_cpp_type_id: 25855
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 178
-    :type_id: 23163
-  - :quantity: 111
-    :type_id: 23164
-  - :quantity: 56
-    :type_id: 23165
-  - :quantity: 22
-    :type_id: 23166
-  - :quantity: 11
-    :type_id: 23167
-  :name: Incognito Ship Data Interface Blueprint
-25858:
-  :cpp_blueprint_id: 25858
-  :produced_cpp_type_id: 25857
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 178
-    :type_id: 21592
-  - :quantity: 111
-    :type_id: 21593
-  - :quantity: 56
-    :type_id: 21594
-  - :quantity: 22
-    :type_id: 21595
-  - :quantity: 11
-    :type_id: 21596
-  :name: Cryptic Ship Data Interface Blueprint
 25862:
   :cpp_blueprint_id: 25862
   :produced_cpp_type_id: 25861
@@ -29244,74 +28717,6 @@
   - :quantity: 12
     :type_id: 25625
   :name: Large Core Defense Operational Solidifier II Blueprint
-26598:
-  :cpp_blueprint_id: 26598
-  :produced_cpp_type_id: 26597
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 36
-    :type_id: 21592
-  - :quantity: 22
-    :type_id: 21593
-  - :quantity: 11
-    :type_id: 21594
-  - :quantity: 4
-    :type_id: 21595
-  - :quantity: 2
-    :type_id: 21596
-  :name: Cryptic Tuner Data Interface Blueprint
-26600:
-  :cpp_blueprint_id: 26600
-  :produced_cpp_type_id: 26599
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 36
-    :type_id: 21587
-  - :quantity: 22
-    :type_id: 21588
-  - :quantity: 11
-    :type_id: 21589
-  - :quantity: 4
-    :type_id: 21590
-  - :quantity: 2
-    :type_id: 21591
-  :name: Esoteric Tuner Data Interface Blueprint
-26602:
-  :cpp_blueprint_id: 26602
-  :produced_cpp_type_id: 26601
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 36
-    :type_id: 23163
-  - :quantity: 22
-    :type_id: 23164
-  - :quantity: 11
-    :type_id: 23165
-  - :quantity: 4
-    :type_id: 23166
-  - :quantity: 2
-    :type_id: 23167
-  :name: Incognito Tuner Data Interface Blueprint
-26604:
-  :cpp_blueprint_id: 26604
-  :produced_cpp_type_id: 26603
-  :nb_runs: 8
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 11
-    :type_id: 23160
-  - :quantity: 4
-    :type_id: 23161
-  - :quantity: 2
-    :type_id: 23162
-  - :quantity: 36
-    :type_id: 23158
-  - :quantity: 22
-    :type_id: 23159
-  :name: Occult Tuner Data Interface Blueprint
 26759:
   :cpp_blueprint_id: 26759
   :produced_cpp_type_id: 20138
@@ -29516,40 +28921,6 @@
   - :quantity: 1
     :type_id: 25623
   :name: Small Processor Overclocking Unit II Blueprint
-26984:
-  :cpp_blueprint_id: 26984
-  :produced_cpp_type_id: 26983
-  :nb_runs: 600
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 840
-    :type_id: 34
-  - :quantity: 183
-    :type_id: 35
-  - :quantity: 470
-    :type_id: 36
-  - :quantity: 4
-    :type_id: 37
-  :name: Civilian Salvager Blueprint
-27015:
-  :cpp_blueprint_id: 27015
-  :produced_cpp_type_id: 27014
-  :nb_runs: 600
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 37
-  - :quantity: 4
-    :type_id: 40
-  - :quantity: 183
-    :type_id: 35
-  - :quantity: 470
-    :type_id: 36
-  - :quantity: 840
-    :type_id: 34
-  :name: Civilian Data Analyzer Blueprint
 27065:
   :cpp_blueprint_id: 27065
   :produced_cpp_type_id: 27064
@@ -33553,26 +32924,6 @@
   - :quantity: 1667
     :type_id: 16678
   :name: Capital Tungsten Carbide Armor Plate Blueprint
-29204:
-  :cpp_blueprint_id: 29204
-  :produced_cpp_type_id: 29202
-  :nb_runs: 600
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 29203
-  :name: Modified Augumene Antidote Blueprint
-29227:
-  :cpp_blueprint_id: 29227
-  :produced_cpp_type_id: 29226
-  :nb_runs: 1000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 306
-    :type_id: 34
-  - :quantity: 122
-    :type_id: 35
-  :name: Basic Robotics Blueprint
 29249:
   :cpp_blueprint_id: 29249
   :produced_cpp_type_id: 29248
@@ -40241,19 +39592,6 @@
   - :quantity: 5
     :type_id: 25615
   :name: Medium Drone Speed Augmentor II Blueprint
-32066:
-  :cpp_blueprint_id: 32066
-  :produced_cpp_type_id: 32065
-  :nb_runs: 100
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 4
-    :type_id: 25600
-  - :quantity: 4
-    :type_id: 25596
-  - :quantity: 6
-    :type_id: 25598
-  :name: Small EW Drone Range Augmentor I Blueprint
 32070:
   :cpp_blueprint_id: 32070
   :produced_cpp_type_id: 32069
@@ -40310,21 +39648,6 @@
   - :quantity: 3
     :type_id: 25615
   :name: Medium Drone Scope Chip II Blueprint
-32078:
-  :cpp_blueprint_id: 32078
-  :produced_cpp_type_id: 32077
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 11481
-  - :quantity: 1
-    :type_id: 25619
-  - :quantity: 1
-    :type_id: 25617
-  - :quantity: 1
-    :type_id: 25615
-  :name: Small EW Drone Range Augmentor II Blueprint
 32082:
   :cpp_blueprint_id: 32082
   :produced_cpp_type_id: 32081
@@ -40875,51 +40198,6 @@
   - :quantity: 111
     :type_id: 37
   :name: Quest Survey Probe I Blueprint
-32841:
-  :cpp_blueprint_id: 32841
-  :produced_cpp_type_id: 32840
-  :nb_runs: 20
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: InterBus Catalyst Blueprint
-32843:
-  :cpp_blueprint_id: 32843
-  :produced_cpp_type_id: 32842
-  :nb_runs: 20
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Intaki Syndicate Catalyst Blueprint
-32845:
-  :cpp_blueprint_id: 32845
-  :produced_cpp_type_id: 32844
-  :nb_runs: 20
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Inner Zone Shipping Catalyst Blueprint
-32847:
-  :cpp_blueprint_id: 32847
-  :produced_cpp_type_id: 32846
-  :nb_runs: 20
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Quafe Catalyst Blueprint
-32849:
-  :cpp_blueprint_id: 32849
-  :produced_cpp_type_id: 32848
-  :nb_runs: 20
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Aliastra Catalyst Blueprint
 32854:
   :cpp_blueprint_id: 32854
   :produced_cpp_type_id: 18635
@@ -41230,52 +40508,6 @@
   - :quantity: 33
     :type_id: 38
   :name: Salvage Drone I Blueprint
-32984:
-  :cpp_blueprint_id: 32984
-  :produced_cpp_type_id: 32983
-  :nb_runs: 30
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Sukuuvestaa Heron Blueprint
-32986:
-  :cpp_blueprint_id: 32986
-  :produced_cpp_type_id: 32985
-  :nb_runs: 30
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Inner Zone Shipping Imicus Blueprint
-32988:
-  :cpp_blueprint_id: 32988
-  :produced_cpp_type_id: 32987
-  :nb_runs: 30
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 13840
-    :type_id: 34
-  - :quantity: 987
-    :type_id: 35
-  - :quantity: 666
-    :type_id: 36
-  - :quantity: 58
-    :type_id: 37
-  - :quantity: 14
-    :type_id: 39
-  - :quantity: 4
-    :type_id: 40
-  :name: Sarum Magnate Blueprint
-32990:
-  :cpp_blueprint_id: 32990
-  :produced_cpp_type_id: 32989
-  :nb_runs: 30
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 34
-  :name: Vherokior Probe Blueprint
 33004:
   :cpp_blueprint_id: 33004
   :produced_cpp_type_id: 33003
@@ -41331,51 +40563,6 @@
   - :quantity: 1111
     :type_id: 35
   :name: Small Freight Container Blueprint
-33067:
-  :cpp_blueprint_id: 33067
-  :produced_cpp_type_id: 33017
-  :nb_runs: 600
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 28
-    :type_id: 34
-  - :quantity: 16
-    :type_id: 35
-  - :quantity: 20
-    :type_id: 36
-  - :quantity: 24
-    :type_id: 37
-  - :quantity: 17
-    :type_id: 38
-  - :quantity: 36
-    :type_id: 39
-  - :quantity: 12
-    :type_id: 40
-  - :quantity: 8
-    :type_id: 16649
-  - :quantity: 23
-    :type_id: 27274
-  - :quantity: 8
-    :type_id: 11399
-  - :quantity: 10
-    :type_id: 30252
-  - :quantity: 23
-    :type_id: 16642
-  - :quantity: 24
-    :type_id: 16653
-  - :quantity: 16
-    :type_id: 4051
-  - :quantity: 16
-    :type_id: 2871
-  - :quantity: 6
-    :type_id: 4312
-  - :quantity: 1
-    :type_id: 16275
-  - :quantity: 17
-    :type_id: 16637
-  - :quantity: 6
-    :type_id: 16638
-  :name: Deactivated Station Key Pass Blueprint
 33077:
   :cpp_blueprint_id: 33077
   :produced_cpp_type_id: 33076
@@ -41389,17 +40576,6 @@
   - :quantity: 288
     :type_id: 35
   :name: Small Ancillary Armor Repairer Blueprint
-33088:
-  :cpp_blueprint_id: 33088
-  :produced_cpp_type_id: 33087
-  :nb_runs: 300
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 8
-    :type_id: 40
-  - :quantity: 13
-    :type_id: 25335
-  :name: Advanced Cerebral Accelerator Blueprint
 33102:
   :cpp_blueprint_id: 33102
   :produced_cpp_type_id: 33101
@@ -41434,17 +40610,6 @@
   - :quantity: 51
     :type_id: 38
   :name: Large Ancillary Armor Repairer Blueprint
-33112:
-  :cpp_blueprint_id: 33112
-  :produced_cpp_type_id: 33111
-  :nb_runs: 300
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 8
-    :type_id: 40
-  - :quantity: 13
-    :type_id: 25335
-  :name: Prototype Cerebral Accelerator Blueprint
 33150:
   :cpp_blueprint_id: 33150
   :produced_cpp_type_id: 33149
@@ -41599,25 +40764,6 @@
   - :quantity: 2
     :type_id: 11399
   :name: Scan Rangefinding Array I Blueprint
-33191:
-  :cpp_blueprint_id: 33191
-  :produced_cpp_type_id: 33190
-  :nb_runs: 30
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 13840
-    :type_id: 34
-  - :quantity: 987
-    :type_id: 35
-  - :quantity: 666
-    :type_id: 36
-  - :quantity: 58
-    :type_id: 37
-  - :quantity: 14
-    :type_id: 39
-  - :quantity: 4
-    :type_id: 40
-  :name: Tash-Murkon Magnate Blueprint
 33196:
   :cpp_blueprint_id: 33196
   :produced_cpp_type_id: 33195
@@ -42398,27 +41544,6 @@
   - :quantity: 654
     :type_id: 2367
   :name: High-grade Ascendancy Omega Blueprint
-33554:
-  :cpp_blueprint_id: 33554
-  :produced_cpp_type_id: 33553
-  :nb_runs: 10
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 614356
-    :type_id: 34
-  - :quantity: 154233
-    :type_id: 35
-  - :quantity: 39907
-    :type_id: 36
-  - :quantity: 9687
-    :type_id: 37
-  - :quantity: 2387
-    :type_id: 38
-  - :quantity: 1202
-    :type_id: 39
-  - :quantity: 356
-    :type_id: 40
-  :name: Stratios Emergency Responder Blueprint
 33556:
   :cpp_blueprint_id: 33556
   :produced_cpp_type_id: 33555
@@ -42532,31 +41657,6 @@
   - :quantity: 20
     :type_id: 40
   :name: Amarr Encounter Surveillance System Blueprint
-33588:
-  :cpp_blueprint_id: 33588
-  :produced_cpp_type_id: 33587
-  :nb_runs: 10
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 133333
-    :type_id: 34
-  - :quantity: 2222
-    :type_id: 35
-  - :quantity: 2222
-    :type_id: 37
-  - :quantity: 4444
-    :type_id: 39
-  - :quantity: 1
-    :type_id: 2351
-  - :quantity: 1
-    :type_id: 2867
-  - :quantity: 2
-    :type_id: 2870
-  - :quantity: 1
-    :type_id: 2872
-  - :quantity: 2
-    :type_id: 2876
-  :name: Mobile Decoy Unit Blueprint
 33590:
   :cpp_blueprint_id: 33590
   :produced_cpp_type_id: 33589
@@ -42662,222 +41762,6 @@
   - :quantity: 20
     :type_id: 40
   :name: Minmatar Encounter Surveillance System Blueprint
-33624:
-  :cpp_blueprint_id: 33624
-  :produced_cpp_type_id: 33623
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24692
-  :name: Abaddon Tash-Murkon Edition Blueprint
-33626:
-  :cpp_blueprint_id: 33626
-  :produced_cpp_type_id: 33625
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24692
-  :name: Abaddon Kador Edition Blueprint
-33628:
-  :cpp_blueprint_id: 33628
-  :produced_cpp_type_id: 33627
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24688
-  :name: Rokh Nugoeihuvi Edition Blueprint
-33630:
-  :cpp_blueprint_id: 33630
-  :produced_cpp_type_id: 33629
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24688
-  :name: Rokh Wiyrkomi Edition Blueprint
-33632:
-  :cpp_blueprint_id: 33632
-  :produced_cpp_type_id: 33631
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24694
-  :name: Maelstrom Nefantar Edition Blueprint
-33634:
-  :cpp_blueprint_id: 33634
-  :produced_cpp_type_id: 33633
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24694
-  :name: Maelstrom Krusual Edition Blueprint
-33636:
-  :cpp_blueprint_id: 33636
-  :produced_cpp_type_id: 33635
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24690
-  :name: Hyperion Aliastra Edition Blueprint
-33638:
-  :cpp_blueprint_id: 33638
-  :produced_cpp_type_id: 33637
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24690
-  :name: Hyperion Inner Zone Shipping Edition Blueprint
-33640:
-  :cpp_blueprint_id: 33640
-  :produced_cpp_type_id: 33639
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 2006
-  :name: Omen Kador Edition Blueprint
-33642:
-  :cpp_blueprint_id: 33642
-  :produced_cpp_type_id: 33641
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 2006
-  :name: Omen Tash-Murkon Edition Blueprint
-33644:
-  :cpp_blueprint_id: 33644
-  :produced_cpp_type_id: 33643
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 621
-  :name: Caracal Nugoeihuvi Edition Blueprint
-33646:
-  :cpp_blueprint_id: 33646
-  :produced_cpp_type_id: 33645
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 621
-  :name: Caracal Wiyrkomi Edition Blueprint
-33648:
-  :cpp_blueprint_id: 33648
-  :produced_cpp_type_id: 33647
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 622
-  :name: Stabber Nefantar Edition Blueprint
-33650:
-  :cpp_blueprint_id: 33650
-  :produced_cpp_type_id: 33649
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 622
-  :name: Stabber Krusual Edition Blueprint
-33652:
-  :cpp_blueprint_id: 33652
-  :produced_cpp_type_id: 33651
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 627
-  :name: Thorax Aliastra Edition Blueprint
-33654:
-  :cpp_blueprint_id: 33654
-  :produced_cpp_type_id: 33653
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 627
-  :name: Thorax Inner Zone Shipping Edition Blueprint
-33656:
-  :cpp_blueprint_id: 33656
-  :produced_cpp_type_id: 33655
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 597
-  :name: Punisher Kador Edition Blueprint
-33658:
-  :cpp_blueprint_id: 33658
-  :produced_cpp_type_id: 33657
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 597
-  :name: Punisher Tash-Murkon Edition Blueprint
-33660:
-  :cpp_blueprint_id: 33660
-  :produced_cpp_type_id: 33659
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 603
-  :name: Merlin Nugoeihuvi Edition Blueprint
-33662:
-  :cpp_blueprint_id: 33662
-  :produced_cpp_type_id: 33661
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 603
-  :name: Merlin Wiyrkomi Edition Blueprint
-33664:
-  :cpp_blueprint_id: 33664
-  :produced_cpp_type_id: 33663
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 587
-  :name: Rifter Nefantar Edition Blueprint
-33666:
-  :cpp_blueprint_id: 33666
-  :produced_cpp_type_id: 33665
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 587
-  :name: Rifter Krusual Edition Blueprint
-33668:
-  :cpp_blueprint_id: 33668
-  :produced_cpp_type_id: 33667
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 594
-  :name: Incursus Aliastra Edition Blueprint
-33670:
-  :cpp_blueprint_id: 33670
-  :produced_cpp_type_id: 33669
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 594
-  :name: Incursus Inner Zone Shipping Edition Blueprint
 33672:
   :cpp_blueprint_id: 33672
   :produced_cpp_type_id: 33671
@@ -42971,15 +41855,6 @@
   - :quantity: 22
     :type_id: 11550
   :name: Chameleon Blueprint
-33678:
-  :cpp_blueprint_id: 33678
-  :produced_cpp_type_id: 33677
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 17841
-  :name: Police Pursuit Comet Blueprint
 33682:
   :cpp_blueprint_id: 33682
   :produced_cpp_type_id: 33681
@@ -42997,69 +41872,6 @@
   - :quantity: 18
     :type_id: 39
   :name: Gecko Blueprint
-33684:
-  :cpp_blueprint_id: 33684
-  :produced_cpp_type_id: 33683
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 22548
-  :name: Mackinaw ORE Development Edition Blueprint
-33686:
-  :cpp_blueprint_id: 33686
-  :produced_cpp_type_id: 33685
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28606
-  :name: Orca ORE Development Edition Blueprint
-33688:
-  :cpp_blueprint_id: 33688
-  :produced_cpp_type_id: 33687
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28352
-  :name: Rorqual ORE Development Edition Blueprint
-33690:
-  :cpp_blueprint_id: 33690
-  :produced_cpp_type_id: 33689
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 657
-  :name: Iteron Inner Zone Shipping Edition Blueprint
-33692:
-  :cpp_blueprint_id: 33692
-  :produced_cpp_type_id: 33691
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 649
-  :name: Tayra Wiyrkomi Edition Blueprint
-33694:
-  :cpp_blueprint_id: 33694
-  :produced_cpp_type_id: 33693
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 652
-  :name: Mammoth Nefantar Edition Blueprint
-33696:
-  :cpp_blueprint_id: 33696
-  :produced_cpp_type_id: 33695
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 1944
-  :name: Bestower Tash-Murkon Edition Blueprint
 33698:
   :cpp_blueprint_id: 33698
   :produced_cpp_type_id: 33697
@@ -43319,78 +42131,6 @@
   - :quantity: 1
     :type_id: 33822
   :name: Omnidirectional Tracking Enhancer II Blueprint
-33870:
-  :cpp_blueprint_id: 33870
-  :produced_cpp_type_id: 33869
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16229
-  :name: Brutix Serpentis Edition Blueprint
-33872:
-  :cpp_blueprint_id: 33872
-  :produced_cpp_type_id: 33871
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16231
-  :name: Cyclone Thukker Tribe Edition Blueprint
-33874:
-  :cpp_blueprint_id: 33874
-  :produced_cpp_type_id: 33873
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16227
-  :name: Ferox Guristas Edition Blueprint
-33876:
-  :cpp_blueprint_id: 33876
-  :produced_cpp_type_id: 33875
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16233
-  :name: Prophecy Blood Raiders Edition Blueprint
-33878:
-  :cpp_blueprint_id: 33878
-  :produced_cpp_type_id: 33877
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16240
-  :name: Catalyst Serpentis Edition Blueprint
-33880:
-  :cpp_blueprint_id: 33880
-  :produced_cpp_type_id: 33879
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16236
-  :name: Coercer Blood Raiders Edition Blueprint
-33882:
-  :cpp_blueprint_id: 33882
-  :produced_cpp_type_id: 33881
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16238
-  :name: Cormorant Guristas Edition Blueprint
-33884:
-  :cpp_blueprint_id: 33884
-  :produced_cpp_type_id: 33883
-  :nb_runs: 20000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 16242
-  :name: Thrasher Thukker Tribe Edition Blueprint
 33891:
   :cpp_blueprint_id: 33891
   :produced_cpp_type_id: 33890
@@ -43581,44 +42321,6 @@
   - :quantity: 1667
     :type_id: 35
   :name: Prototype Hyperspatial Accelerator Blueprint
-34119:
-  :cpp_blueprint_id: 34119
-  :produced_cpp_type_id: 34118
-  :nb_runs: 17300
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 641
-  :name: Megathron Quafe Edition Blueprint
-34121:
-  :cpp_blueprint_id: 34121
-  :produced_cpp_type_id: 34120
-  :nb_runs: 1000
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 277778
-    :type_id: 34
-  - :quantity: 11111
-    :type_id: 35
-  - :quantity: 5556
-    :type_id: 37
-  - :quantity: 11112
-    :type_id: 39
-  - :quantity: 1112
-    :type_id: 40
-  - :quantity: 22
-    :type_id: 9834
-  - :quantity: 4
-    :type_id: 2867
-  - :quantity: 9
-    :type_id: 2870
-  - :quantity: 2
-    :type_id: 2872
-  - :quantity: 4
-    :type_id: 2875
-  - :quantity: 2
-    :type_id: 2876
-  :name: Mobile Competitive Vault Blueprint
 34123:
   :cpp_blueprint_id: 34123
   :produced_cpp_type_id: 34122
@@ -43676,213 +42378,6 @@
   - :quantity: 1000
     :type_id: 35
   :name: Prototype Jump Drive Economizer Blueprint
-34214:
-  :cpp_blueprint_id: 34214
-  :produced_cpp_type_id: 34213
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 642
-  :name: Apocalypse Blood Raider Edition Blueprint
-34216:
-  :cpp_blueprint_id: 34216
-  :produced_cpp_type_id: 34215
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 642
-  :name: Apocalypse Kador Edition Blueprint
-34218:
-  :cpp_blueprint_id: 34218
-  :produced_cpp_type_id: 34217
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 642
-  :name: Apocalypse Tash-Murkon Edition Blueprint
-34220:
-  :cpp_blueprint_id: 34220
-  :produced_cpp_type_id: 34219
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28659
-  :name: Paladin Blood Raider Edition Blueprint
-34222:
-  :cpp_blueprint_id: 34222
-  :produced_cpp_type_id: 34221
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28659
-  :name: Paladin Kador Edition Blueprint
-34224:
-  :cpp_blueprint_id: 34224
-  :produced_cpp_type_id: 34223
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28659
-  :name: Paladin Tash-Murkon Edition Blueprint
-34226:
-  :cpp_blueprint_id: 34226
-  :produced_cpp_type_id: 34225
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 638
-  :name: Raven Guristas Edition Blueprint
-34228:
-  :cpp_blueprint_id: 34228
-  :produced_cpp_type_id: 34227
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 638
-  :name: Raven Kaalakiota Edition Blueprint
-34230:
-  :cpp_blueprint_id: 34230
-  :produced_cpp_type_id: 34229
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 638
-  :name: Raven Nugoeihuvi Edition Blueprint
-34232:
-  :cpp_blueprint_id: 34232
-  :produced_cpp_type_id: 34231
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28710
-  :name: Golem Guristas Edition Blueprint
-34234:
-  :cpp_blueprint_id: 34234
-  :produced_cpp_type_id: 34233
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28710
-  :name: Golem Kaalakiota Edition Blueprint
-34236:
-  :cpp_blueprint_id: 34236
-  :produced_cpp_type_id: 34235
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28710
-  :name: Golem Nugoeihuvi Edition Blueprint
-34238:
-  :cpp_blueprint_id: 34238
-  :produced_cpp_type_id: 34237
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 641
-  :name: Megathron Police Edition Blueprint
-34240:
-  :cpp_blueprint_id: 34240
-  :produced_cpp_type_id: 34239
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 641
-  :name: Megathron Inner Zone Shipping Edition Blueprint
-34242:
-  :cpp_blueprint_id: 34242
-  :produced_cpp_type_id: 34241
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28661
-  :name: Kronos Police Edition Blueprint
-34244:
-  :cpp_blueprint_id: 34244
-  :produced_cpp_type_id: 34243
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28661
-  :name: Kronos Quafe Edition Blueprint
-34246:
-  :cpp_blueprint_id: 34246
-  :produced_cpp_type_id: 34245
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28661
-  :name: Kronos Inner Zone Shipping Edition Blueprint
-34248:
-  :cpp_blueprint_id: 34248
-  :produced_cpp_type_id: 34247
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 639
-  :name: Tempest Justice Edition Blueprint
-34250:
-  :cpp_blueprint_id: 34250
-  :produced_cpp_type_id: 34249
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 639
-  :name: Tempest Krusual Edition Blueprint
-34252:
-  :cpp_blueprint_id: 34252
-  :produced_cpp_type_id: 34251
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 639
-  :name: Tempest Nefantar Edition Blueprint
-34254:
-  :cpp_blueprint_id: 34254
-  :produced_cpp_type_id: 34253
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28665
-  :name: Vargur Justice Edition Blueprint
-34256:
-  :cpp_blueprint_id: 34256
-  :produced_cpp_type_id: 34255
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28665
-  :name: Vargur Krusual Edition Blueprint
-34258:
-  :cpp_blueprint_id: 34258
-  :produced_cpp_type_id: 34257
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 28665
-  :name: Vargur Nefantar Edition Blueprint
 34267:
   :cpp_blueprint_id: 34267
   :produced_cpp_type_id: 34266
@@ -44181,42 +42676,6 @@
   - :quantity: 10
     :type_id: 21023
   :name: Bowhead Blueprint
-34340:
-  :cpp_blueprint_id: 34340
-  :produced_cpp_type_id: 34339
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 19724
-  :name: Moros Interbus Edition Blueprint
-34342:
-  :cpp_blueprint_id: 34342
-  :produced_cpp_type_id: 34341
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 19722
-  :name: Naglfar Justice Edition Blueprint
-34344:
-  :cpp_blueprint_id: 34344
-  :produced_cpp_type_id: 34343
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 19726
-  :name: Phoenix Wiyrkomi Edition Blueprint
-34346:
-  :cpp_blueprint_id: 34346
-  :produced_cpp_type_id: 34345
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 19720
-  :name: Revelation Sarum Edition Blueprint
 34397:
   :cpp_blueprint_id: 34397
   :produced_cpp_type_id: 34396
@@ -44248,141 +42707,6 @@
   - :quantity: 1
     :type_id: 30252
   :name: Self-Assembling Nanolattice Blueprint
-34442:
-  :cpp_blueprint_id: 34442
-  :produced_cpp_type_id: 34441
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 645
-  :name: Dominix Quafe Edition Blueprint
-34444:
-  :cpp_blueprint_id: 34444
-  :produced_cpp_type_id: 34443
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 593
-  :name: Tristan Quafe Edition Blueprint
-34446:
-  :cpp_blueprint_id: 34446
-  :produced_cpp_type_id: 34445
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 626
-  :name: Vexor Quafe Edition Blueprint
-34458:
-  :cpp_blueprint_id: 34458
-  :produced_cpp_type_id: 34457
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 643
-  :name: 末日沙场级YC117年特别版蓝图
-34460:
-  :cpp_blueprint_id: 34460
-  :produced_cpp_type_id: 34459
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24692
-  :name: 地狱天使级YC117年特别版蓝图
-34462:
-  :cpp_blueprint_id: 34462
-  :produced_cpp_type_id: 34461
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 17738
-  :name: 马克瑞级YC117年特别版蓝图
-34464:
-  :cpp_blueprint_id: 34464
-  :produced_cpp_type_id: 34463
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 17918
-  :name: 响尾蛇级YC117年特别版蓝图
-34466:
-  :cpp_blueprint_id: 34466
-  :produced_cpp_type_id: 34465
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 645
-  :name: 多米尼克斯级YC117年特别版蓝图
-34468:
-  :cpp_blueprint_id: 34468
-  :produced_cpp_type_id: 34467
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 641
-  :name: 万王宝座级YC117年特别版蓝图
-34470:
-  :cpp_blueprint_id: 34470
-  :produced_cpp_type_id: 34469
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 638
-  :name: 乌鸦级YC117年特别版蓝图
-34472:
-  :cpp_blueprint_id: 34472
-  :produced_cpp_type_id: 34471
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 642
-  :name: 灾难级YC117年特别版蓝图
-34474:
-  :cpp_blueprint_id: 34474
-  :produced_cpp_type_id: 34473
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 24698
-  :name: 幼龙级YC117年特别版蓝图
-34476:
-  :cpp_blueprint_id: 34476
-  :produced_cpp_type_id: 34475
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 17715
-  :name: 毒蜥级YC117年特别版蓝图
-34478:
-  :cpp_blueprint_id: 34478
-  :produced_cpp_type_id: 34477
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 12011
-  :name: 银鹰级YC117年特别版蓝图
-34480:
-  :cpp_blueprint_id: 34480
-  :produced_cpp_type_id: 34479
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 12005
-  :name: 伊什塔级YC117年特别版蓝图
 34497:
   :cpp_blueprint_id: 34497
   :produced_cpp_type_id: 34496
@@ -60554,31 +58878,6 @@
   - :quantity: 11400
     :type_id: 25618
   :name: Standup XL-Set Reprocessing Monitor II Blueprint
-47040:
-  :cpp_blueprint_id: 47040
-  :produced_cpp_type_id: 47028
-  :nb_runs: 1
-  :prod_qtt: 1
-  :materials:
-  - :quantity: 1
-    :type_id: 47020
-  - :quantity: 1
-    :type_id: 47021
-  - :quantity: 1
-    :type_id: 47022
-  - :quantity: 1
-    :type_id: 47023
-  - :quantity: 1
-    :type_id: 47024
-  - :quantity: 1
-    :type_id: 47026
-  - :quantity: 1
-    :type_id: 47027
-  - :quantity: 5
-    :type_id: 2346
-  - :quantity: 5
-    :type_id: 2348
-  :name: Neural Lace 'Blackglass' Net Intrusion 920-40 Blueprint
 47107:
   :cpp_blueprint_id: 47107
   :produced_cpp_type_id: 47072

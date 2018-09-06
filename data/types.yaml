@@ -4136,13 +4136,6 @@
   :volume: 5.0
   :production_level: 0
   :base_item: false
-3585:
-  :cpp_eve_item_id: 3585
-  :name: 'Mangled Sansha Data Analyzer '
-  :market_group_id: 
-  :volume: 5.0
-  :production_level: -1
-  :base_item: false
 3586:
   :cpp_eve_item_id: 3586
   :name: Small Remote Shield Booster I
@@ -4157,13 +4150,6 @@
   :volume: 5.0
   :production_level: 0
   :base_item: false
-3584:
-  :cpp_eve_item_id: 3584
-  :name: True Slave Decryption Node
-  :market_group_id: 
-  :volume: 4.0
-  :production_level: -2
-  :base_item: true
 22175:
   :cpp_eve_item_id: 22175
   :name: Data Analyzer I
@@ -4171,13 +4157,6 @@
   :volume: 5.0
   :production_level: -1
   :base_item: false
-3583:
-  :cpp_eve_item_id: 3583
-  :name: Badly Mangled Components
-  :market_group_id: 
-  :volume: 4.0
-  :production_level: -2
-  :base_item: true
 3596:
   :cpp_eve_item_id: 3596
   :name: Medium Remote Shield Booster I
@@ -4528,13 +4507,6 @@
   :volume: 5.0
   :production_level: -1
   :base_item: false
-4274:
-  :cpp_eve_item_id: 4274
-  :name: Mining Foreman Link - Harvester Capacitor Efficiency II
-  :market_group_id: 
-  :volume: 60.0
-  :production_level: 0
-  :base_item: false
 16681:
   :cpp_eve_item_id: 16681
   :name: Nanotransistors
@@ -4542,13 +4514,6 @@
   :volume: 0.25
   :production_level: -1
   :base_item: true
-22553:
-  :cpp_eve_item_id: 22553
-  :name: Mining Foreman Link - Harvester Capacitor Efficiency I
-  :market_group_id: 
-  :volume: 60.0
-  :production_level: -1
-  :base_item: false
 16682:
   :cpp_eve_item_id: 16682
   :name: Hypersynaptic Fibers
@@ -4556,34 +4521,6 @@
   :volume: 0.6
   :production_level: -1
   :base_item: true
-4276:
-  :cpp_eve_item_id: 4276
-  :name: Mining Foreman Link - Laser Optimization II
-  :market_group_id: 
-  :volume: 60.0
-  :production_level: 0
-  :base_item: false
-22557:
-  :cpp_eve_item_id: 22557
-  :name: Mining Foreman Link - Laser Optimization I
-  :market_group_id: 
-  :volume: 60.0
-  :production_level: -1
-  :base_item: false
-4278:
-  :cpp_eve_item_id: 4278
-  :name: Mining Foreman Link - Mining Laser Field Enhancement II
-  :market_group_id: 
-  :volume: 60.0
-  :production_level: 0
-  :base_item: false
-22555:
-  :cpp_eve_item_id: 22555
-  :name: Mining Foreman Link - Mining Laser Field Enhancement I
-  :market_group_id: 
-  :volume: 60.0
-  :production_level: -1
-  :base_item: false
 4292:
   :cpp_eve_item_id: 4292
   :name: Siege Module II
@@ -10100,13 +10037,6 @@
   :volume: 0.1
   :production_level: -1
   :base_item: true
-22923:
-  :cpp_eve_item_id: 22923
-  :name: "'Wild' Miner I"
-  :market_group_id: 
-  :volume: 5.0
-  :production_level: 0
-  :base_item: false
 22925:
   :cpp_eve_item_id: 22925
   :name: "'Bootleg' Remote Sensor Booster"
@@ -11682,13 +11612,6 @@
   :volume: 5.0
   :production_level: 0
   :base_item: false
-25555:
-  :cpp_eve_item_id: 25555
-  :name: Esoteric Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
 21589:
   :cpp_eve_item_id: 21589
   :name: Power Couplings
@@ -11696,27 +11619,6 @@
   :volume: 0.1
   :production_level: -1
   :base_item: true
-25554:
-  :cpp_eve_item_id: 25554
-  :name: Occult Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-25556:
-  :cpp_eve_item_id: 25556
-  :name: Incognito Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-25553:
-  :cpp_eve_item_id: 25553
-  :name: Cryptic Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
 25715:
   :cpp_eve_item_id: 25715
   :name: Heavy Assault Missile Launcher II
@@ -11764,34 +11666,6 @@
   :name: Gas Cloud Harvester II
   :market_group_id: 1037
   :volume: 5.0
-  :production_level: 0
-  :base_item: false
-25851:
-  :cpp_eve_item_id: 25851
-  :name: Occult Ship Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-25853:
-  :cpp_eve_item_id: 25853
-  :name: Esoteric Ship Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-25855:
-  :cpp_eve_item_id: 25855
-  :name: Incognito Ship Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-25857:
-  :cpp_eve_item_id: 25857
-  :name: Cryptic Ship Data Interface
-  :market_group_id: 
-  :volume: 1.0
   :production_level: 0
   :base_item: false
 25861:
@@ -13066,34 +12940,6 @@
   :name: Large Core Defense Operational Solidifier II
   :market_group_id: 1236
   :volume: 20.0
-  :production_level: 0
-  :base_item: false
-26597:
-  :cpp_eve_item_id: 26597
-  :name: Cryptic Tuner Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-26599:
-  :cpp_eve_item_id: 26599
-  :name: Esoteric Tuner Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-26601:
-  :cpp_eve_item_id: 26601
-  :name: Incognito Tuner Data Interface
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
-26603:
-  :cpp_eve_item_id: 26603
-  :name: Occult Tuner Data Interface
-  :market_group_id: 
-  :volume: 1.0
   :production_level: 0
   :base_item: false
 20306:
@@ -14991,27 +14837,6 @@
   :name: Capital Thermonuclear Trigger Unit
   :market_group_id: 1887
   :volume: 10.0
-  :production_level: 0
-  :base_item: false
-29202:
-  :cpp_eve_item_id: 29202
-  :name: Modified Augumene Antidote
-  :market_group_id: 
-  :volume: 5.0
-  :production_level: 0
-  :base_item: false
-29203:
-  :cpp_eve_item_id: 29203
-  :name: Minmatar DNA
-  :market_group_id: 
-  :volume: 0.1
-  :production_level: -1
-  :base_item: true
-29226:
-  :cpp_eve_item_id: 29226
-  :name: Basic Robotics
-  :market_group_id: 
-  :volume: 2.0
   :production_level: 0
   :base_item: false
 29337:
@@ -18892,13 +18717,6 @@
   :volume: 0.05
   :production_level: -2
   :base_item: true
-27274:
-  :cpp_eve_item_id: 27274
-  :name: Villard Wheel
-  :market_group_id: 
-  :volume: 25000.0
-  :production_level: -2
-  :base_item: true
 16642:
   :cpp_eve_item_id: 16642
   :name: Vanadium
@@ -18934,13 +18752,6 @@
   :volume: 5.0
   :production_level: 0
   :base_item: false
-33087:
-  :cpp_eve_item_id: 33087
-  :name: Advanced Cerebral Accelerator
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: 0
-  :base_item: false
 33101:
   :cpp_eve_item_id: 33101
   :name: Medium Ancillary Armor Repairer
@@ -18953,13 +18764,6 @@
   :name: Large Ancillary Armor Repairer
   :market_group_id: 1051
   :volume: 50.0
-  :production_level: 0
-  :base_item: false
-33111:
-  :cpp_eve_item_id: 33111
-  :name: Prototype Cerebral Accelerator
-  :market_group_id: 
-  :volume: 1.0
   :production_level: 0
   :base_item: false
 33149:
@@ -19403,13 +19207,6 @@
   :volume: 1.0
   :production_level: 0
   :base_item: false
-33553:
-  :cpp_eve_item_id: 33553
-  :name: Stratios Emergency Responder
-  :market_group_id: 
-  :volume: 101000.0
-  :production_level: 0
-  :base_item: false
 33555:
   :cpp_eve_item_id: 33555
   :name: Mid-grade Ascendancy Alpha
@@ -19457,13 +19254,6 @@
   :name: Amarr Encounter Surveillance System
   :market_group_id: 1847
   :volume: 200.0
-  :production_level: 0
-  :base_item: false
-33587:
-  :cpp_eve_item_id: 33587
-  :name: Mobile Decoy Unit
-  :market_group_id: 
-  :volume: 50.0
   :production_level: 0
   :base_item: false
 33589:
@@ -25066,55 +24856,6 @@
   :volume: 1.0
   :production_level: 0
   :base_item: false
-47020:
-  :cpp_eve_item_id: 47020
-  :name: Project Discovery DNA Reference (Jove)
-  :market_group_id: 
-  :volume: 0.1
-  :production_level: -1
-  :base_item: true
-47021:
-  :cpp_eve_item_id: 47021
-  :name: Project Discovery DNA Reference (Minmatar)
-  :market_group_id: 
-  :volume: 0.1
-  :production_level: -1
-  :base_item: true
-47022:
-  :cpp_eve_item_id: 47022
-  :name: Project Discovery DNA Reference (Amarr)
-  :market_group_id: 
-  :volume: 0.1
-  :production_level: -1
-  :base_item: true
-47023:
-  :cpp_eve_item_id: 47023
-  :name: Project Discovery DNA Reference (Gallente)
-  :market_group_id: 
-  :volume: 0.1
-  :production_level: -1
-  :base_item: true
-47024:
-  :cpp_eve_item_id: 47024
-  :name: Project Discovery DNA Reference (Caldari)
-  :market_group_id: 
-  :volume: 0.1
-  :production_level: -1
-  :base_item: true
-47026:
-  :cpp_eve_item_id: 47026
-  :name: Recovered Radioactive Materials
-  :market_group_id: 
-  :volume: 1.0
-  :production_level: -1
-  :base_item: true
-47027:
-  :cpp_eve_item_id: 47027
-  :name: Biomechanical Interface Data
-  :market_group_id: 
-  :volume: 0.1
-  :production_level: -1
-  :base_item: true
 47072:
   :cpp_eve_item_id: 47072
   :name: Standup Target Illumination Burst Projector
