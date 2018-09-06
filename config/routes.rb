@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     get :trade_hub_detail
   end
 
+  get :items_tree, controller: :items
+  patch :items_tree_select, controller: :items
+
   resources :components, only: [ :index, :show ] do
     get :trade_hub_detail
   end
@@ -53,12 +56,6 @@ Rails.application.routes.draw do
   end
 
   resource :choose_trade_hubs, only: [:edit, :update]
-
-  resource :choose_items, only: [ :edit ] do
-    get :items_tree
-    get :select_all_items
-    post :select_items
-  end
 
   match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
   match 'auth/failure', to: 'sessions#failure', via: [:get, :post]

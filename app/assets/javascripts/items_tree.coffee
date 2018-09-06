@@ -101,7 +101,7 @@ getTree = ->
 
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname == '/choose_items/edit'
+    if window.location.pathname == '/items_tree'
       getTree()
       setFilter()
 )
