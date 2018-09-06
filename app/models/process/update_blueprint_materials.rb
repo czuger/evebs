@@ -22,8 +22,6 @@ module Process
           on_db_material.save!
         end
       end
-
-      File.open('data/lowest_production_level', 'w') {|f| f.write lowest_production_level }
     end
   end
 
