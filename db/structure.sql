@@ -823,6 +823,47 @@ ALTER SEQUENCE public.production_lists_id_seq OWNED BY public.production_lists.i
 
 
 --
+-- Name: public_trade_orders; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.public_trade_orders (
+    id bigint NOT NULL,
+    trade_hub_id bigint NOT NULL,
+    eve_item_id bigint NOT NULL,
+    order_id bigint NOT NULL,
+    is_buy_order boolean NOT NULL,
+    end_time timestamp without time zone NOT NULL,
+    price double precision NOT NULL,
+    range character varying NOT NULL,
+    volume_remain bigint NOT NULL,
+    volume_total bigint NOT NULL,
+    min_volume bigint NOT NULL,
+    touched boolean DEFAULT false NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: public_trade_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.public_trade_orders_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: public_trade_orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.public_trade_orders_id_seq OWNED BY public.public_trade_orders.id;
+
+
+--
 -- Name: regions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1408,6 +1449,13 @@ ALTER TABLE ONLY public.production_lists ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: public_trade_orders id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.public_trade_orders ALTER COLUMN id SET DEFAULT nextval('public.public_trade_orders_id_seq'::regclass);
+
+
+--
 -- Name: regions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1654,6 +1702,14 @@ ALTER TABLE ONLY public.prices_mins
 
 ALTER TABLE ONLY public.production_lists
     ADD CONSTRAINT production_lists_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: public_trade_orders public_trade_orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.public_trade_orders
+    ADD CONSTRAINT public_trade_orders_pkey PRIMARY KEY (id);
 
 
 --
@@ -1984,6 +2040,27 @@ CREATE INDEX index_production_lists_on_trade_hub_id ON public.production_lists U
 --
 
 CREATE INDEX index_production_lists_on_user_id ON public.production_lists USING btree (user_id);
+
+
+--
+-- Name: index_public_trade_orders_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_public_trade_orders_on_eve_item_id ON public.public_trade_orders USING btree (eve_item_id);
+
+
+--
+-- Name: index_public_trade_orders_on_order_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_public_trade_orders_on_order_id ON public.public_trade_orders USING btree (order_id);
+
+
+--
+-- Name: index_public_trade_orders_on_trade_hub_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_public_trade_orders_on_trade_hub_id ON public.public_trade_orders USING btree (trade_hub_id);
 
 
 --
@@ -2419,6 +2496,14 @@ ALTER TABLE ONLY public.trade_hubs
 
 
 --
+-- Name: public_trade_orders fk_rails_e569498e2e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.public_trade_orders
+    ADD CONSTRAINT fk_rails_e569498e2e FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
+
+
+--
 -- Name: sales_finals fk_rails_e934079200; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2440,6 +2525,14 @@ ALTER TABLE ONLY public.buy_orders_analytics
 
 ALTER TABLE ONLY public.station_details
     ADD CONSTRAINT fk_rails_ec21522142 FOREIGN KEY (station_id) REFERENCES public.stations(id);
+
+
+--
+-- Name: public_trade_orders fk_rails_f82053a998; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.public_trade_orders
+    ADD CONSTRAINT fk_rails_f82053a998 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
 
 
 --
@@ -2639,6 +2732,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180904063731'),
 ('20180904064749'),
 ('20180904065442'),
-('20180905130609');
+('20180905130609'),
+('20180906131140');
 
 
