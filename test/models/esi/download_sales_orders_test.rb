@@ -5,7 +5,6 @@ class DownloadSalesOrdersTest < ActiveSupport::TestCase
   def setup
     jita = create( :jita )
     item = create( :morphite )
-    bpc_item = create( :component_morphite )
 
     @dso = Esi::DownloadSalesOrders.new( silent_output: true )
     @base_so_record = {

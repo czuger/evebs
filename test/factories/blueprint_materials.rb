@@ -4,7 +4,7 @@ FactoryBot.define do
     factory :material_morphite do
 
       blueprint { FactoryBot.create( :blueprint ) }
-      blueprint_component { FactoryBot.create( :component_morphite ) }
+      eve_item { FactoryBot.create( :morphite ) }
 
       required_qtt {15}
     end
