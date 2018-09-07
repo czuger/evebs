@@ -17,13 +17,36 @@ class Process::UpdatePublicTradesOrders
     @orders_over_time = 0
 
     @sales_finals_created = 0
-    @sales_finals_deleted = 0
 
-    order_batch_inserter = Libs::BatchInsertBuffer.new( 'PublicTradeOrder' )
+    @order_batch_inserter = Libs::BatchBuffer.new( 'PublicTradeOrder', :insert )
+    @order_batch_marker = Libs::BatchBuffer.new( 'PublicTradeOrder', :touch )
 
     orders = File.open('data/public_trades_orders.json_stream', 'r')
 
     PublicTradeOrder.update_all( touched: false )
+
+    process_orders orders
+
+    @order_batch_inserter.flush_buffer
+    @order_batch_marker.flush_buffer
+
+    # unless @silent_output
+    #   puts "Sales orders created : #{@sales_orders_created}" unless @silent_output
+    #   puts "Sales orders updated : #{@sales_orders_updated}" unless @silent_output
+    #   puts "Sales orders deleted : #{@sales_orders_deleted}" unless @silent_output
+    #   puts "Sales orders that failed out of time : #{@sales_orders_over_time}" unless @silent_output
+    #
+    #   puts "Sales final created : #{@sales_finals_created}" unless @silent_output
+    #   puts "Sales final deleted : #{sales_finals_deleted}" unless @silent_output
+    #
+    #   puts "Buy orders created : #{@buy_orders_created}"
+    #   puts "Buy orders updated : #{@buy_orders_updated}"
+    #   puts "Buy orders touched : #{@buy_orders_touched}"
+    #   puts "Buy orders deleted : #{buy_orders_deleted}"
+    # end
+  end
+
+  def process_orders( orders )
 
     process_count = 0
 
@@ -52,45 +75,43 @@ class Process::UpdatePublicTradesOrders
         if trade_order.volume_remain != order[:volume_remain] || trade_order.end_time != end_time ||
             trade_order.price != order[:price]
           # And has changed
+
+          create_sales_final_record( trade_order, order )
+
           trade_order.volume_remain = order[:volume_remain]
           trade_order.end_time = end_time
           trade_order.price = order[:price]
+          trade_order.touched = true
+          trade_order.save!
 
           @orders_updated += 1
         else
+          @order_batch_marker.add_data( trade_order.id )
           @orders_touched += 1
         end
 
-        trade_order.touched = true
-        trade_order.save!
       else
         # The trade order does not exist
 
-        order_batch_inserter.add_data  PublicTradeOrder.new(
+        @order_batch_inserter.add_data  PublicTradeOrder.new(
             is_buy_order: order[:is_buy_order], end_time: end_time, min_volume: order[:min_volume], order_id: order[:order_id],
             price: order[:price], range: order[:range], trade_hub_id: trade_hub_id, eve_item_id: eve_item_id,
-            volume_remain: order[:volume_remain], volume_total: order[:volume_total]
+            volume_remain: order[:volume_remain], volume_total: order[:volume_total], touched: true
         )
         @orders_created += 1
       end
-
     end
-
-    order_batch_inserter.flush_buffer
-
-    # unless @silent_output
-    #   puts "Sales orders created : #{@sales_orders_created}" unless @silent_output
-    #   puts "Sales orders updated : #{@sales_orders_updated}" unless @silent_output
-    #   puts "Sales orders deleted : #{@sales_orders_deleted}" unless @silent_output
-    #   puts "Sales orders that failed out of time : #{@sales_orders_over_time}" unless @silent_output
-    #
-    #   puts "Sales final created : #{@sales_finals_created}" unless @silent_output
-    #   puts "Sales final deleted : #{sales_finals_deleted}" unless @silent_output
-    #
-    #   puts "Buy orders created : #{@buy_orders_created}"
-    #   puts "Buy orders updated : #{@buy_orders_updated}"
-    #   puts "Buy orders touched : #{@buy_orders_touched}"
-    #   puts "Buy orders deleted : #{buy_orders_deleted}"
-    # end
   end
+
+  def create_sales_final_record( old_record_order, new_record_data )
+    volume = old_record_order.volume_remain - new_record_data[:volume_remain]
+    price = new_record_data[:price]
+
+    SalesFinal.create!(
+        day: Time.now, trade_hub_id: old_record_order.trade_hub_id, eve_item_id: old_record_order.eve_item_id, volume: volume,
+        price: price, order_id: old_record_order.order_id )
+
+    @sales_finals_created += 1
+  end
+
 end

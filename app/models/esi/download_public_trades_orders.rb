@@ -7,12 +7,15 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
     trade_hubs_ids = TradeHub.pluck( :eve_system_id ).to_set
     eve_items_ids = EveItem.pluck( :cpp_eve_item_id ).to_set
 
-    orders_data_hash = {}
     regions_data = {}
 
     File.open('data/public_trades_orders.json_stream', 'w') do |f|
 
       Region.all.each do |region|
+
+        if @verbose_output
+          puts "About to download orders for #{region.name}"
+        end
 
         @rest_url = "markets/#{region.cpp_region_id}/orders/"
         orders_data = get_all_pages
@@ -22,6 +25,8 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
         end
 
         regions_data[region.id] = { orders_to_process: orders_data.count, final_orders_count: 0 }
+
+        orders_data_hash = {}
 
         # Filter orders with same order_id in the region
         orders_data.each do |order_data|
