@@ -9,14 +9,15 @@ namespace :process do
     desc 'Full process - hourly'
     task :hourly => :environment do
 
-      Esi::DownloadPublicTradesOrders.new( { verbose_output: true } ).download
+      # Esi::DownloadPublicTradesOrders.new( { verbose_output: true } ).download
 
       ActiveRecord::Base.transaction do
 
-        Process::UpdatePublicTradesOrders.new.update
-        Process::UpdateEveItemsCosts.new.update
+        # Process::UpdatePublicTradesOrders.new.update
+        # Process::UpdateEveItemsCosts.new.update
 
-      #   Sql::PricesMins.update
+        Sql::UpdatePricesMin.execute
+
       #
       #   Sql::UpdatePricesAdvices.execute
       #
