@@ -600,6 +600,77 @@ CREATE TABLE public.prices_advices (
 
 
 --
+-- Name: prices_mins; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.prices_mins (
+    id integer NOT NULL,
+    eve_item_id integer,
+    trade_hub_id integer,
+    min_price double precision,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    volume bigint
+);
+
+
+--
+-- Name: price_advice_margin_comps; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.price_advice_margin_comps AS
+ SELECT prices_advices_sub_1.id,
+    prices_advices_sub_1.user_id,
+    prices_advices_sub_1.item_id,
+    prices_advices_sub_1.trade_hub_id,
+    prices_advices_sub_1.region_name,
+    prices_advices_sub_1.trade_hub_name,
+    prices_advices_sub_1.item_name,
+    prices_advices_sub_1.single_unit_cost,
+    prices_advices_sub_1.min_price,
+    prices_advices_sub_1.price_avg_week,
+    prices_advices_sub_1.vol_month,
+    prices_advices_sub_1.full_batch_size,
+    prices_advices_sub_1.daily_monthly_pcent,
+    prices_advices_sub_1.margin_percent,
+    prices_advices_sub_1.batch_size_formula,
+    prices_advices_sub_1.min_amount_for_advice,
+    prices_advices_sub_1.min_pcent_for_advice,
+    ((prices_advices_sub_1.min_price * (prices_advices_sub_1.batch_size_formula)::double precision) - (prices_advices_sub_1.single_unit_cost * (prices_advices_sub_1.batch_size_formula)::double precision)) AS margin_comp_immediate,
+    ((prices_advices_sub_1.price_avg_week * (prices_advices_sub_1.batch_size_formula)::double precision) - (prices_advices_sub_1.single_unit_cost * (prices_advices_sub_1.batch_size_formula)::double precision)) AS margin_comp_weekly
+   FROM ( SELECT pa.id,
+            ur.id AS user_id,
+            ei.id AS item_id,
+            tu.id AS trade_hub_id,
+            re.name AS region_name,
+            tu.name AS trade_hub_name,
+            ei.name AS item_name,
+            ei.cost AS single_unit_cost,
+            pm.min_price,
+            pa.avg_price_week AS price_avg_week,
+            pa.vol_month,
+            (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
+            pa.immediate_montly_pcent AS daily_monthly_pcent,
+            pa.margin_percent,
+                CASE
+                    WHEN ur.batch_cap THEN LEAST((((bp.nb_runs * bp.prod_qtt) * ur.batch_cap_multiplier))::numeric, floor((((pa.vol_month * ur.vol_month_pcent))::numeric * 0.01)))
+                    ELSE floor((((pa.vol_month * ur.vol_month_pcent))::numeric * 0.01))
+                END AS batch_size_formula,
+            ur.min_amount_for_advice,
+            ur.min_pcent_for_advice
+           FROM ((((((((public.prices_advices pa
+             JOIN public.eve_items ei ON ((pa.eve_item_id = ei.id)))
+             JOIN public.blueprints bp ON ((ei.blueprint_id = bp.id)))
+             JOIN public.trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
+             JOIN public.regions re ON ((re.id = tu.region_id)))
+             JOIN public.trade_hubs_users thu ON ((thu.trade_hub_id = pa.trade_hub_id)))
+             JOIN public.eve_items_users eiu ON ((eiu.eve_item_id = pa.eve_item_id)))
+             JOIN public.users ur ON ((thu.user_id = ur.id)))
+             JOIN public.prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))))
+          WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
+
+
+--
 -- Name: prices_advices_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -616,21 +687,6 @@ CREATE SEQUENCE public.prices_advices_id_seq
 --
 
 ALTER SEQUENCE public.prices_advices_id_seq OWNED BY public.prices_advices.id;
-
-
---
--- Name: prices_mins; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.prices_mins (
-    id integer NOT NULL,
-    eve_item_id integer,
-    trade_hub_id integer,
-    min_price double precision,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    volume bigint
-);
 
 
 --
@@ -2275,6 +2331,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180906131140'),
 ('20180907080824'),
 ('20180907112602'),
-('20180907113512');
+('20180907113512'),
+('20180907121823'),
+('20180907124531');
 
 
