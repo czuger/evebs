@@ -14,7 +14,7 @@ module Libs
     end
 
     def flush_buffer
-      send action
+      send @action
       @batch_buffer.clear
     end
 

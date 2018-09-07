@@ -30,20 +30,18 @@ class Process::UpdatePublicTradesOrders
     @order_batch_inserter.flush_buffer
     @order_batch_marker.flush_buffer
 
-    # unless @silent_output
-    #   puts "Sales orders created : #{@sales_orders_created}" unless @silent_output
-    #   puts "Sales orders updated : #{@sales_orders_updated}" unless @silent_output
-    #   puts "Sales orders deleted : #{@sales_orders_deleted}" unless @silent_output
-    #   puts "Sales orders that failed out of time : #{@sales_orders_over_time}" unless @silent_output
-    #
-    #   puts "Sales final created : #{@sales_finals_created}" unless @silent_output
-    #   puts "Sales final deleted : #{sales_finals_deleted}" unless @silent_output
-    #
-    #   puts "Buy orders created : #{@buy_orders_created}"
-    #   puts "Buy orders updated : #{@buy_orders_updated}"
-    #   puts "Buy orders touched : #{@buy_orders_touched}"
-    #   puts "Buy orders deleted : #{buy_orders_deleted}"
-    # end
+    PublicTradeOrder.where( touched: false )
+
+    unless @silent_output
+      puts "Orders created : #{@orders_created}"
+      puts "Orders updated : #{@orders_updated}"
+      puts "Orders touched : #{@orders_touched}"
+      puts "Orders deleted : #{@orders_deleted}"
+
+      puts "Sales orders that failed out of time : #{@sales_orders_over_time}" unless @silent_output
+
+      puts "Sales final created : #{@sales_finals_created}" unless @silent_output
+    end
   end
 
   def process_orders( orders )
