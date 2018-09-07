@@ -1,5 +1,3 @@
-/* il faut voir si on peut faire le calcul d'un coup ou bien s'il faut consolider les données de manière journalière d'abord */
-
 UPDATE eve_items ei SET ( cost, updated_at ) = ( comp_cost, now() )
 FROM (
        SELECT ( SUM( required_qtt * 0.94 * material_ei.cost ) * 1.03 ) / prod_qtt "comp_cost", comp_ei.id

@@ -1,5 +1,3 @@
-/* il faut voir si on peut faire le calcul d'un coup ou bien s'il faut consolider les données de manière journalière d'abord */
-
 UPDATE eve_items ei SET ( cost, updated_at ) = ( avg_price, now() )
 FROM (
        SELECT SUM( sf.volume * sf.price ) / SUM( sf.volume ) avg_price, sf.eve_item_id ei
