@@ -223,24 +223,6 @@ ALTER SEQUENCE public.bpc_assets_stations_id_seq OWNED BY public.bpc_assets_stat
 
 
 --
--- Name: buy_orders; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.buy_orders (
-    id bigint NOT NULL,
-    trade_hub_id bigint NOT NULL,
-    eve_item_id bigint NOT NULL,
-    volume_remain bigint NOT NULL,
-    price double precision NOT NULL,
-    end_time timestamp without time zone NOT NULL,
-    touched boolean DEFAULT false NOT NULL,
-    order_id bigint NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
 -- Name: buy_orders_analytics; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -416,25 +398,6 @@ CREATE VIEW public.buy_orders_analytics_results AS
      JOIN public.regions r ON ((tu.region_id = r.id)))
   WHERE (boa.final_margin > (0)::double precision)
   ORDER BY boa.final_margin DESC;
-
-
---
--- Name: buy_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.buy_orders_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: buy_orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.buy_orders_id_seq OWNED BY public.buy_orders.id;
 
 
 --
@@ -666,72 +629,13 @@ CREATE TABLE public.prices_advices (
     region_id integer,
     vol_month bigint,
     vol_day bigint,
-    cost double precision,
-    min_price double precision,
     avg_price double precision,
     daily_monthly_pcent real,
-    full_batch_size integer,
-    prod_qtt integer,
-    single_unit_cost double precision,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     margin_percent double precision,
     price_avg_week double precision
 );
-
-
---
--- Name: price_advice_margin_comps; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.price_advice_margin_comps AS
- SELECT prices_advices_sub_1.id,
-    prices_advices_sub_1.user_id,
-    prices_advices_sub_1.item_id,
-    prices_advices_sub_1.trade_hub_id,
-    prices_advices_sub_1.region_name,
-    prices_advices_sub_1.trade_hub_name,
-    prices_advices_sub_1.item_name,
-    prices_advices_sub_1.single_unit_cost,
-    prices_advices_sub_1.min_price,
-    prices_advices_sub_1.price_avg_week,
-    prices_advices_sub_1.vol_month,
-    prices_advices_sub_1.full_batch_size,
-    prices_advices_sub_1.daily_monthly_pcent,
-    prices_advices_sub_1.margin_percent,
-    prices_advices_sub_1.batch_size_formula,
-    prices_advices_sub_1.min_amount_for_advice,
-    prices_advices_sub_1.min_pcent_for_advice,
-    ((prices_advices_sub_1.min_price * (prices_advices_sub_1.batch_size_formula)::double precision) - (prices_advices_sub_1.single_unit_cost * (prices_advices_sub_1.batch_size_formula)::double precision)) AS margin_comp_immediate,
-    ((prices_advices_sub_1.price_avg_week * (prices_advices_sub_1.batch_size_formula)::double precision) - (prices_advices_sub_1.single_unit_cost * (prices_advices_sub_1.batch_size_formula)::double precision)) AS margin_comp_weekly
-   FROM ( SELECT pa.id,
-            ur.id AS user_id,
-            ei.id AS item_id,
-            tu.id AS trade_hub_id,
-            re.name AS region_name,
-            tu.name AS trade_hub_name,
-            ei.name AS item_name,
-            pa.single_unit_cost,
-            pa.min_price,
-            pa.price_avg_week,
-            pa.vol_month,
-            pa.full_batch_size,
-            pa.daily_monthly_pcent,
-            pa.margin_percent,
-                CASE
-                    WHEN ur.batch_cap THEN LEAST(((pa.full_batch_size * ur.batch_cap_multiplier))::numeric, floor((((pa.vol_month * ur.vol_month_pcent))::numeric * 0.01)))
-                    ELSE floor((((pa.vol_month * ur.vol_month_pcent))::numeric * 0.01))
-                END AS batch_size_formula,
-            ur.min_amount_for_advice,
-            ur.min_pcent_for_advice
-           FROM ((((((public.prices_advices pa
-             JOIN public.eve_items ei ON ((pa.eve_item_id = ei.id)))
-             JOIN public.trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
-             JOIN public.regions re ON ((re.id = tu.region_id)))
-             JOIN public.trade_hubs_users thu ON ((thu.trade_hub_id = pa.trade_hub_id)))
-             JOIN public.eve_items_users eiu ON ((eiu.eve_item_id = pa.eve_item_id)))
-             JOIN public.users ur ON ((thu.user_id = ur.id)))
-          WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
 
 
 --
@@ -919,78 +823,6 @@ ALTER SEQUENCE public.sales_finals_id_seq OWNED BY public.sales_finals.id;
 
 
 --
--- Name: sales_orders; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.sales_orders (
-    id bigint NOT NULL,
-    day date NOT NULL,
-    volume bigint NOT NULL,
-    price double precision NOT NULL,
-    order_id bigint NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    trade_hub_id bigint NOT NULL,
-    eve_item_id bigint NOT NULL,
-    duration integer,
-    touched boolean DEFAULT false NOT NULL,
-    issued timestamp without time zone,
-    end_time timestamp without time zone
-);
-
-
---
--- Name: sales_orders_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.sales_orders_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: sales_orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.sales_orders_id_seq OWNED BY public.sales_orders.id;
-
-
---
--- Name: sales_orders_process_infos; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.sales_orders_process_infos (
-    id bigint NOT NULL,
-    key character varying NOT NULL,
-    last_retrieve_session_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: sales_orders_process_infos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.sales_orders_process_infos_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: sales_orders_process_infos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.sales_orders_process_infos_id_seq OWNED BY public.sales_orders_process_infos.id;
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1105,42 +937,6 @@ ALTER SEQUENCE public.structures_id_seq OWNED BY public.structures.id;
 
 
 --
--- Name: tmp_download_blueprints; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.tmp_download_blueprints (
-    id bigint NOT NULL,
-    blueprint_id bigint,
-    output_material_cpp_id bigint[],
-    name character varying,
-    nb_runs integer,
-    prod_qtt integer,
-    input_materials_cpp_ids bigint[],
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: tmp_download_blueprints_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.tmp_download_blueprints_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tmp_download_blueprints_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.tmp_download_blueprints_id_seq OWNED BY public.tmp_download_blueprints.id;
-
-
---
 -- Name: trade_hubs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1176,38 +972,6 @@ CREATE SEQUENCE public.trade_hubs_users_id_seq
 --
 
 ALTER SEQUENCE public.trade_hubs_users_id_seq OWNED BY public.trade_hubs_users.id;
-
-
---
--- Name: type_in_regions; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.type_in_regions (
-    id bigint NOT NULL,
-    cpp_region_id integer NOT NULL,
-    cpp_type_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: type_in_regions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.type_in_regions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: type_in_regions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.type_in_regions_id_seq OWNED BY public.type_in_regions.id;
 
 
 --
@@ -1365,13 +1129,6 @@ ALTER TABLE ONLY public.bpc_assets_stations ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
--- Name: buy_orders id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.buy_orders ALTER COLUMN id SET DEFAULT nextval('public.buy_orders_id_seq'::regclass);
-
-
---
 -- Name: buy_orders_analytics id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1470,20 +1227,6 @@ ALTER TABLE ONLY public.sales_finals ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- Name: sales_orders id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sales_orders ALTER COLUMN id SET DEFAULT nextval('public.sales_orders_id_seq'::regclass);
-
-
---
--- Name: sales_orders_process_infos id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sales_orders_process_infos ALTER COLUMN id SET DEFAULT nextval('public.sales_orders_process_infos_id_seq'::regclass);
-
-
---
 -- Name: station_details id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1505,13 +1248,6 @@ ALTER TABLE ONLY public.structures ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
--- Name: tmp_download_blueprints id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_download_blueprints ALTER COLUMN id SET DEFAULT nextval('public.tmp_download_blueprints_id_seq'::regclass);
-
-
---
 -- Name: trade_hubs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1523,13 +1259,6 @@ ALTER TABLE ONLY public.trade_hubs ALTER COLUMN id SET DEFAULT nextval('public.t
 --
 
 ALTER TABLE ONLY public.trade_hubs_users ALTER COLUMN id SET DEFAULT nextval('public.trade_hubs_users_id_seq'::regclass);
-
-
---
--- Name: type_in_regions id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.type_in_regions ALTER COLUMN id SET DEFAULT nextval('public.type_in_regions_id_seq'::regclass);
 
 
 --
@@ -1614,14 +1343,6 @@ ALTER TABLE ONLY public.bpc_assets_stations
 
 ALTER TABLE ONLY public.buy_orders_analytics
     ADD CONSTRAINT buy_orders_analytics_pkey PRIMARY KEY (id);
-
-
---
--- Name: buy_orders buy_orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.buy_orders
-    ADD CONSTRAINT buy_orders_pkey PRIMARY KEY (id);
 
 
 --
@@ -1729,22 +1450,6 @@ ALTER TABLE ONLY public.sales_finals
 
 
 --
--- Name: sales_orders sales_orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sales_orders
-    ADD CONSTRAINT sales_orders_pkey PRIMARY KEY (id);
-
-
---
--- Name: sales_orders_process_infos sales_orders_process_infos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sales_orders_process_infos
-    ADD CONSTRAINT sales_orders_process_infos_pkey PRIMARY KEY (id);
-
-
---
 -- Name: station_details station_details_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1769,14 +1474,6 @@ ALTER TABLE ONLY public.structures
 
 
 --
--- Name: tmp_download_blueprints tmp_download_blueprints_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tmp_download_blueprints
-    ADD CONSTRAINT tmp_download_blueprints_pkey PRIMARY KEY (id);
-
-
---
 -- Name: trade_hubs trade_hubs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1790,14 +1487,6 @@ ALTER TABLE ONLY public.trade_hubs
 
 ALTER TABLE ONLY public.trade_hubs_users
     ADD CONSTRAINT trade_hubs_users_pkey PRIMARY KEY (id);
-
-
---
--- Name: type_in_regions type_in_regions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.type_in_regions
-    ADD CONSTRAINT type_in_regions_pkey PRIMARY KEY (id);
 
 
 --
@@ -1900,20 +1589,6 @@ CREATE INDEX index_bpc_assets_stations_on_user_id ON public.bpc_assets_stations 
 --
 
 CREATE UNIQUE INDEX index_buy_orders_analytics_on_trade_hub_id_and_eve_item_id ON public.buy_orders_analytics USING btree (trade_hub_id, eve_item_id);
-
-
---
--- Name: index_buy_orders_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_buy_orders_on_eve_item_id ON public.buy_orders USING btree (eve_item_id);
-
-
---
--- Name: index_buy_orders_on_trade_hub_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_buy_orders_on_trade_hub_id ON public.buy_orders USING btree (trade_hub_id);
 
 
 --
@@ -2085,27 +1760,6 @@ CREATE INDEX index_sales_finals_on_trade_hub_id ON public.sales_finals USING btr
 
 
 --
--- Name: index_sales_orders_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_sales_orders_on_eve_item_id ON public.sales_orders USING btree (eve_item_id);
-
-
---
--- Name: index_sales_orders_on_order_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_sales_orders_on_order_id ON public.sales_orders USING btree (order_id);
-
-
---
--- Name: index_sales_orders_on_trade_hub_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_sales_orders_on_trade_hub_id ON public.sales_orders USING btree (trade_hub_id);
-
-
---
 -- Name: index_station_details_on_cpp_station_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2166,13 +1820,6 @@ CREATE INDEX index_trade_hubs_users_on_trade_hub_id ON public.trade_hubs_users U
 --
 
 CREATE INDEX index_trade_hubs_users_on_user_id ON public.trade_hubs_users USING btree (user_id);
-
-
---
--- Name: index_type_in_regions_on_cpp_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_type_in_regions_on_cpp_region_id ON public.type_in_regions USING btree (cpp_region_id);
 
 
 --
@@ -2336,27 +1983,11 @@ ALTER TABLE ONLY public.user_to_user_duplication_requests
 
 
 --
--- Name: buy_orders fk_rails_47f2412094; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.buy_orders
-    ADD CONSTRAINT fk_rails_47f2412094 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
-
-
---
 -- Name: bpc_assets fk_rails_5259447fe3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.bpc_assets
     ADD CONSTRAINT fk_rails_5259447fe3 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
-
-
---
--- Name: buy_orders fk_rails_536e5663b6; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.buy_orders
-    ADD CONSTRAINT fk_rails_536e5663b6 FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
 
 
 --
@@ -2389,14 +2020,6 @@ ALTER TABLE ONLY public.bpc_assets
 
 ALTER TABLE ONLY public.blueprint_modifications
     ADD CONSTRAINT fk_rails_7744def0ba FOREIGN KEY (blueprint_id) REFERENCES public.blueprints(id);
-
-
---
--- Name: sales_orders fk_rails_86221bcddd; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sales_orders
-    ADD CONSTRAINT fk_rails_86221bcddd FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
 
 
 --
@@ -2445,14 +2068,6 @@ ALTER TABLE ONLY public.prices_advices
 
 ALTER TABLE ONLY public.bpc_assets_stations
     ADD CONSTRAINT fk_rails_c219097b39 FOREIGN KEY (station_detail_id) REFERENCES public.station_details(id);
-
-
---
--- Name: sales_orders fk_rails_c9b4527c2e; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sales_orders
-    ADD CONSTRAINT fk_rails_c9b4527c2e FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
 
 
 --
@@ -2733,6 +2348,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180904064749'),
 ('20180904065442'),
 ('20180905130609'),
-('20180906131140');
+('20180906131140'),
+('20180907080824');
 
 
