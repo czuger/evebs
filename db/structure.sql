@@ -685,6 +685,33 @@ CREATE VIEW public.price_advice_margin_comps AS
 
 
 --
+-- Name: price_advices_min_prices; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.price_advices_min_prices AS
+ SELECT pa.id,
+    ei.id AS eve_item_id,
+    tu.id AS trade_hub_id,
+    ((((tu.name)::text || ' ('::text) || (re.name)::text) || ')'::text) AS trade_hub_name,
+    ei.name AS item_name,
+    ei.cost,
+    pm.min_price,
+    pa.avg_price_week,
+    pa.avg_price_month,
+    pa.vol_month,
+    (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
+    pa.immediate_montly_pcent,
+    pa.margin_percent,
+    ((pa.avg_price_month / ei.cost) - (1)::double precision) AS avg_monthly_margin_percent
+   FROM (((((public.prices_advices pa
+     JOIN public.eve_items ei ON ((pa.eve_item_id = ei.id)))
+     JOIN public.blueprints bp ON ((ei.blueprint_id = bp.id)))
+     JOIN public.trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
+     JOIN public.regions re ON ((re.id = tu.region_id)))
+     LEFT JOIN public.prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))));
+
+
+--
 -- Name: prices_advices_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2402,6 +2429,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180907121823'),
 ('20180907124531'),
 ('20180907131230'),
-('20180907131346');
+('20180907131346'),
+('20180907160310');
 
 

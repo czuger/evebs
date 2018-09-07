@@ -17,17 +17,17 @@
         %th.text-left Monthly regional volume
 
     %tbody
-      - @item_prices.each_with_index do | ip, row_index|
+      - @item_prices.each do |ip|
 
         %tr
 
           %td.text-center= production_list_check_box( ip )
 
-          %td= trade_hub_name_with_region( ip.trade_hub )
+          %td= ip.trade_hub_name
 
-          %td.text-right{'data-value' => ( ip.min_price / ip.single_unit_cost - 1 if ip.min_price )}= print_pcent( ip.min_price / ip.single_unit_cost - 1 ) if ip.min_price
-          %td.text-right{'data-value' => ( ip.min_price if ip.min_price )}= link_to( print_isk( ip.min_price ), item_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) ) if ip.min_price
+          %td.text-right= print_pcent( ip.margin_percent )
+          %td.text-right= link_to( print_isk( ip.min_price ), item_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
 
-          %td.vcenter.text-right{'data-value' => ( ip.avg_price / ip.single_unit_cost - 1 if ip.avg_price )}= print_pcent( ip.avg_price / ip.single_unit_cost - 1 ) if ip.avg_price
-          %td.vcenter.text-right{'data-value' => ( ip.avg_price if ip.avg_price )}= print_isk( ip.avg_price ) if ip.avg_price
-          %td.vcenter.text-right{'data-value' => ( ip.vol_month if ip.vol_month )}= print_volume( ip.vol_month ) if ip.vol_month
+          %td.vcenter.text-right= print_pcent( ip.avg_monthly_margin_percent )
+          %td.vcenter.text-right= print_isk( ip.avg_price_month )
+          %td.vcenter.text-right= print_volume( ip.vol_month )

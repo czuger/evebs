@@ -20,6 +20,8 @@ class EveItem < ApplicationRecord
   has_many :buy_orders, dependent: :delete_all
   has_many :buy_orders_analytics, dependent: :delete_all
 
+  has_many :price_advices_min_prices
+
   def self.to_eve_item_id(cpp_eve_item_id)
     eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first
     eve_item ? eve_item.id : nil
