@@ -14,10 +14,9 @@ namespace :process do
       ActiveRecord::Base.transaction do
 
         # Process::UpdatePublicTradesOrders.new.update
-        # Process::UpdateEveItemsCosts.new.update
 
         Sql::UpdatePricesMin.execute
-        Sql::UpdatePricesAdvices.execute
+        Sql::UpdatePricesAdvicesImmediate.execute
 
       #
       #   Sql::UpdateBuyOrdersAnalytics.execute
@@ -35,9 +34,8 @@ namespace :process do
       ActiveRecord::Base.transaction do
         # Esi::UpdateVolumeFromHistory.new.update
 
-        Sql::UpdatePricesAvgWeeks.execute
-
-        EveItem.compute_cost_for_all_items
+        Process::UpdateEveItemsCosts.new.update
+        Sql::UpdatePricesAdvicesDaily.execute
       end
 
       Banner.p( 'Finished' )

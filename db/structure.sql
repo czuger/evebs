@@ -666,7 +666,7 @@ CREATE VIEW public.price_advice_margin_comps AS
              JOIN public.trade_hubs_users thu ON ((thu.trade_hub_id = pa.trade_hub_id)))
              JOIN public.eve_items_users eiu ON ((eiu.eve_item_id = pa.eve_item_id)))
              JOIN public.users ur ON ((thu.user_id = ur.id)))
-             JOIN public.prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))))
+             JOIN public.prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pm.eve_item_id = pm.trade_hub_id))))
           WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
 
 
@@ -2332,7 +2332,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180907080824'),
 ('20180907112602'),
 ('20180907113512'),
-('20180907121823'),
-('20180907124531');
+('20180907121823');
 
 

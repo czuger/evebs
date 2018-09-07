@@ -1,6 +1,6 @@
 UPDATE eve_items ei SET ( cost, updated_at ) = ( comp_cost, now() )
 FROM (
-       SELECT ( SUM( required_qtt * 0.94 * material_ei.cost ) * 1.03 ) / prod_qtt "comp_cost", comp_ei.id
+       SELECT ( SUM( required_qtt * 0.94 * material_ei.cost ) * 1.13 ) / prod_qtt "comp_cost", comp_ei.id
        FROM eve_items comp_ei
          JOIN blueprints b ON comp_ei.blueprint_id = b.id
          JOIN blueprint_materials bm ON b.id = bm.blueprint_id
