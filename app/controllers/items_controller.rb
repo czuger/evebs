@@ -21,7 +21,7 @@ class ItemsController < ApplicationController
   def trade_hub_detail
     @trade_hub = TradeHub.find( params[ :trade_hub_id ] )
     @element = EveItem.find( params[ :item_id ] )
-    @orders = SalesOrder.where( trade_hub_id: params[ :trade_hub_id ], eve_item_id: params[ :item_id ] )
+    @orders = PublicTradeOrder.where( trade_hub_id: params[ :trade_hub_id ], eve_item_id: params[ :item_id ], is_buy_order: false )
                   .order( 'price' ).limit( 20 )
   end
 
