@@ -401,6 +401,20 @@ CREATE VIEW public.buy_orders_analytics_results AS
 
 
 --
+-- Name: component_to_buys; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.component_to_buys AS
+SELECT
+    NULL::integer AS id,
+    NULL::integer AS user_id,
+    NULL::character varying(255) AS name,
+    NULL::double precision AS qtt_to_buy,
+    NULL::double precision AS total_cost,
+    NULL::double precision AS required_volume;
+
+
+--
 -- Name: crontabs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -666,7 +680,7 @@ CREATE VIEW public.price_advice_margin_comps AS
              JOIN public.trade_hubs_users thu ON ((thu.trade_hub_id = pa.trade_hub_id)))
              JOIN public.eve_items_users eiu ON ((eiu.eve_item_id = pa.eve_item_id)))
              JOIN public.users ur ON ((thu.user_id = ur.id)))
-             JOIN public.prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pm.eve_item_id = pm.trade_hub_id))))
+             JOIN public.prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))))
           WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
 
 
@@ -1037,6 +1051,35 @@ CREATE TABLE public.user_sale_orders (
     updated_at timestamp without time zone NOT NULL,
     price double precision NOT NULL
 );
+
+
+--
+-- Name: user_sale_order_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.user_sale_order_details AS
+ SELECT uso.id,
+    uso.user_id,
+    ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
+    ei.name AS eve_item_name,
+    uso.price AS my_price,
+    pm.min_price,
+    ei.cost,
+    b.prod_qtt,
+    s1.unit_cost,
+    ((pm.min_price / s1.unit_cost) - (1)::double precision) AS margin_pcent,
+    (pm.min_price - uso.price) AS price_delta,
+    uso.eve_item_id,
+    uso.trade_hub_id,
+    ei.cpp_eve_item_id,
+    tu.eve_system_id
+   FROM (((((public.user_sale_orders uso
+     JOIN public.eve_items ei ON ((ei.id = uso.eve_item_id)))
+     JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
+     JOIN public.trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
+     JOIN public.regions r ON ((tu.region_id = r.id)))
+     LEFT JOIN public.prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id)))),
+    LATERAL ( SELECT (ei.cost / (b.prod_qtt)::double precision)) s1(unit_cost);
 
 
 --
@@ -1867,6 +1910,30 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 
 
 --
+-- Name: component_to_buys _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.component_to_buys AS
+ SELECT bc.id,
+    pl.user_id,
+    bc.name,
+    (sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
+    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bc.cost) AS total_cost,
+    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * (bc.volume)::double precision) AS required_volume
+   FROM (((((((public.production_lists pl
+     JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
+     JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
+     JOIN public.blueprint_materials bm ON ((b.id = bm.blueprint_id)))
+     JOIN public.eve_items bc ON ((bm.eve_item_id = bc.id)))
+     JOIN public.users ue ON ((pl.user_id = ue.id)))
+     LEFT JOIN public.blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
+     LEFT JOIN public.bpc_assets ba ON (((bc.id = ba.eve_item_id) AND (ba.station_detail_id = ue.selected_assets_station_id))))
+  WHERE (pl.runs_count IS NOT NULL)
+  GROUP BY bc.id, pl.user_id, bc.name, COALESCE(ba.quantity, (0)::bigint)
+ HAVING ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
+
+
+--
 -- Name: eve_market_volumes fk_rails_01da9c4169; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2332,6 +2399,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180907080824'),
 ('20180907112602'),
 ('20180907113512'),
-('20180907121823');
+('20180907121823'),
+('20180907124531'),
+('20180907131230'),
+('20180907131346');
 
 
