@@ -25,7 +25,7 @@ module Libs
     end
 
     def touch
-      @class_name.constantize.where( id: @data ).update_all( touched: true, updated_at: Time.now )
+      @class_name.constantize.where( id: @batch_buffer ).update_all( touched: true, updated_at: Time.now )
     end
 
   end

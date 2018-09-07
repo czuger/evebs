@@ -30,7 +30,7 @@ class Process::UpdatePublicTradesOrders
     @order_batch_inserter.flush_buffer
     @order_batch_marker.flush_buffer
 
-    PublicTradeOrder.where( touched: false )
+    delete_old_sales_orders
 
     unless @silent_output
       puts "Orders created : #{@orders_created}"
@@ -110,6 +110,20 @@ class Process::UpdatePublicTradesOrders
         price: price, order_id: old_record_order.order_id )
 
     @sales_finals_created += 1
+  end
+
+  def delete_old_sales_orders
+    # We assume that all old orders are closed as selling. We will have to estimate the orders that have been manually closed.
+    PublicTradeOrder.where( touched: false ).where( 'end_time < ?', Time.now ).each do |old_order|
+      tmp_record = { volume_remain: 0, price: old_order.price }
+      create_sales_final_record( old_order, tmp_record )
+    end
+
+    @sales_orders_over_time = PublicTradeOrder.where( touched: false ).where( 'end_time >= ?', Time.now ).count
+
+    sales_orders_to_delete = PublicTradeOrder.where( touched: false )
+    @sales_orders_deleted = sales_orders_to_delete.count
+    sales_orders_to_delete.delete_all
   end
 
 end
