@@ -537,43 +537,6 @@ ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
 
 
 --
--- Name: jita_margins; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.jita_margins (
-    id integer NOT NULL,
-    eve_item_id integer,
-    margin double precision,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    margin_percent double precision,
-    jita_min_price double precision,
-    cost double precision,
-    mens_volume bigint DEFAULT 0 NOT NULL,
-    batch_size bigint DEFAULT 0 NOT NULL
-);
-
-
---
--- Name: jita_margins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.jita_margins_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: jita_margins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.jita_margins_id_seq OWNED BY public.jita_margins.id;
-
-
---
 -- Name: market_group_hierarchies; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -626,15 +589,13 @@ CREATE TABLE public.prices_advices (
     id integer NOT NULL,
     eve_item_id integer NOT NULL,
     trade_hub_id integer NOT NULL,
-    region_id integer,
     vol_month bigint,
-    vol_day bigint,
-    avg_price double precision,
-    daily_monthly_pcent real,
+    avg_price_month double precision,
+    immediate_montly_pcent real,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     margin_percent double precision,
-    price_avg_week double precision
+    avg_price_week double precision
 );
 
 
@@ -1171,13 +1132,6 @@ ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.i
 
 
 --
--- Name: jita_margins id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.jita_margins ALTER COLUMN id SET DEFAULT nextval('public.jita_margins_id_seq'::regclass);
-
-
---
 -- Name: market_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1383,14 +1337,6 @@ ALTER TABLE ONLY public.eve_market_volumes
 
 ALTER TABLE ONLY public.identities
     ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
-
-
---
--- Name: jita_margins jita_margins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.jita_margins
-    ADD CONSTRAINT jita_margins_pkey PRIMARY KEY (id);
 
 
 --
@@ -1648,13 +1594,6 @@ CREATE INDEX index_eve_market_volumes_on_region_id ON public.eve_market_volumes 
 
 
 --
--- Name: index_jita_margins_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_jita_margins_on_eve_item_id ON public.jita_margins USING btree (eve_item_id);
-
-
---
 -- Name: index_market_groups_on_cpp_market_group_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1673,13 +1612,6 @@ CREATE INDEX index_prices_advices_on_eve_item_id ON public.prices_advices USING 
 --
 
 CREATE INDEX index_prices_advices_on_margin_percent ON public.prices_advices USING btree (margin_percent);
-
-
---
--- Name: index_prices_advices_on_region_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_prices_advices_on_region_id ON public.prices_advices USING btree (region_id);
 
 
 --
@@ -1900,14 +1832,6 @@ ALTER TABLE ONLY public.blueprint_materials
 
 ALTER TABLE ONLY public.production_lists
     ADD CONSTRAINT fk_rails_0a4a7e08c4 FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
-
-
---
--- Name: prices_advices fk_rails_0c863bd6cb; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.prices_advices
-    ADD CONSTRAINT fk_rails_0c863bd6cb FOREIGN KEY (region_id) REFERENCES public.regions(id);
 
 
 --
@@ -2349,6 +2273,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180904065442'),
 ('20180905130609'),
 ('20180906131140'),
-('20180907080824');
+('20180907080824'),
+('20180907112602'),
+('20180907113512');
 
 

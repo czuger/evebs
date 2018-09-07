@@ -17,9 +17,8 @@ namespace :process do
         # Process::UpdateEveItemsCosts.new.update
 
         Sql::UpdatePricesMin.execute
+        Sql::UpdatePricesAdvices.execute
 
-      #
-      #   Sql::UpdatePricesAdvices.execute
       #
       #   Sql::UpdateBuyOrdersAnalytics.execute
       #

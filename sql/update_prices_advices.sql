@@ -9,9 +9,14 @@ DELETE FROM prices_advices pm WHERE NOT EXISTS (
     WHERE pm.trade_hub_id = so.trade_hub_id
           AND pm.eve_item_id = so.eve_item_id );
 
+/* Removing advices for items that are not in DB anymore */
+DELETE FROM prices_advices pm WHERE NOT EXISTS (
+    SELECT 1 FROM eve_items ei
+    WHERE pm.eve_item_id = ei.id );
+
 /* Insert new regions / items */
-INSERT INTO prices_advices( eve_item_id, region_id, trade_hub_id, created_at, updated_at )
-  SELECT eve_items.id, trade_hubs.region_id, trade_hubs.id, now(), now()
+INSERT INTO prices_advices( eve_item_id, trade_hub_id, created_at, updated_at )
+  SELECT eve_items.id, trade_hubs.id, now(), now()
   FROM eve_items, trade_hubs, blueprints
   WHERE eve_items.blueprint_id = blueprints.id
         AND NOT EXISTS (
@@ -22,51 +27,22 @@ INSERT INTO prices_advices( eve_item_id, region_id, trade_hub_id, created_at, up
             AND sf.trade_hub_id = pa.trade_hub_id );
 
 /* Update all data */
-UPDATE prices_advices pm SET ( vol_month, vol_day, avg_price, updated_at ) = ( mp, mp/30, ap, now() )
+UPDATE prices_advices pa SET ( vol_month, vol_day, avg_price_month, updated_at ) = ( mp, mp/30, ap, now() )
 FROM (
        SELECT SUM( so.volume ) mp, AVG( price ) ap, so.trade_hub_id ti, so.eve_item_id ei
        FROM sales_finals so
        GROUP BY so.trade_hub_id, so.eve_item_id ) min_so
-WHERE ti = pm.trade_hub_id
-AND ei = pm.eve_item_id;
+WHERE ti = pa.trade_hub_id
+AND ei = pa.eve_item_id;
 
--- UPDATE prices_advices cpa
--- SET vol_month = cplma.volume_sum, vol_day = floor( cplma.volume_sum / 30 ), avg_price = cplma.avg_price_avg,
--- updated_at = now()
--- FROM crest_prices_last_month_averages cplma, trade_hubs th
--- WHERE cpa.eve_item_id = cplma.eve_item_id
--- AND cpa.trade_hub_id = th.id
--- AND th.region_id = cplma.region_id;
-
--- start min prices update
-
-WITH t AS (
-  SELECT pm.min_price AS pm_min_price, pa.eve_item_id eid, pa.trade_hub_id pid
-  FROM prices_advices AS pa
-  LEFT join prices_mins AS pm on pa.eve_item_id = pm.eve_item_id AND pa.trade_hub_id = pm.trade_hub_id
-)
-UPDATE prices_advices
-SET min_price = t.pm_min_price, updated_at = now()
-FROM t
-WHERE eve_item_id = t.eid
-AND trade_hub_id = t.pid;
-
--- end min prices update
-
-UPDATE prices_advices cpa
-SET cost = ei.cost, updated_at = now()
-FROM eve_items ei
-WHERE cpa.eve_item_id = ei.id;
-
-UPDATE prices_advices cpa
-SET full_batch_size = bp.nb_runs*bp.prod_qtt, prod_qtt = bp.prod_qtt, updated_at = now()
-FROM eve_items ei, blueprints bp
-WHERE cpa.eve_item_id = ei.id
-AND ei.blueprint_id = bp.id;
-
--- TODO : set the cost using the blueprint variable (see update_components_costs)
-UPDATE prices_advices cpa SET
-  single_unit_cost = cost/prod_qtt,
-  margin_percent = ( min_price / (cost/prod_qtt) - 1 ) * 100,
-  daily_monthly_pcent = min_price / avg_price,
-  updated_at = now();
+UPDATE prices_advices pa SET ( margin_percent, daily_monthly_pcent, updated_at ) = ( margin_percent, daily_monthly_pcent, now() )
+FROM (
+       SELECT ( min_price / (cost/prod_qtt) - 1 ) * 100 margin_percent,
+         min_price / avg_price_month daily_monthly_pcent, sub_pa.trade_hub_id ti, sub_pa.eve_item_id ei
+       FROM prices_advices sub_pa
+         JOIN prices_mins pm ON pm.eve_item_id = sub_pa.eve_item_id AND pm.trade_hub_id = sub_pa.trade_hub_id
+         JOIN eve_items ei ON ei.id = pm.eve_item_id
+         JOIN blueprints bp ON ei.blueprint_id = bp.id
+       GROUP BY sub_pa.trade_hub_id, sub_pa.eve_item_id ) min_so
+WHERE ti = pa.trade_hub_id
+      AND ei = pa.eve_item_id;
