@@ -9,8 +9,8 @@ class EveItem < ApplicationRecord
   has_and_belongs_to_many :users
   belongs_to :blueprint
 
-  has_many :blueprint_materials, dependent: :destroy
-  has_many :blueprint_components, through: :materials
+  has_many :blueprint_materials, through: :blueprint
+  # has_many :blueprint_components, through: :blueprint_materials, class_name: 'EveItem'
   belongs_to :market_group
 
   has_many :prices_mins, dependent: :delete_all
