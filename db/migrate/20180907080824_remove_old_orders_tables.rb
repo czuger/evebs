@@ -4,7 +4,6 @@ class RemoveOldOrdersTables < ActiveRecord::Migration[5.2]
     drop_table :buy_orders
     drop_table :sales_orders
     drop_table :sales_orders_process_infos
-    drop_table :tmp_download_blueprints
     drop_table :type_in_regions
     remove_column :prices_advices, :cost
     remove_column :prices_advices, :single_unit_cost

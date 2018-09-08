@@ -13,7 +13,5 @@ class RemoveBlueprintComponentStuff < ActiveRecord::Migration[5.2]
     remove_column :blueprint_materials, :blueprint_component_id
 
     drop_table :blueprint_components
-
-    add_
   end
 end
