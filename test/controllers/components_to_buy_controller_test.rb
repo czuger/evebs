@@ -8,7 +8,7 @@ class ComponentsToBuyControllerTest < ActionDispatch::IntegrationTest
 
     @material_morphite = create( :material_morphite )
     @blueprint = @material_morphite.blueprint
-    @blueprint_component = @material_morphite.blueprint_component
+    @blueprint_component = @material_morphite.eve_item
 
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
     @trade_hub = create( :rens )

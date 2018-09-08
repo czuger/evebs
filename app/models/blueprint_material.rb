@@ -1,4 +1,4 @@
 class BlueprintMaterial < ApplicationRecord
   belongs_to :blueprint
-  belongs_to :blueprint_component, dependent: :destroy
+  belongs_to :eve_item
 end
