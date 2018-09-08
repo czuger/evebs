@@ -54,6 +54,11 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
             next
           end
 
+          if order_data['volume_remain'] == 0
+            puts "volume_remain = 0 found for order #{order_data['order_id']}."
+            next
+          end
+
           order = { duration: order_data['duration'], is_buy_order: order_data['is_buy_order'], issued: order_data['issued'],
                       min_volume: order_data['min_volume'], order_id: order_data['order_id'], price: order_data['price'],
                       range: order_data['range'], system_id: order_data['system_id'], type_id: order_data['type_id'],
