@@ -19,10 +19,23 @@ class Esi::Download
     url = build_url
     puts "Fetching : #{url}" if @debug_request
 
+    parsed_result = nil
+
     loop do
       begin
         @request = open( url )
+
+        set_headers
+
+        json_result = @request.read
+        parsed_result = JSON.parse( json_result )
+
         break
+
+      rescue JSON::ParserError => parse_error
+        puts 'Got parse error !!!'
+        next
+
       rescue => e
         error = Esi::Errors::Base.dispatch( e )
         error_print( error )
@@ -30,6 +43,7 @@ class Esi::Download
         if error.retry?
           error.pause
           next
+
         else
           raise error
         end
@@ -37,10 +51,7 @@ class Esi::Download
       end
     end
 
-    set_headers
-
-    json_result = @request.read
-    JSON.parse( json_result )
+    parsed_result
   end
 
   def get_page_retry_on_error( page_number=nil )

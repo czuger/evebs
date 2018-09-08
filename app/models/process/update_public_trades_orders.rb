@@ -37,10 +37,9 @@ class Process::UpdatePublicTradesOrders
       puts "Orders updated : #{@orders_updated}"
       puts "Orders touched : #{@orders_touched}"
       puts "Orders deleted : #{@orders_deleted}"
+      puts "Orders that failed out of time : #{@orders_over_time}"
 
-      puts "Sales orders that failed out of time : #{@sales_orders_over_time}" unless @silent_output
-
-      puts "Sales final created : #{@sales_finals_created}" unless @silent_output
+      puts "Sales final created : #{@sales_finals_created}"
     end
   end
 
@@ -119,10 +118,10 @@ class Process::UpdatePublicTradesOrders
       create_sales_final_record( old_order, tmp_record )
     end
 
-    @sales_orders_over_time = PublicTradeOrder.where( touched: false ).where( 'end_time >= ?', Time.now ).count
+    @orders_over_time = PublicTradeOrder.where( touched: false ).where( 'end_time >= ?', Time.now ).count
 
     sales_orders_to_delete = PublicTradeOrder.where( touched: false )
-    @sales_orders_deleted = sales_orders_to_delete.count
+    @orders_deleted = sales_orders_to_delete.count
     sales_orders_to_delete.delete_all
   end
 
