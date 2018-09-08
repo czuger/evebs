@@ -15,7 +15,7 @@ class ItemsController < ApplicationController
 
     set_checked_production_list_ids
 
-    @item_prices = @item.price_advices_min_prices
+    @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
   end
 
   def trade_hub_detail
