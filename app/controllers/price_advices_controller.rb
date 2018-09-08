@@ -22,7 +22,7 @@ class PriceAdvicesController < ApplicationController
       .order( 'vol_month DESC' ).paginate(:page => params[:page], :per_page => 20 )
 
     @empty_places_array = @empty_places_objects
-      .pluck_to_hash( 'trade_hub_name', 'item_name', :vol_month, :avg_price_month, :cost )
+      .pluck_to_hash( :trade_hub_name, :item_name, :eve_item_id, :vol_month, :avg_price_month, :cost )
   end
 
   private
