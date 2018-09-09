@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resource :helps, only: [:show ]
+
   resource :buy_orders, only: [:show]
 
   resource :my_assets, only: [:show, :update ] do

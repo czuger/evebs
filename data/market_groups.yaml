@@ -3267,6 +3267,10 @@
   :market_group_id: 2432
   :name: Entropic Disintegrators
   :parent_group_id: 2431
+2431:
+  :market_group_id: 2431
+  :name: Precursor Turrets
+  :parent_group_id: 10
 2434:
   :market_group_id: 2434
   :name: Medium

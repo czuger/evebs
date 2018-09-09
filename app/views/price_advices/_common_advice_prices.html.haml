@@ -21,7 +21,7 @@
             Volume
           %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.cost' ) }
             Cost
-            %i.glyphicon.glyphicon-question-sign
+            = help_tooltip_with_link( :cost, helps_path )
 
           %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) }
             Price

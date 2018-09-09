@@ -12,8 +12,8 @@
   :orders_to_process: 0
   :final_orders_count: 0
 5:
-  :orders_to_process: 17647
-  :final_orders_count: 429
+  :orders_to_process: 17625
+  :final_orders_count: 436
 6:
   :orders_to_process: 0
   :final_orders_count: 0
@@ -30,10 +30,10 @@
   :orders_to_process: 0
   :final_orders_count: 0
 11:
-  :orders_to_process: 15460
-  :final_orders_count: 1768
+  :orders_to_process: 15477
+  :final_orders_count: 1865
 12:
-  :orders_to_process: 118
+  :orders_to_process: 119
   :final_orders_count: 0
 13:
   :orders_to_process: 0
@@ -60,7 +60,7 @@
   :orders_to_process: 3
   :final_orders_count: 0
 21:
-  :orders_to_process: 574
+  :orders_to_process: 561
   :final_orders_count: 0
 22:
   :orders_to_process: 236
@@ -69,8 +69,8 @@
   :orders_to_process: 17
   :final_orders_count: 0
 24:
-  :orders_to_process: 15980
-  :final_orders_count: 782
+  :orders_to_process: 15942
+  :final_orders_count: 815
 25:
   :orders_to_process: 0
   :final_orders_count: 0
@@ -99,20 +99,20 @@
   :orders_to_process: 433
   :final_orders_count: 0
 34:
-  :orders_to_process: 6913
+  :orders_to_process: 6870
   :final_orders_count: 0
 35:
-  :orders_to_process: 18816
-  :final_orders_count: 645
+  :orders_to_process: 18857
+  :final_orders_count: 724
 36:
-  :orders_to_process: 234
+  :orders_to_process: 198
   :final_orders_count: 0
 37:
-  :orders_to_process: 13246
-  :final_orders_count: 882
+  :orders_to_process: 13203
+  :final_orders_count: 978
 38:
-  :orders_to_process: 155805
-  :final_orders_count: 37047
+  :orders_to_process: 155235
+  :final_orders_count: 42777
 39:
   :orders_to_process: 0
   :final_orders_count: 0
@@ -132,52 +132,52 @@
   :orders_to_process: 0
   :final_orders_count: 0
 45:
-  :orders_to_process: 1800
+  :orders_to_process: 1781
   :final_orders_count: 0
 46:
-  :orders_to_process: 42536
-  :final_orders_count: 2326
+  :orders_to_process: 42334
+  :final_orders_count: 2644
 47:
   :orders_to_process: 44
   :final_orders_count: 0
 48:
-  :orders_to_process: 24041
-  :final_orders_count: 877
+  :orders_to_process: 24172
+  :final_orders_count: 914
 49:
   :orders_to_process: 0
   :final_orders_count: 0
 50:
-  :orders_to_process: 230
+  :orders_to_process: 204
   :final_orders_count: 0
 51:
   :orders_to_process: 0
   :final_orders_count: 0
 52:
-  :orders_to_process: 4913
+  :orders_to_process: 4968
   :final_orders_count: 0
 53:
-  :orders_to_process: 1044
+  :orders_to_process: 1022
   :final_orders_count: 0
 54:
-  :orders_to_process: 2993
-  :final_orders_count: 32
+  :orders_to_process: 2975
+  :final_orders_count: 36
 55:
-  :orders_to_process: 31563
-  :final_orders_count: 2162
+  :orders_to_process: 31639
+  :final_orders_count: 2353
 56:
-  :orders_to_process: 2629
-  :final_orders_count: 588
+  :orders_to_process: 2631
+  :final_orders_count: 636
 57:
   :orders_to_process: 0
   :final_orders_count: 0
 58:
-  :orders_to_process: 67125
-  :final_orders_count: 13634
+  :orders_to_process: 67349
+  :final_orders_count: 15805
 59:
   :orders_to_process: 222
   :final_orders_count: 0
 60:
-  :orders_to_process: 150
+  :orders_to_process: 153
   :final_orders_count: 0
 61:
   :orders_to_process: 157
@@ -189,26 +189,26 @@
   :orders_to_process: 0
   :final_orders_count: 0
 64:
-  :orders_to_process: 26125
-  :final_orders_count: 618
+  :orders_to_process: 26029
+  :final_orders_count: 758
 65:
-  :orders_to_process: 9483
-  :final_orders_count: 1319
+  :orders_to_process: 9666
+  :final_orders_count: 1363
 66:
-  :orders_to_process: 20468
-  :final_orders_count: 768
+  :orders_to_process: 20426
+  :final_orders_count: 871
 67:
-  :orders_to_process: 67942
-  :final_orders_count: 3053
+  :orders_to_process: 67621
+  :final_orders_count: 3494
 68:
-  :orders_to_process: 205
+  :orders_to_process: 203
   :final_orders_count: 0
 69:
-  :orders_to_process: 97243
-  :final_orders_count: 13833
+  :orders_to_process: 96978
+  :final_orders_count: 15935
 70:
-  :orders_to_process: 23860
-  :final_orders_count: 1973
+  :orders_to_process: 23992
+  :final_orders_count: 2233
 71:
   :orders_to_process: 12
   :final_orders_count: 0
@@ -220,45 +220,45 @@
   :final_orders_count: 0
 74:
   :orders_to_process: 4027
-  :final_orders_count: 770
+  :final_orders_count: 863
 75:
-  :orders_to_process: 459
+  :orders_to_process: 458
   :final_orders_count: 0
 76:
-  :orders_to_process: 21
+  :orders_to_process: 20
   :final_orders_count: 0
 77:
   :orders_to_process: 8
   :final_orders_count: 0
 78:
-  :orders_to_process: 39201
-  :final_orders_count: 5740
+  :orders_to_process: 39174
+  :final_orders_count: 6150
 79:
-  :orders_to_process: 875
+  :orders_to_process: 873
   :final_orders_count: 0
 80:
-  :orders_to_process: 4726
+  :orders_to_process: 4753
   :final_orders_count: 0
 81:
-  :orders_to_process: 184
+  :orders_to_process: 187
   :final_orders_count: 0
 82:
   :orders_to_process: 0
   :final_orders_count: 0
 83:
-  :orders_to_process: 104356
-  :final_orders_count: 20958
+  :orders_to_process: 104312
+  :final_orders_count: 24450
 84:
-  :orders_to_process: 15945
-  :final_orders_count: 659
+  :orders_to_process: 15970
+  :final_orders_count: 833
 85:
-  :orders_to_process: 10687
-  :final_orders_count: 1265
+  :orders_to_process: 10723
+  :final_orders_count: 1469
 86:
-  :orders_to_process: 15098
-  :final_orders_count: 542
+  :orders_to_process: 15050
+  :final_orders_count: 590
 87:
-  :orders_to_process: 37574
+  :orders_to_process: 37579
   :final_orders_count: 0
 88:
   :orders_to_process: 0
@@ -267,22 +267,22 @@
   :orders_to_process: 289
   :final_orders_count: 0
 90:
-  :orders_to_process: 12551
-  :final_orders_count: 20
+  :orders_to_process: 12536
+  :final_orders_count: 19
 91:
-  :orders_to_process: 53319
-  :final_orders_count: 474
+  :orders_to_process: 53401
+  :final_orders_count: 527
 92:
-  :orders_to_process: 285976
-  :final_orders_count: 79555
+  :orders_to_process: 287662
+  :final_orders_count: 93433
 93:
   :orders_to_process: 5
   :final_orders_count: 0
 94:
-  :orders_to_process: 4
+  :orders_to_process: 5
   :final_orders_count: 0
 95:
-  :orders_to_process: 25
+  :orders_to_process: 24
   :final_orders_count: 0
 96:
   :orders_to_process: 0
@@ -291,11 +291,11 @@
   :orders_to_process: 44
   :final_orders_count: 0
 98:
-  :orders_to_process: 4103
-  :final_orders_count: 232
+  :orders_to_process: 4043
+  :final_orders_count: 234
 99:
-  :orders_to_process: 29244
-  :final_orders_count: 2897
+  :orders_to_process: 29063
+  :final_orders_count: 3096
 100:
   :orders_to_process: 31
   :final_orders_count: 0
