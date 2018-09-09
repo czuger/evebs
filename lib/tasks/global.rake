@@ -45,8 +45,8 @@ namespace :process do
     task :weekly => :environment do
       Process::ParseBlueprintsFile.new.parse
 
-      Esi::DownloadBlueprints.new.download
-      Esi::DownloadEveItems.new.download
+      Esi::DownloadBlueprints.new( { verbose_output: true } ).download
+      Esi::DownloadEveItems.new( { verbose_output: true } ).download
 
       Process::SetEveItemDepthLevel.new.set
 

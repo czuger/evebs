@@ -16,9 +16,10 @@ class EveItem < ApplicationRecord
   has_many :prices_mins, dependent: :delete_all
   has_many :sales_finals, dependent: :delete_all
   has_many :prices_advices, dependent: :delete_all
-  has_many :sales_orders, dependent: :delete_all
-  has_many :buy_orders, dependent: :delete_all
   has_many :buy_orders_analytics, dependent: :delete_all
+
+  has_many :public_trade_orders, dependent: :destroy
+  has_many :eve_market_volumes, :dependent => :delete_all
 
   has_many :price_advices_min_prices
 

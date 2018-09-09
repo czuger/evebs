@@ -40,14 +40,16 @@ class Esi::DownloadMarketGroups < Esi::Download
       return
     end
 
-    raise unless market_data['name'] && !market_data['name'].empty?
+    if market_data['name'] && !market_data['name'].empty?
+      @market_groups_hash[m_id] = { market_group_id: market_data['market_group_id'], name: market_data['name'],
+                                    parent_group_id: market_data['parent_group_id'] }
 
-    @market_groups_hash[m_id] = { market_group_id: market_data['market_group_id'], name: market_data['name'],
-                                  parent_group_id: market_data['parent_group_id'] }
-
-    if market_data['parent_group_id'] && !@market_groups_hash[ market_data['parent_group_id'] ]
-      download_market_group_id( market_data['parent_group_id'] )
+      if market_data['parent_group_id'] && !@market_groups_hash[ market_data['parent_group_id'] ]
+        download_market_group_id( market_data['parent_group_id'] )
+      end
+    else
+      puts 'Bad market data found'
+      pp market_data
     end
   end
-
 end
