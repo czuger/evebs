@@ -19,8 +19,8 @@
           %td= link_to( component.name, component_path( component.id ) )
           %td.text-right= print_isk( component.cost )
           %td.text-right= print_volume( material.required_qtt )
-          - total = component.cost * material.required_qtt
-          - total_for_batch += total
+          - total = safe_multiply( component.cost, material.required_qtt )
+          - total_for_batch += total if total
           %td.text-right= print_isk( total )
     %tr{ class: cycle( :odd, :even ) }
       %td{ colspan: 3 }

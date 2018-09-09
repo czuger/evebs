@@ -50,4 +50,9 @@ module ApplicationHelper
     fa_icon :filter if data
   end
 
+  def safe_multiply( a, b )
+    return nil unless a && b
+    a * b
+  end
+
 end
