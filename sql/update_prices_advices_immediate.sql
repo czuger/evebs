@@ -18,7 +18,7 @@ INSERT INTO prices_advices( eve_item_id, trade_hub_id, created_at, updated_at )
 
 UPDATE prices_advices pa SET ( margin_percent, immediate_montly_pcent, updated_at ) = ( min_so.margin_percent, daily_monthly_pcent, now() )
 FROM (
-       SELECT ( min_price / cost - 1 ) * 100 margin_percent,
+       SELECT ( min_price / cost - 1 ) margin_percent,
          min_price / avg_price_month daily_monthly_pcent, sub_pa.trade_hub_id ti, sub_pa.eve_item_id ei
        FROM prices_advices sub_pa
          JOIN prices_mins pm ON pm.eve_item_id = sub_pa.eve_item_id AND pm.trade_hub_id = sub_pa.trade_hub_id

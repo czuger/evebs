@@ -18,7 +18,7 @@ module Modules::PriceAdvices::MarginModule
       .where.not( margin_column_name => nil )
 
     @items = @items.where( "#{margin_column_name} > min_amount_for_advice" ) if @user.min_amount_for_advice
-    @items = @items.where( 'margin_percent > min_pcent_for_advice' ) if @user.min_pcent_for_advice
+    @items = @items.where( 'margin_percent > min_pcent_for_advice*0.01' ) if @user.min_pcent_for_advice
 
     if @user.remove_occuped_places
       @items = @items.where.not( @user.user_sale_orders
