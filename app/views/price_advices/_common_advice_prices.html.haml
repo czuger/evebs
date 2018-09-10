@@ -47,7 +47,7 @@
             - price, margin = price_n_margin( margin_type, item )
 
             %td.text-right.information_highlight_left= print_isk(price)
-            %td.text-right.information_highlight_right=print_pcent_nomultiply( item.margin_percent )
+            %td.text-right.information_highlight_right=print_pcent( item.margin_percent )
             %td.text-right.information_highlight_right=print_isk( margin )
             %td.text-right.information_highlight_right=print_volume( item.batch_size_formula.round )
 
