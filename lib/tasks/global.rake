@@ -18,10 +18,7 @@ namespace :process do
         Sql::UpdatePricesMin.execute
         Sql::UpdatePricesAdvicesImmediate.execute
 
-      #
-      #   Sql::UpdateBuyOrdersAnalytics.execute
-      #
-      #   # Esi::DownloadMyOrders.new.update()
+        Sql::UpdateBuyOrdersAnalytics.execute
       end
 
       Banner.p( 'Finished' )
