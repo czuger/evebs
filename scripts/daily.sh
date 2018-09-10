@@ -10,4 +10,4 @@ date > log/daily.err
 
 RAILS_ENV=production bundle exec rake process:full:daily >>log/daily.log 2>>log/daily.err
 
-cat log/daily.log log/daily.err | mail `cat config/email.txt` -s "Evebs staging daily process"
+cat log/daily.log log/daily.err | mail `cat config/email.txt` -s "Evebs daily process"
