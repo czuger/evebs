@@ -11,7 +11,7 @@ namespace :process do
 
       Crontab.start( :hourly )
 
-      Esi::DownloadPublicTradesOrders.new( { verbose_output: true } ).download
+      Esi::DownloadPublicTradesOrders.new( { verbose_output: false } ).download
 
       ActiveRecord::Base.transaction do
 
@@ -47,8 +47,8 @@ namespace :process do
     task :weekly => :environment do
       Process::ParseBlueprintsFile.new.parse
 
-      Esi::DownloadBlueprints.new( { verbose_output: true } ).download
-      Esi::DownloadEveItems.new( { verbose_output: true } ).download
+      Esi::DownloadBlueprints.new( { verbose_output: false } ).download
+      Esi::DownloadEveItems.new( { verbose_output: false } ).download
 
       Process::SetEveItemDepthLevel.new.set
 
