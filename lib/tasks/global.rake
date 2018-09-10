@@ -31,6 +31,7 @@ namespace :process do
       ActiveRecord::Base.transaction do
         # Esi::UpdateVolumeFromHistory.new.update
 
+        Process::DeleteOldSalesFinals.delete
         Process::UpdateEveItemsCosts.new.update
         Sql::UpdatePricesAdvicesDaily.execute
       end
