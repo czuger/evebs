@@ -13,9 +13,14 @@ class ItemsController < ApplicationController
   def show
     @item = EveItem.find( params[ :id ] )
 
-    set_checked_production_list_ids
+    unless @item.base_item
+      set_checked_production_list_ids
 
-    @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
+      @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
+    else
+      jita = TradeHub.find_by_eve_system_id( 30000142 )
+      redirect_to item_trade_hub_detail_path( @item, trade_hub_id: jita.id )
+    end
   end
 
   def trade_hub_detail

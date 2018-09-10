@@ -39,10 +39,6 @@ Rails.application.routes.draw do
   get :items_tree, controller: :items
   patch :items_tree_select, controller: :items
 
-  resources :components, only: [ :index, :show ] do
-    get :trade_hub_detail
-  end
-
   resource :list_items, only: [ :edit, :update ] do
     get :my_items_list
   end
