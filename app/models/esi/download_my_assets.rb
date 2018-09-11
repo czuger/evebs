@@ -57,12 +57,12 @@ class Esi::DownloadMyAssets < Esi::Download
     ActiveRecord::Base.transaction do
       pages.each do |asset|
         p asset
-        eve_item_id = BlueprintComponent.find_by_cpp_eve_item_id(asset['type_id'])&.id
+        eve_item_id = EveItem.find_by_cpp_eve_item_id(asset['type_id'])&.id
         next unless eve_item_id
 
         trade_hub_id = StationDetail.find_by_cpp_station_id(asset['location_id'])&.id
 
-        to = BpcAsset.where( user_id: user.id, blueprint_component_id: eve_item_id, station_detail_id: trade_hub_id ).first_or_initialize
+        to = BpcAsset.where( user_id: user.id, eve_item_id: eve_item_id, station_detail_id: trade_hub_id ).first_or_initialize
         to.quantity = asset['quantity']
         to.touched = true
         to.save!

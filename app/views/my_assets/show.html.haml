@@ -28,5 +28,5 @@
       - @assets.each do |asset|
         %tr
           %td= asset.station_detail&.name
-          %td= asset.blueprint_component.name
+          %td= asset.eve_item.name
           %td.text-right= asset.quantity

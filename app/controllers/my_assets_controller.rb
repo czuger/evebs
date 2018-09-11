@@ -10,7 +10,7 @@ class MyAssetsController < ApplicationController
     lad = @user.last_assets_download ? @user.last_assets_download : Time.at( 0 )
     @data_available_in = (lad + BpcAsset::CACHE_DURATION - Time.now).round
 
-    @assets = @selected_station_id ? @user.bpc_assets.where( station_detail_id: @selected_station_id ).includes( :station_detail, :blueprint_component ).order( 'quantity DESC' ) : []
+    @assets = @selected_station_id ? @user.bpc_assets.where( station_detail_id: @selected_station_id ).includes( :station_detail, :eve_item ).order( 'quantity DESC' ) : []
   end
 
   def update
