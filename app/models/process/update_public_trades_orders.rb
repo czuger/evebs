@@ -50,7 +50,7 @@ class Process::UpdatePublicTradesOrders
     orders.each_line do |json_encoded_order|
 
       process_count += 1
-      puts "#{process_count} orders processed" if process_count % 10000 == 0
+      # puts "#{process_count} orders processed" if process_count % 10000 == 0
 
       order = JSON.parse( json_encoded_order )
       order.symbolize_keys!
