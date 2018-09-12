@@ -1,4 +1,4 @@
-= form_tag production_list_path( @current_user ), method: :patch do
+= form_tag production_lists_path( @current_user ), method: :patch do
 
   .my-4
     %h4
@@ -13,12 +13,12 @@
           %th
         %th Trade hub
         %th Item
-        %th.text-center Volume
-        %th.text-center Cost
-        %th.text-center Price
-        %th.text-center Margin
-        %th.text-center Advised quantity
-        %th.text-center Quantity to produce
+        %th.text-right Volume
+        %th.text-right Cost
+        %th.text-right Price
+        %th.text-right Margin
+        %th.text-right Advised quantity
+        %th.text-right Quantity to produce
         %th.text-center Jobs count
     %tbody
       - @basket_array.each do |basket|
@@ -27,24 +27,24 @@
             %td= production_list_check_box( basket, delete_on_change: true, force_checked: true  )
           %td= trade_hub_name_with_region_v2( basket )
           %td= link_to( basket['eve_items.name'], item_path( basket['eve_items.id'] ) )
-          %td.text-right.information_highlight_left=print_volume(basket['vol_month'])
-          %td.text-right.information_highlight_left=print_isk(basket['single_unit_cost'])
-          %td.text-right.information_highlight_left=print_isk(basket['min_price'])
-          %td.text-right.information_highlight_left=print_pcent_nomultiply( basket['margin_percent'] )
-          %td.text-right.information_highlight_left=print_volume( basket['batch_size_formula']&.round )
-          %td.text-right.information_highlight_left=number_field_tag( "quantity_to_produce[#{basket[:id]}]", basket[:quantity_to_produce] )
+          %td.text-right=print_volume(basket['vol_month'])
+          %td.text-right=print_isk(basket['single_unit_cost'])
+          %td.text-right=print_isk(basket['min_price'])
+          %td.text-right=print_pcent_nomultiply( basket['margin_percent'] )
+          %td.text-right=print_volume( basket['batch_size_formula']&.round )
+          %td.text-right=number_field_tag( "quantity_to_produce[#{basket[:id]}]", basket[:quantity_to_produce] )
 
           - jobs_amount = ( basket[:quantity_to_produce].to_f / basket['full_batch_size'] ).ceil if basket[:quantity_to_produce] && basket['full_batch_size']
           - @total_jobs += jobs_amount if jobs_amount
 
-          %td.text-right.information_highlight_left= jobs_amount
+          %td.text-center= jobs_amount
 
       %tr
         %td.text-left{ colspan: 9 }
           %b
             Total jobs
 
-        %td.text-center.information_highlight_left
+        %td.text-center
           %b
             = @total_jobs
 
@@ -52,6 +52,6 @@
       = will_paginate @basket_active_record
 
   .row
-    .col-md-12.text-center
+    .col-md-12.text-right
       .actions
         = submit_tag 'Save', class: 'btn btn-secondary'

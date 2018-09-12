@@ -21,7 +21,9 @@ Rails.application.routes.draw do
     get :crest_price_history_update
   end
 
-  resources :production_lists, only: [ :edit, :update, :create ]
+  resource :production_lists, only: [ :edit, :update, :create ] do
+    put :update_from_buy_orders
+  end
   post :remove_production_list_check, controller: :production_lists
 
   resource :user_sales_orders, only: [:show, :update ]

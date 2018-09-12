@@ -1,6 +1,6 @@
 .container-fluid
 
-  %table.table.table-hover.table-sm
+  %table.table.table-hover
     %tr
       %th
       %th Trade hub
@@ -15,16 +15,19 @@
     - @buy_orders.each do |cp|
       %tr
         %td.text-center= production_list_check_box( cp )
-        %td.trade_hub_name=cp.trade_hub_name
+        %td.trade_hub_name= cp.trade_hub_name
         %td.item_name= link_to( cp.eve_item_name, item_url( cp.eve_item_id ) )
         -#%td.text-right=print_isk( cp.approx_max_price )
         -#%td.text-right=print_isk( cp.single_unit_cost )
         %td.text-right{ 'data-toggle' => 'tooltip', title: "<p>Single unit cost : <br>#{print_isk( cp.single_unit_cost )}</p><p>Approx max buy price : <br>#{print_isk( cp.approx_max_price )}</p>" }
           = print_isk( cp.single_unit_margin )
 
-        %td.text-right=print_volume( cp.over_approx_max_price_volume )
+        %td.text-right= print_volume( cp.over_approx_max_price_volume )
         %td.text-right= cp.job_count.round
         %td.text-right= cp.runs.round
-        %td.text-right=print_isk( cp.final_margin )
+        %td.text-right= print_isk( cp.final_margin )
+
+        %td
+          = link_to 'Use', update_from_buy_orders_production_lists_path( eve_item_id: cp.eve_item_id, trade_hub_id: cp.trade_hub_id, runs_count: cp.runs.round ), method: :put, class: 'btn btn-secondary'
 
   = will_paginate @buy_orders
