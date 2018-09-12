@@ -275,7 +275,7 @@ CREATE TABLE public.eve_items (
     cost double precision,
     market_group_id integer,
     blueprint_id bigint,
-    volume bigint,
+    volume double precision,
     production_level integer DEFAULT 0 NOT NULL,
     base_item boolean DEFAULT false NOT NULL
 );
@@ -1941,21 +1941,22 @@ CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING b
 --
 
 CREATE OR REPLACE VIEW public.component_to_buys AS
- SELECT ei.id,
+ SELECT bpm_mat_ei.id,
     pl.user_id,
-    ei.name,
+    bpm_mat_ei.name,
     (sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
-    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * ei.cost) AS total_cost,
-    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * (ei.volume)::double precision) AS required_volume
-   FROM ((((((public.production_lists pl
+    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.cost) AS total_cost,
+    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.volume) AS required_volume
+   FROM (((((((public.production_lists pl
      JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
      JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
      JOIN public.blueprint_materials bm ON ((b.id = bm.blueprint_id)))
+     JOIN public.eve_items bpm_mat_ei ON ((bm.eve_item_id = bpm_mat_ei.id)))
      JOIN public.users ue ON ((pl.user_id = ue.id)))
      LEFT JOIN public.blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
      LEFT JOIN public.bpc_assets ba ON (((ei.id = ba.eve_item_id) AND (ba.station_detail_id = ue.selected_assets_station_id))))
-  WHERE (pl.runs_count IS NOT NULL)
-  GROUP BY ei.id, pl.user_id, ei.name, COALESCE(ba.quantity, (0)::bigint)
+  WHERE ((pl.runs_count IS NOT NULL) AND (ue.id = 153))
+  GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
  HAVING ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
 
 
@@ -2429,6 +2430,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180907124531'),
 ('20180907131230'),
 ('20180907131346'),
-('20180907160310');
+('20180907160310'),
+('20180912001820'),
+('20180912002109');
 
 
