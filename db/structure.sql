@@ -1954,8 +1954,8 @@ CREATE OR REPLACE VIEW public.component_to_buys AS
      JOIN public.eve_items bpm_mat_ei ON ((bm.eve_item_id = bpm_mat_ei.id)))
      JOIN public.users ue ON ((pl.user_id = ue.id)))
      LEFT JOIN public.blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
-     LEFT JOIN public.bpc_assets ba ON (((ei.id = ba.eve_item_id) AND (ba.station_detail_id = ue.selected_assets_station_id))))
-  WHERE ((pl.runs_count IS NOT NULL) AND (ue.id = 153))
+     LEFT JOIN public.bpc_assets ba ON (((bpm_mat_ei.id = ba.eve_item_id) AND (ba.station_detail_id = ue.selected_assets_station_id))))
+  WHERE (pl.runs_count IS NOT NULL)
   GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
  HAVING ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
 
@@ -2432,6 +2432,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180907131346'),
 ('20180907160310'),
 ('20180912001820'),
-('20180912002109');
+('20180912002109'),
+('20180912112146');
 
 

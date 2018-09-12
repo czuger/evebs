@@ -9,7 +9,8 @@
       %th
         Component
       %th.text-right
-        Quantity
+        Quantity (click to add)
+
       %th.text-right
         Price
       %th.text-right
@@ -17,7 +18,8 @@
     - @required_quantities.each do |rq|
       %tr{ class: cycle( :odd, :even ) }
         %td= link_to rq.name, item_path( rq.id )
-        %td.text-right= print_volume( rq.qtt_to_buy.round )
+        %td.text-right
+          = link_to print_volume( rq.qtt_to_buy.round ), update_from_buy_orders_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy.round ), method: :put, class: 'btn btn-secondary btn-block'
         %td.text-right= print_isk rq.total_cost
         %td.text-right= print_volume rq.required_volume.round
 

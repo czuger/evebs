@@ -5,6 +5,7 @@ class ComponentsToBuyController < ApplicationController
   before_action :set_required_quantities, only: [ :show, :components_to_buy_show_raw ]
 
   def show
+    @jita = TradeHub.find_by_eve_system_id( 30000142 )
     @total_volume = @required_quantities.sum( :required_volume ).ceil
     @total_isk = @required_quantities.sum( :total_cost ).ceil
   end
