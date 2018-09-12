@@ -71,7 +71,7 @@ class ProductionListsController < ApplicationController
 
       corresponding_blueprint ||= pl.eve_item.blueprint
 
-      runs_count ||= ( quantity.to_f / corresponding_blueprint.prod_qtt ).ceil
+      runs_count ||= [ ( quantity.to_f / corresponding_blueprint.prod_qtt ).floor, 1 ].max
       quantity_to_produce = runs_count * corresponding_blueprint.prod_qtt
 
       pl.update!( quantity_to_produce: quantity_to_produce, runs_count: runs_count )

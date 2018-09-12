@@ -30,7 +30,7 @@
           %td.text-right=print_volume(basket['vol_month'])
           %td.text-right=print_isk(basket['single_unit_cost'])
           %td.text-right=print_isk(basket['min_price'])
-          %td.text-right=print_pcent_nomultiply( basket['margin_percent'] )
+          %td.text-right=print_pcent( basket['margin_percent'] )
           %td.text-right=print_volume( basket['batch_size_formula']&.round )
           %td.text-right=number_field_tag( "quantity_to_produce[#{basket[:id]}]", basket[:quantity_to_produce] )
 
