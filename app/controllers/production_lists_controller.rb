@@ -34,6 +34,13 @@ class ProductionListsController < ApplicationController
     head :ok
   end
 
+  def zero_parents
+    @pl = @user.production_lists.where( trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).first
+
+    # TODO : faire une parent table. A réfléchir
+    redirect_to components_to_buy_path
+  end
+
   def update_from_buy_orders
     update_from_advice_screen
 
@@ -71,7 +78,7 @@ class ProductionListsController < ApplicationController
 
       corresponding_blueprint ||= pl.eve_item.blueprint
 
-      runs_count ||= [ ( quantity.to_f / corresponding_blueprint.prod_qtt ).floor, 1 ].max
+      runs_count ||= ( quantity.to_f / corresponding_blueprint.prod_qtt ).floor
       quantity_to_produce = runs_count * corresponding_blueprint.prod_qtt
 
       pl.update!( quantity_to_produce: quantity_to_produce, runs_count: runs_count )
