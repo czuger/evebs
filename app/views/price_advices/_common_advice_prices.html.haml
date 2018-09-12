@@ -49,7 +49,8 @@
             %td.text-right.information_highlight_left= print_isk(price)
             %td.text-right.information_highlight_right=print_pcent( item.margin_percent )
             %td.text-right.information_highlight_right=print_isk( margin )
-            %td.text-right.information_highlight_right=print_volume( item.batch_size_formula.round )
+            %td.text-right
+              = link_to print_volume( item.batch_size_formula.round ), update_from_prices_advices_production_lists_path( eve_item_id: item.item_id, trade_hub_id: item.trade_hub_id, quantity: item.batch_size_formula.round, margin_type: margin_type ), method: :put, class: 'btn btn-secondary btn-block'
 
             - if margin_type == :daily
               %td.text-right.information_highlight_left=print_pcent( item.daily_monthly_pcent )

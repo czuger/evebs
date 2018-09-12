@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
   resource :production_lists, only: [ :edit, :update, :create ] do
     put :update_from_buy_orders
+    put :update_from_prices_advices
   end
   post :remove_production_list_check, controller: :production_lists
 

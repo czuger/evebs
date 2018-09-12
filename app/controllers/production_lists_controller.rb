@@ -36,7 +36,18 @@ class ProductionListsController < ApplicationController
 
   def update_from_buy_orders
     update_from_advice_screen
+
     redirect_to buy_orders_path
+  end
+
+  def update_from_prices_advices
+    update_from_advice_screen
+
+    if params[:margin_type] == 'daily'
+      redirect_to price_advices_advice_prices_path
+    else
+      redirect_to price_advices_advice_prices_weekly_path
+    end
   end
 
   def remove_production_list_check
@@ -52,7 +63,7 @@ class ProductionListsController < ApplicationController
     production_entry = @user.production_lists.where(
         trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).first_or_initialize
 
-    update_production_list production_entry, runs_count: params[:runs_count].to_i
+    update_production_list production_entry, runs_count: params[:runs_count]&.to_i, quantity: params[:quantity]&.to_i
   end
 
   def update_production_list( pl, quantity: nil, runs_count: nil )
