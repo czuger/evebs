@@ -1,0 +1,12 @@
+%table.table
+  %thead
+    %tr
+      %th.text-right Cost
+      %th.text-right Volume
+  %tbody
+    - @sales_final_split.each do |price, volume|
+      %tr
+        %td.text-right
+          = print_isk price
+        %td.text-right
+          = print_volume volume.round

@@ -7,20 +7,21 @@ class ItemsController < ApplicationController
   include Modules::CheckedProductionListIds
 
   def cost
-    @item = EveItem.includes( :blueprint ).find_by( id: params[ :item_id ] )
+    @item = EveItem.find_by( id: params[ :item_id ] )
+
+    if @item.base_item
+      jita = TradeHub.find_by_eve_system_id( 30000142 )
+      @sales_final_split = SalesFinal.where( eve_item_id: @item.id, trade_hub_id: jita.id ).where( 'volume > 0' )
+                               .order( 'price DESC' ).group( :price ).sum( :volume )
+    end
   end
 
   def show
     @item = EveItem.find( params[ :id ] )
 
-    unless @item.base_item
-      set_checked_production_list_ids
+    set_checked_production_list_ids
 
-      @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
-    else
-      jita = TradeHub.find_by_eve_system_id( 30000142 )
-      redirect_to item_trade_hub_detail_path( @item, trade_hub_id: jita.id )
-    end
+    @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
   end
 
   def trade_hub_detail

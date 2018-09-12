@@ -5,44 +5,7 @@
     = link_to( @item.name, "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
     = print_total_cost_for_items( @item )
 
-  - total_for_batch = 0
-  %table.table
-    %tr
-      %th Item
-      %th.text-right Average sold price over the last 7 days in Jita
-      %th.text-right Required quantity
-      %th.text-right Total cost
-    - @item.blueprint_materials.includes( :eve_item ).each do |material|
-      - component = material.eve_item
-      - if component
-        %tr{ class: cycle( :odd, :even ) }
-          %td= link_to( component.name, item_path( component.id ) )
-          %td.text-right= print_isk( component.cost )
-          %td.text-right= print_volume( material.required_qtt )
-          - total = safe_multiply( component.cost, material.required_qtt )
-          - total_for_batch += total if total
-          %td.text-right= print_isk( total )
-    %tr{ class: cycle( :odd, :even ) }
-      %td{ colspan: 3 }
-        Total for batch
-      %td.text-right= print_isk( total_for_batch )
-    - total_for_one_item = total_for_batch / @item.blueprint.prod_qtt
-    %tr{ class: cycle( :odd, :even ) }
-      %td{ colspan: 3 }
-        Batch size
-      %td.text-right= print_volume( @item.blueprint.prod_qtt )
-    %tr{ class: cycle( :odd, :even ) }
-      %td{ colspan: 3 }
-        Total for one item
-      %td.text-right= print_isk( total_for_one_item )
-    %tr{ class: cycle( :odd, :even ) }
-      %td{ colspan: 3 }
-        Industry taxes
-      %td.text-right= print_pcent( Blueprint::TAX_AMOUNT )
-    %tr{ class: cycle( :odd, :even ) }
-      %td{ colspan: 3 }
-        Final cost
-      %td.text-right= print_isk( total_for_one_item * Blueprint::TAX_AMOUNT_MULTIPLIER )
-
-
-
+  - if @item.base_item
+    = render partial: 'cost_for_basic_item'
+  - else
+    = render partial: 'cost_for_craftable_item'
