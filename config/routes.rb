@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   resource :list_items, only: [ :edit, :update ] do
     get :my_items_list
     post :selection_change
+    get :clear
   end
 
   resource :users, only: [:edit, :update] do

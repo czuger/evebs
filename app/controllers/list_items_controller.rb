@@ -36,6 +36,11 @@ class ListItemsController < ApplicationController
     end
   end
 
+  def clear
+    @user.eve_items.clear
+    redirect_to my_items_list_list_items_path
+  end
+
   private
 
   def items_list( my_items_only )
