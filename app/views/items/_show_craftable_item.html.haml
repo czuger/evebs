@@ -8,7 +8,6 @@
   %table.table.table-bordered.sortable
     %thead
       %tr
-        %th Prod. list
         %th Trade hub
         %th.text-left Current margin
         %th.text-left Current min price
@@ -20,9 +19,6 @@
       - @item_prices.each do |ip|
 
         %tr
-
-          %td.text-center= production_list_check_box( ip )
-
           %td= ip.trade_hub_name
 
           %td.text-right= print_pcent( ip.margin_percent )

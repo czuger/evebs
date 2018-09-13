@@ -29,8 +29,13 @@ class ProductionListsController < ApplicationController
   # This is used to create a production list item
   # Used by Ajax only
   def create
+    trade_hub_id = params[:trade_hub_id]
+    unless trade_hub_id
+      th = TradeHub.find_by_eve_system_id( 30000142 )
+      trade_hub_id = th.id
+    end
     @user.production_lists.find_or_create_by!(
-        trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] )
+        trade_hub_id: trade_hub_id, eve_item_id: params[:eve_item_id] )
     head :ok
   end
 
