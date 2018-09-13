@@ -63,7 +63,7 @@
           %tr
             %td.trade_hub_name=cp.trade_hub_name
             %td.item_name= link_to( cp.eve_item_name, item_url( cp.eve_item_id ) )
-            %td.text-right=print_isk( cp.unit_cost )
+            %td.text-right=print_isk( cp.cost )
             %td.text-right=print_isk( cp.min_price )
             %td.text-right{ class: challenged_prices_highlight_class_low_margin( cp.margin_pcent ) }=print_pcent( cp.margin_pcent )
             %td.text-right=print_isk( cp.my_price )

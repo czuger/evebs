@@ -69,6 +69,8 @@ group :development, :test do
   gem 'mocha'
 
   gem 'rails-controller-testing'
+
+  gem 'capybara'
 end
 
 gem 'simplecov', :require => false, :group => :test
