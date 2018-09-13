@@ -12,6 +12,7 @@ FactoryBot.define do
       name {'Inferno Fury Cruise Missile'}
       cost {1815252.83}
       market_group { FactoryBot.create( :advanced_high_damage_cruise_missiles_market_group ) }
+      blueprint { create( :inferno_fury_cruise_missile_blueprint ) }
     end
 
     # An example of item with blueprint but no market group
@@ -19,6 +20,7 @@ FactoryBot.define do
       cpp_eve_item_id {24535}
       name {'Mjolnir Fury Cruise Missile'}
       cost {1815252.83}
+      blueprint { create( :mjolnir_fury_cruise_missile_blueprint ) }
     end
 
     # An example with no blueprint and no market group
@@ -39,7 +41,8 @@ FactoryBot.define do
     factory :morphite do
       cpp_eve_item_id {11399}
       name {'Morphite'}
-      cost {0}
+      cost {80}
+      volume {0.01}
     end
 
     factory :rocket_fuel do
@@ -55,6 +58,11 @@ FactoryBot.define do
     factory :plasma_pulse_generator do
       cpp_eve_item_id {11695}
       name {'Plasma Pulse Generator'}
+    end
+
+    factory :em_pulse_generator do
+      cpp_eve_item_id {11694}
+      name {'EM Pulse Generator'}
     end
 
     factory :phenolic_composite do

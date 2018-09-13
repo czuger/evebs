@@ -1860,6 +1860,13 @@ CREATE INDEX index_structures_on_trade_hub_id ON public.structures USING btree (
 
 
 --
+-- Name: index_trade_hubs_on_eve_system_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_trade_hubs_on_eve_system_id ON public.trade_hubs USING btree (eve_system_id);
+
+
+--
 -- Name: index_trade_hubs_on_region_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2433,6 +2440,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180907160310'),
 ('20180912001820'),
 ('20180912002109'),
-('20180912112146');
+('20180912112146'),
+('20180913131039');
 
 

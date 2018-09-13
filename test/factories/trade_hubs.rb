@@ -8,7 +8,7 @@ FactoryBot.define do
     factory :jita do
       eve_system_id {'30000142'}
       name {'Jita'}
-      region { create( :the_forge ) }
+      region { Region.find_by_cpp_region_id( 10000002 ) || create( :the_forge ) }
     end
 
     factory :rens do
