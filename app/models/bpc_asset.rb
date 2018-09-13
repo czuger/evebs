@@ -4,4 +4,5 @@ class BpcAsset < ApplicationRecord
 
   belongs_to :station_detail
   belongs_to :eve_item
+  belongs_to :user
 end

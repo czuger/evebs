@@ -1951,9 +1951,9 @@ CREATE OR REPLACE VIEW public.component_to_buys AS
  SELECT bpm_mat_ei.id,
     pl.user_id,
     bpm_mat_ei.name,
-    (sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
-    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.cost) AS total_cost,
-    ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.volume) AS required_volume
+    (sum((((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision)) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
+    ((sum((((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision)) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.cost) AS total_cost,
+    ((sum((((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision)) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.volume) AS required_volume
    FROM (((((((public.production_lists pl
      JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
      JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
@@ -1964,7 +1964,7 @@ CREATE OR REPLACE VIEW public.component_to_buys AS
      LEFT JOIN public.bpc_assets ba ON (((bpm_mat_ei.id = ba.eve_item_id) AND (ba.station_detail_id = ue.selected_assets_station_id))))
   WHERE (pl.runs_count IS NOT NULL)
   GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
- HAVING ((sum((ceil(((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
+ HAVING ((sum((((bm.required_qtt)::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision)) * (pl.runs_count)::double precision)) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
 
 
 --
@@ -2441,6 +2441,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180912001820'),
 ('20180912002109'),
 ('20180912112146'),
-('20180913131039');
+('20180913131039'),
+('20180913141720');
 
 
