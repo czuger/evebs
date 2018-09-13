@@ -1,6 +1,7 @@
 class ListItemsController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
+  before_action :set_user
 
   include Modules::CheckedProductionListIds
 
@@ -21,6 +22,18 @@ class ListItemsController < ApplicationController
 
     @user.eve_item_ids = current_ids
     redirect_to edit_list_items_path
+  end
+
+  def selection_change
+    item = EveItem.find( params['id'] )
+
+    if params['check_state'] == 'false'
+      @user.eve_items.delete( item )
+    else
+      unless @user.eve_items.exists?( item.id )
+        @user.eve_items << item
+      end
+    end
   end
 
   private
