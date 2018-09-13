@@ -19,14 +19,14 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get edit' do
-    get edit_production_list_url( @user )
+    get edit_production_lists_url( @user )
     assert_response :success
   end
 
   test 'should update' do
     set_pl
-    patch production_list_url( @user, params: { quantity_to_produce: { @pl.id => 500 } } )
-    assert_redirected_to edit_production_list_url( @user )
+    patch production_lists_url( @user, params: { quantity_to_produce: { @pl.id => 500 } } )
+    assert_redirected_to edit_production_lists_url
   end
 
   test 'add item in basket' do
