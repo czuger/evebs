@@ -2,6 +2,9 @@ FactoryBot.define do
 
   factory :blueprint_material do
 
+    blueprint
+    required_qtt { -999 }
+
     factory :material_morphite do
       eve_item { EveItem.find_by_cpp_eve_item_id( 11399 ) || FactoryBot.create( :morphite ) }
     end
