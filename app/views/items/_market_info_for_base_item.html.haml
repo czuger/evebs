@@ -9,21 +9,21 @@
     %thead
       %tr
         %th Trade hub
-        %th.text-left Current margin
-        %th.text-left Current min price
-        %th.text-left Avg margin
-        %th.text-left Avg price
-        %th.text-left Monthly regional volume
+        %th.text-right Current margin
+        %th.text-right Current min price
+        %th.text-right Avg margin
+        %th.text-right Avg price
+        %th.text-right Monthly regional volume
 
     %tbody
       - @item_prices.each do |ip|
 
         %tr
-          %td= ip.trade_hub_name
+          %td= trade_hub_name_with_region( ip.trade_hub )
 
-          %td.text-right= print_pcent( ip.margin_percent )
+          %td.text-right= print_pcent( nil )
           %td.text-right= link_to( print_isk( ip.min_price ), item_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
 
-          %td.vcenter.text-right= print_pcent( ip.avg_monthly_margin_percent )
-          %td.vcenter.text-right= print_isk( ip.avg_price_month )
-          %td.vcenter.text-right= print_volume( ip.vol_month )
+          %td.vcenter.text-right= print_pcent( nil )
+          %td.vcenter.text-right= print_isk( nil )
+          %td.vcenter.text-right= print_volume( nil )

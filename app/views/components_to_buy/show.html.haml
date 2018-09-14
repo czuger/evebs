@@ -23,8 +23,8 @@
         %td.text-right= print_volume rq.required_volume.ceil
         %td
           = link_to 'Add to prod', update_from_buy_orders_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy.round ), method: :put, class: 'btn btn-secondary btn-block'
-        %td
-          = link_to 'Zero parent(s)', update_from_buy_orders_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy.round ), method: :put, class: 'btn btn-secondary btn-block'
+        -#%td
+        -#  = link_to 'Zero parent(s)', update_from_buy_orders_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy.round ), method: :put, class: 'btn btn-secondary btn-block'
 
     %tr{ class: cycle( :odd, :even ) }
       %td

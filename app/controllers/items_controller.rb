@@ -19,9 +19,14 @@ class ItemsController < ApplicationController
   def show
     @item = EveItem.find( params[ :id ] )
 
-    set_checked_production_list_ids
+    # set_checked_production_list_ids
 
-    @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
+    if @item.base_item
+      @item_prices = @item.prices_mins.includes( {trade_hub: :region} ).order( 'min_price NULLS LAST' )
+    else
+      @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
+    end
+
   end
 
   def trade_hub_detail
