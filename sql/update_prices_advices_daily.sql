@@ -17,7 +17,7 @@ UPDATE prices_advices pm SET ( avg_price_week, updated_at ) = ( mp, now() )
 FROM (
        SELECT SUM( so.volume * so.price ) / SUM( so.volume ) mp, so.trade_hub_id ti, so.eve_item_id ei
        FROM sales_finals so
-       WHERE so.day <= current_date - 7
+       WHERE so.day >= current_date - 7
          AND so.volume > 0
        GROUP BY so.trade_hub_id, so.eve_item_id ) min_so
 WHERE ti = pm.trade_hub_id

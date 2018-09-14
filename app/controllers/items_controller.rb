@@ -11,8 +11,9 @@ class ItemsController < ApplicationController
 
     if @item.base_item
       jita = TradeHub.find_by_eve_system_id( 30000142 )
-      @sales_final_split = SalesFinal.where( eve_item_id: @item.id, trade_hub_id: jita.id ).where( 'volume > 0' )
-                               .order( 'price DESC' ).group( :price ).sum( :volume )
+      @sales_final_detail = SalesFinal.where( eve_item_id: @item.id, trade_hub_id: jita.id ).
+          where( 'volume > 0 AND day >= ( current_date - 7 )' ).order( 'day DESC, created_at DESC' ).
+          paginate( :page => params[:page] )
     end
   end
 
