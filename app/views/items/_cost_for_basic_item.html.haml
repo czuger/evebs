@@ -1,3 +1,8 @@
+%h3
+  Sales details included in price computation for
+  = link_to( @item.name, "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
+  = print_total_cost_for_items( @item )
+
 %table.table
   %thead
     %tr

@@ -52,32 +52,34 @@ class Process::UpdatePublicTradesOrders
       process_count += 1
       # puts "#{process_count} orders processed" if process_count % 10000 == 0
 
-      order = JSON.parse( json_encoded_order )
-      order.symbolize_keys!
+      server_order_data = JSON.parse( json_encoded_order )
+      server_order_data.symbolize_keys!
 
-      trade_hub_id = @trade_hub_conversion_hash[ order[:system_id] ]
-      eve_item_id = @eve_item_conversion_hash[ order[:type_id] ]
+      trade_hub_id = @trade_hub_conversion_hash[ server_order_data[:system_id] ]
+      eve_item_id = @eve_item_conversion_hash[ server_order_data[:type_id] ]
       next unless trade_hub_id && eve_item_id
 
-      trade_order = PublicTradeOrder.find_by_order_id( order[:order_id] )
+      trade_order = PublicTradeOrder.find_by_order_id( server_order_data[:order_id] )
 
       # pp order
 
-      issued = DateTime.parse( order[:issued] )
-      duration = order[:duration]
+      issued = DateTime.parse( server_order_data[:issued] )
+      duration = server_order_data[:duration]
       end_time = issued + duration.days
 
       if trade_order
         # The order already exist
-        if trade_order.volume_remain != order[:volume_remain] || trade_order.end_time != end_time ||
-            trade_order.price != order[:price]
+        if trade_order.volume_remain != server_order_data[:volume_remain] || trade_order.end_time != end_time ||
+            trade_order.price != server_order_data[:price]
           # And has changed
 
-          create_sales_final_record( trade_order, order )
+          unless server_order_data[:is_buy_order]
+            create_sales_final_record( trade_order, server_order_data )
+          end
 
-          trade_order.volume_remain = order[:volume_remain]
+          trade_order.volume_remain = server_order_data[:volume_remain]
           trade_order.end_time = end_time
-          trade_order.price = order[:price]
+          trade_order.price = server_order_data[:price]
           trade_order.touched = true
           trade_order.save!
 
@@ -91,9 +93,9 @@ class Process::UpdatePublicTradesOrders
         # The trade order does not exist
 
         @order_batch_inserter.add_data  PublicTradeOrder.new(
-            is_buy_order: order[:is_buy_order], end_time: end_time, min_volume: order[:min_volume], order_id: order[:order_id],
-            price: order[:price], range: order[:range], trade_hub_id: trade_hub_id, eve_item_id: eve_item_id,
-            volume_remain: order[:volume_remain], volume_total: order[:volume_total], touched: true
+            is_buy_order: server_order_data[:is_buy_order], end_time: end_time, min_volume: server_order_data[:min_volume], order_id: server_order_data[:order_id],
+            price: server_order_data[:price], range: server_order_data[:range], trade_hub_id: trade_hub_id, eve_item_id: eve_item_id,
+            volume_remain: server_order_data[:volume_remain], volume_total: server_order_data[:volume_total], touched: true
         )
         @orders_created += 1
       end
@@ -113,7 +115,7 @@ class Process::UpdatePublicTradesOrders
 
   def delete_old_sales_orders
     # We assume that all old orders are closed as selling. We will have to estimate the orders that have been manually closed.
-    PublicTradeOrder.where( touched: false ).where( 'end_time < ?', Time.now ).each do |old_order|
+    PublicTradeOrder.where( touched: false, is_buy_order: flase ).where( 'end_time < ?', Time.now ).each do |old_order|
       tmp_record = { volume_remain: old_order.volume_remain, price: old_order.price }
       create_sales_final_record( old_order, tmp_record )
     end
