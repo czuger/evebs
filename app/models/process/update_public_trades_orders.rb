@@ -115,7 +115,7 @@ class Process::UpdatePublicTradesOrders
 
   def delete_old_sales_orders
     # We assume that all old orders are closed as selling. We will have to estimate the orders that have been manually closed.
-    PublicTradeOrder.where( touched: false, is_buy_order: flase ).where( 'end_time < ?', Time.now ).each do |old_order|
+    PublicTradeOrder.where( touched: false, is_buy_order: false ).where( 'end_time < ?', Time.now ).each do |old_order|
       tmp_record = { volume_remain: old_order.volume_remain, price: old_order.price }
       create_sales_final_record( old_order, tmp_record )
     end
