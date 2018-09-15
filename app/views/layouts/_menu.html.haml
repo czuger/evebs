@@ -20,8 +20,8 @@
           .dropdown-divider
           = dropdown_sub_menu_link( 'Weekly', price_advices_advice_prices_weekly_path )
           = dropdown_sub_menu_link( 'Immediate', price_advices_advice_prices_path )
-          .dropdown-divider
-          = dropdown_sub_menu_link( 'Empty places', price_advices_empty_places_path )
+          -#.dropdown-divider
+          -#= dropdown_sub_menu_link( 'Empty places', price_advices_empty_places_path )
 
         = dropdown_menu_block( 'Production' ) do
           = dropdown_sub_menu_link( 'Production list', edit_production_lists_path( current_user ) )
