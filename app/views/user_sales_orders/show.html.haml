@@ -65,7 +65,7 @@
             %td.item_name= link_to( cp.eve_item_name, item_url( cp.eve_item_id ) )
             %td.text-right=print_isk( cp.cost )
             %td.text-right=print_isk( cp.min_price )
-            %td.text-right{ class: challenged_prices_highlight_class_low_margin( cp.margin_pcent ) }=print_pcent( cp.margin_pcent )
+            %td.text-right{ class: challenged_prices_highlight_class_low_margin( cp.min_price_margin_pcent ) }=print_pcent( cp.min_price_margin_pcent )
             %td.text-right=print_isk( cp.my_price )
             %td.text-right{ class: challenged_prices_highlight_class_my_price_to_min_price_delta( cp.price_delta ) }
               = print_isk( cp.price_delta )

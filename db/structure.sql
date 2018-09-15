@@ -1093,8 +1093,7 @@ CREATE VIEW public.user_sale_order_details AS
     pm.min_price,
     ei.cost,
     b.prod_qtt,
-    s1.unit_cost,
-    ((pm.min_price / s1.unit_cost) - (1)::double precision) AS margin_pcent,
+    ((pm.min_price / ei.cost) - (1)::double precision) AS min_price_margin_pcent,
     (pm.min_price - uso.price) AS price_delta,
     uso.eve_item_id,
     uso.trade_hub_id,
@@ -1105,8 +1104,7 @@ CREATE VIEW public.user_sale_order_details AS
      JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
      JOIN public.trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
      JOIN public.regions r ON ((tu.region_id = r.id)))
-     LEFT JOIN public.prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id)))),
-    LATERAL ( SELECT (ei.cost / (b.prod_qtt)::double precision)) s1(unit_cost);
+     LEFT JOIN public.prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id))));
 
 
 --
@@ -2442,6 +2440,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180912002109'),
 ('20180912112146'),
 ('20180913131039'),
-('20180913141720');
+('20180913141720'),
+('20180915020116');
 
 

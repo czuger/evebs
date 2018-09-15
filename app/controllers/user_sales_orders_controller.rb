@@ -13,7 +13,7 @@ class UserSalesOrdersController < ApplicationController
     filtered_users_sales_order_details = @user.user_sale_order_details
 
     if @user.sales_orders_show_margin_min
-      filtered_users_sales_order_details = filtered_users_sales_order_details.where( 'margin_pcent > ?', @user.sales_orders_show_margin_min * 0.01 )
+      filtered_users_sales_order_details = filtered_users_sales_order_details.where( 'min_price_margin_pcent > ?', @user.sales_orders_show_margin_min * 0.01 )
     end
 
     @trade_hubs_names = filtered_users_sales_order_details.distinct.order( :trade_hub_name ).pluck( :trade_hub_name, :trade_hub_id )

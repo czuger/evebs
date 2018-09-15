@@ -10,6 +10,7 @@ class JitaMarginsController < ApplicationController
     if @user
       redirect_to buy_orders_path
     end
+
     # @margins = JitaMargin.includes( :eve_item )
     #   .where( 'margin_percent > 0.3' ).where( 'mens_volume > ( batch_size * 600 )' )
     #   .order( 'margin DESC' ).limit( 5 )
