@@ -6,6 +6,7 @@ module Process
       Banner.p 'About to update items'
 
       types = YAML::load_file('data/types.yaml')
+      cpp_market_prices = YAML::load_file('data/cpp_market_prices.yaml')
 
       lowest_production_level = 0
 
@@ -27,6 +28,12 @@ module Process
         on_db_item.base_item = type[:base_item]
 
         on_db_item.market_group_id = market_groups_cpp_to_syntetic_key_conversion_hash[ type[:market_group_id] ]
+
+        mp_data = cpp_market_prices[type[:cpp_eve_item_id].to_i]
+        if mp_data
+          on_db_item.cpp_market_adjusted_price = mp_data['adjusted_price']
+          on_db_item.cpp_market_average_price = mp_data['average_price']
+        end
 
         on_db_item.save
       end

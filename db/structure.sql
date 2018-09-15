@@ -277,7 +277,9 @@ CREATE TABLE public.eve_items (
     blueprint_id bigint,
     volume double precision,
     production_level integer DEFAULT 0 NOT NULL,
-    base_item boolean DEFAULT false NOT NULL
+    base_item boolean DEFAULT false NOT NULL,
+    cpp_market_adjusted_price double precision,
+    cpp_market_average_price double precision
 );
 
 
@@ -2441,6 +2443,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180912112146'),
 ('20180913131039'),
 ('20180913141720'),
-('20180915020116');
+('20180915020116'),
+('20180915021818');
 
 

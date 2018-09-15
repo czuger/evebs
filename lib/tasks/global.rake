@@ -12,8 +12,10 @@ namespace :process do
       Crontab.start( :hourly )
 
       Esi::DownloadPublicTradesOrders.new( { verbose_output: false } ).download
+      Esi::DownloadMarketsPrices.new.download
 
       ActiveRecord::Base.transaction do
+        Process::UpdateEveItems.new.update
 
         Process::UpdatePublicTradesOrders.new.update
 
@@ -59,7 +61,9 @@ namespace :process do
       ActiveRecord::Base.transaction do
         Process::UpdateMarketGroups.new.update
         Process::UpdateBlueprints.new.update
-        Process::UpdateEveItems.new.update
+
+        # Eve items are now updated on a hourly base due to cpp market prices integration.
+        # Process::UpdateEveItems.new.update
         Process::UpdateBlueprintMaterials.new.update
 
 
