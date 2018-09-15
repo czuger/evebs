@@ -28,7 +28,10 @@ namespace :data_setup do
 
   desc 'Finding the prefect industrial station'
   task :find_station => :environment do
-    Esi::IndustryStationFinder.new.fill_station_table
+    # Esi::IndustryStationFinder.new.fill_station_table
+    Esi::IndustryStationFinder.new.update_security_status
+    Esi::IndustryStationFinder.new.update_jita_distance
+    Esi::IndustryStationFinder.new.update_industry_systems
   end
 
   desc "Update the structures "

@@ -10,7 +10,7 @@ module Esi
 
     def find_stations
       StationDetail.where( 'services @> ARRAY[?]::varchar[]', [ :factory, :labratory, 'office-rental', :cloning ] )
-        .where( 'security_status >= 0.5 AND jita_distance < 10 AND office_rental_cost < 500000' )
+        .where( 'security_status >= 0.5 AND jita_distance < 10 AND office_rental_cost < 1000000' )
         .order( 'jita_distance, office_rental_cost' ).each do |station|
 
         puts '%-90s %11.0f % 4.2f %3d %s' %
