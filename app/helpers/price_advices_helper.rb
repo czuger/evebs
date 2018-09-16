@@ -63,8 +63,8 @@ module PriceAdvicesHelper
     protected_print_routine( pcent, :pcent_nomultiply )
   end
 
-  def print_isk(amount)
-    protected_print_routine( amount, :isk )
+  def print_isk(amount, million_round: false )
+    protected_print_routine( amount, :isk, million_round: million_round )
   end
 
   def print_volume(amount)
@@ -73,17 +73,20 @@ module PriceAdvicesHelper
 
   private
 
-  def protected_print_routine( amount, kind )
+  def protected_print_routine( amount, kind, million_round: nil )
     raise "#{self.class}##{__method__} : amount should not be String" if amount.class == String
-    amount ? print_routine( amount, kind ) : 'N/A'
+    amount ? print_routine( amount, kind, million_round: million_round ) : 'N/A'
   end
 
-  def print_routine( amount, kind )
+  def print_routine( amount, kind, million_round: nil )
     case kind
       when :volume
         number_with_delimiter(amount, separator: ",", delimiter: " ",)
       when :isk
-        number_to_currency(amount.round(2), unit: "ISK ", separator: ",", delimiter: " ", format: '%n %u')
+        amount /= 1000000.0 if million_round
+        unit = million_round ? 'M ISK ' : 'ISK '
+
+        number_to_currency(amount.round(2), unit: unit, separator: ",", delimiter: " ", format: '%n %u')
       when :pcent, :pcent_nomultiply
         amount = amount * 100.0 if kind == :pcent
         number_with_delimiter(amount.round( 2 ), separator: ",", delimiter: " ",) + ' %'

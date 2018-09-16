@@ -26,9 +26,13 @@
           %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) }
             Price
             %i.glyphicon.glyphicon-question-sign
-          %th.text-center{ colspan: 3, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') }
+          %th.text-center{ colspan: 2, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') }
             Margin
             %i.glyphicon.glyphicon-question-sign
+
+          %th.text-center
+            Units to prod.
+
           - if margin_type == :daily
             %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) }
               Daily/monthly
@@ -48,7 +52,7 @@
 
             %td.text-right.information_highlight_left= print_isk(price)
             %td.text-right.information_highlight_right=print_pcent( item.margin_percent )
-            %td.text-right.information_highlight_right=print_isk( margin )
+            %td.text-right.information_highlight_right=print_isk( margin, million_round: true )
             %td.text-right
               = link_to print_volume( item.batch_size_formula.round ), update_from_prices_advices_production_lists_path( eve_item_id: item.item_id, trade_hub_id: item.trade_hub_id, quantity: item.batch_size_formula.round, margin_type: margin_type ), method: :put, class: 'btn btn-secondary btn-block'
 
