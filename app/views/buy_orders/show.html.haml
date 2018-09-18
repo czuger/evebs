@@ -7,9 +7,10 @@
       %th Item
       -#%th.text-center Approx max buy price
       -#%th.text-center Single unit cost
-      %th.text-right Single unit margin
+      %th.text-right Est. margin
+      %th.text-right Est. margin %
       %th.text-right Estimated buy volume
-      %th.text-center Job count
+      -#%th.text-center Job count
       %th.text-right Nb runs
       %th.text-right Final margin
     - @buy_orders.each do |cp|
@@ -22,8 +23,11 @@
         %td.text-right{ 'data-toggle' => 'tooltip', title: "<p>Single unit cost : <br>#{print_isk( cp.single_unit_cost )}</p><p>Approx max buy price : <br>#{print_isk( cp.approx_max_price )}</p>" }
           = print_isk( cp.single_unit_margin )
 
+        %td.text-right
+          = print_pcent( 1 - cp.single_unit_cost / cp.approx_max_price )
+
         %td.text-right= print_volume( cp.over_approx_max_price_volume )
-        %td.text-center= cp.job_count.round
+        -#%td.text-center= cp.job_count.round
         %td.text-right
           = link_to cp.runs.round, update_from_buy_orders_production_lists_path( eve_item_id: cp.eve_item_id, trade_hub_id: cp.trade_hub_id, runs_count: cp.runs.round ), method: :put, class: 'btn btn-secondary btn-block'
 
