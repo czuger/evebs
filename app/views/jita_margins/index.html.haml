@@ -1,20 +1,20 @@
 .container
 
-  %H2.my-3
+  %H2.pt-4.pb-1
     This is a tool for industrials in Eve Online
 
-  %H3.my-3
+  %H4.py-1
     In this tool you could find the following things :
 
-  .row.my-3
+  .row.py-4
     .col.text-center
       = fa_icon 'compass 5x'
       %br
       Comparison of production costs and buy prices in different trades hubs
 
     .col.text-center
-      -#= fa_icon 'landmark 5x'
-      = fa_icon 'compass 5x'
+      = fa_icon 'landmark 5x'
+      -#= fa_icon 'compass 5x'
       %br
       Market prices of craftable items
 
@@ -25,97 +25,34 @@
 
     .col.text-center
       -#= fa_icon 'box 5x'
-      = fa_icon 'industry 5x'
+      = fa_icon 'box 5x'
       %br
       Assets handling for your production
 
-  .row.my-3
+  .row.py-4
     .col.text-center
-      -#= fa_icon 'project-diagram 5x'
-      = fa_icon 'industry 5x'
+      = fa_icon 'project-diagram 5x'
+      -#= fa_icon 'industry 5x'
       %br
-      Using your blueprints modification for production
+      Blueprints modification for your production
 
     .col.text-center
-      = fa_icon 'calculator 5x'
+      = fa_icon 'chart-line 5x'
+      -#= fa_icon 'calculator 5x'
       %br
       A trade tool that monitor your current orders
 
     .col.text-center
-      -#= fa_icon 'search-dollar 5x'
-      = fa_icon 'calculator 5x'
+      = fa_icon 'search-dollar 5x'
+      -#= fa_icon 'calculator 5x'
       %br
-      A way to know how much you have to lower your price to be the best
+      Easily lower your price to be the best
         
     .col.text-center
-      -#= fa_icon 'funnel-dollar 5x'
-      = fa_icon 'calculator 5x'
+      = fa_icon 'balance-scale 5x'
+      -#= fa_icon 'calculator 5x'
       %br
-      A way to know how much margin you will do if you match the min price
+      Don't lower prices beyond profit limit
 
-  -#%ul.my-3
-  -#  %li
-  -#    Comparison of production costs and buy prices in different trades hubs.
-  -#  %li
-  -#    Market prices of craftable items
-  -#  %li
-  -#    A production list that summarize the components to buy
-  -#    %ul
-  -#      %li
-  -#        Using your assets before you buy new stock
-  -#      %li
-  -#        Using your blueprints modification
-  -#  %li
-  -#    A trade tool that monitor your current orders and show you
-  -#    %li
-  -#      If someone has a best price than you
-  -#    %li
-  -#      How much you have to lower to have the best price
-  -#    %li
-  -#      What will be your margin if you match the min price
-
-
-
-
-
-  -#.jumbotron.text-center
-  -#  %h2
-  -#    Industrial tool
-    -#%h2
-    -#  It help to find what to produce and where to sell for the best benefit.
-
-
-
-  -#%h3
-  -#  Benefits examples in Jita
-  -#
-  -#%table.table
-  -#  %tr
-  -#    %thead
-  -#      %th
-  -#        Item
-  -#      %th.text-right
-  -#        Benefit (full batch)
-  -#      %th.text-right
-  -#        Sold this month
-  -#      %th.text-right
-  -#        Cost (unit)
-  -#      %th.text-right
-  -#        Jita min price (unit)
-  -#      %th.text-right
-  -#        Percent benefit
-  -#      %th
-  -#  - @margins.each do |margin|
-  -#    %tr
-  -#      %td= link_to( margin.eve_item.name, "http://games.chruker.dk/eve_online/item.php?type_id=#{margin.eve_item.cpp_eve_item_id}", target: '_blank' )
-  -#      %td.text-right= print_isk( margin.margin )
-  -#      %td.text-right= print_volume( margin.mens_volume )
-  -#      %td.text-right= print_isk( margin.cost )
-  -#      %td.text-right= link_to( print_isk( margin.jita_min_price ), "https://eve-central.com/home/quicklook.html?typeid=#{margin.eve_item.cpp_eve_item_id}&usesystem=30000142", target: '_blank' )
-  -#      %td.text-right= print_pcent( margin.margin_percent ) if margin && margin.margin_percent
-  -#      -#%td= link_to( 'Epic blueprint', jita_margin_path( margin.eve_item_id ), method: :put ) if current_user && current_user.admin
-
-  .text-center
-    = button_to "Sign in for custom results", '/auth/eve_online_sso', id: 'sign_in', method: :get, class: 'btn-lg btn-warning'
-    -#%h4
-    -#  select your items, trade hubs, and more ...
+  .text-center.py-4
+    = button_to 'Sign in for custom results', '/auth/eve_online_sso', id: 'sign_in', method: :get, class: 'btn-lg btn-warning'
