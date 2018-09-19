@@ -27,12 +27,15 @@
           = dropdown_sub_menu_link( 'Production list', edit_production_lists_path( current_user ) )
           = dropdown_sub_menu_link( 'Components to buy', components_to_buy_path( current_user ) )
           = dropdown_sub_menu_link( 'Components to buy - raw', components_to_buy_show_raw_path, true )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'My Assets', my_assets_path )
+          = dropdown_sub_menu_link( 'My Blueprints', blueprints_path )
+
+
+        = simple_menu_link( 'My sales orders', user_sales_orders_path )
 
         = dropdown_menu_block( 'Misc' ) do
           = dropdown_sub_menu_link( 'Share', user_to_user_duplication_requests_path )
-          = dropdown_sub_menu_link( 'My sales orders list', user_sales_orders_path )
-          = dropdown_sub_menu_link( 'My Assets', my_assets_path )
-          = dropdown_sub_menu_link( 'My Blueprints', blueprints_path )
 
         = simple_menu_link( 'User', edit_users_path )
 
