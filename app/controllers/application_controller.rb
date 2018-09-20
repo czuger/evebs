@@ -18,6 +18,12 @@ class ApplicationController < ActionController::Base
     # UserActivityLog.create!( ip: ip, action: action, user: user )
   end
 
+  def get_jita
+    @jita ||= TradeHub.find_by_eve_system_id( 30000142 )
+    @jita
+  end
+
+
   private
 
   def current_user

@@ -1,11 +1,12 @@
 .container
-  %h3
+
+  %h3.my-3
     Informations for
     = link_to( "#{@item.name}", "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
     \-
     = link_to( print_total_cost_for_items( @item ), item_cost_path( @item.id ) )
 
-  %table.table.table-bordered.sortable
+  %table.table.table-bordered.sortable.my-3
     %thead
       %tr
         %th Trade hub
@@ -13,7 +14,7 @@
         %th.text-right Current min price
         %th.text-right Avg margin
         %th.text-right Avg price
-        %th.text-right Monthly regional volume
+        %th.text-right Monthly volume
 
     %tbody
       - @item_prices.each do |ip|

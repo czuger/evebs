@@ -11,9 +11,9 @@
     .col
       = link_to( "Production cost : #{print_isk( @item.cost )}", item_cost_path( @item ) )
     .col
-      = "Jita min price : #{@item.cost}"
+      = link_to( "Jita min price : #{print_isk( @jita_min_price.min_price )}", item_trade_hub_detail_path( @item, trade_hub_id: @jita.id ) )
     .col
-      = link_to( 'Market details', item_market_overview_path( @item ) )
+      = link_to( 'Markets details', item_market_overview_path( @item ) )
 
 
   .row.my-4

@@ -1,10 +1,10 @@
-%h3
+%h3.my-3
   Production cost estimation for
-  = link_to( @item.name, "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
+  = link_to( @item.name, item_path( @item ) )
   = print_total_cost_for_items( @item )
 
 - total_for_batch = 0
-%table.table
+%table.table.my-3
   %tr
     %th Item
     %th.text-right Unit cost

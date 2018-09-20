@@ -8,6 +8,7 @@ class ItemsController < ApplicationController
 
   def show
     @item = EveItem.find_by( id: params[ :id ] )
+    @jita_min_price = PricesMin.find_by_eve_item_id_and_trade_hub_id( @item.id, get_jita.id )
     # redirect_to item_market_overview_path( @item )
   end
 
@@ -15,7 +16,7 @@ class ItemsController < ApplicationController
     @item = EveItem.find_by( id: params[ :item_id ] )
 
     if @item.base_item
-      jita = TradeHub.find_by_eve_system_id( 30000142 )
+      jita = get_jita
       @sales_final_detail = SalesFinal.where( eve_item_id: @item.id, trade_hub_id: jita.id ).
           where( 'day >= ( current_date - 7 )' ).order( 'day DESC, created_at DESC' ).
           paginate( :page => params[:page] )
