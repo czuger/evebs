@@ -1,7 +1,11 @@
 .container
 
-  %h1
-    = @item.name
+  .row.my-4
+    .col-1
+      = image_tag( "https://imageserver.eveonline.com/Type/#{@item.cpp_eve_item_id}_64.png" )
+    .col
+      %h3.mt-3
+        = @item.name
 
   %p
     More details at :
