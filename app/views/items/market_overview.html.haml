@@ -1,0 +1,4 @@
+- if @item.base_item
+  = render partial: 'market_info_for_base_item'
+- else
+  = render partial: 'market_info_for_craftable_item'

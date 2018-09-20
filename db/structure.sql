@@ -279,7 +279,9 @@ CREATE TABLE public.eve_items (
     production_level integer DEFAULT 0 NOT NULL,
     base_item boolean DEFAULT false NOT NULL,
     cpp_market_adjusted_price double precision,
-    cpp_market_average_price double precision
+    cpp_market_average_price double precision,
+    description character varying,
+    additional_information public.hstore
 );
 
 
@@ -2444,6 +2446,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180913131039'),
 ('20180913141720'),
 ('20180915020116'),
-('20180915021818');
+('20180915021818'),
+('20180920082908');
 
 

@@ -6,6 +6,10 @@ class ItemsController < ApplicationController
   include Modules::Nvl
   include Modules::CheckedProductionListIds
 
+  def show
+    @item = EveItem.find_by( id: params[ :id ] )
+  end
+
   def cost
     @item = EveItem.find_by( id: params[ :item_id ] )
 
@@ -17,8 +21,8 @@ class ItemsController < ApplicationController
     end
   end
 
-  def show
-    @item = EveItem.find( params[ :id ] )
+  def market_overview
+    @item = EveItem.find( params[ :item_id ] )
 
     # set_checked_production_list_ids
 
@@ -27,7 +31,6 @@ class ItemsController < ApplicationController
     else
       @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
     end
-
   end
 
   def trade_hub_detail

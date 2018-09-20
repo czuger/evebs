@@ -1,4 +1,13 @@
-- if @item.base_item
-  = render partial: 'market_info_for_base_item'
-- else
-  = render partial: 'market_info_for_craftable_item'
+.container
+
+  %h1
+    = @item.name
+
+  %p
+    More details at :
+    = link_to( 'eveinfo.com', "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
+
+  %p
+    Volume :
+    = @item.volume
+    m2

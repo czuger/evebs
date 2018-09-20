@@ -26,6 +26,6 @@
           = production_list_check_box( item )
         %td= link_to( item.name, "https://eveinfo.com/item/#{item.cpp_eve_item_id}", :target => '_blank' )
         %td= link_to( 'Cost', item_cost_path( item ) )
-        %td= link_to( 'Market', item_path( item ) )
+        %td= link_to( 'Market', item_market_overview_path( item ) )
 
 = will_paginate @items
