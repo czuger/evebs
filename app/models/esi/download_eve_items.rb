@@ -31,8 +31,9 @@ class Esi::DownloadEveItems < Esi::Download
       next unless type_remote_data['published'] && type_remote_data['market_group_id']
 
       types[t] = { cpp_eve_item_id: t, name: type_remote_data['name'],
-                   market_group_id: type_remote_data['market_group_id'], volume: type_remote_data['volume'] }
-
+                   market_group_id: type_remote_data['market_group_id'], volume: type_remote_data['volume'],
+                   mass: type_remote_data['mass'], icon_id: type_remote_data['icon_id'], desc: type_remote_data['description'],
+                   packaged_volume: ['packaged_volume'] }
     end
 
     File.open('data/types.yaml', 'w') {|f| f.write types.to_yaml }

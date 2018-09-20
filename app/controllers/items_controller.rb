@@ -8,6 +8,7 @@ class ItemsController < ApplicationController
 
   def show
     @item = EveItem.find_by( id: params[ :id ] )
+    redirect_to item_market_overview_path( @item )
   end
 
   def cost
