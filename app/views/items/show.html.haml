@@ -7,11 +7,37 @@
       %h3.mt-3
         = @item.name
 
-  %p
-    More details at :
-    = link_to( 'eveinfo.com', "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
+  .row.my-4
+    .col
+      = link_to( "Production cost : #{print_isk( @item.cost )}", item_cost_path( @item ) )
+    .col
+      = "Jita min price : #{@item.cost}"
+    .col
+      = link_to( 'Market details', item_market_overview_path( @item ) )
 
-  %p
-    Volume :
-    = @item.volume
-    m2
+
+  .row.my-4
+    .col
+      = raw @item.description
+
+  .row.my-4
+    .col
+      Volume :
+      = @item.volume
+      m2
+
+    .col
+      Volume packaged :
+      = @item.additional_information['packaged_volume']
+      m2
+
+    .col
+      Mass :
+      = @item.additional_information['mass']
+      kg
+
+  .row.my-4
+    .col
+      More details at :
+      = link_to( 'eveinfo.com', "https://eveinfo.com/item/#{@item.cpp_eve_item_id}", :target => '_blank' )
+

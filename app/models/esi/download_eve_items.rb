@@ -33,7 +33,7 @@ class Esi::DownloadEveItems < Esi::Download
       types[t] = { cpp_eve_item_id: t, name: type_remote_data['name'],
                    market_group_id: type_remote_data['market_group_id'], volume: type_remote_data['volume'],
                    mass: type_remote_data['mass'], icon_id: type_remote_data['icon_id'], desc: type_remote_data['description'],
-                   packaged_volume: ['packaged_volume'] }
+                   packaged_volume: type_remote_data['packaged_volume'] }
     end
 
     File.open('data/types.yaml', 'w') {|f| f.write types.to_yaml }

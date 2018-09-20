@@ -5,6 +5,9 @@ module Process
     def update
       Banner.p 'About to update items'
 
+      crlf = /(\r\n|\n\r|\r|\n)/
+
+
       types = YAML::load_file('data/types.yaml')
       cpp_market_prices = YAML::load_file('data/cpp_market_prices.yaml')
 
@@ -21,6 +24,13 @@ module Process
 
         on_db_item.volume = type[:volume]
         on_db_item.name = type[:name]
+        on_db_item.description = type[:desc].gsub( crlf, '<br>' )
+        on_db_item.description.gsub!( /showinfo:/, 'https://eveinfo.com/item/' )
+
+        on_db_item.additional_information ||= {}
+        on_db_item.additional_information[:packaged_volume] = type[:packaged_volume]
+        on_db_item.additional_information[:mass] = type[:mass]
+
         on_db_item.blueprint_id = blueprint_cpp_to_syntetic_key_conversion_hash[type[:cpp_eve_item_id]]
 
         on_db_item.production_level = type[:production_level]
