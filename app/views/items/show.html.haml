@@ -9,7 +9,10 @@
 
   .row.my-4
     .col
-      = link_to( "Production cost : #{print_isk( @item.cost )}", item_cost_path( @item ) )
+      - if @item.base_item
+        = link_to( "Average cost : #{print_isk( @item.cost )}", item_cost_path( @item ) )
+      - else
+        = link_to( "Production cost : #{print_isk( @item.cost )}", item_cost_path( @item ) )
     .col
       = link_to( "Jita min price : #{print_isk( @jita_min_price.min_price )}", item_trade_hub_detail_path( @item, trade_hub_id: @jita.id ) )
     .col
