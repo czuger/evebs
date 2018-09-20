@@ -63,7 +63,7 @@ namespace :process do
         Process::UpdateBlueprints.new.update
 
         # Eve items are now updated on a hourly base due to cpp market prices integration.
-        # Process::UpdateEveItems.new.update
+        Process::UpdateEveItems.new.update
         Process::UpdateBlueprintMaterials.new.update
 
 

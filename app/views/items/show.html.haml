@@ -23,21 +23,22 @@
     .col
       = raw @item.description
 
-  .row.my-4
-    .col
-      Volume :
-      = @item.volume
-      m2
+  - if @item.additional_information
+    .row.my-4
+      .col
+        Volume :
+        = @item.volume
+        m2
 
-    .col
-      Volume packaged :
-      = @item.additional_information['packaged_volume']
-      m2
+      .col
+        Volume packaged :
+        = @item.additional_information['packaged_volume']
+        m2
 
-    .col
-      Mass :
-      = @item.additional_information['mass']
-      kg
+      .col
+        Mass :
+        = @item.additional_information['mass']
+        kg
 
   .row.my-4
     .col
