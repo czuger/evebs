@@ -36,6 +36,8 @@
 
         = dropdown_menu_block( 'Misc' ) do
           = dropdown_sub_menu_link( 'Share', user_to_user_duplication_requests_path )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'Dev log', dev_log_miscs_path )
 
         = simple_menu_link( 'User', edit_users_path )
 

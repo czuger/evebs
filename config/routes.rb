@@ -59,6 +59,10 @@ Rails.application.routes.draw do
     get :empty_places
   end
 
+  resource :miscs, only: [] do
+    get :dev_log
+  end
+
   resource :choose_trade_hubs, only: [:edit, :update]
 
   match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
