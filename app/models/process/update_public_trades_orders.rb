@@ -73,8 +73,12 @@ class Process::UpdatePublicTradesOrders
             trade_order.price != server_order_data[:price]
           # And has changed
 
+          # We create a sale order, only for sale orders
           unless server_order_data[:is_buy_order]
-            create_sales_final_record( trade_order, server_order_data )
+            # And only if the volume has changed (not if the price have changed)
+            if trade_order.volume_remain != server_order_data[:volume_remain]
+              create_sales_final_record( trade_order, server_order_data )
+            end
           end
 
           trade_order.volume_remain = server_order_data[:volume_remain]
