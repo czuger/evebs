@@ -1,6 +1,6 @@
 class ListItemsController < ApplicationController
 
-  before_action :require_logged_in!, :log_client_activity
+  before_action :require_logged_in!, except: [ :edit ]
   before_action :set_user
 
   include Modules::CheckedProductionListIds
@@ -45,10 +45,12 @@ class ListItemsController < ApplicationController
 
   def items_list( my_items_only )
     @user = current_user
-    @item_ids = @user.eve_item_ids.uniq.to_set
     @jita = TradeHub.find_by_eve_system_id( 30000142 )
 
-    set_checked_production_list_ids
+    if @user
+      @item_ids = @user.eve_item_ids.uniq.to_set
+      set_checked_production_list_ids
+    end
 
     if my_items_only
       @items = @user.eve_items

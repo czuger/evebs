@@ -7,11 +7,12 @@
     .mr-3
       = link_to 'Clear list', clear_list_items_path, class: 'btn btn-secondary'
 
-%table.table.table-hover.table-sm
+%table.table.table-hover
   %thead
     %tr
-      %th.text-center Selected
-      %th.text-center Prod. list
+      - if @user
+        %th.text-center Selected
+        %th.text-center Prod. list
       %th
         Name
       %th
@@ -20,10 +21,11 @@
   %tbody
     - @items.each do |item|
       %tr
-        %td.text-center
-          = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
-        %td.text-center
-          = production_list_check_box( item )
+        - if @user
+          %td.text-center
+            = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
+          %td.text-center
+            = production_list_check_box( item )
         %td= link_to( item.name, "https://eveinfo.com/item/#{item.cpp_eve_item_id}", :target => '_blank' )
         %td= link_to( 'Cost', item_cost_path( item ) )
         %td= link_to( 'Market', item_market_overview_path( item ) )

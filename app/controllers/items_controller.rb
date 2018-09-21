@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
 
-  before_action :require_logged_in!, :log_client_activity
+  # before_action :require_logged_in!
   before_action :set_user
 
   include Modules::Nvl
