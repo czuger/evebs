@@ -3,7 +3,9 @@
     .mr-3
       = text_field_tag :filter, @filter, class: 'form-control'
     .mr-3
-      = button_tag :filter, class: 'btn btn-secondary'
+      = button_tag 'Filter', class: 'btn btn-secondary'
+
+  - if @user
     .mr-3
       = link_to 'Clear list', clear_list_items_path, class: 'btn btn-secondary'
 
