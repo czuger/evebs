@@ -89,3 +89,5 @@ gem 'font-awesome-rails'
 
 # gem 'bootstrap-toggle-rails', path: '../bootstrap-toggle-rails'
 gem 'bootstrap-toggle-rails', :git => 'https://github.com/czuger/bootstrap-toggle-rails'
+
+gem 'sitemap_generator'
