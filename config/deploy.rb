@@ -51,6 +51,8 @@ namespace :deploy do
 end
 
 after 'deploy:publishing', 'deploy:update_version_number'
+after 'deploy:publishing', 'sitemap:refresh'
+
 # after 'deploy:published', 'deploy:create_items_tree'
 
 # after 'deploy:publishing', 'deploy:custom_restart'
