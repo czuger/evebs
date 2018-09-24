@@ -4,11 +4,10 @@ SitemapGenerator::Sitemap.default_host = 'http://evebs.ieroe.com'
 SitemapGenerator::Sitemap.create do
 
   EveItem.find_each do |item|
-    add item_path(item), :lastmod => item.updated_at, changefreq: :weekly
+    add item_path(item), changefreq: :weekly
     add item_cost_path(item), :lastmod => item.updated_at, changefreq: :daily
+    add item_market_overview_path(item), changefreq: :hourly
   end
-
-
 
   # Put links creation logic here.
   #
