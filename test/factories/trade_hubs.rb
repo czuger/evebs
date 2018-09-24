@@ -27,7 +27,6 @@ FactoryBot.define do
     end
 
     factory :e02_ik do
-      id {15}
       eve_system_id {'30000903'}
       name {'E02-IK'}
     end
