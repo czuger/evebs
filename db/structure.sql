@@ -281,7 +281,9 @@ CREATE TABLE public.eve_items (
     cpp_market_adjusted_price double precision,
     cpp_market_average_price double precision,
     description character varying,
-    additional_information public.hstore
+    market_group_path json DEFAULT '[]'::json NOT NULL,
+    mass double precision,
+    packaged_volume double precision
 );
 
 
@@ -2447,6 +2449,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180913141720'),
 ('20180915020116'),
 ('20180915021818'),
-('20180920082908');
+('20180920082908'),
+('20180926124854');
 
 

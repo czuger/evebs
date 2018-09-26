@@ -30,9 +30,8 @@ module Process
         on_db_item.description = type[:desc].gsub( crlf, '<br>' )
         on_db_item.description.gsub!( /showinfo:/, 'https://eveinfo.com/item/' )
 
-        on_db_item.additional_information ||= {}
-        on_db_item.additional_information['packaged_volume'] = type[:packaged_volume].to_f
-        on_db_item.additional_information['mass'] = type[:mass].to_f
+        on_db_item.packaged_volume = type[:packaged_volume].to_f
+        on_db_item.mass = type[:mass].to_f
 
         on_db_item.blueprint_id = blueprint_cpp_to_syntetic_key_conversion_hash[type[:cpp_eve_item_id]]
 
@@ -46,6 +45,12 @@ module Process
         if mp_data
           on_db_item.cpp_market_adjusted_price = mp_data['adjusted_price']
           on_db_item.cpp_market_average_price = mp_data['average_price']
+        end
+
+        on_db_item.save!
+
+        if on_db_item.market_group_id
+          on_db_item.market_group_path = [ on_db_item.market_group.ancestors.map{ |e| { name: e.name, id: e.id } }.reverse, { name: on_db_item.market_group.name, id: on_db_item.market_group_id } ].flatten
         end
 
         on_db_item.save!
