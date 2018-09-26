@@ -17,8 +17,6 @@
         %th.text-center Prod. list
       %th
         Name
-      %th
-      %th
 
   %tbody
     - @items.each do |item|
@@ -28,8 +26,6 @@
             = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
           %td.text-center
             = production_list_check_box( item )
-        %td= link_to( item.name, "https://eveinfo.com/item/#{item.cpp_eve_item_id}", :target => '_blank' )
-        %td= link_to( 'Cost', item_cost_path( item ) )
-        %td= link_to( 'Market', item_market_overview_path( item ) )
+        %td= link_to( item.name, item_path( item ) )
 
 = will_paginate @items

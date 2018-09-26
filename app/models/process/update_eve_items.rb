@@ -45,7 +45,7 @@ module Process
           on_db_item.cpp_market_average_price = mp_data['average_price']
         end
 
-        on_db_item.save
+        on_db_item.save!
       end
 
       File.open('data/lowest_production_level', 'w') {|f| f.write lowest_production_level }
