@@ -14,11 +14,6 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     post '/auth/developer/callback', params: { name: @user.name }
   end
 
-  test 'should get items costs' do
-    get item_cost_url( @eve_item.id )
-    assert_response :success
-  end
-
   test 'should show item detail' do
     get item_url( @eve_item )
     assert_response :success

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :production_costs, only: [ :show ]
+
   resource :helps, only: [:show ]
 
   resource :buy_orders, only: [:show]
