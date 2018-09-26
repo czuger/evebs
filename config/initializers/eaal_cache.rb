@@ -1,1 +1,0 @@
-# EAAL.cache = EAAL::Cache::FileCache.new( 'tmp' )

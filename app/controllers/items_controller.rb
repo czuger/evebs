@@ -3,6 +3,8 @@ class ItemsController < ApplicationController
   # before_action :require_logged_in!
   before_action :set_user
 
+  caches_page :show, :market_overview, :trade_hub_detail, :cost
+
   include Modules::Nvl
   include Modules::CheckedProductionListIds
 
