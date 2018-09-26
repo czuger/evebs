@@ -64,7 +64,7 @@ class ListItemsController < ApplicationController
       @items = EveItem.none unless my_items_only
     end
 
-    @items = @items.includes( :market_group ).order( 'market_group_id, name' )
+    @items = @items.order( 'market_group_id, name' )
 
     # p @items.to_sql
 
