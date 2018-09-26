@@ -13,3 +13,5 @@ RAILS_ENV=production bundle exec rake process:full:weekly >>log/weekly.log 2>>lo
 RAILS_ENV=production bundle exec rake -s sitemap:refresh
 
 cat log/weekly.log log/weekly.err | mail `cat config/email.txt` -s "Evebs weekly process"
+
+rm -rf public/items
