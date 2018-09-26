@@ -37,7 +37,7 @@ Rails.application.routes.draw do
 
   resources :items, only: [ :show ] do
     get :cost
-    get :trade_hub_detail
+    get 'trade_hub_detail/:trade_hub_id', action: :trade_hub_detail, as: :trade_hub_detail
     get :market_overview
   end
 
