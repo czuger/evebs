@@ -15,9 +15,9 @@
       - else
         = link_to( 'Production cost', production_cost_path( @item ) )
     .col
-      = link_to( 'Jita min price', item_trade_hub_detail_path( @item, trade_hub_id: @jita.id ) )
+      = link_to( 'Jita min price', market_data_trade_hub_detail_path( @item, @jita.id ) )
     .col
-      = link_to( 'Markets details', item_market_overview_path( @item ) )
+      = link_to( 'Markets details', market_data_market_overview_path( @item ) )
 
 
   .row.my-4

@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
 
+  namespace :market_data do
+    get ':item_id/trade_hub_detail/:trade_hub_id', action: :trade_hub_detail, as: :trade_hub_detail
+    get ':item_id/market_overview/', action: :market_overview, as: :market_overview
+  end
+
   resources :production_costs, only: [ :show ]
 
   resource :helps, only: [:show ]
@@ -37,11 +42,7 @@ Rails.application.routes.draw do
   resources :components_to_buy, only: [ :show ]
   get :components_to_buy_show_raw,  controller: :components_to_buy
 
-  resources :items, only: [ :show ] do
-    get :cost
-    get 'trade_hub_detail/:trade_hub_id', action: :trade_hub_detail, as: :trade_hub_detail
-    get :market_overview
-  end
+  resources :items, only: [ :show ]
 
   get :items_tree, controller: :items
   patch :items_tree_select, controller: :items

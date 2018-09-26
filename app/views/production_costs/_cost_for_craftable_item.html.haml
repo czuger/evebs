@@ -15,7 +15,7 @@
     - if component
       %tr{ class: cycle( :odd, :even ) }
         %td= link_to( component.name, item_path( component.id ) )
-        %td.text-right= link_to print_isk( component.cost ), item_cost_path( component )
+        %td.text-right= link_to print_isk( component.cost ), production_cost_path( component )
         %td.text-right= print_volume( material.required_qtt )
         - total = safe_multiply( component.cost, material.required_qtt )
         - total_for_batch += total if total
