@@ -25,7 +25,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show trade_hub detail' do
-    get item_trade_hub_detail_url( item_id: @eve_item.id, trade_hub_id: @jita.id )
+    get market_data_trade_hub_detail_url( @eve_item.id, @jita.id )
     assert_response :success
   end
 
