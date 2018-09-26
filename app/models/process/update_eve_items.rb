@@ -17,9 +17,12 @@ module Process
       market_groups_cpp_to_syntetic_key_conversion_hash = Hash[ MarketGroup.pluck( :cpp_market_group_id, :id ) ]
 
       types_to_destroy = EveItem.pluck( :cpp_eve_item_id ) - types.keys
+
+
       EveItem.where( cpp_eve_item_id: types_to_destroy ).destroy_all
 
       types.values.each do |type|
+
         on_db_item = EveItem.where( cpp_eve_item_id: type[:cpp_eve_item_id] ).first_or_initialize
 
         on_db_item.volume = type[:volume]
@@ -28,8 +31,8 @@ module Process
         on_db_item.description.gsub!( /showinfo:/, 'https://eveinfo.com/item/' )
 
         on_db_item.additional_information ||= {}
-        on_db_item.additional_information[:packaged_volume] = type[:packaged_volume]
-        on_db_item.additional_information[:mass] = type[:mass]
+        on_db_item.additional_information['packaged_volume'] = type[:packaged_volume].to_f
+        on_db_item.additional_information['mass'] = type[:mass].to_f
 
         on_db_item.blueprint_id = blueprint_cpp_to_syntetic_key_conversion_hash[type[:cpp_eve_item_id]]
 

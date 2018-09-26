@@ -287,14 +287,6 @@
   :market_group_id: 815
   :name: Gallente
   :parent_group_id: 812
-812:
-  :market_group_id: 812
-  :name: Titans
-  :parent_group_id: 1381
-1381:
-  :market_group_id: 1381
-  :name: Capital Ships
-  :parent_group_id: 4
 781:
   :market_group_id: 781
   :name: Standard Capital Ship Components
@@ -431,14 +423,6 @@
   :market_group_id: 564
   :name: Small
   :parent_group_id: 555
-555:
-  :market_group_id: 555
-  :name: Railguns
-  :parent_group_id: 86
-86:
-  :market_group_id: 86
-  :name: Hybrid Turrets
-  :parent_group_id: 10
 561:
   :market_group_id: 561
   :name: Small
@@ -447,6 +431,10 @@
   :market_group_id: 556
   :name: Blasters
   :parent_group_id: 86
+86:
+  :market_group_id: 86
+  :name: Hybrid Turrets
+  :parent_group_id: 10
 562:
   :market_group_id: 562
   :name: Medium
@@ -927,6 +915,10 @@
   :market_group_id: 817
   :name: Carriers
   :parent_group_id: 1381
+1381:
+  :market_group_id: 1381
+  :name: Capital Ships
+  :parent_group_id: 4
 1623:
   :market_group_id: 1623
   :name: Special Edition Assault Frigates
@@ -1307,10 +1299,6 @@
   :market_group_id: 1676
   :name: 1600mm Armor Plate
   :parent_group_id: 133
-133:
-  :market_group_id: 133
-  :name: Armor Plates
-  :parent_group_id: 14
 1672:
   :market_group_id: 1672
   :name: 100mm Armor Plate
@@ -1595,10 +1583,6 @@
   :market_group_id: 865
   :name: Small
   :parent_group_id: 850
-850:
-  :market_group_id: 850
-  :name: Advanced Railgun Charges
-  :parent_group_id: 100
 856:
   :market_group_id: 856
   :name: Small
@@ -1843,14 +1827,6 @@
   :market_group_id: 971
   :name: Standard Heavy Assault Missiles
   :parent_group_id: 968
-1865:
-  :market_group_id: 1865
-  :name: Station Components
-  :parent_group_id: 1021
-1021:
-  :market_group_id: 1021
-  :name: Outpost Components
-  :parent_group_id: 1035
 1076:
   :market_group_id: 1076
   :name: Amarr
@@ -2283,10 +2259,6 @@
   :market_group_id: 1886
   :name: Gallente
   :parent_group_id: 1883
-1090:
-  :market_group_id: 1090
-  :name: Amarr
-  :parent_group_id: 1089
 1884:
   :market_group_id: 1884
   :name: Amarr

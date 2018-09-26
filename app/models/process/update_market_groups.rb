@@ -27,8 +27,13 @@ module Process
         used_market_group_ids += MarketGroup.find_by_cpp_market_group_id( key ).ancestors.map{ |a| a.cpp_market_group_id }
       end
 
-      market_groups_to_destroy_ids = MarketGroup.pluck( :cpp_market_group_id ) - used_market_group_ids.to_a
-      MarketGroup.where( cpp_market_group_id: market_groups_to_destroy_ids ).destroy_all
+      # Need to fix this
+      # market_groups_to_destroy_ids = MarketGroup.pluck( :cpp_market_group_id ) - used_market_group_ids.to_a
+      #
+      # blueprints_linked_to_items_ids = BlueprintMaterial.joins( :eve_item ).where( 'eve_items.market_group_id' => market_groups_to_destroy_ids ).pluck( :blueprint_id )
+      # Blueprint.where( id: blueprints_linked_to_items_ids ).destroy_all
+      #
+      # MarketGroup.where( cpp_market_group_id: market_groups_to_destroy_ids ).destroy_all
 
     end
   end
