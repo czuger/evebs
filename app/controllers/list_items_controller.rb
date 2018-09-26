@@ -59,10 +59,12 @@ class ListItemsController < ApplicationController
     end
 
     if params['filter']
-      @items = @items.where( "lower( name ) like '%#{params['filter'].downcase}%'" ).order( 'name' )
+      @items = @items.where( "lower( name ) like '%#{params['filter'].downcase}%'" )
     else
       @items = EveItem.none unless my_items_only
     end
+
+    @items = @items.includes( :market_group ).order( 'market_group_id, name' )
 
     # p @items.to_sql
 

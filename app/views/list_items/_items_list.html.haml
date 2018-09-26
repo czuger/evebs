@@ -15,6 +15,10 @@
       - if @user
         %th.text-center Selected
         %th.text-center Prod. list
+
+      %th
+        Market groups
+
       %th
         Name
 
@@ -26,6 +30,9 @@
             = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
           %td.text-center
             = production_list_check_box( item )
+
+        %td= [ item.market_group.ancestors.map{ |e| e.name }.reverse, item.market_group.name ].flatten.join( ' > ' )
+
         %td= link_to( item.name, item_path( item ) )
 
 = will_paginate @items
