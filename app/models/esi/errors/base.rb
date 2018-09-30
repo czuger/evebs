@@ -14,8 +14,10 @@ class Esi::Errors::Base < RuntimeError
       error = Esi::Errors::ErrorLimited.new
     when '404 Not Found'
       error = Esi::Errors::NotFound.new
-      when 'Net::OpenTimeout'
-        error = Esi::Errors::OpenTimeout.new
+    when 'Net::OpenTimeout'
+      error = Esi::Errors::OpenTimeout.new
+    when 'SocketError'
+      error = Esi::Errors::SocketError.new
     end
 
     error
