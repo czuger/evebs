@@ -40,7 +40,12 @@ namespace :process do
         # Esi::UpdateVolumeFromHistory.new.update
 
         Process::DeleteOldSalesFinals.delete
+
+        # Be sure to compute avg prices weeks before to compute items costs.
+        Sql::UpdatePricesAvgWeeks
+
         Process::UpdateEveItemsCosts.new.update
+
         Sql::UpdatePricesAdvicesDaily.execute
 
         Misc::LastUpdate.set( :daily )
