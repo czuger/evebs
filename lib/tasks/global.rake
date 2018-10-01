@@ -29,7 +29,7 @@ namespace :process do
 
       Misc::Crontab.stop( :hourly )
 
-      Banner.p( 'Finished' )
+      Misc::Banner.p( 'Finished' )
     end
 
     desc 'Full process - daily'
@@ -46,7 +46,7 @@ namespace :process do
         Misc::LastUpdate.set( :daily )
       end
 
-      Banner.p( 'Finished' )
+      Misc::Banner.p( 'Finished' )
     end
 
     desc 'Full process - weekly'
@@ -78,7 +78,7 @@ namespace :process do
         Misc::LastUpdate.set( :weekly )
       end
 
-      Banner.p( 'Finished' )
+      Misc::Banner.p( 'Finished' )
     end
   end
 end

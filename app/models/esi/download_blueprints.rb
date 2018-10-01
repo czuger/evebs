@@ -3,7 +3,7 @@ module Esi
   class DownloadBlueprints < Download
 
     def download
-      Banner.p 'About to download blueprints extra data'
+      Misc::Banner.p 'About to download blueprints extra data'
 
       blueprints = YAML::load_file('data/parsed_blueprints.yaml')
       @eve_items_to_check_cpp_ids = Set.new
