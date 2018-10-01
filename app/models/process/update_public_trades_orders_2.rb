@@ -11,7 +11,7 @@ class Esi::UpdateSalesOrders2 < Esi::Download
   # si l'ordre a été annulé, timeout ou bien vendu.
   def update
 
-    Banner.p 'About to update min prices' unless @silent_output
+    Misc::Banner.p 'About to update min prices' unless @silent_output
 
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]

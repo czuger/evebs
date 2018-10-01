@@ -2,7 +2,7 @@ class Esi::DownloadEveItems < Esi::Download
 
   def download
 
-    Banner.p 'About to download eve items'
+    Misc::Banner.p 'About to download eve items'
 
     type_ids_to_download = YAML::load_file('data/type_ids_to_download.yaml')
     types = {}

@@ -4,7 +4,7 @@ module Process
 
     def parse
 
-      Banner.p 'About to parse cpp blueprint file'
+      Misc::Banner.p 'About to parse cpp blueprint file'
 
       blueprints = YAML::load_file('data/blueprints.yaml')
       final_blueprints_hash = {}

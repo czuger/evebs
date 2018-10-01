@@ -557,6 +557,36 @@ ALTER SEQUENCE public.identities_id_seq OWNED BY public.identities.id;
 
 
 --
+-- Name: last_updates; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.last_updates (
+    id bigint NOT NULL,
+    update_type character varying NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: last_updates_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.last_updates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: last_updates_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.last_updates_id_seq OWNED BY public.last_updates.id;
+
+
+--
 -- Name: market_group_hierarchies; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1262,6 +1292,13 @@ ALTER TABLE ONLY public.identities ALTER COLUMN id SET DEFAULT nextval('public.i
 
 
 --
+-- Name: last_updates id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.last_updates ALTER COLUMN id SET DEFAULT nextval('public.last_updates_id_seq'::regclass);
+
+
+--
 -- Name: market_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1467,6 +1504,14 @@ ALTER TABLE ONLY public.eve_market_volumes
 
 ALTER TABLE ONLY public.identities
     ADD CONSTRAINT identities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: last_updates last_updates_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.last_updates
+    ADD CONSTRAINT last_updates_pkey PRIMARY KEY (id);
 
 
 --
@@ -2451,6 +2496,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180915021818'),
 ('20180920082908'),
 ('20180926124854'),
-('20180927070849');
+('20180927070849'),
+('20181001064444');
 
 

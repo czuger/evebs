@@ -9,7 +9,7 @@ class Esi::DownloadMarketsPrices < Esi::Download
   end
 
   def download
-    Banner.p 'About to download cpp markets prices'
+    Misc::Banner.p 'About to download cpp markets prices'
 
     File.open( 'data/cpp_market_prices.yaml', 'w' ) do |f|
       f.puts( Hash[ get_all_pages.map{ |e| [ e['type_id'], e ] } ].to_yaml )

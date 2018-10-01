@@ -3,7 +3,7 @@ module Process
   class UpdateBlueprints
 
     def update
-      Banner.p 'About to update blueprints'
+      Misc::Banner.p 'About to update blueprints'
 
       blueprints = YAML::load_file('data/parsed_blueprints.yaml')
 

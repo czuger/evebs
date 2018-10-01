@@ -7,7 +7,7 @@ module Process
   class BuildJsonMarketTree
 
     def build
-      Banner.p 'About to build trees'
+      Misc::Banner.p 'About to build trees'
 
       File.open( 'data/tmp_items_tree.json', 'w' ) do |file|
         arr = []

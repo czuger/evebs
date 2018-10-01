@@ -8,7 +8,7 @@ module Process
 
     def set
 
-      Banner.p 'About to set eve item depth level'
+      Misc::Banner.p 'About to set eve item depth level'
 
       # Building the material use reverse hash
       blueprints = YAML::load_file('data/parsed_blueprints.yaml')

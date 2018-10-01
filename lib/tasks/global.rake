@@ -9,7 +9,7 @@ namespace :process do
     desc 'Full process - hourly'
     task :hourly => :environment do
 
-      Crontab.start( :hourly )
+      Misc::Crontab.start( :hourly )
 
       Esi::DownloadPublicTradesOrders.new( { verbose_output: false } ).download
       Esi::DownloadMarketsPrices.new.download
@@ -23,9 +23,11 @@ namespace :process do
         Sql::UpdatePricesAdvicesImmediate.execute
 
         Sql::UpdateBuyOrdersAnalytics.execute
+
+        Misc::LastUpdate.set( :hourly )
       end
 
-      Crontab.stop( :hourly )
+      Misc::Crontab.stop( :hourly )
 
       Banner.p( 'Finished' )
     end
@@ -40,6 +42,8 @@ namespace :process do
         Process::DeleteOldSalesFinals.delete
         Process::UpdateEveItemsCosts.new.update
         Sql::UpdatePricesAdvicesDaily.execute
+
+        Misc::LastUpdate.set( :daily )
       end
 
       Banner.p( 'Finished' )
@@ -70,6 +74,8 @@ namespace :process do
         # Even it does not change the DB, we want the DB chances to be available
         # once the market tree has changed
         Process::BuildJsonMarketTree.new.build
+
+        Misc::LastUpdate.set( :weekly )
       end
 
       Banner.p( 'Finished' )

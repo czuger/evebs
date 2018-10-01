@@ -10,7 +10,7 @@ class Esi::DownloadVolumeFromHistory < Esi::Download
   end
 
   def update
-    Banner.p 'About to update the table eve_market_volumes'
+    Misc::Banner.p 'About to update the table eve_market_volumes'
 
     regions_volumes = {}
 

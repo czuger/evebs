@@ -3,7 +3,7 @@ module Process
   class UpdateEveItems
 
     def update
-      Banner.p 'About to update items'
+      Misc::Banner.p 'About to update items'
 
       crlf = /(\r\n|\n\r|\r|\n)/
 

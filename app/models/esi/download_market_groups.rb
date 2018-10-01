@@ -1,7 +1,7 @@
 class Esi::DownloadMarketGroups < Esi::Download
 
   def download
-    Banner.p 'About to download market groups'
+    Misc::Banner.p 'About to download market groups'
 
     types = YAML::load_file('data/types.yaml')
 

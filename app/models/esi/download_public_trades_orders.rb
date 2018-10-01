@@ -2,7 +2,7 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
 
   def download
 
-    Banner.p 'About to download sales and buy orders'
+    Misc::Banner.p 'About to download sales and buy orders'
 
     trade_hubs_ids = TradeHub.pluck( :eve_system_id ).to_set
     eve_items_ids = EveItem.pluck( :cpp_eve_item_id ).to_set

@@ -5,7 +5,7 @@ class Process::UpdatePublicTradesOrders
   # si l'ordre a été annulé, timeout ou bien vendu.
   def update
 
-    Banner.p 'About to update sales orders'
+    Misc::Banner.p 'About to update sales orders'
 
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]

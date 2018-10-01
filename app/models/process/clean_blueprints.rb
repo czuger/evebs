@@ -6,7 +6,7 @@ module Process
 
     def clean
 
-      Banner.p 'About to clean blueprint impacted by items deletion'
+      Misc::Banner.p 'About to clean blueprint impacted by items deletion'
 
       blueprints = YAML::load_file('data/parsed_blueprints.yaml')
       items_ids = YAML::load_file('data/types.yaml').keys.to_set

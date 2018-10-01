@@ -14,7 +14,7 @@ class Esi::DownloadMyAssets < Esi::Download
   end
 
   def update( user )
-    Banner.p 'About to download users assets'
+    Misc::Banner.p 'About to download users assets'
 
     ActiveRecord::Base.transaction do
 

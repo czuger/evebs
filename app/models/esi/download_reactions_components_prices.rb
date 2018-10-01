@@ -6,7 +6,7 @@ class Esi::DownloadReactionsComponentsPrices < Esi::Download
               16654, 16658, 16671, 4312, 16644, 4051, 16634, 16657, 16661, 16637, 16649,
               16662, 16633, 4247, 16659, 16679, 25273, 3645, 25242, 25268, 25237 ]
 
-    Banner.p 'About to download reactions components prices'
+    Misc::Banner.p 'About to download reactions components prices'
 
     results = []
 

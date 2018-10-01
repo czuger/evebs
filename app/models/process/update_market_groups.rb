@@ -4,7 +4,7 @@ module Process
 
     # Il faut récupérer les parents et les parents de ces groupes.
     def update
-      Banner.p 'About to update market groups'
+      Misc::Banner.p 'About to update market groups'
 
       market_groups = YAML::load_file('data/market_groups.yaml')
 
