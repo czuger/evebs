@@ -283,7 +283,8 @@ CREATE TABLE public.eve_items (
     description character varying,
     market_group_path json DEFAULT '[]'::json NOT NULL,
     mass double precision,
-    packaged_volume double precision
+    packaged_volume double precision,
+    weekly_avg_price double precision
 );
 
 
@@ -1215,6 +1216,40 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: weekly_price_details; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.weekly_price_details (
+    id bigint NOT NULL,
+    eve_item_id bigint NOT NULL,
+    day date NOT NULL,
+    volume double precision NOT NULL,
+    weighted_avg_price double precision NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: weekly_price_details_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.weekly_price_details_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: weekly_price_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.weekly_price_details_id_seq OWNED BY public.weekly_price_details.id;
+
+
+--
 -- Name: blueprint_materials id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1408,6 +1443,13 @@ ALTER TABLE ONLY public.user_to_user_duplication_requests ALTER COLUMN id SET DE
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: weekly_price_details id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.weekly_price_details ALTER COLUMN id SET DEFAULT nextval('public.weekly_price_details_id_seq'::regclass);
 
 
 --
@@ -1640,6 +1682,14 @@ ALTER TABLE ONLY public.user_to_user_duplication_requests
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: weekly_price_details weekly_price_details_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.weekly_price_details
+    ADD CONSTRAINT weekly_price_details_pkey PRIMARY KEY (id);
 
 
 --
@@ -1972,6 +2022,13 @@ CREATE INDEX index_user_to_user_duplication_requests_on_sender_id ON public.user
 
 
 --
+-- Name: index_weekly_price_details_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_weekly_price_details_on_eve_item_id ON public.weekly_price_details USING btree (eve_item_id);
+
+
+--
 -- Name: market_group_anc_desc_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2078,6 +2135,14 @@ ALTER TABLE ONLY public.blueprint_modifications
 
 ALTER TABLE ONLY public.eve_items
     ADD CONSTRAINT fk_rails_25122e004f FOREIGN KEY (market_group_id) REFERENCES public.market_groups(id);
+
+
+--
+-- Name: weekly_price_details fk_rails_31f6906097; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.weekly_price_details
+    ADD CONSTRAINT fk_rails_31f6906097 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
 
 
 --
@@ -2497,6 +2562,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180920082908'),
 ('20180926124854'),
 ('20180927070849'),
-('20181001064444');
+('20181001064444'),
+('20181001093144');
 
 
