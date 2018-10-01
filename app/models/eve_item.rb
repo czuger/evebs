@@ -23,6 +23,8 @@ class EveItem < ApplicationRecord
 
   has_many :price_advices_min_prices
 
+  has_many :weekly_price_details, dependent: :delete_all
+
   def self.to_eve_item_id(cpp_eve_item_id)
     eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first
     eve_item ? eve_item.id : nil

@@ -11,6 +11,5 @@
 --       AND ei.base_item = true;
 
 -- For base items, the cost is now the newly weekly computed price.
-UPDATE eve_items ei SET ( cost, updated_at ) = ( ei_sub.weekly_avg_price, now() )
-  FROM eve_items ei_sub
+UPDATE eve_items ei SET ( cost, updated_at ) = ( weekly_avg_price, now() )
   WHERE ei.base_item = TRUE;

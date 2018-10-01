@@ -7,23 +7,17 @@
   %thead
     %tr
       %th.text-center Day
-      %th.text-right Cost
-      %th.text-right Volume
-      %th.text-center Date
-      %th.text-center Order id
+      %th.text-right Weighted avg price
+      %th.text-right Total volume
+
   %tbody
-    - @sales_final_detail.each do |sfd|
+    - @dailies_datails.each do |sfd|
       %tr
         %td.text-center
           = sfd.day
         %td.text-right
-          = print_isk sfd.price
+          = print_isk sfd.weighted_avg_price
         %td.text-right
           = print_volume sfd.volume.round
-        %td.text-center
-          = sfd.updated_at
-        %td.text-center
-          = sfd.order_id
 
-
-= will_paginate @sales_final_detail
+= will_paginate @dailies_datails
