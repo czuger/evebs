@@ -70,10 +70,11 @@ namespace :process do
         Process::UpdateEveItems.new.update
         Process::UpdateBlueprintMaterials.new.update
 
-
         # Even it does not change the DB, we want the DB chances to be available
         # once the market tree has changed
         Process::BuildJsonMarketTree.new.build
+
+        Rake::Task[ 'sitemap:refresh' ].invoke
 
         Misc::LastUpdate.set( :weekly )
       end
