@@ -42,7 +42,7 @@ namespace :process do
         Process::DeleteOldSalesFinals.delete
 
         # Be sure to compute avg prices weeks before to compute items costs.
-        Sql::UpdatePricesAvgWeeks.execute
+        Sql::UpdateWeeklyPriceDetails.execute
 
         Process::UpdateEveItemsCosts.new.update
 

@@ -1,9 +1,21 @@
 /* il faut voir si on peut faire le calcul d'un coup ou bien s'il faut consolider les données de manière journalière d'abord */
 
 /* Removing advices for items that are not in DB anymore */
-DELETE FROM prices_advices pm WHERE NOT EXISTS (
-    SELECT 1 FROM eve_items ei
-    WHERE pm.eve_item_id = ei.id );
+-- DELETE FROM prices_advices pm WHERE NOT EXISTS (
+--     SELECT 1 FROM eve_items ei
+--     WHERE pm.eve_item_id = ei.id );
+
+/* Insert new regions / items */
+INSERT INTO prices_advices( eve_item_id, trade_hub_id, created_at, updated_at )
+   SELECT eve_items.id, trade_hubs.id, now(), now()
+   FROM eve_items, trade_hubs, blueprints
+   WHERE eve_items.blueprint_id = blueprints.id
+       AND NOT EXISTS (
+     SELECT NULL FROM prices_advices pa, sales_finals sf
+     WHERE pa.eve_item_id = eve_items.id
+       AND pa.trade_hub_id = trade_hubs.id
+       AND sf.eve_item_id = pa.eve_item_id
+       AND sf.trade_hub_id = pa.trade_hub_id );
 
 UPDATE prices_advices pa SET ( vol_month, avg_price_month, updated_at ) = ( mp, ap, now() )
 FROM (

@@ -17,7 +17,7 @@ UPDATE buy_orders_analytics boa SET over_approx_max_price_volume =
     AND is_buy_order = TRUE
   GROUP BY trade_hub_id, eve_item_id );
 
-DELETE FROM buy_orders_analytics WHERE over_approx_max_price_volume IS NULL;
+-- DELETE FROM buy_orders_analytics WHERE over_approx_max_price_volume IS NULL;
 
 UPDATE buy_orders_analytics boa SET ( single_unit_cost, single_unit_margin, estimated_volume_margin, per_job_margin,
                                       per_job_run_margin, final_margin ) =
