@@ -7,7 +7,7 @@
 
 /* Insert new regions / items */
 INSERT INTO prices_advices( eve_item_id, trade_hub_id, created_at, updated_at )
-   SELECT sf.eve_item_id, sf.trade_hub_id, now(), now()
+   SELECT DISTINCT sf.eve_item_id, sf.trade_hub_id, now(), now()
    FROM sales_finals sf
        WHERE NOT EXISTS (
      SELECT 1 FROM prices_advices pa
