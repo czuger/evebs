@@ -7,14 +7,11 @@
 
 /* Insert new regions / items */
 INSERT INTO prices_advices( eve_item_id, trade_hub_id, created_at, updated_at )
-   SELECT eve_items.id, trade_hubs.id, now(), now()
-   FROM eve_items, trade_hubs, blueprints
-   WHERE eve_items.blueprint_id = blueprints.id
-       AND NOT EXISTS (
-     SELECT NULL FROM prices_advices pa, sales_finals sf
-     WHERE pa.eve_item_id = eve_items.id
-       AND pa.trade_hub_id = trade_hubs.id
-       AND sf.eve_item_id = pa.eve_item_id
+   SELECT sf.eve_item_id, sf.trade_hub_id, now(), now()
+   FROM sales_finals sf
+       WHERE NOT EXISTS (
+     SELECT 1 FROM prices_advices pa
+     WHERE sf.eve_item_id = pa.eve_item_id
        AND sf.trade_hub_id = pa.trade_hub_id );
 
 UPDATE prices_advices pa SET ( vol_month, avg_price_month, updated_at ) = ( mp, ap, now() )

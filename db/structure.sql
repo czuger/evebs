@@ -698,7 +698,7 @@ CREATE VIEW public.price_advice_margin_comps AS
             ei.name AS item_name,
             ei.cost AS single_unit_cost,
             pm.min_price,
-            pa.avg_price_week AS price_avg_week,
+            ei.weekly_avg_price AS price_avg_week,
             pa.vol_month,
             (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
             pa.immediate_montly_pcent AS daily_monthly_pcent,
@@ -1756,10 +1756,10 @@ CREATE INDEX index_bpc_assets_stations_on_user_id ON public.bpc_assets_stations 
 
 
 --
--- Name: index_buy_orders_analytics_on_trade_hub_id_and_eve_item_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_buy_orders_analytics_on_eve_item_id_and_trade_hub_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_buy_orders_analytics_on_trade_hub_id_and_eve_item_id ON public.buy_orders_analytics USING btree (trade_hub_id, eve_item_id);
+CREATE UNIQUE INDEX index_buy_orders_analytics_on_eve_item_id_and_trade_hub_id ON public.buy_orders_analytics USING btree (eve_item_id, trade_hub_id);
 
 
 --
@@ -1826,10 +1826,10 @@ CREATE UNIQUE INDEX index_market_groups_on_cpp_market_group_id ON public.market_
 
 
 --
--- Name: index_prices_advices_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_prices_advices_on_eve_item_id_and_trade_hub_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_prices_advices_on_eve_item_id ON public.prices_advices USING btree (eve_item_id);
+CREATE UNIQUE INDEX index_prices_advices_on_eve_item_id_and_trade_hub_id ON public.prices_advices USING btree (eve_item_id, trade_hub_id);
 
 
 --
@@ -1837,13 +1837,6 @@ CREATE INDEX index_prices_advices_on_eve_item_id ON public.prices_advices USING 
 --
 
 CREATE INDEX index_prices_advices_on_margin_percent ON public.prices_advices USING btree (margin_percent);
-
-
---
--- Name: index_prices_advices_on_trade_hub_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_prices_advices_on_trade_hub_id ON public.prices_advices USING btree (trade_hub_id);
 
 
 --
@@ -2564,6 +2557,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180926124854'),
 ('20180927070849'),
 ('20181001064444'),
-('20181001093144');
+('20181001093144'),
+('20181002082626'),
+('20181002131805');
 
 
