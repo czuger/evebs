@@ -1226,7 +1226,8 @@ CREATE TABLE public.weekly_price_details (
     volume double precision NOT NULL,
     weighted_avg_price double precision NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    trade_hub_id bigint NOT NULL
 );
 
 
@@ -2015,13 +2016,6 @@ CREATE INDEX index_user_to_user_duplication_requests_on_sender_id ON public.user
 
 
 --
--- Name: index_weekly_price_details_on_eve_item_id_and_day; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_weekly_price_details_on_eve_item_id_and_day ON public.weekly_price_details USING btree (eve_item_id, day);
-
-
---
 -- Name: market_group_anc_desc_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2040,6 +2034,13 @@ CREATE INDEX market_group_desc_idx ON public.market_group_hierarchies USING btre
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
+
+
+--
+-- Name: wpd_eve_item_id_trade_hub_id_day; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX wpd_eve_item_id_trade_hub_id_day ON public.weekly_price_details USING btree (eve_item_id, trade_hub_id, day);
 
 
 --
@@ -2332,6 +2333,14 @@ ALTER TABLE ONLY public.station_details
 
 
 --
+-- Name: weekly_price_details fk_rails_f79d9ebdfb; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.weekly_price_details
+    ADD CONSTRAINT fk_rails_f79d9ebdfb FOREIGN KEY (trade_hub_id) REFERENCES public.trade_hubs(id);
+
+
+--
 -- Name: public_trade_orders fk_rails_f82053a998; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2559,6 +2568,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181001064444'),
 ('20181001093144'),
 ('20181002082626'),
-('20181002131805');
+('20181002131805'),
+('20181003075233');
 
 
