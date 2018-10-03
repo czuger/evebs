@@ -3,7 +3,7 @@
     Informations for
     = link_to( @item.name, item_path( @item ) )
     \-
-    = link_to( print_total_cost_for_items( @item ), item_cost_path( @item.id ) )
+    = link_to( print_total_cost_for_items( @item ), production_cost_path( @item.id ) )
 
   %table.table.table-bordered.sortable
     %thead
@@ -22,7 +22,7 @@
           %td= trade_hub_name_with_region( ip.trade_hub )
 
           %td.text-right= print_pcent( nil )
-          %td.text-right= link_to( print_isk( ip.min_price ), item_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
+          %td.text-right= link_to( print_isk( ip.min_price ), market_data_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
 
           %td.vcenter.text-right= print_pcent( nil )
           %td.vcenter.text-right= print_isk( nil )
