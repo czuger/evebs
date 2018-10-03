@@ -5,9 +5,8 @@ Rails.application.routes.draw do
     get ':item_id/market_overview/', action: :market_overview, as: :market_overview
   end
 
-  resources :production_costs, only: [ :show ] do
-    get :dailies_avg_prices
-  end
+  resources :production_costs, only: [ :show ]
+  get 'production_costs/:item_id/dailies_avg_prices/:trade_hub_id', controller: :production_costs, action: :dailies_avg_prices, as: :production_cost_dailies_avg_prices
 
   resource :helps, only: [:show ]
 

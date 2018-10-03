@@ -10,9 +10,7 @@ class ProductionCostsController < ApplicationController
 
   # We put this here to ease the cache management
   def dailies_avg_prices
-    # In this case, :production_cost_id means :item_id
-    @item = EveItem.find_by( id: params[ :production_cost_id ] )
-
+    @item = EveItem.find_by( id: params[ :item_id ] )
     @dailies_details = @item.weekly_price_details.order( 'day DESC' ).paginate( :page => params[:page] )
   end
 

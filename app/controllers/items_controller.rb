@@ -10,7 +10,7 @@ class ItemsController < ApplicationController
 
   def show
     @item = EveItem.find_by( id: params[ :id ] )
-    @jita_min_price = PricesMin.find_by_eve_item_id_and_trade_hub_id( @item.id, get_jita.id )
+    # @jita_min_price = PricesMin.find_by_eve_item_id_and_trade_hub_id( @item.id, get_jita.id )
     # redirect_to item_market_overview_path( @item )
   end
 

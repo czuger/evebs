@@ -8,6 +8,7 @@ module Modules::PriceAdvices::MarginModule
     set_checked_production_list_ids
 
     margin_column_name = ( margin_type == :daily ? :margin_comp_immediate : :margin_comp_weekly )
+    get_jita
 
     # caution : use coalesce before vol_month because least forget null value
     # give you full_batch_size instead of zero in case of no sold in month

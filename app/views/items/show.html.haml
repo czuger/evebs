@@ -11,11 +11,11 @@
     .col
       -# We don't show the min prices or productions costs here, only the link to allow a daily caching rather than an hourly one
       - if @item.base_item
-        = link_to( 'Average cost', production_cost_dailies_avg_prices_path( @item ) )
+        = link_to( 'Average cost', production_cost_dailies_avg_prices_path( @item, get_jita.id ) )
       - else
         = link_to( 'Production cost', production_cost_path( @item ) )
     .col
-      = link_to( 'Jita min price', market_data_trade_hub_detail_path( @item, @jita.id ) )
+      = link_to( 'Jita min price', market_data_trade_hub_detail_path( @item, get_jita.id ) )
     .col
       = link_to( 'Markets details', market_data_market_overview_path( @item ) )
 
