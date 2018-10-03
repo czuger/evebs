@@ -50,7 +50,12 @@
 
             - price, margin = price_n_margin( margin_type, item )
 
-            %td.text-right.information_highlight_left= print_isk(price)
+            %td.text-right.information_highlight_left= link_to print_isk(price)
+            -#- if margin_type == :daily
+            -#  = link_to print_isk(price),
+            -#- else
+            -#  = link_to print_isk(price), production_cost_dailies_avg_prices
+
             %td.text-right.information_highlight_right=print_pcent( item.margin_percent )
             %td.text-right.information_highlight_right=print_isk( margin, million_round: true )
             %td.text-right

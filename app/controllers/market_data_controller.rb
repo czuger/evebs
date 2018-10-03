@@ -22,5 +22,4 @@ class MarketDataController < ApplicationController
                   .order( 'price' ).limit( 20 )
   end
 
-
 end

@@ -1,5 +1,5 @@
 %h3.my-3
-  Sales details included in price computation for
+  = @item.base_item ? 'Sales details included in price computation for ' : 'Weekly price detail for '
   = link_to( @item.name, item_path( @item ) )
   = print_total_cost_for_items( @item )
 
@@ -11,7 +11,7 @@
       %th.text-right Total volume
 
   %tbody
-    - @dailies_datails.each do |sfd|
+    - @dailies_details.each do |sfd|
       %tr
         %td.text-center
           = sfd.day
@@ -20,4 +20,4 @@
         %td.text-right
           = print_volume sfd.volume.round
 
-= will_paginate @dailies_datails
+= will_paginate @dailies_details
