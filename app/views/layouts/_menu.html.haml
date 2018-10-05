@@ -25,7 +25,7 @@
 
         = dropdown_menu_block( 'Production' ) do
           = dropdown_sub_menu_link( 'Production list', edit_production_lists_path( current_user ) )
-          = dropdown_sub_menu_link( 'Components to buy', components_to_buy_path( current_user ) )
+          = dropdown_sub_menu_link( 'Components to buy', components_to_buys_path )
           = dropdown_sub_menu_link( 'Components to buy - raw', components_to_buy_show_raw_path, true )
           .dropdown-divider
           = dropdown_sub_menu_link( 'My Assets', my_assets_path )

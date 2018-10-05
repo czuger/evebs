@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :components_to_buy do
+  factory :components_to_buys do
     user { nil }
     eve_item { nil }
     quantity { 1 }

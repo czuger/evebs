@@ -40,8 +40,8 @@ Rails.application.routes.draw do
 
   resource :blueprints, only: [:show, :update]
 
-  resources :components_to_buy, only: [ :show ]
-  get :components_to_buy_show_raw,  controller: :components_to_buy
+  resource :components_to_buys, only: [:show, :update ]
+  get :components_to_buy_show_raw,  controller: :components_to_buys
 
   resources :items, only: [ :show ]
 

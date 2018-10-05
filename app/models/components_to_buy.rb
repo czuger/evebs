@@ -2,6 +2,14 @@ class ComponentsToBuy < ApplicationRecord
   belongs_to :user
   belongs_to :eve_item
 
+  # def self.total_volume(components_to_buy)
+  #   components_to_buy.map{ |e| e.quantity * e.eve_item.volume }.inject( &:+ )&.round(1)
+  # end
+  #
+  # def self.total_isk(components_to_buy)
+  #   components_to_buy.map{ |e| e.quantity * e.eve_item.cost }.inject( &:+ )
+  # end
+
   def self.refresh_components_to_buy_list_for( user )
 
     items_to_buy = {}
