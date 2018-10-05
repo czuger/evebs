@@ -3,7 +3,7 @@ require 'digest'
 class User < ApplicationRecord
 
   has_many :blueprint_modifications
-  has_many :component_to_buys
+  has_many :components_to_buys_details
 
   has_and_belongs_to_many :eve_items
   has_and_belongs_to_many :trade_hubs
@@ -12,6 +12,8 @@ class User < ApplicationRecord
   has_many :blueprints, through: :eve_items
   has_many :blueprint_materials, through: :blueprints
   has_many :blueprint_components, through: :materials
+
+  has_many :components_to_buys, dependent: :delete_all
 
   has_many :user_sale_orders, dependent: :destroy
   has_many :user_sale_order_details

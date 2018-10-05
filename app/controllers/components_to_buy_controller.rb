@@ -14,6 +14,10 @@ class ComponentsToBuyController < ApplicationController
     render layout: false
   end
 
+  def refresh_components_to_buy_list
+
+  end
+
   def download_assets
   end
 
@@ -29,7 +33,7 @@ class ComponentsToBuyController < ApplicationController
   private
 
   def set_required_quantities
-    @required_quantities = @user.selected_assets_station_id ? @user.component_to_buys.where( user_id: @user.id ) : ComponentToBuy.none
+    @required_quantities = @user.selected_assets_station_id ? @user.component_to_buys.where( user_id: @user.id ) : ComponentsToBuysDetail.none
   end
 
 end
