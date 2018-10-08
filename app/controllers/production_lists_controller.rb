@@ -71,27 +71,27 @@ class ProductionListsController < ApplicationController
 
   private
 
-  def update_from_advice_screen
-    production_entry = @user.production_lists.where(
-        trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).first_or_initialize
-
-    update_production_list production_entry, runs_count: params[:runs_count]&.to_i, quantity: params[:quantity]&.to_i
-  end
-
-  def update_production_list( pl, quantity: nil, runs_count: nil )
-    unless quantity && runs_count
-
-      corresponding_blueprint ||= pl.eve_item.blueprint
-
-      runs_count ||= ( quantity.to_f / corresponding_blueprint.prod_qtt ).floor
-      quantity_to_produce = runs_count * corresponding_blueprint.prod_qtt
-
-      pl.update!( quantity_to_produce: quantity_to_produce, runs_count: runs_count )
-    else
-      pl.update!( quantity_to_produce: nil, runs_count: nil )
-    end
-
-    flash[ :notice ] = 'Production list updated successfully'
-  end
+  # def update_from_advice_screen
+  #   production_entry = @user.production_lists.where(
+  #       trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).first_or_initialize
+  #
+  #   update_production_list production_entry, runs_count: params[:runs_count]&.to_i, quantity: params[:quantity]&.to_i
+  # end
+  #
+  # def update_production_list( pl, quantity: nil, runs_count: nil )
+  #   unless quantity && runs_count
+  #
+  #     corresponding_blueprint ||= pl.eve_item.blueprint
+  #
+  #     runs_count ||= ( quantity.to_f / corresponding_blueprint.prod_qtt ).floor
+  #     quantity_to_produce = runs_count * corresponding_blueprint.prod_qtt
+  #
+  #     pl.update!( quantity_to_produce: quantity_to_produce, runs_count: runs_count )
+  #   else
+  #     pl.update!( quantity_to_produce: nil, runs_count: nil )
+  #   end
+  #
+  #   flash[ :notice ] = 'Production list updated successfully'
+  # end
 
 end

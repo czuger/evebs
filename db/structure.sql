@@ -422,46 +422,6 @@ CREATE TABLE public.components_to_buys (
 
 
 --
--- Name: production_lists; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.production_lists (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    trade_hub_id integer NOT NULL,
-    eve_item_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    quantity_to_produce bigint,
-    runs_count bigint
-);
-
-
---
--- Name: components_to_buys_details; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.components_to_buys_details AS
- SELECT pl.id,
-    pl.user_id,
-    b.cpp_blueprint_id,
-    b.id AS bp_id,
-    b.name AS bp_name,
-    bpm_mat_ei.id AS mat_id,
-    bpm_mat_ei.name AS mat_name,
-    bm.required_qtt,
-    COALESCE(bmo.percent_modification_value, (1)::double precision) AS bp_reduction
-   FROM ((((((public.production_lists pl
-     JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
-     JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
-     JOIN public.blueprint_materials bm ON ((b.id = bm.blueprint_id)))
-     JOIN public.eve_items bpm_mat_ei ON ((bm.eve_item_id = bpm_mat_ei.id)))
-     JOIN public.users ue ON ((pl.user_id = ue.id)))
-     LEFT JOIN public.blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
-  WHERE (pl.runs_count > 0);
-
-
---
 -- Name: components_to_buys_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -843,6 +803,21 @@ CREATE SEQUENCE public.prices_mins_id_seq
 --
 
 ALTER SEQUENCE public.prices_mins_id_seq OWNED BY public.prices_mins.id;
+
+
+--
+-- Name: production_lists; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.production_lists (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    trade_hub_id integer NOT NULL,
+    eve_item_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    runs_count smallint NOT NULL
+);
 
 
 --
@@ -2634,6 +2609,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181002131805'),
 ('20181003075233'),
 ('20181005093510'),
-('20181005103327');
+('20181005103327'),
+('20181008013156');
 
 
