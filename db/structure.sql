@@ -408,36 +408,19 @@ CREATE VIEW public.buy_orders_analytics_results AS
 
 
 --
--- Name: components_to_buys; Type: TABLE; Schema: public; Owner: -
+-- Name: components_to_buys; Type: VIEW; Schema: public; Owner: -
 --
 
-CREATE TABLE public.components_to_buys (
-    id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    eve_item_id bigint NOT NULL,
-    quantity integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: components_to_buys_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.components_to_buys_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: components_to_buys_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.components_to_buys_id_seq OWNED BY public.components_to_buys.id;
+CREATE VIEW public.components_to_buys AS
+SELECT
+    NULL::integer AS id,
+    NULL::integer AS user_id,
+    NULL::character varying(255) AS eve_item_name,
+    NULL::integer AS eve_item_id,
+    NULL::double precision AS qtt_to_buy,
+    NULL::double precision AS total_cost,
+    NULL::double precision AS required_volume,
+    NULL::boolean AS base_item;
 
 
 --
@@ -1311,13 +1294,6 @@ ALTER TABLE ONLY public.buy_orders_analytics ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- Name: components_to_buys id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.components_to_buys ALTER COLUMN id SET DEFAULT nextval('public.components_to_buys_id_seq'::regclass);
-
-
---
 -- Name: crontabs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1532,14 +1508,6 @@ ALTER TABLE ONLY public.bpc_assets_stations
 
 ALTER TABLE ONLY public.buy_orders_analytics
     ADD CONSTRAINT buy_orders_analytics_pkey PRIMARY KEY (id);
-
-
---
--- Name: components_to_buys components_to_buys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.components_to_buys
-    ADD CONSTRAINT components_to_buys_pkey PRIMARY KEY (id);
 
 
 --
@@ -1794,20 +1762,6 @@ CREATE INDEX index_bpc_assets_stations_on_user_id ON public.bpc_assets_stations 
 --
 
 CREATE UNIQUE INDEX index_buy_orders_analytics_on_eve_item_id_and_trade_hub_id ON public.buy_orders_analytics USING btree (eve_item_id, trade_hub_id);
-
-
---
--- Name: index_components_to_buys_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_components_to_buys_on_eve_item_id ON public.components_to_buys USING btree (eve_item_id);
-
-
---
--- Name: index_components_to_buys_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_components_to_buys_on_user_id ON public.components_to_buys USING btree (user_id);
 
 
 --
@@ -2091,6 +2045,33 @@ CREATE UNIQUE INDEX wpd_eve_item_id_trade_hub_id_day ON public.weekly_price_deta
 
 
 --
+-- Name: components_to_buys _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.components_to_buys AS
+ SELECT bpm_mat_ei.id,
+    pl.user_id,
+    bpm_mat_ei.name AS eve_item_name,
+    bpm_mat_ei.id AS eve_item_id,
+    (sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
+    ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.cost) AS total_cost,
+    ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.volume) AS required_volume,
+    bpm_mat_ei.base_item
+   FROM (((((((public.production_lists pl
+     JOIN public.eve_items ei ON ((ei.id = pl.eve_item_id)))
+     JOIN public.blueprints b ON ((ei.blueprint_id = b.id)))
+     JOIN public.blueprint_materials bm ON ((b.id = bm.blueprint_id)))
+     JOIN public.eve_items bpm_mat_ei ON ((bm.eve_item_id = bpm_mat_ei.id)))
+     JOIN public.users ue ON ((pl.user_id = ue.id)))
+     LEFT JOIN public.blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
+     LEFT JOIN public.bpc_assets ba ON (((bpm_mat_ei.id = ba.eve_item_id) AND (ba.station_detail_id = ue.selected_assets_station_id)))),
+    LATERAL ( SELECT ceil((((bm.required_qtt * pl.runs_count))::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) AS raw_qtt) qtt_comp
+  WHERE (pl.runs_count > 0)
+  GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
+ HAVING ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
+
+
+--
 -- Name: eve_market_volumes fk_rails_01da9c4169; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2203,14 +2184,6 @@ ALTER TABLE ONLY public.bpc_assets
 
 
 --
--- Name: components_to_buys fk_rails_5489a6d902; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.components_to_buys
-    ADD CONSTRAINT fk_rails_5489a6d902 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: bpc_assets fk_rails_68943bf535; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2264,14 +2237,6 @@ ALTER TABLE ONLY public.user_sale_orders
 
 ALTER TABLE ONLY public.bpc_assets_stations
     ADD CONSTRAINT fk_rails_a00a2978d6 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: components_to_buys fk_rails_a8c5fd57cf; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.components_to_buys
-    ADD CONSTRAINT fk_rails_a8c5fd57cf FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
 
 
 --
@@ -2610,6 +2575,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181003075233'),
 ('20181005093510'),
 ('20181005103327'),
-('20181008013156');
+('20181008013156'),
+('20181008070647'),
+('20181008071507');
 
 

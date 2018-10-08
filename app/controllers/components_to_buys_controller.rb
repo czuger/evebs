@@ -7,8 +7,8 @@ class ComponentsToBuysController < ApplicationController
   def show
     @jita = TradeHub.find_by_eve_system_id( 30000142 )
 
-    @total_isk = @required_quantities.map{ |e| e.quantity * e.eve_item.cost }.inject( &:+ )
-    @total_volume = @required_quantities.map{ |e| e.quantity * e.eve_item.volume }.inject( &:+ )&.round(1)
+    @total_isk = @user.components_to_buys.sum( :total_cost )
+    @total_volume = @user.components_to_buys.sum( :required_volume ).round(1)
   end
 
   def components_to_buy_show_raw
@@ -35,7 +35,7 @@ class ComponentsToBuysController < ApplicationController
   private
 
   def set_required_quantities
-    @required_quantities = @user.components_to_buys.includes( :eve_item ) # ? @user.component_to_buys : ComponentsToBuy.none
+    @required_quantities = @user.components_to_buys # ? @user.component_to_buys : ComponentsToBuy.none
   end
 
 end
