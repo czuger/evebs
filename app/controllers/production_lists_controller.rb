@@ -36,8 +36,8 @@ class ProductionListsController < ApplicationController
     redirect_to components_to_buys_path
   end
 
-  def update_from_prices_advices_buy_orders
-    update_from_advice_screen
+  def create_from_prices_advices_buy_orders
+    create_from_advice_screen
     redirect_to buy_orders_path
   end
 
@@ -61,25 +61,29 @@ class ProductionListsController < ApplicationController
 
   private
 
-  def update_from_advice_screen
-    production_entry = @user.production_lists.where(
-        trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).first_or_initialize
+  def create_from_advice_screen
+    eve_item = EveItem.find( params[:eve_item_id] )
 
-    update_production_list production_entry, runs_count: params[:runs_count]&.to_i, quantity: params[:quantity]&.to_i
+    runs_count = compute_runs_count( eve_item, runs_count: params[:runs_count]&.to_i, quantity: params[:quantity]&.to_i )
+
+    @user.production_lists.create!(
+        trade_hub_id: params[:trade_hub_id], eve_item_id: eve_item.id, runs_count: runs_count )
+    flash[ :notice ] = 'Production list updated successfully'
   end
 
   def update_production_list( pl, quantity: nil, runs_count: nil )
-    unless quantity && runs_count
-
-      corresponding_blueprint ||= pl.eve_item.blueprint
-      runs_count ||= [ ( quantity.to_f / corresponding_blueprint.prod_qtt ).ceil, corresponding_blueprint.nb_runs ].min
-
-      pl.update!( runs_count: runs_count )
-    else
-      pl.update!( runs_count: nil )
-    end
-
+    pl.update!( runs_count: compute_runs_count( pl.eve_item, quantity: nil, runs_count: nil ) )
     flash[ :notice ] = 'Production list updated successfully'
+  end
+
+  def compute_runs_count( eve_item, quantity: nil, runs_count: nil )
+    unless quantity && runs_count
+      corresponding_blueprint ||= eve_item.blueprint
+      runs_count ||= [ ( quantity.to_f / corresponding_blueprint.prod_qtt ).ceil, corresponding_blueprint.nb_runs ].min
+    else
+      runs_count= nil
+    end
+    runs_count
   end
 
 end
