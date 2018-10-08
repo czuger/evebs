@@ -41,16 +41,15 @@ class ProductionListsController < ApplicationController
     redirect_to buy_orders_path
   end
 
-  #
-  # def update_from_prices_advices
-  #   update_from_advice_screen
-  #
-  #   if params[:margin_type] == 'daily'
-  #     redirect_to price_advices_advice_prices_path
-  #   else
-  #     redirect_to price_advices_advice_prices_weekly_path
-  #   end
-  # end
+  def create_from_prices_advices_immediate
+    create_from_advice_screen
+    redirect_to price_advices_advice_prices_path
+  end
+
+  def create_from_prices_advices_weekly
+    create_from_advice_screen
+    redirect_to price_advices_advice_prices_weekly_path
+  end
 
   def remove_production_list_check
     # Used by Ajax only
