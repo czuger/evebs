@@ -4,18 +4,6 @@ class ProductionListsController < ApplicationController
   before_action :set_user
 
   def edit
-    # @basket_active_record = @user.production_lists.joins( { trade_hub: :region }, { eve_item: :blueprint } ).
-    #     joins( "LEFT JOIN price_advice_margin_comps pa
-    #               ON pa.item_id = production_lists.eve_item_id
-    #               AND pa.trade_hub_id = production_lists.trade_hub_id
-    #               AND pa.user_id = #{@user.id}" )
-    #                             .order( 'trade_hubs.name', 'eve_items.name' ).paginate( :page => params[:page], :per_page => 20 )
-
-    # @basket_array = @basket_active_record.pluck_to_hash( 'trade_hubs.name', 'regions.name', 'eve_items.name', 'eve_items.id',
-    #                                                      :vol_month, :min_price, :single_unit_cost, 'trade_hubs.id',
-    #                                                      :margin_percent, :id, :quantity_to_produce, :batch_size_formula,
-    #                                                      :full_batch_size )
-
     @basket_datas = @user.production_lists.includes( {trade_hub: :region}, {eve_item: :blueprint} )
                   .order( :id ).paginate( :page => params[:page], :per_page => 20 )
   end
@@ -43,11 +31,16 @@ class ProductionListsController < ApplicationController
     head :ok
   end
 
-  # def update_from_buy_orders
-  #   update_from_advice_screen
-  #
-  #   redirect_to buy_orders_path
-  # end
+  def update_from_components_to_buy
+    update_from_advice_screen
+    redirect_to components_to_buys_path
+  end
+
+  def update_from_prices_advices_buy_orders
+    update_from_advice_screen
+    redirect_to buy_orders_path
+  end
+
   #
   # def update_from_prices_advices
   #   update_from_advice_screen
@@ -68,13 +61,12 @@ class ProductionListsController < ApplicationController
 
   private
 
-  # def update_from_advice_screen
-  #   production_entry = @user.production_lists.where(
-  #       trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).first_or_initialize
-  #
-  #   update_production_list production_entry, runs_count: params[:runs_count]&.to_i, quantity: params[:quantity]&.to_i
-  # end
-  #
+  def update_from_advice_screen
+    production_entry = @user.production_lists.where(
+        trade_hub_id: params[:trade_hub_id], eve_item_id: params[:eve_item_id] ).first_or_initialize
+
+    update_production_list production_entry, runs_count: params[:runs_count]&.to_i, quantity: params[:quantity]&.to_i
+  end
 
   def update_production_list( pl, quantity: nil, runs_count: nil )
     unless quantity && runs_count

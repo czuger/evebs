@@ -11,7 +11,7 @@ module PriceAdvicesHelper
   end
 
   def trade_hub_name_with_region( trade_hub )
-    name = trade_hub.name
+    name = trade_hub.name.clone
     name << ' (' + trade_hub.region.name + ')' if trade_hub.region
     name
   end
