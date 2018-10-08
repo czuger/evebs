@@ -71,7 +71,7 @@ class ProductionListsController < ApplicationController
   end
 
   def update_production_list( pl, quantity: nil, runs_count: nil )
-    pl.update!( runs_count: compute_runs_count( pl.eve_item, quantity: nil, runs_count: nil ) )
+    pl.update!( runs_count: compute_runs_count( pl.eve_item, quantity: quantity, runs_count: runs_count ) )
     flash[ :notice ] = 'Production list updated successfully'
   end
 
