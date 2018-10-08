@@ -816,7 +816,7 @@ CREATE TABLE public.production_lists (
     eve_item_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    runs_count smallint NOT NULL
+    runs_count smallint
 );
 
 

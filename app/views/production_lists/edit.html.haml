@@ -1,4 +1,4 @@
-= form_tag production_lists_path( @current_user ), method: :patch do
+= form_tag production_lists_path, method: :patch do
 
   .my-4
     %h4
@@ -13,34 +13,41 @@
           %th
         %th Trade hub
         %th Item
-        %th.text-right Volume
-        %th.text-right Cost
-        %th.text-right Price
-        %th.text-right Margin
-        %th.text-right Advised quantity
+        -#%th.text-right Volume
+        -#%th.text-right Cost
+        -#%th.text-right Price
+        -#%th.text-right Margin
+        -#%th.text-right Advised quantity
+        %th.text-center Nb runs
         %th.text-right Quantity to produce
         %th.text-center Jobs count
     %tbody
-      - @basket_array.each do |basket|
+      - @basket_datas.each do |basket|
         %tr{ class: cycle( :odd, :even ) }
           - unless @shared_production_list
             %td= production_list_check_box( basket, delete_on_change: true, force_checked: true  )
-          %td= trade_hub_name_with_region_v2( basket )
-          %td= link_to( basket['eve_items.name'], item_path( basket['eve_items.id'] ) )
-          %td.text-right=print_volume(basket['vol_month'])
-          %td.text-right=print_isk(basket['single_unit_cost'])
-          %td.text-right=print_isk(basket['min_price'])
-          %td.text-right=print_pcent( basket['margin_percent'] )
-          %td.text-right=print_volume( basket['batch_size_formula']&.round )
-          %td.text-right=number_field_tag( "quantity_to_produce[#{basket[:id]}]", basket[:quantity_to_produce] )
 
-          - jobs_amount = ( basket[:quantity_to_produce].to_f / basket['full_batch_size'] ).ceil if basket[:quantity_to_produce] && basket['full_batch_size']
+          %td= trade_hub_name_with_region( basket.trade_hub )
+
+          %td= link_to( basket.eve_item.name, item_path( basket.eve_item_id ) )
+          -#%td.text-right=print_volume(basket['vol_month'])
+          -#%td.text-right=print_isk(basket['single_unit_cost'])
+          -#%td.text-right=print_isk(basket['min_price'])
+          -#%td.text-right=print_pcent( basket['margin_percent'] )
+          -#%td.text-right=print_volume( basket['batch_size_formula']&.round )
+
+          %td.text-center=number_field_tag( "runs_count[#{basket.id}]", basket.runs_count, max: basket.eve_item.blueprint.nb_runs )
+
+          %td.text-right=print_volume basket.runs_count*basket.eve_item.blueprint.prod_qtt
+
+          -#- jobs_amount = ( basket[:quantity_to_produce].to_f / basket['full_batch_size'] ).ceil if basket[:quantity_to_produce] && basket['full_batch_size']
+          - jobs_amount = basket[:runs_count] > 0 ? 1 : 0
           - @total_jobs += jobs_amount if jobs_amount
 
           %td.text-center= jobs_amount
 
       %tr
-        %td.text-left{ colspan: 9 }
+        %td.text-left{ colspan: 5 }
           %b
             Total jobs
 
@@ -49,7 +56,7 @@
             = @total_jobs
 
 
-      = will_paginate @basket_active_record
+      = will_paginate @basket_datas
 
   .row
     .col-md-12.text-right
