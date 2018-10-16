@@ -18,6 +18,16 @@ module Esi
       end
     end
 
+    def find_reaction_stations
+      StationDetail.where( 'services @> ARRAY[?]::varchar[]', [ :reactions ] )
+          .where( 'jita_distance < 13' )
+          .order( 'jita_distance' ).each do |station|
+
+        puts '%-90s %11.0f % 4.2f %3d %s' %
+                 [ station.name, station.office_rental_cost, station.security_status, station.jita_distance, station.industry_costs_indices ]
+      end
+    end
+
     def fill_station_table
       ActiveRecord::Base.transaction do
         sub_fill_station_table
