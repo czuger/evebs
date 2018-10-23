@@ -18,6 +18,8 @@ class Esi::Errors::Base < RuntimeError
       error = Esi::Errors::OpenTimeout.new
     when 'SocketError'
       error = Esi::Errors::SocketError.new
+    when '503 Service Unavailable'
+      error = Esi::Errors::ServiceUnavailable.new
     end
 
     error
