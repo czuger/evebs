@@ -2,7 +2,7 @@ INSERT INTO weekly_price_details ( eve_item_id, trade_hub_id, day, volume, weigh
   SELECT sf.eve_item_id, sf.trade_hub_id, day, SUM( sf.volume ), SUM( sf.volume * sf.price ) / SUM( sf.volume ), now(), now()
   FROM sales_finals sf
     JOIN trade_hubs tu ON sf.trade_hub_id = tu.id
-      WHERE sf.day >= current_date - 7
+      WHERE sf.day > current_date - 1
         AND sf.volume > 0
   GROUP BY sf.eve_item_id, sf.trade_hub_id, day
 ON CONFLICT (eve_item_id, trade_hub_id, day)
@@ -10,6 +10,9 @@ ON CONFLICT (eve_item_id, trade_hub_id, day)
     volume = EXCLUDED.volume,
     weighted_avg_price = EXCLUDED.weighted_avg_price,
     updated_at = now();
+
+DELETE FROM weekly_price_details
+  WHERE day < current_date - 7;
 
 UPDATE eve_items ei SET ( weekly_avg_price, updated_at ) = ( wap, now() )
 FROM (
