@@ -3,9 +3,17 @@ SitemapGenerator::Sitemap.default_host = 'http://evebs.ieroe.com'
 
 SitemapGenerator::Sitemap.create do
 
+  @jita = TradeHub.find_by_eve_system_id(30000142)
+
   EveItem.find_each do |item|
     add item_path(item), changefreq: :weekly
-    add production_cost_path(item), :lastmod => item.updated_at, changefreq: :daily
+
+    if item.base_item
+      add production_cost_dailies_avg_prices(item,@jita), :lastmod => item.updated_at, changefreq: :daily
+    else
+      add production_cost_path(item), :lastmod => item.updated_at, changefreq: :daily
+    end
+
     add market_data_market_overview_path(item), changefreq: :hourly
   end
 
