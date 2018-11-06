@@ -22,7 +22,8 @@ namespace :data_setup do
   desc 'Set faction boolean for EveItem'
   task :set_faction_boolean => :environment do
     factions_identifier = [ 'Federation Navy', 'Khanid Navy', 'Dark Blood', 'True Sansha', 'Imperial Navy', 'Caldari Navy',
-                            'Republic Fleet', 'Ammatar Navy', 'Dread Guristas', 'Shadow Serpentis n,j' ]
+                            'Republic Fleet', 'Ammatar Navy', 'Dread Guristas', 'Shadow Serpentis', 'High-grade', "Magpie",
+    "Yurt", "Wetu", 'Packrat', 'Encounter Surveillance System' ]
 
     ActiveRecord::Base.transaction do
       EveItem.where( id: EveItem.all.select{ |e| e.market_group_path.join =~ /Special Edition Ships/ }.map{ |e| e.id } ).update_all( faction: true )
