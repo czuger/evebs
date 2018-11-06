@@ -37,14 +37,22 @@ class ListItemsController < ApplicationController
   end
 
   def clear
-    @user.eve_items.clear
+    clear_user_list
     redirect_to saved_list_list_items_path, notice: 'List cleared successfully'
   end
 
   # EveItem.where( id: EveItem.all.select{ |e| e.market_group_path.join =~ /action/ }.map{ |e| e.id } ).update_all( faction: true )
-  #
+  # EveItem.where( "name LIKE '%Federation Navy%'" ).update_all( faction: true )
   def all
-    @user.eve_item_ids = EveItem.where.not( blueprint_id: nil ).where( faction: false ).pluck( :id )
+    clear_user_list
+    # @user.eve_item_ids = EveItem.where.not( blueprint_id: nil ).where( faction: false ).pluck( :id )
+    links = []
+    EveItem.where.not( blueprint_id: nil ).where( faction: false ).pluck( :id ).in_groups_of( 5000 ).each do |g|
+      g.each do |eve_item_id|
+        links << EveItemsUser.new( user_id: @user.id, eve_item_id: eve_item_id, )
+      end
+      EveItemsUser.import( links )
+    end
     redirect_to saved_list_list_items_path, notice: 'All items are now selected'
   end
 
@@ -69,6 +77,10 @@ class ListItemsController < ApplicationController
   end
 
   private
+
+  def clear_user_list
+    EveItemsUser.where( user_id: @user ).delete_all
+  end
 
   def items_list( my_items_only )
     @user = current_user

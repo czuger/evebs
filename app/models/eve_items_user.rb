@@ -1,0 +1,2 @@
+class EveItemsUser < ApplicationRecord
+end
