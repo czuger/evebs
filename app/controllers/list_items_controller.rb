@@ -41,8 +41,10 @@ class ListItemsController < ApplicationController
     redirect_to saved_list_list_items_path, notice: 'List cleared successfully'
   end
 
+  # EveItem.where( id: EveItem.all.select{ |e| e.market_group_path.join =~ /action/ }.map{ |e| e.id } ).update_all( faction: true )
+  #
   def all
-    @user.eve_item_ids = EveItem.where.not( blueprint_id: nil ).pluck( :id )
+    @user.eve_item_ids = EveItem.where.not( blueprint_id: nil ).where( faction: false ).pluck( :id )
     redirect_to saved_list_list_items_path, notice: 'All items are now selected'
   end
 

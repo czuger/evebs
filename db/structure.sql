@@ -284,7 +284,8 @@ CREATE TABLE public.eve_items (
     market_group_path json DEFAULT '[]'::json NOT NULL,
     mass double precision,
     packaged_volume double precision,
-    weekly_avg_price double precision
+    weekly_avg_price double precision,
+    faction boolean DEFAULT false NOT NULL
 );
 
 
@@ -2641,6 +2642,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181008013156'),
 ('20181008070647'),
 ('20181008071507'),
-('20181106054636');
+('20181106054636'),
+('20181106072050');
 
 
