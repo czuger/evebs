@@ -3,6 +3,8 @@ class Esi::Errors::Base < RuntimeError
   def self.dispatch( exception )
     error = exception
 
+    return Esi::Errors::SocketError.new if exception.message =~ /SocketError/
+
     case exception.message
     when '504 Gateway Timeout'
       error = Esi::Errors::GatewayTimeout.new
