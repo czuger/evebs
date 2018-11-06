@@ -31,6 +31,8 @@ class User < ApplicationRecord
 
   has_many :buy_orders_analytics_results
 
+  has_many :eve_items_saved_lists, dependent: :destroy
+
   belongs_to :identity, foreign_key: :uid
 
   def self.from_omniauth(auth)

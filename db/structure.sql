@@ -475,6 +475,39 @@ ALTER SEQUENCE public.eve_items_id_seq OWNED BY public.eve_items.id;
 
 
 --
+-- Name: eve_items_saved_lists; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.eve_items_saved_lists (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    description character varying NOT NULL,
+    saved_ids character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: eve_items_saved_lists_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.eve_items_saved_lists_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: eve_items_saved_lists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.eve_items_saved_lists_id_seq OWNED BY public.eve_items_saved_lists.id;
+
+
+--
 -- Name: eve_items_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1308,6 +1341,13 @@ ALTER TABLE ONLY public.eve_items ALTER COLUMN id SET DEFAULT nextval('public.ev
 
 
 --
+-- Name: eve_items_saved_lists id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.eve_items_saved_lists ALTER COLUMN id SET DEFAULT nextval('public.eve_items_saved_lists_id_seq'::regclass);
+
+
+--
 -- Name: eve_items_users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1524,6 +1564,14 @@ ALTER TABLE ONLY public.crontabs
 
 ALTER TABLE ONLY public.eve_items
     ADD CONSTRAINT eve_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: eve_items_saved_lists eve_items_saved_lists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.eve_items_saved_lists
+    ADD CONSTRAINT eve_items_saved_lists_pkey PRIMARY KEY (id);
 
 
 --
@@ -1790,6 +1838,13 @@ CREATE UNIQUE INDEX index_eve_items_on_lower_name ON public.eve_items USING btre
 --
 
 CREATE INDEX index_eve_items_on_market_group_id ON public.eve_items USING btree (market_group_id);
+
+
+--
+-- Name: index_eve_items_saved_lists_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_eve_items_saved_lists_on_user_id ON public.eve_items_saved_lists USING btree (user_id);
 
 
 --
@@ -2165,6 +2220,14 @@ ALTER TABLE ONLY public.structures
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT fk_rails_3e0634e4d9 FOREIGN KEY (selected_assets_station_id) REFERENCES public.station_details(id);
+
+
+--
+-- Name: eve_items_saved_lists fk_rails_4097699761; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.eve_items_saved_lists
+    ADD CONSTRAINT fk_rails_4097699761 FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
@@ -2577,6 +2640,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181005103327'),
 ('20181008013156'),
 ('20181008070647'),
-('20181008071507');
+('20181008071507'),
+('20181106054636');
 
 

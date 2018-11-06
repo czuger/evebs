@@ -54,6 +54,10 @@ Rails.application.routes.draw do
     get :my_items_list
     post :selection_change
     get :clear
+
+    post :save
+    get ':saved_list_id/restore', action: :restore, as: :restore
+    get :saved_list
   end
 
   resource :users, only: [:edit, :update] do
