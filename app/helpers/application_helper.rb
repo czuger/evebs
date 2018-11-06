@@ -51,7 +51,7 @@ module ApplicationHelper
   end
 
   def safe_multiply( a, b )
-    return nil unless a && b
+    return Float::INFINITY unless a && b
     a * b
   end
 

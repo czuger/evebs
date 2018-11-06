@@ -64,6 +64,9 @@ module PriceAdvicesHelper
   end
 
   def print_isk(amount, million_round: false )
+    # To ease computation we set the cost to Infinity when we don't have the cost of one of the components
+    # But we don't want to show that artifice to the user.
+    amount = nil if amount == Float::INFINITY
     protected_print_routine( amount, :isk, million_round: million_round )
   end
 
