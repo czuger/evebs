@@ -47,7 +47,7 @@ module Process
           on_db_item.cpp_market_average_price = mp_data['average_price']
         end
 
-        on_db_item.faction = (type[:meta_level] ? type[:meta_level] : 0) >= 5
+        on_db_item.faction = (type[:meta_level] ? type[:meta_level] : 0) >= 6
 
         on_db_item.save!
 
