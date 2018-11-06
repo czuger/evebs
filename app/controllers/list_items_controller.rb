@@ -41,7 +41,31 @@ class ListItemsController < ApplicationController
     redirect_to my_items_list_list_items_path
   end
 
+  def save
+    @saved_list = SavedList.new( description: params[:description], saved_eve_items_ids: @user.eve_item_ids )
+    if @saved_list.save
+      redirect_to saved_list_path, notice: 'List saved successfully'
+    else
+      render :saved_list
+    end
+  end
+
+  def restore
+    saved_list = SavedList.find( params[:saved_list_id] )
+    saved_list_ids = saved_list&.saved_eve_items_ids || []
+    @user.eve_item_ids = saved_list_ids
+    redirect_to saved_list_path
+  end
+
+  def saved_list
+    @saved_lists = @user.saved_lists
+  end
+
   private
+
+  def saved_list_params
+    params.require(:belonging).permit(:name)
+  end
 
   def items_list( my_items_only )
     @user = current_user
