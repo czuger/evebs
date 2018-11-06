@@ -68,8 +68,19 @@ class ListItemsController < ApplicationController
 
   def restore
     saved_list = @user.eve_items_saved_lists.find( params[:saved_list_id] )
-    saved_list_ids = saved_list&.saved_ids || []
-    @user.eve_item_ids = saved_list_ids
+
+    ActiveRecord::Base.transaction do
+      clear_user_list
+
+      saved_list&.saved_ids&.in_groups_of( 500 ).each do |g|
+        links = []
+        g.each do |eve_item_id|
+          links << EveItemsUser.new( user_id: @user.id, eve_item_id: eve_item_id, )
+        end
+        EveItemsUser.import( links )
+      end
+    end
+
     redirect_to saved_list_list_items_path, notice: 'List successfully restored'
   end
 
