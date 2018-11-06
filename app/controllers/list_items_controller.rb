@@ -58,7 +58,7 @@ class ListItemsController < ApplicationController
   end
 
   def saved_list
-    @saved_lists = @user.eve_items_saved_lists
+    @saved_lists = @user.eve_items_saved_lists.paginate(:page => params[:page], :per_page => 20 )
   end
 
   private
