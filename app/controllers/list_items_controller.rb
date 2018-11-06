@@ -42,7 +42,7 @@ class ListItemsController < ApplicationController
   end
 
   def save
-    @saved_list = SavedList.new( user: @user, description: params[:description], saved_ids: @user.eve_item_ids )
+    @saved_list = EveItemsSavedList.new( user: @user, description: params[:description], saved_ids: @user.eve_item_ids )
     if @saved_list.save
       redirect_to saved_list_list_items_path, notice: 'List saved successfully'
     else
@@ -52,9 +52,9 @@ class ListItemsController < ApplicationController
 
   def restore
     saved_list = @user.eve_items_saved_lists.find( params[:saved_list_id] )
-    saved_list_ids = saved_list&.saved_eve_items_ids || []
-    @user.eve_items_saved_lists = saved_list_ids
-    redirect_to saved_list_list_items_path
+    saved_list_ids = saved_list&.saved_ids || []
+    @user.eve_item_ids = saved_list_ids
+    redirect_to saved_list_list_items_path, notice: 'List successfully restored'
   end
 
   def saved_list

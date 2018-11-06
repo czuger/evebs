@@ -12,6 +12,8 @@
         = dropdown_menu_block( 'Items' ) do
           = dropdown_sub_menu_link( 'All items list', edit_list_items_path )
           = dropdown_sub_menu_link( 'My items list', my_items_list_list_items_path )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'Saved lists', saved_list_list_items_path )
 
         = simple_menu_link( 'Trade hubs', edit_choose_trade_hubs_path )
 
