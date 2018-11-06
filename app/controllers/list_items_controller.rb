@@ -38,7 +38,12 @@ class ListItemsController < ApplicationController
 
   def clear
     @user.eve_items.clear
-    redirect_to my_items_list_list_items_path
+    redirect_to saved_list_list_items_path, notice: 'List cleared successfully'
+  end
+
+  def all
+    @user.eve_item_ids = EveItem.where.not( blueprint_id: nil ).pluck( :id )
+    redirect_to saved_list_list_items_path, notice: 'All items are now selected'
   end
 
   def save
