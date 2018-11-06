@@ -22,3 +22,10 @@ FROM (
          WHERE tu.eve_system_id = '30000142'
        GROUP BY wpd.eve_item_id ) weekly_avg
 WHERE ei = ei.id;
+
+UPDATE eve_items ei SET ( weekly_avg_price, updated_at ) = ( NULL, now() )
+WHERE NOT EXISTS (
+       SELECT 1
+       FROM weekly_price_details wpd
+         JOIN  trade_hubs tu ON wpd.trade_hub_id = tu.id
+       WHERE tu.eve_system_id = '30000142' );
