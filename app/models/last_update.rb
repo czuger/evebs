@@ -1,2 +1,0 @@
-class LastUpdate < ApplicationRecord
-end

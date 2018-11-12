@@ -25,9 +25,12 @@
       .my-4
         .row
           .col-8
-            = @title ? @title : 'Title to be set'
-          .col-4
-            = show_last_update
+            %h2.ml-3
+              = @title ? @title : 'Title to be set'
+          .col-4.text-right
+            .mr-3
+              %span.align-middle
+                = show_last_update
 
       = yield
 

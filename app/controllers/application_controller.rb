@@ -23,6 +23,21 @@ class ApplicationController < ActionController::Base
     @jita
   end
 
+  def set_wide_screen
+    @wide_screen = true
+  end
+
+  def set_show_update_hourly
+    @last_update_type = :hourly
+  end
+
+  def set_show_update_daily
+    @last_update_type = :daily
+  end
+
+  def set_show_update_weekly
+    @last_update_type = :weekly
+  end
 
   private
 

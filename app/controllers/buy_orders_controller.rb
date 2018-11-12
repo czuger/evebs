@@ -1,7 +1,7 @@
 class BuyOrdersController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user
+  before_action :set_user, :set_wide_screen, :set_show_update_hourly
 
   include Modules::CheckedProductionListIds
 

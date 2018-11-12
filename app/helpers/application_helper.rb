@@ -57,7 +57,20 @@ module ApplicationHelper
 
   def show_last_update
     if @last_update_type
-      'Last update : ' + LastUpdate.where( update_type: @last_update_type )&.updated_at
+      last_update = Misc::LastUpdate.where( update_type: @last_update_type ).first&.updated_at
+
+      current_date = Time.now.to_date
+      last_update_date = last_update.to_date
+
+      if last_update_date == current_date
+        date_string = 'today at '
+      elsif last_update_date == current_date - 1
+        date_string = 'yesterday at '
+      else
+        date_string = "#{((Time.now - last_update)/(3600*24)).floor} days ago at "
+      end
+
+      'Last update : ' + date_string + last_update.hour.to_s
     end
   end
 
