@@ -1,15 +1,17 @@
 class ListItemsController < ApplicationController
 
   before_action :require_logged_in!, except: [ :edit ]
-  before_action :set_user
+  before_action :set_user, :set_small_screen
 
   include Modules::CheckedProductionListIds
 
   def edit
+    @title = 'All items list'
     items_list false
   end
 
   def my_items_list
+    @title = 'My items list'
     items_list true
   end
 
@@ -85,6 +87,7 @@ class ListItemsController < ApplicationController
   end
 
   def saved_list
+    @title = 'My items sets'
     @saved_lists = @user.eve_items_saved_lists.paginate(:page => params[:page], :per_page => 20 )
   end
 

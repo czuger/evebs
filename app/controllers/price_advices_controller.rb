@@ -3,7 +3,7 @@ require 'time_diff'
 class PriceAdvicesController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user, :set_wide_screen, :set_show_update_hourly
+  before_action :set_user, :set_show_update_hourly
 
   include Modules::PriceAdvices::MarginModule
   include Modules::Nvl

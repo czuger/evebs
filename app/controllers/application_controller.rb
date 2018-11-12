@@ -23,8 +23,8 @@ class ApplicationController < ActionController::Base
     @jita
   end
 
-  def set_wide_screen
-    @wide_screen = true
+  def set_small_screen
+    @small_screen = true
   end
 
   def set_show_update_hourly

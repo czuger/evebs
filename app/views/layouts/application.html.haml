@@ -17,22 +17,23 @@
 
   %body{ data:{ rails_env: Rails.env } }
 
-    %div{ class: ( @wide_screen ? 'container-fluid' : 'container' ) }
+    .container-fluid
 
       = render partial: 'layouts/menu'
       = render partial: 'shared/errors'
 
-      .my-3
-        .row
-          .col-8
-            %h2.ml-3
-              = @title ? @title : 'Title to be set'
-          .col-4.text-right
-            .mr-3
-              %span.align-middle
-                = show_last_update
+      %div{ class: ( :container if @small_screen ) }
+        .my-3
+          .row
+            .col-8
+              %h2.ml-3
+                = @title ? @title : 'Title to be set'
+            .col-4.text-right
+              .mr-3
+                %span.align-middle
+                  = show_last_update
 
-      .mx-3
-        = yield
+        .mx-3
+          = yield
 
 = hidden_field_tag :rails_mode, Rails.env
