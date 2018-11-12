@@ -55,4 +55,10 @@ module ApplicationHelper
     a * b
   end
 
+  def show_last_update
+    if @last_update_type
+      'Last update : ' + LastUpdate.where( update_type: @last_update_type )&.updated_at
+    end
+  end
+
 end
