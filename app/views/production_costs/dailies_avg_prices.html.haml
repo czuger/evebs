@@ -1,5 +1,4 @@
-%h3.my-3
-  = @item.base_item ? 'Sales details included in price computation for ' : 'Weekly price detail for '
+%h3.my-3.text-center
   = link_to( @item.name, item_path( @item ) )
   = print_total_cost_for_items( @item )
 
