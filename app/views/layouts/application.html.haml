@@ -23,15 +23,16 @@
       = render partial: 'shared/errors'
 
       %div{ class: ( :container if @small_screen ) }
-        .my-3
-          .row
-            .col-8
-              %h2.ml-3
-                = @title ? @title : 'Title to be set'
-            .col-4.text-right
-              .mr-3
-                %span.align-middle
-                  = show_last_update
+        - unless @no_title_header
+          .my-3
+            .row
+              .col-8
+                %h2.ml-3
+                  = @title ? @title : 'Title to be set'
+              .col-4.text-right
+                .mr-3
+                  %span.align-middle
+                    = show_last_update
 
         .mx-3
           = yield

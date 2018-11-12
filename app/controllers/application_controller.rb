@@ -27,6 +27,10 @@ class ApplicationController < ActionController::Base
     @small_screen = true
   end
 
+  def set_no_title_header
+    @no_title_header = true
+  end
+
   def set_show_update_hourly
     @last_update_type = :hourly
   end

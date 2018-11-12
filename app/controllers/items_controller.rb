@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
 
   # before_action :require_logged_in!
-  before_action :set_user
+  before_action :set_user, :set_small_screen, :set_no_title_header, :set_show_update_weekly
 
   caches_page :show
 
