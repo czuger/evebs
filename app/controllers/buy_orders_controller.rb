@@ -6,6 +6,7 @@ class BuyOrdersController < ApplicationController
   include Modules::CheckedProductionListIds
 
   def show
+    @title = 'Show rentability with buy orders'
     set_checked_production_list_ids
     @buy_orders = @user.buy_orders_analytics_results.paginate(:page => params[:page], :per_page => 20 )
   end

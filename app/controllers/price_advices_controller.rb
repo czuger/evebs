@@ -3,17 +3,19 @@ require 'time_diff'
 class PriceAdvicesController < ApplicationController
 
   before_action :require_logged_in!, :log_client_activity
-  before_action :set_user
+  before_action :set_user, :set_wide_screen, :set_show_update_hourly
 
   include Modules::PriceAdvices::MarginModule
   include Modules::Nvl
   include Modules::CheckedProductionListIds
 
   def advice_prices_weekly
+    @title = 'Show rentability with sell orders - weekly average'
     advice_prices_margins( :weekly )
   end
 
   def advice_prices
+    @title = 'Show rentability with sell orders - immediate price'
     advice_prices_margins( :daily )
   end
 

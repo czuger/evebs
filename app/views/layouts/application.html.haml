@@ -22,7 +22,7 @@
       = render partial: 'layouts/menu'
       = render partial: 'shared/errors'
 
-      .my-4
+      .my-3
         .row
           .col-8
             %h2.ml-3
@@ -32,6 +32,7 @@
               %span.align-middle
                 = show_last_update
 
-      = yield
+      .mx-3
+        = yield
 
 = hidden_field_tag :rails_mode, Rails.env

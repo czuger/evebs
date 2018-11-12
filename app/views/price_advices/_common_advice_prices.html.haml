@@ -1,71 +1,65 @@
-.container-fluid
-
-  - if @trade_hubs_names && @item_names
-    .row
-      .col-md-4
-        = label_tag 'select_trade_hubs', 'Trade hubs'
-        = select( 'select', 'trade_hubs', trade_hubs_or_regions( margin_type ), {include_blank: 'All'}, class: 'form-control' )
-        = label_tag 'select_items', 'Items'
-        = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
-
+- if @trade_hubs_names && @item_names
   .row
-    .col-md-12
-      %h3= "Price advices : #{margin_type}"
+    .col-md-4
+      = label_tag 'select_trade_hubs', 'Trade hubs'
+      = select( 'select', 'trade_hubs', trade_hubs_or_regions( margin_type ), {include_blank: 'All'}, class: 'form-control' )
+      = label_tag 'select_items', 'Items'
+      = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
 
-      %table.table
-        %tr
-          %th Prod. list
-          %th Trade hub
-          %th Item
-          %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) }
-            Volume
-          %th.text-right
-            Cost
-            = help_tooltip( :cost )
+%table.table
+  %tr
+    %th Prod. list
+    %th Trade hub
+    %th Item
+    %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) }
+      Volume
+    %th.text-right
+      Cost
+      = help_tooltip( :cost )
 
-          %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) }
-            Price
-            %i.glyphicon.glyphicon-question-sign
-          %th.text-center{ colspan: 2, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') }
-            Margin
-            %i.glyphicon.glyphicon-question-sign
+    %th.text-right{ 'data-toggle' => 'tooltip', title: tooltip_price( margin_type ) }
+      Price
+      %i.glyphicon.glyphicon-question-sign
+    %th.text-center{ colspan: 2, 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.margin') }
+      Margin
+      %i.glyphicon.glyphicon-question-sign
 
-          %th.text-center
-            Units to prod.
+    %th.text-center
+      Units to prod.
 
-          - if margin_type == :daily
-            %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) }
-              Daily/monthly
-              %i.glyphicon.glyphicon-question-sign
+    - if margin_type == :daily
+      %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) }
+        Daily/monthly
+        %i.glyphicon.glyphicon-question-sign
 
-        - @items.each do |item|
-          %tr{ class: cycle( :active, nil ) }
-            -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
-            %td.text-center= production_list_check_box( item )
-            %td.trade_hub_name=item.trade_hub_name + " (#{item.region_name})"
+  - @items.each do |item|
+    %tr{ class: cycle( :active, nil ) }
+      -# %td=check_box_tag :eve_item, [@user.id, item[:trade_hub_id], item[:eve_item_id]].join( '|' ), nil, class: :shopping_basket_checkbox
+      %td.text-center= production_list_check_box( item )
+      %td.trade_hub_name=item.trade_hub_name + " (#{item.region_name})"
 
-            %td.item_name= link_to( item.item_name, item_path( item.item_id ) )
-            %td.text-right.information_highlight_left=print_volume(item.vol_month)
-            %td.text-right.information_highlight_left= link_to( print_isk(item.single_unit_cost), production_cost_path( item.item_id ) )
+      %td.item_name= link_to( item.item_name, item_path( item.item_id ) )
+      %td.text-right.information_highlight_left=print_volume(item.vol_month)
+      %td.text-right.information_highlight_left= link_to( print_isk(item.single_unit_cost), production_cost_path( item.item_id ) )
 
-            - price, margin = price_n_margin( margin_type, item )
+      - price, margin = price_n_margin( margin_type, item )
 
-            %td.text-right.information_highlight_left
-              - if margin_type == :daily
-                = link_to print_isk(price), market_data_trade_hub_detail_path( item.item_id, @jita.id )
-              - else
-                = link_to print_isk(price), production_cost_dailies_avg_prices_path( item.item_id, item.trade_hub_id)
+      %td.text-right.information_highlight_left
+        - if margin_type == :daily
+          = link_to print_isk(price), market_data_trade_hub_detail_path( item.item_id, @jita.id )
+        - else
+          = link_to print_isk(price), production_cost_dailies_avg_prices_path( item.item_id, item.trade_hub_id)
 
-            %td.text-right.information_highlight_right=print_pcent( item.margin_percent )
-            %td.text-right.information_highlight_right=print_isk( margin, million_round: true )
+      %td.text-right.information_highlight_right=print_pcent( item.margin_percent )
+      %td.text-right.information_highlight_right=print_isk( margin, million_round: true )
 
-            %td.text-right
-              - if margin_type == :daily
-                = link_to print_volume( item.batch_size_formula.round ), create_from_prices_advices_immediate_production_lists_path( eve_item_id: item.item_id, trade_hub_id: item.trade_hub_id, quantity: item.batch_size_formula.round ), method: :post, class: 'btn btn-secondary btn-block'
-              - else
-                = link_to print_volume( item.batch_size_formula.round ), create_from_prices_advices_weekly_production_lists_path( eve_item_id: item.item_id, trade_hub_id: item.trade_hub_id, quantity: item.batch_size_formula.round ), method: :post, class: 'btn btn-secondary btn-block'
+      %td.text-right
+        - if margin_type == :daily
+          = link_to print_volume( item.batch_size_formula.round ), create_from_prices_advices_immediate_production_lists_path( eve_item_id: item.item_id, trade_hub_id: item.trade_hub_id, quantity: item.batch_size_formula.round ), method: :post, class: 'btn btn-secondary btn-block'
+        - else
+          = link_to print_volume( item.batch_size_formula.round ), create_from_prices_advices_weekly_production_lists_path( eve_item_id: item.item_id, trade_hub_id: item.trade_hub_id, quantity: item.batch_size_formula.round ), method: :post, class: 'btn btn-secondary btn-block'
 
-            - if margin_type == :daily
-              %td.text-right.information_highlight_left=print_pcent( item.daily_monthly_pcent )
+      - if margin_type == :daily
+        %td.text-right.information_highlight_left=print_pcent( item.daily_monthly_pcent )
 
-  = will_paginate @items
+= will_paginate @items
