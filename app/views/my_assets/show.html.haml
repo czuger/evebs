@@ -1,32 +1,30 @@
-.container
+= form_tag set_assets_station_my_assets_path, class: 'form-inline my-4' do
+  - unless @stations_select_data.empty?
+    = label_tag :asset_station_id, 'Assets station', class: 'mr-3'
+    = select_tag( :asset_station_id, options_for_select( @stations_select_data, @selected_station_id ), :include_blank => true, class: 'form-control mr-3' )
+    = button_tag( 'Set station', class: 'btn btn-secondary mr-3' )
 
-  = form_tag set_assets_station_my_assets_path, class: 'form-inline my-4' do
-    - unless @stations_select_data.empty?
-      = label_tag :asset_station_id, 'Assets station', class: 'mr-3'
-      = select_tag( :asset_station_id, options_for_select( @stations_select_data, @selected_station_id ), :include_blank => true, class: 'form-control mr-3' )
-      = button_tag( 'Set station', class: 'btn btn-secondary mr-3' )
-
-    - if @user.download_assets_running
-      Assets download is running. Please refresh in a while ...
+  - if @user.download_assets_running
+    Assets download is running. Please refresh in a while ...
+  - else
+    - if @data_available_in > 0
+      = "Data cached. New data available in #{Time.at(@data_available_in).strftime('%Mm %Ss')}."
     - else
-      - if @data_available_in > 0
-        = "Data cached. New data available in #{Time.at(@data_available_in).strftime('%Mm %Ss')}."
-      - else
-        = link_to 'Update assets', my_assets_path, method: :put, class: 'btn btn-secondary'
+      = link_to 'Update assets', my_assets_path, method: :put, class: 'btn btn-secondary'
 
-  %table.table.table-hover.table-sm
-    %thead
+%table.table.table-hover.table-sm
+  %thead
+    %tr
+      %th
+        Station
+      %th
+        Asset
+      %th.text-right
+        Quantity
+
+  %tbody
+    - @assets.each do |asset|
       %tr
-        %th
-          Station
-        %th
-          Asset
-        %th.text-right
-          Quantity
-
-    %tbody
-      - @assets.each do |asset|
-        %tr
-          %td= asset.station_detail&.name
-          %td= asset.eve_item.name
-          %td.text-right= asset.quantity
+        %td= asset.station_detail&.name
+        %td= asset.eve_item.name
+        %td.text-right= asset.quantity

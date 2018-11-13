@@ -4,6 +4,9 @@ class MyAssetsController < ApplicationController
   before_action :set_user
 
   def show
+    set_small_screen
+    @title = 'My assets'
+
     @selected_station_id = @user.selected_assets_station_id
     @stations_select_data = @user.bpc_assets_stations_details.map{ |e| [ e.name, e.id ] }.sort
 
