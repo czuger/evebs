@@ -1,51 +1,47 @@
-.container
+- if @user_to_user_duplication_requests_as_sender.count > 0
 
-  %h1 Data duplication authorisations
+  %h3
+    Duplications I authorized
 
-  - if @user_to_user_duplication_requests_as_sender.count > 0
+  %table.table
+    %thead
+      %tr
+        %th Receiver
+        %th Duplication type
+        %th
+        %th
+        %th
 
-    %h3
-      Duplications I authorized
-
-    %table.table
-      %thead
+    %tbody
+      - @user_to_user_duplication_requests_as_sender.each do |user_to_user_duplication_request|
         %tr
-          %th Receiver
-          %th Duplication type
-          %th
-          %th
-          %th
+          %td= user_to_user_duplication_request.receiver.name
+          %td= user_to_user_duplication_request.duplication_type_to_s
+          %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
 
-      %tbody
-        - @user_to_user_duplication_requests_as_sender.each do |user_to_user_duplication_request|
-          %tr
-            %td= user_to_user_duplication_request.receiver.name
-            %td= user_to_user_duplication_request.duplication_type_to_s
-            %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
+- if @user_to_user_duplication_requests_as_reciever.count > 0
 
-  - if @user_to_user_duplication_requests_as_reciever.count > 0
+  %h3
+    Duplications authorized to me
 
-    %h3
-      Duplications authorized to me
+  %table.table
+    %thead
+      %tr
+        %th Sender
+        %th Duplication type
+        %th
+        %th
+        %th
 
-    %table.table
-      %thead
+    %tbody
+      - @user_to_user_duplication_requests_as_reciever.each do |user_to_user_duplication_request|
         %tr
-          %th Sender
-          %th Duplication type
-          %th
-          %th
-          %th
+          %td= user_to_user_duplication_request.sender.name
+          %td= user_to_user_duplication_request.duplication_type_to_s
+          -# caution, removing the method: :get causes issue. Even if the method is obvious. Seems that the method argument is required when usin data: :confirm.
+          %td= link_to 'Use', user_to_user_duplication_request_use_path( user_to_user_duplication_request.id ), method: :get, data: { confirm: 'This will destroy your current data. Are you sure?' }
+          %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
 
-      %tbody
-        - @user_to_user_duplication_requests_as_reciever.each do |user_to_user_duplication_request|
-          %tr
-            %td= user_to_user_duplication_request.sender.name
-            %td= user_to_user_duplication_request.duplication_type_to_s
-            -# caution, removing the method: :get causes issue. Even if the method is obvious. Seems that the method argument is required when usin data: :confirm.
-            %td= link_to 'Use', user_to_user_duplication_request_use_path( user_to_user_duplication_request.id ), method: :get, data: { confirm: 'This will destroy your current data. Are you sure?' }
-            %td= link_to 'Destroy', user_to_user_duplication_request, method: :delete, data: { confirm: 'Are you sure?' }
+%br
 
-  %br
-
-  = link_to 'Create duplication authorisation', new_user_to_user_duplication_request_path
+= link_to 'Create duplication authorisation', new_user_to_user_duplication_request_path

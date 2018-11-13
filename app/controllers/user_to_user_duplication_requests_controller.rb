@@ -7,12 +7,16 @@ class UserToUserDuplicationRequestsController < ApplicationController
   # GET /user_to_user_duplication_requests
   # GET /user_to_user_duplication_requests.json
   def index
+    @title = 'Data duplication authorisations'
+    set_small_screen
     @user_to_user_duplication_requests_as_sender = @user.user_to_user_duplication_requests_as_senders.all.includes( :receiver )
     @user_to_user_duplication_requests_as_reciever = @user.user_to_user_duplication_requests_as_receivers.all.includes( :sender )
   end
 
   # GET /user_to_user_duplication_requests/new
   def new
+    @title = 'Create a duplication authorisation'
+    set_small_screen
     @user_to_user_duplication_request = UserToUserDuplicationRequest.new
     @user_to_user_duplication_request.receiver_id = @user.last_duplication_receiver_id
 
