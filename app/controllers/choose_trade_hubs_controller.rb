@@ -1,8 +1,9 @@
 class ChooseTradeHubsController < ApplicationController
 
-  before_action :require_logged_in!, :log_client_activity
+  before_action :require_logged_in!, :log_client_activity, :set_small_screen
 
   def edit
+    @title = 'Choose trade hub to monitor'
     @user = current_user
     @inner_trade_hubs = TradeHub.includes(:region).where( inner: true ).where.not( region: nil ).order(:region_id, :name).to_a
     @outer_trade_hubs = TradeHub.includes(:region).where( inner: false ).where.not( region: nil ).order(:region_id, :name).to_a
