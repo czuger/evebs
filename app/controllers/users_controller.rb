@@ -5,6 +5,8 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    set_small_screen
+    @title = 'Editing user'
     @user = current_user
   end
 
