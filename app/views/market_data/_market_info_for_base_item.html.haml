@@ -1,29 +1,22 @@
-.container
-  %h3
-    Informations for
-    = link_to( @item.name, item_path( @item ) )
-    \-
-    = link_to( print_total_cost_for_items( @item ), production_cost_path( @item.id ) )
+%table.table.table-bordered.sortable
+  %thead
+    %tr
+      %th Trade hub
+      %th.text-right Current margin
+      %th.text-right Current min price
+      %th.text-right Avg margin
+      %th.text-right Avg price
+      %th.text-right Monthly regional volume
 
-  %table.table.table-bordered.sortable
-    %thead
+  %tbody
+    - @item_prices.each do |ip|
+
       %tr
-        %th Trade hub
-        %th.text-right Current margin
-        %th.text-right Current min price
-        %th.text-right Avg margin
-        %th.text-right Avg price
-        %th.text-right Monthly regional volume
+        %td= trade_hub_name_with_region( ip.trade_hub )
 
-    %tbody
-      - @item_prices.each do |ip|
+        %td.text-right= print_pcent( nil )
+        %td.text-right= link_to( print_isk( ip.min_price ), market_data_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
 
-        %tr
-          %td= trade_hub_name_with_region( ip.trade_hub )
-
-          %td.text-right= print_pcent( nil )
-          %td.text-right= link_to( print_isk( ip.min_price ), market_data_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
-
-          %td.vcenter.text-right= print_pcent( nil )
-          %td.vcenter.text-right= print_isk( nil )
-          %td.vcenter.text-right= print_volume( nil )
+        %td.vcenter.text-right= print_pcent( nil )
+        %td.vcenter.text-right= print_isk( nil )
+        %td.vcenter.text-right= print_volume( nil )

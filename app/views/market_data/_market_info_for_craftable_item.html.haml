@@ -1,30 +1,22 @@
-.container
+%table.table.table-bordered.sortable.my-3
+  %thead
+    %tr
+      %th Trade hub
+      %th.text-right Current margin
+      %th.text-right Current min price
+      %th.text-right Avg margin
+      %th.text-right Avg price
+      %th.text-right Monthly volume
 
-  %h3.my-3
-    Informations for
-    = link_to( @item.name, item_path( @item ) )
-    \-
-    = link_to( print_total_cost_for_items( @item ), production_cost_path( @item.id ) )
+  %tbody
+    - @item_prices.each do |ip|
 
-  %table.table.table-bordered.sortable.my-3
-    %thead
       %tr
-        %th Trade hub
-        %th.text-right Current margin
-        %th.text-right Current min price
-        %th.text-right Avg margin
-        %th.text-right Avg price
-        %th.text-right Monthly volume
+        %td= ip.trade_hub_name
 
-    %tbody
-      - @item_prices.each do |ip|
+        %td.text-right= print_pcent( ip.margin_percent )
+        %td.text-right= link_to( print_isk( ip.min_price ), market_data_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
 
-        %tr
-          %td= ip.trade_hub_name
-
-          %td.text-right= print_pcent( ip.margin_percent )
-          %td.text-right= link_to( print_isk( ip.min_price ), market_data_trade_hub_detail_path( ip.eve_item_id, trade_hub_id: ip.trade_hub_id ) )
-
-          %td.vcenter.text-right= print_pcent( ip.avg_monthly_margin_percent )
-          %td.vcenter.text-right= print_isk( ip.avg_price_month )
-          %td.vcenter.text-right= print_volume( ip.vol_month )
+        %td.vcenter.text-right= print_pcent( ip.avg_monthly_margin_percent )
+        %td.vcenter.text-right= print_isk( ip.avg_price_month )
+        %td.vcenter.text-right= print_volume( ip.vol_month )

@@ -1,12 +1,14 @@
 class MarketDataController < ApplicationController
 
-  before_action :set_user
+  before_action :set_user, :set_small_screen, :set_show_update_hourly
   caches_page :market_overview, :trade_hub_detail
 
   def market_overview
     @item = EveItem.find( params[ :item_id ] )
 
     # set_checked_production_list_ids
+
+    @title = 'Markets data comparison'
 
     if @item.base_item
       @item_prices = @item.prices_mins.includes( {trade_hub: :region} ).order( 'min_price NULLS LAST' )
@@ -18,6 +20,9 @@ class MarketDataController < ApplicationController
   def trade_hub_detail
     @trade_hub = TradeHub.find( params[ :trade_hub_id ] )
     @element = EveItem.find( params[ :item_id ] )
+
+    @title = view_context.link_to( @element.name, item_path( @element ) ) + ' at ' + @trade_hub.name
+
     @orders = PublicTradeOrder.where( trade_hub_id: params[ :trade_hub_id ], eve_item_id: params[ :item_id ], is_buy_order: false )
                   .order( 'price' ).limit( 20 )
   end
