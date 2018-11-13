@@ -4,6 +4,9 @@ class BlueprintsController < ApplicationController
   before_action :set_user
 
   def show
+    set_small_screen
+    @title = 'My Blueprints'
+
     @blueprint_modifications = @user.blueprint_modifications.joins( :blueprint ).order( 'blueprints.name' )
                                    .includes( :blueprint ).paginate(:page => params[:page], :per_page => 20 )
 

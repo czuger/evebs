@@ -4,6 +4,7 @@ class UserSalesOrdersController < ApplicationController
   before_action :set_user
 
   def show
+    @title = 'My current sales orders'
     @user = current_user
     @print_change_warning=print_change_warning
 
