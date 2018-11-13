@@ -4,6 +4,7 @@ class ProductionListsController < ApplicationController
   before_action :set_user
 
   def edit
+    @title= 'Items you checked in the daily earnings screen'
     @basket_datas = @user.production_lists.includes( {trade_hub: :region}, {eve_item: :blueprint} )
                   .order( :id ).paginate( :page => params[:page], :per_page => 20 )
   end

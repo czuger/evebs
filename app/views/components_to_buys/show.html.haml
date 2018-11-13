@@ -1,43 +1,41 @@
-.container
+-#.alert.alert-warning.my-3
+-#  Current computation have rounding issue. To be sure you have the right quantity, it has been increased by 5%. This will be fixed soon.
 
-  -#.alert.alert-warning.my-3
-  -#  Current computation have rounding issue. To be sure you have the right quantity, it has been increased by 5%. This will be fixed soon.
+- if @required_quantities.empty?
+  .my-3
+    You have no items to buy. This can be because you didn't select a production station in the assets menu.
 
-  - if @required_quantities.empty?
-    .my-3
-      You have no items to buy. This can be because you didn't select a production station in the assets menu.
-
-  %table.table
-    %tr
-      %th.align-middle
-        Component
-      %th.text-right.align-middle
-        Quantity
-      %th.text-right.align-middle
-        Price
-      %th.text-right.align-middle
-        Volume
-      %th
-        = link_to 'Refresh ', components_to_buys_path, method: :put, class: 'btn btn-secondary btn-block'
-    - @required_quantities.each do |rq|
-      %tr{ class: cycle( :odd, :even ) }
-        %td.align-middle= link_to rq.eve_item_name, item_path( rq.eve_item_id )
-        %td.text-right.align-middle
-          = print_volume( rq.qtt_to_buy.to_i )
-        %td.text-right.align-middle= print_isk rq.total_cost
-        %td.text-right.align-middle= print_volume rq.required_volume.round(1)
-        %td
-          - unless rq.base_item
-            = link_to 'Add to prod', update_from_components_to_buy_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy ), method: :put, class: 'btn btn-secondary btn-block'
-        -#%td
-        -#  = link_to 'Zero parent(s)', update_from_buy_orders_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy.round ), method: :put, class: 'btn btn-secondary btn-block'
-
+%table.table
+  %tr
+    %th.align-middle
+      Component
+    %th.text-right.align-middle
+      Quantity
+    %th.text-right.align-middle
+      Price
+    %th.text-right.align-middle
+      Volume
+    %th
+      = link_to 'Refresh ', components_to_buys_path, method: :put, class: 'btn btn-secondary btn-block'
+  - @required_quantities.each do |rq|
     %tr{ class: cycle( :odd, :even ) }
+      %td.align-middle= link_to rq.eve_item_name, item_path( rq.eve_item_id )
+      %td.text-right.align-middle
+        = print_volume( rq.qtt_to_buy.to_i )
+      %td.text-right.align-middle= print_isk rq.total_cost
+      %td.text-right.align-middle= print_volume rq.required_volume.round(1)
       %td
-        %b
-          Total
-      %td
-      %td.text-right
-        %b= print_isk @total_isk
-      %td.text-right
-        %b= print_volume @total_volume
+        - unless rq.base_item
+          = link_to 'Add to prod', update_from_components_to_buy_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy ), method: :put, class: 'btn btn-secondary btn-block'
+      -#%td
+      -#  = link_to 'Zero parent(s)', update_from_buy_orders_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy.round ), method: :put, class: 'btn btn-secondary btn-block'
+
+  %tr{ class: cycle( :odd, :even ) }
+    %td
+      %b
+        Total
+    %td
+    %td.text-right
+      %b= print_isk @total_isk
+    %td.text-right
+      %b= print_volume @total_volume
