@@ -34,10 +34,14 @@ namespace :data_setup do
     Esi::IndustryStationFinder.new.update_industry_systems
   end
 
-  desc "Update the structures "
+  desc 'Update the structures'
   task :structures => :environment do
     Esi::DownloadStructuresData.new( debug_request: false ).update
   end
 
+  desc 'Get the base prices for reactions'
+  task :reactions => :environment do
+    Esi::DownloadReactionsComponentsPrices.new.download
+  end
 
 end

@@ -52,6 +52,7 @@ class Esi::DownloadReactionsComponentsPrices < Esi::Download
     results.sort_by!{ |e| e[:name] }
 
     results.each do |e|
+      next unless e[:min_price]
       puts "#{e[:name]}\t#{e[:min_price].round}"
     end
   end
