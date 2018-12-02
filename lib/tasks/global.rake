@@ -35,7 +35,6 @@ namespace :process do
     desc 'Full process - daily'
     task :daily => :environment do
 
-
       ActiveRecord::Base.transaction do
         # Esi::UpdateVolumeFromHistory.new.update
 
@@ -79,10 +78,10 @@ namespace :process do
         # once the market tree has changed
         Process::BuildJsonMarketTree.new.build
 
-        Rake::Task[ 'sitemap:refresh' ].invoke
-
         Misc::LastUpdate.set( :weekly )
       end
+
+      Rake::Task[ 'sitemap:refresh' ].invoke
 
       Misc::Banner.p( 'Finished' )
     end

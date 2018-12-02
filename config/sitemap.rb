@@ -9,7 +9,7 @@ SitemapGenerator::Sitemap.create do
     add item_path(item), changefreq: :weekly
 
     if item.base_item
-      add production_cost_dailies_avg_prices(item,@jita), :lastmod => item.updated_at, changefreq: :daily
+      add production_cost_dailies_avg_prices_path(item,@jita), :lastmod => item.updated_at, changefreq: :daily
     else
       add production_cost_path(item), :lastmod => item.updated_at, changefreq: :daily
     end

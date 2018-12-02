@@ -1,6 +1,6 @@
 namespace :routes do
 
-  desc "Print a nginx regexp for your routes"
+  desc 'Print a nginx regexp for your routes'
   task :to_nginx_regexp => :environment do
     root_routes = []
     Rails.application.routes.routes.each do |route|
