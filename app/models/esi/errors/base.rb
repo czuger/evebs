@@ -6,7 +6,7 @@ class Esi::Errors::Base < RuntimeError
     return Esi::Errors::SocketError.new if exception.message =~ /SocketError/
 
     case exception.message
-    when '504 Gateway Timeout'
+    when '504 Gateway Timeout', '504 Gateway Time-out'
       error = Esi::Errors::GatewayTimeout.new
     when '502 Bad Gateway'
       error = Esi::Errors::BadGateway.new
