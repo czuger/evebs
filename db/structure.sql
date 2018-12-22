@@ -775,7 +775,10 @@ CREATE VIEW public.price_advices_min_prices AS
     (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
     pa.immediate_montly_pcent,
     pa.margin_percent,
-    ((pa.avg_price_month / ei.cost) - (1)::double precision) AS avg_monthly_margin_percent
+        CASE
+            WHEN (ei.cost = 'Infinity'::double precision) THEN 'Infinity'::double precision
+            ELSE ((pa.avg_price_month / ei.cost) - (1)::double precision)
+        END AS avg_monthly_margin_percent
    FROM (((((public.prices_advices pa
      JOIN public.eve_items ei ON ((pa.eve_item_id = ei.id)))
      JOIN public.blueprints bp ON ((ei.blueprint_id = bp.id)))
@@ -2643,6 +2646,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181008070647'),
 ('20181008071507'),
 ('20181106054636'),
-('20181106072050');
+('20181106072050'),
+('20181222072048');
 
 
