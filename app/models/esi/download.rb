@@ -3,7 +3,7 @@ require 'json'
 
 class Esi::Download
 
-  ESI_BASE_URL='https://esi.tech.ccp.is/latest/'
+  ESI_BASE_URL='https://esi.evetech.net/latest/'
   ESI_DATA_SOURCE={ datasource: :tranquility }
 
   def initialize( rest_url = nil, params = {}, debug_request: false, verbose_output: false )
