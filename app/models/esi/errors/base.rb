@@ -25,6 +25,8 @@ class Esi::Errors::Base < RuntimeError
         error = Esi::Errors::SocketError.new
       when '503 Service Unavailable'
         error = Esi::Errors::ServiceUnavailable.new
+      when '520 status code 520'
+        error = Esi::Errors::UnknownError.new
       end
 
     error
