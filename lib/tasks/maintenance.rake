@@ -9,5 +9,15 @@ namespace :maintenance do
     Esi::JitaVolumeVerification.new.check
   end
 
+  desc 'Check working hourly process'
+  task :check_working_hourly_process => :environment do
+    if Misc::LastUpdate.where( update_type: 'hourly' ).first.updated_at < DateTime.now - 1/24.0
+
+
+      config = YAML.load_file('config/mail_user_data.yml')
+      LoadErrorMailer.with(user: config[:user]).send_error.deliver_now
+    end
+  end
+
 end
 
