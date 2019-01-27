@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'from@example.com'
+  default from: 'error_alert@evebs.ieroe.com'
   layout 'mailer'
 end
 
