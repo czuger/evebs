@@ -7,6 +7,7 @@ class JitaMarginsController < ApplicationController
   caches_page :index
 
   def index
+    @no_title_header = true
     if @user
       redirect_to buy_orders_path
     end

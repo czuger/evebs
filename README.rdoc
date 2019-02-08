@@ -1,5 +1,5 @@
-# Eve business server
+# Eve industrial tool
 
 A tool for industrial in Eve Online.
 
-Currently broken, i'm working on moving it to new ESI interface.
+The interface is still in beta, but you can try it here : https://evebs.ieroe.com/
