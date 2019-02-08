@@ -34,10 +34,10 @@
 
           %td.text-center=number_field_tag( "runs_count[#{basket.id}]", basket.runs_count, max: basket.eve_item.blueprint.nb_runs )
 
-          %td.text-right=print_volume basket.runs_count*basket.eve_item.blueprint.prod_qtt
+          %td.text-right=print_volume basket.runs_count ? basket.runs_count*basket.eve_item.blueprint.prod_qtt : nil
 
           -#- jobs_amount = ( basket[:quantity_to_produce].to_f / basket['full_batch_size'] ).ceil if basket[:quantity_to_produce] && basket['full_batch_size']
-          - jobs_amount = basket[:runs_count] > 0 ? 1 : 0
+          - jobs_amount = basket[:runs_count] && basket[:runs_count] > 0 ? 1 : 0
           - @total_jobs += jobs_amount if jobs_amount
 
           %td.text-center= jobs_amount
