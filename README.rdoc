@@ -1,5 +1,11 @@
 # Eve industrial tool
 
-A tool for industrial in Eve Online.
+A tool for industrials in Eve Online.
 
 The interface is still in beta, but you can try it here : https://evebs.ieroe.com/
+
+This tool contains :
+
+* Comparison between selling and buying prices and costs (giving you the margin you can expect).
+* Tools for handling your production list
+* A tool for monitoring your sales orders
