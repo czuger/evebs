@@ -25,7 +25,7 @@ class EveItem < ApplicationRecord
 
   has_many :weekly_price_details, dependent: :delete_all
 
-  has_many :eve_market_histories, dependent: :delete_all
+  has_many :group_eve_market_histories
 
   def self.to_eve_item_id(cpp_eve_item_id)
     eve_item=EveItem.where( 'cpp_eve_item_id=?', cpp_eve_item_id).first

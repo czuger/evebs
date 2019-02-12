@@ -18,9 +18,9 @@ class ProductionCostsController < ApplicationController
   end
 
   def market_histories
-    @item = EveItem.find_by( id: params[ :item_id ] )
+    @item = EveItem.find_by( id: params[ :production_cost_id ] )
     @title = 'Regional informations about item'
-    @market_histories = @item.eve_market_histories.joins(:regions).group( '' )
+    @market_histories = @item.group_eve_market_histories.order('volume DESC')
   end
 
 

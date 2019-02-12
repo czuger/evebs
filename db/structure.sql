@@ -566,6 +566,25 @@ ALTER SEQUENCE public.eve_market_histories_id_seq OWNED BY public.eve_market_his
 
 
 --
+-- Name: group_eve_market_histories; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.group_eve_market_histories AS
+ SELECT eve_market_histories.region_id,
+    regions.name AS region_name,
+    eve_market_histories.eve_item_id,
+    sum(eve_market_histories.volume) AS volume,
+    sum(eve_market_histories.order_count) AS orders_count,
+    max(eve_market_histories.highest) AS max_price,
+    min(eve_market_histories.lowest) AS min_price,
+    avg(eve_market_histories.average) AS avg_price
+   FROM public.eve_market_histories,
+    public.regions
+  WHERE (eve_market_histories.region_id = regions.id)
+  GROUP BY eve_market_histories.region_id, regions.name, eve_market_histories.eve_item_id;
+
+
+--
 -- Name: identities; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2653,6 +2672,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181106054636'),
 ('20181106072050'),
 ('20181222072048'),
-('20190212091019');
+('20190212091019'),
+('20190212142615');
 
 

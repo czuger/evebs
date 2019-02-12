@@ -18,7 +18,8 @@
     = link_to( 'Jita min price', market_data_trade_hub_detail_path( @item, @jita.id ) )
   .col
     = link_to( 'Markets details', market_data_market_overview_path( @item ) )
-
+  .col
+    = link_to( 'Last month aggreagtions', production_cost_market_histories_path( @item ) )
 
 .row.my-4
   .col
