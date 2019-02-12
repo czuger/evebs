@@ -3,6 +3,20 @@ class MarketDataController < ApplicationController
   before_action :set_user, :set_small_screen, :set_show_update_hourly
   caches_page :market_overview, :trade_hub_detail
 
+  def region_data
+    @item = EveItem.find( params[ :item_id ] )
+
+    # set_checked_production_list_ids
+
+    @title = 'Markets data comparison'
+
+    if @item.base_item
+      @item_prices = @item.prices_mins.includes( {trade_hub: :region} ).order( 'min_price NULLS LAST' )
+    else
+      @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
+    end
+  end
+
   def market_overview
     @item = EveItem.find( params[ :item_id ] )
 

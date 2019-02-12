@@ -17,4 +17,11 @@ class ProductionCostsController < ApplicationController
     @dailies_details = @item.weekly_price_details.where(trade_hub_id: params[:trade_hub_id]).order( 'day DESC' ).paginate( :page => params[:page] )
   end
 
+  def market_histories
+    @item = EveItem.find_by( id: params[ :item_id ] )
+    @title = 'Regional informations about item'
+    @market_histories = @item.eve_market_histories.joins(:regions).group( '' )
+  end
+
+
 end

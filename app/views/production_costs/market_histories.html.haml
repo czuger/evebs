@@ -1,0 +1,18 @@
+%table.table.my-3
+  %thead
+    %tr
+      %th.text-left Region
+      %th.text-right Weighted avg price
+      %th.text-right Total volume
+
+  %tbody
+    - @dailies_details.each do |sfd|
+      %tr
+        %td.text-center
+          = sfd.day
+        %td.text-right
+          = print_isk sfd.weighted_avg_price
+        %td.text-right
+          = print_volume sfd.volume.round
+
+= will_paginate @dailies_details

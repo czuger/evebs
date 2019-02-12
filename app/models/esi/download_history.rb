@@ -43,7 +43,13 @@ class Esi::DownloadHistory < Esi::Download
       @params[:type_id]=type_id
 
       get_all_pages.each do |record|
-        evm = EveMarketHistory.where(region_id: region.id, eve_item_id: item_id ).first_or_initialize
+
+        p record['date']
+        p Date.parse(record['date'])
+
+        next if Date.parse(record['date']) <= Time.now - 1.month
+
+        evm = EveMarketHistory.where(region_id: region.id, eve_item_id: item_id, server_date: record['date'] ).first_or_initialize
 
         # p record
         evm.volume = record['volume']
@@ -51,9 +57,6 @@ class Esi::DownloadHistory < Esi::Download
         evm.highest = record['highest']
         evm.lowest = record['lowest']
         evm.average = record['average']
-        evm.server_date = record['date']
-
-        next if evm.server_date <= Time.now - 1.month
 
         evm.save!
       end
