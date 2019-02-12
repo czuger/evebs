@@ -528,24 +528,29 @@ ALTER SEQUENCE public.eve_items_users_id_seq OWNED BY public.eve_items_users.id;
 
 
 --
--- Name: eve_market_volumes; Type: TABLE; Schema: public; Owner: -
+-- Name: eve_market_histories; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.eve_market_volumes (
+CREATE TABLE public.eve_market_histories (
     id bigint NOT NULL,
     region_id bigint NOT NULL,
     eve_item_id bigint NOT NULL,
     volume bigint NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    highest double precision,
+    lowest double precision,
+    average double precision,
+    order_count bigint,
+    server_date date
 );
 
 
 --
--- Name: eve_market_volumes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: eve_market_histories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.eve_market_volumes_id_seq
+CREATE SEQUENCE public.eve_market_histories_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -554,10 +559,10 @@ CREATE SEQUENCE public.eve_market_volumes_id_seq
 
 
 --
--- Name: eve_market_volumes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: eve_market_histories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.eve_market_volumes_id_seq OWNED BY public.eve_market_volumes.id;
+ALTER SEQUENCE public.eve_market_histories_id_seq OWNED BY public.eve_market_histories.id;
 
 
 --
@@ -1359,10 +1364,10 @@ ALTER TABLE ONLY public.eve_items_users ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- Name: eve_market_volumes id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: eve_market_histories id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.eve_market_volumes ALTER COLUMN id SET DEFAULT nextval('public.eve_market_volumes_id_seq'::regclass);
+ALTER TABLE ONLY public.eve_market_histories ALTER COLUMN id SET DEFAULT nextval('public.eve_market_histories_id_seq'::regclass);
 
 
 --
@@ -1587,11 +1592,11 @@ ALTER TABLE ONLY public.eve_items_users
 
 
 --
--- Name: eve_market_volumes eve_market_volumes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: eve_market_histories eve_market_histories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.eve_market_volumes
-    ADD CONSTRAINT eve_market_volumes_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.eve_market_histories
+    ADD CONSTRAINT eve_market_histories_pkey PRIMARY KEY (id);
 
 
 --
@@ -1866,17 +1871,17 @@ CREATE INDEX index_eve_items_users_on_user_id ON public.eve_items_users USING bt
 
 
 --
--- Name: index_eve_market_volumes_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_eve_market_histories_on_eve_item_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_eve_market_volumes_on_eve_item_id ON public.eve_market_volumes USING btree (eve_item_id);
+CREATE INDEX index_eve_market_histories_on_eve_item_id ON public.eve_market_histories USING btree (eve_item_id);
 
 
 --
--- Name: index_eve_market_volumes_on_region_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_eve_market_histories_on_region_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_eve_market_volumes_on_region_id ON public.eve_market_volumes USING btree (region_id);
+CREATE INDEX index_eve_market_histories_on_region_id ON public.eve_market_histories USING btree (region_id);
 
 
 --
@@ -2131,10 +2136,10 @@ CREATE OR REPLACE VIEW public.components_to_buys AS
 
 
 --
--- Name: eve_market_volumes fk_rails_01da9c4169; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: eve_market_histories fk_rails_01da9c4169; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.eve_market_volumes
+ALTER TABLE ONLY public.eve_market_histories
     ADD CONSTRAINT fk_rails_01da9c4169 FOREIGN KEY (region_id) REFERENCES public.regions(id);
 
 
@@ -2347,10 +2352,10 @@ ALTER TABLE ONLY public.user_sale_orders
 
 
 --
--- Name: eve_market_volumes fk_rails_cf61c48468; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: eve_market_histories fk_rails_cf61c48468; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.eve_market_volumes
+ALTER TABLE ONLY public.eve_market_histories
     ADD CONSTRAINT fk_rails_cf61c48468 FOREIGN KEY (eve_item_id) REFERENCES public.eve_items(id);
 
 
@@ -2647,6 +2652,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181008071507'),
 ('20181106054636'),
 ('20181106072050'),
-('20181222072048');
+('20181222072048'),
+('20190212091019');
 
 
