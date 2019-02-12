@@ -44,8 +44,8 @@ class Esi::DownloadHistory < Esi::Download
 
       get_all_pages.each do |record|
 
-        p record['date']
-        p Date.parse(record['date'])
+        # p record['date']
+        # p Date.parse(record['date'])
 
         next if Date.parse(record['date']) <= Time.now - 1.month
 
