@@ -8,7 +8,7 @@ SitemapGenerator::Sitemap.create do
   EveItem.find_each do |item|
     add item_path(item), changefreq: :weekly
 
-    if item.base_item
+    if item.base_item || !@item.blueprint
       add production_cost_dailies_avg_prices_path(item,@jita), :lastmod => item.updated_at, changefreq: :daily
     else
       add production_cost_path(item), :lastmod => item.updated_at, changefreq: :daily
