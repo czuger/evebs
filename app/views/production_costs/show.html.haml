@@ -23,7 +23,7 @@
     %td{ colspan: 3 }
       Total for batch
     %td.text-right= print_isk( total_for_batch )
-  - total_for_one_item = total_for_batch / @item.blueprint.prod_qtt
+  - total_for_one_item = total_for_batch / (@item.blueprint&.prod_qtt || -Float::INFINITY)
   %tr{ class: cycle( :odd, :even ) }
     %td{ colspan: 3 }
       Batch size
