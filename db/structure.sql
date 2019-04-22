@@ -71,6 +71,7 @@ CREATE TABLE public.blueprint_materials (
 --
 
 CREATE SEQUENCE public.blueprint_materials_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -140,6 +141,7 @@ CREATE TABLE public.blueprints (
 --
 
 CREATE SEQUENCE public.blueprints_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -269,7 +271,7 @@ ALTER SEQUENCE public.buy_orders_analytics_id_seq OWNED BY public.buy_orders_ana
 CREATE TABLE public.eve_items (
     id integer NOT NULL,
     cpp_eve_item_id integer NOT NULL,
-    name character varying(255) NOT NULL,
+    name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     cost double precision,
@@ -320,7 +322,7 @@ CREATE TABLE public.regions (
 CREATE TABLE public.trade_hubs (
     id integer NOT NULL,
     eve_system_id integer NOT NULL,
-    name character varying(255) NOT NULL,
+    name character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     region_id integer,
@@ -345,12 +347,12 @@ CREATE TABLE public.trade_hubs_users (
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    name character varying(255),
+    name character varying,
     remove_occuped_places boolean,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    provider character varying(255),
-    uid character varying(255),
+    provider character varying,
+    uid character varying,
     last_changes_in_choices timestamp without time zone,
     min_pcent_for_advice integer,
     watch_my_prices boolean,
@@ -416,7 +418,7 @@ CREATE VIEW public.components_to_buys AS
 SELECT
     NULL::integer AS id,
     NULL::integer AS user_id,
-    NULL::character varying(255) AS eve_item_name,
+    NULL::character varying AS eve_item_name,
     NULL::integer AS eve_item_id,
     NULL::double precision AS qtt_to_buy,
     NULL::double precision AS total_cost,
@@ -461,6 +463,7 @@ ALTER SEQUENCE public.crontabs_id_seq OWNED BY public.crontabs.id;
 --
 
 CREATE SEQUENCE public.eve_items_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -513,6 +516,7 @@ ALTER SEQUENCE public.eve_items_saved_lists_id_seq OWNED BY public.eve_items_sav
 --
 
 CREATE SEQUENCE public.eve_items_users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -590,9 +594,9 @@ CREATE VIEW public.group_eve_market_histories AS
 
 CREATE TABLE public.identities (
     id integer NOT NULL,
-    name character varying(255),
-    email character varying(255),
-    password_digest character varying(255),
+    name character varying,
+    email character varying,
+    password_digest character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -603,6 +607,7 @@ CREATE TABLE public.identities (
 --
 
 CREATE SEQUENCE public.identities_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -678,6 +683,7 @@ CREATE TABLE public.market_groups (
 --
 
 CREATE SEQUENCE public.market_groups_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -816,6 +822,7 @@ CREATE VIEW public.price_advices_min_prices AS
 --
 
 CREATE SEQUENCE public.prices_advices_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -835,6 +842,7 @@ ALTER SEQUENCE public.prices_advices_id_seq OWNED BY public.prices_advices.id;
 --
 
 CREATE SEQUENCE public.prices_mins_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -869,6 +877,7 @@ CREATE TABLE public.production_lists (
 --
 
 CREATE SEQUENCE public.production_lists_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -929,6 +938,7 @@ ALTER SEQUENCE public.public_trade_orders_id_seq OWNED BY public.public_trade_or
 --
 
 CREATE SEQUENCE public.regions_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -984,7 +994,7 @@ ALTER SEQUENCE public.sales_finals_id_seq OWNED BY public.sales_finals.id;
 --
 
 CREATE TABLE public.schema_migrations (
-    version character varying(255) NOT NULL
+    version character varying NOT NULL
 );
 
 
@@ -1034,7 +1044,7 @@ ALTER SEQUENCE public.station_details_id_seq OWNED BY public.station_details.id;
 CREATE TABLE public.stations (
     id integer NOT NULL,
     trade_hub_id integer,
-    name character varying(255),
+    name character varying,
     cpp_station_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
@@ -1046,6 +1056,7 @@ CREATE TABLE public.stations (
 --
 
 CREATE SEQUENCE public.stations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1098,6 +1109,7 @@ ALTER SEQUENCE public.structures_id_seq OWNED BY public.structures.id;
 --
 
 CREATE SEQUENCE public.trade_hubs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1117,6 +1129,7 @@ ALTER SEQUENCE public.trade_hubs_id_seq OWNED BY public.trade_hubs.id;
 --
 
 CREATE SEQUENCE public.trade_hubs_users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1150,6 +1163,7 @@ CREATE TABLE public.user_activity_logs (
 --
 
 CREATE SEQUENCE public.user_activity_logs_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1211,6 +1225,7 @@ CREATE VIEW public.user_sale_order_details AS
 --
 
 CREATE SEQUENCE public.user_sale_orders_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1263,6 +1278,7 @@ ALTER SEQUENCE public.user_to_user_duplication_requests_id_seq OWNED BY public.u
 --
 
 CREATE SEQUENCE public.users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1691,6 +1707,14 @@ ALTER TABLE ONLY public.sales_finals
 
 
 --
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
 -- Name: station_details station_details_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2111,13 +2135,6 @@ CREATE UNIQUE INDEX market_group_anc_desc_idx ON public.market_group_hierarchies
 --
 
 CREATE INDEX market_group_desc_idx ON public.market_group_hierarchies USING btree (descendant_id);
-
-
---
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX unique_schema_migrations ON public.schema_migrations USING btree (version);
 
 
 --
@@ -2625,6 +2642,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180822104400'),
 ('20180822110028'),
 ('20180822165603'),
+('20180823092300'),
 ('20180823092423'),
 ('20180823140710'),
 ('20180823141927'),
@@ -2665,7 +2683,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181002131805'),
 ('20181003075233'),
 ('20181005093510'),
-('20181005103327'),
 ('20181008013156'),
 ('20181008070647'),
 ('20181008071507'),
