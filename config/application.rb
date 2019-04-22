@@ -34,7 +34,7 @@ module EveBusinessServer
 
     end
 
-    config.active_record.schema_format = :sql
+    # config.active_record.schema_format = :sql
     config.active_job.queue_adapter = :async
     config.assets.quiet = true
 
