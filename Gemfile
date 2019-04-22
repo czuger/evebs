@@ -11,7 +11,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 # gem 'coffee-rails', '~> 4.0.0'
 
-gem 'autoprefixer-rails', '8.6.5'
+gem 'autoprefixer-rails', '>= 9.1.0'
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer',  platforms: :ruby
@@ -81,7 +81,7 @@ gem 'active_record-sequence'
 gem 'pluck_to_hash'
 gem 'scenic'
 
-gem 'bootstrap', '~> 4.1.3'
+gem 'bootstrap', '>= 4.3.1'
 
 gem 'will_paginate-bootstrap4'
 
