@@ -53,7 +53,7 @@ class Esi::DownloadReactionsComponentsPrices < Esi::Download
 
     results.each do |e|
       next unless e[:min_price]
-      puts "#{e[:name]}\t#{e[:min_price].round}"
+      puts "#{e[:name]};#{e[:min_price].round}"
     end
   end
 end
