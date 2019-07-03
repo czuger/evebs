@@ -90,3 +90,5 @@ gem 'will_paginate-bootstrap4'
 gem 'bootstrap-toggle-rails', :git => 'https://github.com/czuger/bootstrap-toggle-rails'
 
 gem 'sitemap_generator'
+
+gem "font-awesome-rails"
