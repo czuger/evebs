@@ -37,6 +37,7 @@ gem 'haml-rails'
 
 gem 'omniauth'
 gem 'omniauth-eve_online-sso'
+gem "omniauth-rails_csrf_protection"
 
 # gem 'lazy_high_charts'
 
