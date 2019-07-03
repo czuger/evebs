@@ -66,7 +66,7 @@
         = dropdown_menu_block( 'Items' ) do
           = dropdown_sub_menu_link( 'All items list', edit_list_items_path )
 
-        = simple_menu_link( 'Sign in', '/auth/eve_online_sso' )
+        = simple_menu_link( 'Sign in', '/auth/eve_online_sso', { method: :post } )
 
     -#%ul.nav.navbar-nav
     -#  %li= link_to 'Help', '/help.pdf', target: '_blank'

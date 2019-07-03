@@ -9,9 +9,9 @@ module ApplicationHelper
     selected_link_class( a, b )
   end
 
-  def simple_menu_link( menu_text, menu_link='#' )
+  def simple_menu_link( menu_text, menu_link='#', options= {} )
     content_tag(:li, nil, { class: 'nav-item' } ) do
-      link_to menu_text, menu_link, class: selected_link_class( 'nav-link', menu_link )
+      link_to menu_text, menu_link, options.merge( class: selected_link_class( 'nav-link', menu_link ) )
     end
   end
 
