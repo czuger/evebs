@@ -8,7 +8,7 @@ module Misc
       count = 0
 
       UniverseSystem.transaction do
-        UniverseSystem.all.each do n|system|
+        UniverseSystem.all.each do |system|
           @request = open( "https://zkillboard.com/api/stats/solarSystemID/#{system.cpp_system_id}/" )
           json_result = @request.read
           parsed_result = JSON.parse( json_result )
