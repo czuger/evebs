@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_04_051012) do
+ActiveRecord::Schema.define(version: 2019_07_04_064809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -302,7 +302,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_051012) do
     t.string "security_class"
     t.float "security_status", null: false
     t.integer "stations_ids", default: [], null: false, array: true
-    t.integer "kill_stats_last_week", default: 0, null: false
+    t.integer "kill_stats_current_month", default: 0, null: false
     t.integer "kill_stats_last_month", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
