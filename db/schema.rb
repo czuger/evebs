@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_12_142615) do
+ActiveRecord::Schema.define(version: 2019_07_04_051012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -291,6 +291,22 @@ ActiveRecord::Schema.define(version: 2019_02_12_142615) do
     t.integer "trade_hub_id"
     t.index ["trade_hub_id"], name: "index_trade_hubs_users_on_trade_hub_id"
     t.index ["user_id"], name: "index_trade_hubs_users_on_user_id"
+  end
+
+  create_table "universe_systems", force: :cascade do |t|
+    t.integer "cpp_system_id", null: false
+    t.string "name", null: false
+    t.boolean "trade_hub", default: false, null: false
+    t.integer "cpp_constellation_id", null: false
+    t.integer "cpp_star_id", null: false
+    t.string "security_class"
+    t.float "security_status", null: false
+    t.integer "stations_ids", default: [], null: false, array: true
+    t.integer "kill_stats_last_week", default: 0, null: false
+    t.integer "kill_stats_last_month", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trade_hub"], name: "index_universe_systems_on_trade_hub"
   end
 
   create_table "user_activity_logs", id: :serial, force: :cascade do |t|

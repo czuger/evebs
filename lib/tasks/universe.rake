@@ -23,7 +23,6 @@ namespace :data_setup do
         end
       end
     end
-
   end
 
   desc 'Finding the prefect industrial station'
@@ -37,6 +36,11 @@ namespace :data_setup do
   desc 'Update the structures'
   task :structures => :environment do
     Esi::DownloadStructuresData.new( debug_request: false ).update
+  end
+
+  desc 'Update universe - systems'
+  task :systems => :environment do
+    Esi::DownloadUniverseSystems.new( debug_request: false ).update
   end
 
   desc 'Get the base prices for reactions'
