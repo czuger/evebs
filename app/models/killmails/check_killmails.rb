@@ -2,7 +2,7 @@ require 'open-uri'
 require 'json'
 
 module Misc
-  class Killmails
+  class CheckKillmails
 
     def update
       count = 0
