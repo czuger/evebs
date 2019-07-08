@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_04_064809) do
+ActiveRecord::Schema.define(version: 2019_07_08_175203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -267,12 +267,13 @@ ActiveRecord::Schema.define(version: 2019_07_04_064809) do
 
   create_table "structures", force: :cascade do |t|
     t.bigint "cpp_structure_id", null: false
-    t.bigint "trade_hub_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "forbidden", default: true, null: false
-    t.index ["forbidden"], name: "index_structures_on_forbidden"
-    t.index ["trade_hub_id"], name: "index_structures_on_trade_hub_id"
+    t.boolean "forbidden"
+    t.bigint "universe_system_id"
+    t.integer "orders_count_pages"
+    t.index ["cpp_structure_id"], name: "index_structures_on_cpp_structure_id", unique: true
+    t.index ["universe_system_id"], name: "index_structures_on_universe_system_id"
   end
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
@@ -403,7 +404,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_064809) do
   add_foreign_key "public_trade_orders", "trade_hubs"
   add_foreign_key "sales_finals", "eve_items"
   add_foreign_key "sales_finals", "trade_hubs"
-  add_foreign_key "structures", "trade_hubs"
+  add_foreign_key "structures", "universe_systems"
   add_foreign_key "trade_hubs", "regions"
   add_foreign_key "user_sale_orders", "eve_items"
   add_foreign_key "user_sale_orders", "trade_hubs"
