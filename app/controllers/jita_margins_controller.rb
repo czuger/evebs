@@ -4,7 +4,7 @@ class JitaMarginsController < ApplicationController
   before_action :require_logged_in!, except: [ :index ]
   before_action :set_user
 
-  caches_page :index
+  # caches_page :index
 
   def index
     @no_title_header = true
