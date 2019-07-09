@@ -42,9 +42,9 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
 
         orders_data_hash.values.each do |order_data|
 
-          unless trade_hubs_ids.include?( order_data['system_id'] )
-            rejected_orders_by_trade_hub[ order_data['system_id'] ] ||= 0
-            rejected_orders_by_trade_hub[ order_data['system_id'] ]  += 1
+          unless trade_hubs_ids.include?( order_localisation_key( order_data ) )
+            rejected_orders_by_trade_hub[ order_localisation_key( order_data ) ] ||= 0
+            rejected_orders_by_trade_hub[ order_localisation_key( order_data ) ]  += 1
             next
           end
 
@@ -85,4 +85,14 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
     end
 
   end
+
+  private
+
+  def order_localisation_key( order_data )
+    system = UniverseSystem.where( cpp_system_id: order_data['system_id'] )
+    system_name = system ? system.name : order_data['system_id']
+
+    "#{system_name} : #{order_data['location_id']}"
+  end
+
 end
