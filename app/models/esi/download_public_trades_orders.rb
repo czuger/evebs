@@ -44,7 +44,7 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
 
         orders_data_hash.values.each do |order_data|
 
-          unless trade_hubs_ids.include?( order_localisation_key( order_data ) )
+          unless trade_hubs_ids.include?( order_data['system_id'].to_i )
             rejected_orders_by_trade_hub[ order_localisation_key( order_data ) ] ||= 0
             rejected_orders_by_trade_hub[ order_localisation_key( order_data ) ]  += 1
             next

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_09_033605) do
+ActiveRecord::Schema.define(version: 2019_07_09_070236) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -324,6 +324,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_033605) do
     t.integer "kill_stats_last_month", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cpp_system_id"], name: "index_universe_systems_on_cpp_system_id", unique: true
     t.index ["trade_hub"], name: "index_universe_systems_on_trade_hub"
   end
 
