@@ -89,7 +89,7 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
   private
 
   def order_localisation_key( order_data )
-    system = UniverseSystem.where( cpp_system_id: order_data['system_id'] )
+    system = UniverseSystem.where( cpp_system_id: order_data['system_id'] ).first
     system_name = system ? system.name : order_data['system_id']
 
     "#{system_name} : #{order_data['location_id']}"
