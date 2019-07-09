@@ -41,18 +41,20 @@ module Esi
             @rest_url = "markets/structures/#{structure_id}/"
             structure_data = get_page
 
+            p structure_data
+
             structure.forbidden = false
-            structure.orders_count_pages = 1
+            structure.orders_count_pages = @pages_count
             structure.save!
 
           rescue Esi::Errors::Forbidden
             puts 'Structure access was denied'
 
+            sleep 1
+
             if structure
               structure.forbidden = true
               structure.save!
-
-              sleep 1
 
               if @errors_limit_remain.to_i <= 25
                 sleep( 10 )

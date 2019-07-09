@@ -7,6 +7,8 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
     trade_hubs_ids = TradeHub.pluck( :eve_system_id ).to_set
     eve_items_ids = EveItem.pluck( :cpp_eve_item_id ).to_set
 
+    @systems_to_name = Hash[ UniverseSystem.pluck( :cpp_system_id, :name ) ]
+
     regions_data = {}
     rejected_orders_by_trade_hub = {}
     rejected_orders_by_type = {}
@@ -89,8 +91,8 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
   private
 
   def order_localisation_key( order_data )
-    system = UniverseSystem.where( cpp_system_id: order_data['system_id'] ).first
-    system_name = system ? system.name : order_data['system_id']
+    system_name = @systems_to_name[ order_data['system_id'].to_i ]
+    system_name ||= order_data['system_id']
 
     "#{system_name} : #{order_data['location_id']}"
   end
