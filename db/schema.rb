@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_09_070236) do
+ActiveRecord::Schema.define(version: 2019_07_09_111450) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -239,6 +239,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_070236) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "orders_pages_count", default: 0, null: false
     t.index ["cpp_region_id"], name: "index_regions_on_cpp_region_id", unique: true
   end
 

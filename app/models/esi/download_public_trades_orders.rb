@@ -24,6 +24,9 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
         @rest_url = "markets/#{region.cpp_region_id}/orders/"
         orders_data = get_all_pages
 
+        region.orders_pages_count = orders_data.count
+        region.save!
+
         if @verbose_output
           puts "#{orders_data.count} orders to process in #{region.name}"
         end
