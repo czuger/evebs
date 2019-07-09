@@ -36,7 +36,7 @@ module Esi
             structure_data = get_page
 
             solar_system = UniverseSystem.find_by_cpp_system_id( structure_data[ 'solar_system_id' ] )
-            structure = Structure.where( universe_system_id: solar_system.id, cpp_structure_id: structure_data[ 'solar_system_id' ] ).first_or_initialize
+            structure = Structure.where( universe_system_id: solar_system.id, cpp_structure_id: structure_id ).first_or_initialize
 
             @rest_url = "markets/structures/#{structure_id}/"
             structure_data = get_page
