@@ -29,6 +29,27 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to edit_production_lists_url
   end
 
+  test 'should create a production list from buy orders screen' do
+    post create_from_prices_advices_buy_orders_production_lists_path,
+         params: { eve_item_id: @eve_item.id, trade_hub_id: @trade_hub.id, runs_count: 50 }
+
+    assert_redirected_to buy_orders_path
+  end
+
+  test 'should create a production list from prices advices immediate' do
+    post create_from_prices_advices_immediate_production_lists_path,
+         params: { eve_item_id: @eve_item.id, trade_hub_id: @trade_hub.id, runs_count: 50 }
+
+    assert_redirected_to price_advices_advice_prices_path
+  end
+
+  test 'should create a production list from prices advices weekly' do
+    post create_from_prices_advices_weekly_production_lists_path,
+         params: { eve_item_id: @eve_item.id, trade_hub_id: @trade_hub.id, runs_count: 50 }
+
+    assert_redirected_to price_advices_advice_prices_weekly_path
+  end
+
   test 'add item in basket' do
     assert_difference 'ProductionList.count' do
       post production_lists_url, params: { trade_hub_id: @trade_hub.id, eve_item_id: @eve_item.id }

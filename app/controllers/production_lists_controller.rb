@@ -32,11 +32,6 @@ class ProductionListsController < ApplicationController
     head :ok
   end
 
-  def update_from_components_to_buy
-    update_from_advice_screen
-    redirect_to components_to_buys_path
-  end
-
   def create_from_prices_advices_buy_orders
     create_from_advice_screen
     redirect_to buy_orders_path

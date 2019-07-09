@@ -15,8 +15,8 @@
       Price
     %th.text-right.align-middle
       Volume
-    %th
-      = link_to 'Refresh ', components_to_buys_path, method: :put, class: 'btn btn-secondary btn-block'
+    -#%th
+    -#  = link_to 'Refresh ', components_to_buys_path, method: :put, class: 'btn btn-secondary btn-block'
   - @required_quantities.each do |rq|
     %tr{ class: cycle( :odd, :even ) }
       %td.align-middle= link_to rq.eve_item_name, item_path( rq.eve_item_id )
@@ -24,9 +24,9 @@
         = print_volume( rq.qtt_to_buy.to_i )
       %td.text-right.align-middle= print_isk rq.total_cost
       %td.text-right.align-middle= print_volume rq.required_volume.round(1)
-      %td
-        - unless rq.base_item
-          = link_to 'Add to prod', update_from_components_to_buy_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy ), method: :put, class: 'btn btn-secondary btn-block'
+      -#%td
+      -#  - unless rq.base_item
+      -#    = link_to 'Add to prod', update_from_components_to_buy_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy ), method: :put, class: 'btn btn-secondary btn-block'
       -#%td
       -#  = link_to 'Zero parent(s)', update_from_buy_orders_production_lists_path( eve_item_id: rq.id, trade_hub_id: @jita.id, quantity: rq.qtt_to_buy.round ), method: :put, class: 'btn btn-secondary btn-block'
 
