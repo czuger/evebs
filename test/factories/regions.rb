@@ -7,7 +7,7 @@ FactoryBot.define do
 
     factory :the_forge do
       cpp_region_id {'10000002'}
-      name {'The forge'}
+      name {'The Forge'}
     end
 
     factory :heimatar do
