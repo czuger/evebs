@@ -1,11 +1,17 @@
 class Process::UpdatePublicTradesOrders
 
+  def initialize( silent_output: false )
+    @silent_output = silent_output
+  end
+
   # il faut gérer la disparition de l'ordre. Est ce qu'on s'en fout ?
   # Dans un premier temps oui (oui, on s'en fout), car on ne sait pas
   # si l'ordre a été annulé, timeout ou bien vendu.
   def update
 
-    Misc::Banner.p 'About to update sales orders'
+    unless @silent_output
+      Misc::Banner.p 'About to update sales orders'
+    end
 
     @trade_hub_conversion_hash = Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
     @eve_item_conversion_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
