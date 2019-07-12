@@ -25,12 +25,24 @@ class DownloadMyAssetsTest < ActiveSupport::TestCase
     )
   end
 
-  test 'Download my assets' do
+  test 'Download new asset and then update it and then remove it' do
     d_pto = Esi::DownloadMyAssets.new
-    d_pto.expects(:set_auth_token).returns(true)
-    d_pto.expects(:get_all_pages).returns(@esi_data)
+    d_pto.stubs(:set_auth_token).returns(true)
+    d_pto.stubs(:get_all_pages).returns(@esi_data)
 
     assert_difference 'BpcAsset.count' do
+      d_pto.update( @user )
+    end
+    assert_equal 90,BpcAsset.first.quantity
+
+    @esi_data.first[ 'quantity' ] = 100
+    assert_no_difference 'BpcAsset.count' do
+      d_pto.update( @user )
+    end
+    assert_equal 100,BpcAsset.first.quantity
+
+    @esi_data.clear
+    assert_difference 'BpcAsset.count', -1 do
       d_pto.update( @user )
     end
   end
