@@ -100,6 +100,7 @@ class ListItemsController < ApplicationController
   def items_list( my_items_only )
     @user = current_user
     @jita = TradeHub.find_by_eve_system_id( 30000142 )
+    raise 'Unable to find Jita' unless @jita
 
     if @user
       @item_ids = @user.eve_item_ids.uniq.to_set
