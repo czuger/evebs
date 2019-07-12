@@ -29,10 +29,4 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should select all items for user' do
-    assert_changes '@user.eve_items.count' do
-      get all_list_items_url
-    end
-    assert_redirected_to saved_list_list_items_url
-  end
 end
