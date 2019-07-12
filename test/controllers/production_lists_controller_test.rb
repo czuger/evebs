@@ -9,6 +9,7 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
     @blueprint = create( :blueprint )
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
     @trade_hub = create( :rens )
+    create( :jita )
 
     @second_user = create( :user )
   end
@@ -25,7 +26,7 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should update' do
     set_pl
-    patch production_lists_url( @user, params: { quantity_to_produce: { @pl.id => 500 } } )
+    patch production_lists_url( @user, params: { runs_count: { @pl.id => 7 } } )
     assert_redirected_to edit_production_lists_url
   end
 
@@ -53,6 +54,13 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
   test 'add item in basket' do
     assert_difference 'ProductionList.count' do
       post production_lists_url, params: { trade_hub_id: @trade_hub.id, eve_item_id: @eve_item.id }
+    end
+    assert_response :success
+  end
+
+  test 'add item in basket without trade_hub' do
+    assert_difference 'ProductionList.count' do
+      post production_lists_url, params: { eve_item_id: @eve_item.id }
     end
     assert_response :success
   end

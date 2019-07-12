@@ -10,7 +10,7 @@ class Esi::DownloadMyAssets < Esi::Download
     # $stdout.sync = true
     # $stderr.sync = true
 
-    p 'Thread started'
+    # p 'Thread started'
   end
 
   def update( user )
@@ -44,10 +44,10 @@ class Esi::DownloadMyAssets < Esi::Download
 
     return unless set_auth_token( user )
 
-    p @rest_url
+    p @rest_url if @verbose_output
 
     pages = get_all_pages
-    p 'Pages retrieved'
+    p 'Pages retrieved' if @verbose_output
 
     unless pages
       user.update( locked: true )
@@ -56,7 +56,7 @@ class Esi::DownloadMyAssets < Esi::Download
 
     ActiveRecord::Base.transaction do
       pages.each do |asset|
-        p asset
+        p asset if @verbose_output
         eve_item_id = EveItem.find_by_cpp_eve_item_id(asset['type_id'])&.id
         next unless eve_item_id
 
