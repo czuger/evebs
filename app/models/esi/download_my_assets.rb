@@ -14,7 +14,7 @@ class Esi::DownloadMyAssets < Esi::Download
   end
 
   def update( user )
-    Misc::Banner.p 'About to download users assets'
+    Misc::Banner.p 'About to download users assets' if @verbose_output
 
     ActiveRecord::Base.transaction do
 
