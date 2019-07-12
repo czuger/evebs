@@ -22,7 +22,9 @@ class AssetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should start downloading my assets' do
-    patch my_assets_path
+    assert_enqueued_with(job: DownloadMyAssetsJob) do
+      patch my_assets_path
+    end
     assert_redirected_to my_assets_path
   end
 

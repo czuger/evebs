@@ -13,4 +13,9 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 end
 
+class ActionDispatch::IntegrationTest
+  # This allows us to test jobs start in all controllers.
+  include ActiveJob::TestHelper
+end
+
 require 'mocha/minitest'
