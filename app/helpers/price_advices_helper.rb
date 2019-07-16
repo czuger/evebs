@@ -34,27 +34,6 @@ module PriceAdvicesHelper
     'table-warning' if delta && delta < 0
   end
 
-  def cell_classes( region_printed, cell_position, cell_align, row_class, last_row )
-    classes_array = []
-    if cell_position == :left
-      classes_array << :boxed_cell_left_start
-    else
-      classes_array << "cell_#{cell_align}_align"
-    end
-
-    classes_array << :boxed_cell_middle_left_border if cell_position == :middle_middle
-
-    unless region_printed
-      classes_array << :boxed_cell_middle_start
-    end
-
-    classes_array << :boxed_cell_middle_end if last_row
-
-    classes_array << row_class
-
-    classes_array
-  end
-
   def print_pcent(pcent)
     protected_print_routine( pcent, :pcent )
   end
