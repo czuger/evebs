@@ -29,7 +29,7 @@ module Modules::PriceAdvices::MarginModule
 
     @items = @items.order( margin_column_name.to_s + ' DESC' )
 
-    @items = @items.paginate(:page => params[:page], :per_page => 20 )
+    @items = @items.paginate(:page => params[:page], :per_page => 12 )
 
   end
 end

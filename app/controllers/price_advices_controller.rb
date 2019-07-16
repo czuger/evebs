@@ -21,7 +21,7 @@ class PriceAdvicesController < ApplicationController
 
   def empty_places
     @empty_places_objects = PriceAdvicesMinPrice.where( min_price: nil ).where.not( vol_month: nil )
-      .order( 'vol_month DESC' ).paginate(:page => params[:page], :per_page => 20 )
+      .order( 'vol_month DESC' ).paginate(:page => params[:page], :per_page => 12 )
 
     @empty_places_array = @empty_places_objects
       .pluck_to_hash( :trade_hub_name, :item_name, :eve_item_id, :vol_month, :avg_price_month, :cost )
