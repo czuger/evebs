@@ -348,7 +348,7 @@ DEPENDENCIES
   capistrano3-puma (= 3.1.1)
   capybara
   closure_tree
-  coffee-rails
+  coffee-rails (~> 5.0.0)
   constructor
   crypt
   ed25519 (~> 1.2)

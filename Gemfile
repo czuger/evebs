@@ -9,7 +9,7 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
-# gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 5.0.0'
 
 gem 'autoprefixer-rails', '>= 9.1.0'
 
@@ -32,7 +32,6 @@ gem 'constructor'
 gem 'closure_tree'
 gem 'crypt'
 
-gem 'coffee-rails'
 gem 'haml-rails'
 
 gem 'omniauth'
@@ -91,4 +90,4 @@ gem 'bootstrap-toggle-rails', :git => 'https://github.com/czuger/bootstrap-toggl
 
 gem 'sitemap_generator'
 
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
