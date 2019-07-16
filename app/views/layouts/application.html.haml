@@ -27,16 +27,14 @@
               .col-8
                 %h2.ml-3
                   = @title ? @title : 'Title to be set'
-              .col-4.text-right
-                .mr-3.mt-2
-                  = show_last_update
 
         .mx-3
           = yield
 
     %footer.footer
-      .container
+      .container.text-center
         %span.text-muted
+          = show_last_update
 
 
 = hidden_field_tag :rails_mode, Rails.env
