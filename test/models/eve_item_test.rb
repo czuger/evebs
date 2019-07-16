@@ -1,28 +1,53 @@
 require 'test_helper'
 require 'pp'
+require 'fileutils'
+require 'yaml'
 
 class EveItemTest < ActiveSupport::TestCase
-  #
-  # test 'Should set cost to nil when no material cost' do
-  #   eve_item = create( :dummy_eve_item )
-  #   eve_item.compute_cost
-  #   refute eve_item.cost
-  # end
-  #
-  # test 'Should recompute cost for the given item' do
-  #   eve_item = create( :inferno_precision_cruise_missile )
-  #   eve_item.compute_cost
-  #   assert 427510.0, eve_item.cost
-  # end
-  #
-  # test 'Inferno Precision Cruise Missile should retrieve a min price for Rens' do
-  #
-  #   trade_hub = create( :rens )
-  #   eve_item = create( :inferno_precision_cruise_missile )
-  #
-  #   Object.stubs( :read ).returns( [ { 'sell' => { 'min' => 5, 'forQuery' => { 'types' => [ eve_item.cpp_eve_item_id ] }}} ].to_json )
-  #   EveItem.stubs( :open ).returns( Object )
-  #   EveItem.compute_min_price_for_system( trade_hub, [ eve_item ] )
-  # end
+
+  def setup
+    create( :jita )
+    @item = create( :inferno_fury_cruise_missile )
+
+    FileUtils.cp 'data/type_ids_to_download.yaml', 'data/type_ids_to_download.yaml.backup'
+    @esi_data = JSON.parse( File.open( 'test/models/eve_item_test.json', 'r' ).read )
+    File.open('data/type_ids_to_download.yaml', 'w') do |f|
+      f.write( [ @item.cpp_eve_item_id ].to_yaml )
+    end
+  end
+
+  def teardown
+    FileUtils.cp 'data/type_ids_to_download.yaml.backup', 'data/type_ids_to_download.yaml'
+  end
+
+  test 'Download, update and remove item data' do
+    d_pto = Esi::DownloadEveItems.new
+    d_pto.expects(:get_page).returns(@esi_data)
+    d_pto.download
+
+    Process::SetEveItemDepthLevel.new.set
+
+    Process::UpdateEveItems.new().update
+
+    # @esi_data[0]['volume_remain'] = 185
+    #
+    # d_pto = Esi::DownloadEveItems.new
+    # d_pto.expects(:get_page).returns(@esi_data)
+    # d_pto.download
+    #
+    # assert_no_difference 'PublicTradeOrder.count' do
+    #   Process::UpdateEveItems.new( silent_output: true ).update
+    # end
+
+    # @esi_data.delete( 0 )
+    #
+    # d_pto = Esi::DownloadEveItems.new
+    # d_pto.expects(:get_all_pages).returns(@esi_data)
+    # d_pto.download
+    #
+    # assert_difference 'PublicTradeOrder.count', -1 do
+    #   Process::UpdatePublicTradesOrders.new( silent_output: true ).update
+    # end
+  end
 
 end

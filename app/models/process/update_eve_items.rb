@@ -16,10 +16,8 @@ module Process
       blueprint_cpp_to_syntetic_key_conversion_hash = Hash[ Blueprint.pluck( :produced_cpp_type_id, :id ) ]
       market_groups_cpp_to_syntetic_key_conversion_hash = Hash[ MarketGroup.pluck( :cpp_market_group_id, :id ) ]
 
-      types_to_destroy = EveItem.pluck( :cpp_eve_item_id ) - types.keys
-
-
-      EveItem.where( cpp_eve_item_id: types_to_destroy ).destroy_all
+      # types_to_destroy = EveItem.pluck( :cpp_eve_item_id ) - types.keys
+      # EveItem.where( cpp_eve_item_id: types_to_destroy ).destroy_all
 
       types.values.each do |type|
 

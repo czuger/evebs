@@ -83,4 +83,5 @@ class PublicTradeOrderTest < ActiveSupport::TestCase
       Process::UpdatePublicTradesOrders.new( silent_output: true ).update
     end
   end
+
 end
