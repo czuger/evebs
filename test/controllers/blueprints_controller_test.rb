@@ -14,4 +14,11 @@ class BlueprintsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'should start downloading my blueprints' do
+    assert_enqueued_with(job: DownloadMyBlueprintsJob) do
+      patch blueprints_path
+    end
+    assert_redirected_to blueprints_path
+  end
+
 end
