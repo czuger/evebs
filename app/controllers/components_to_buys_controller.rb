@@ -17,23 +17,6 @@ class ComponentsToBuysController < ApplicationController
     render layout: false
   end
 
-  def update
-    ComponentsToBuy.refresh_components_to_buy_list_for( @user )
-    redirect_to components_to_buys_path
-  end
-
-  def download_assets
-  end
-
-  def download_assets_start
-    @user.update( download_assets_running: true )
-
-    # has to be before DownloadMyAssets
-    DownloadMyAssetsJob.perform_later( @user )
-
-    redirect_to character_download_assets_path( @user )
-  end
-
   private
 
   def set_required_quantities
