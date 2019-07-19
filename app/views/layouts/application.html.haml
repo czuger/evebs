@@ -13,25 +13,28 @@
     %meta{ name: :description, content: 'Eve business server is a tool that show potential earnings in Eve Online' }/
 
 
-  %body{ data:{ rails_env: Rails.env } }
+  %body.d-flex.flex-column{ data:{ rails_env: Rails.env } }
 
-    .container-fluid
+    #page-content
 
-      = render partial: 'layouts/menu'
-      = render partial: 'shared/errors'
+      .container-fluid
 
-      %div{ class: ( :container if @small_screen ) }
-        - unless @no_title_header
-          .my-3
-            .row
-              .col-8
-                %h2.ml-3
-                  = @title ? @title : 'Title to be set'
+        = render partial: 'layouts/menu'
+        = render partial: 'shared/errors'
 
-        .mx-3
-          = yield
+        %div{ class: ( :container if @small_screen ) }
+          - unless @no_title_header
+            .my-3
+              .row
+                .col-8
+                  %h2.ml-3
+                    = @title ? @title : 'Title to be set'
 
-    %footer.footer
+          .mx-3
+            = yield
+
+    // Footer code found here : https://startbootstrap.com/snippets/sticky-footer-flexbox/
+    %footer#sticky-footer
       .container.text-center
         %span.text-muted
           = show_last_update
