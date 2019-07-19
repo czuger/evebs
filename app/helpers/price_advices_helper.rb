@@ -42,7 +42,7 @@ module PriceAdvicesHelper
     protected_print_routine( pcent, :pcent_nomultiply )
   end
 
-  def print_isk(amount, million_round: false )
+  def print_isk(amount, million_round: true )
     # To ease computation we set the cost to Infinity when we don't have the cost of one of the components
     # But we don't want to show that artifice to the user.
     amount = nil if amount == Float::INFINITY
@@ -65,8 +65,12 @@ module PriceAdvicesHelper
       when :volume
         number_with_delimiter(amount, separator: ",", delimiter: " ",)
       when :isk
-        amount /= 1000000.0 if million_round
-        unit = million_round ? 'M ISK ' : 'ISK '
+        unit = 'ISK '
+
+        if million_round && amount >= 1000000
+          amount /= 1000000.0
+          unit = 'M ISK '
+        end
 
         number_to_currency(amount.round(2), unit: unit, separator: ",", delimiter: " ", format: '%n %u')
       when :pcent, :pcent_nomultiply
