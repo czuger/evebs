@@ -8,7 +8,9 @@ class MarketDataController < ApplicationController
 
     # set_checked_production_list_ids
 
-    @title = 'Markets data comparison'
+    @title = 'Markets prices comparison'
+
+    @meta_title = @title + ' for ' + @item.name
 
     if @item.base_item
       @item_prices = @item.prices_mins.includes( {trade_hub: :region} ).order( 'min_price NULLS LAST' )
@@ -21,7 +23,9 @@ class MarketDataController < ApplicationController
     @trade_hub = TradeHub.find( params[ :trade_hub_id ] )
     @element = EveItem.find( params[ :item_id ] )
 
-    @title = view_context.link_to( @element.name, item_path( @element ) ) + ' at ' + @trade_hub.name
+    @title = view_context.link_to( @element.name, item_path( @element ) ) + ' current sell orders at ' + @trade_hub.name
+
+    @meta_title = @element.name + ' current sell orders at ' + @trade_hub.name
 
     @orders = PublicTradeOrder.where( trade_hub_id: params[ :trade_hub_id ], eve_item_id: params[ :item_id ], is_buy_order: false )
                   .order( 'price' ).limit( 20 )

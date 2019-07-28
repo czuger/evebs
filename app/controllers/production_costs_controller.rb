@@ -7,6 +7,7 @@ class ProductionCostsController < ApplicationController
   def show
     @title = 'Production cost estimation'
     @item = EveItem.find_by( id: params[ :id ] )
+    @meta_title = @title + ' of ' + @item.name
     raise 'Base item cost should call dailies_avg_price instead of show' if @item.base_item
   end
 
@@ -19,7 +20,10 @@ class ProductionCostsController < ApplicationController
 
   def market_histories
     @item = EveItem.find_by( id: params[ :production_cost_id ] )
-    @title = 'Regional informations about item'
+    @title = 'Regional informations about '
+
+    @meta_title = @title + @item.name
+
     @market_histories = @item.group_eve_market_histories.order('volume DESC')
   end
 

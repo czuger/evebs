@@ -1,5 +1,9 @@
 module ApplicationHelper
 
+  def meta_title_helper
+    ( @meta_title || @title || 'EveBusinessServer (Beta)' ) + ' - EVE Online market information'
+  end
+
   def selected_link_class( class_string, path = root_path )
     class_string += ' active' if current_page?( path )
     class_string

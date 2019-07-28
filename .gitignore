@@ -42,3 +42,5 @@ public_trades_orders.json_stream
 items_tree.json.bckp
 
 sitemap.xml.gz
+
+data/regions_data.yaml
