@@ -14,6 +14,15 @@
     %meta{ charset: 'UTF-8' }
     %meta{ name: :description, content: 'Eve business server is a tool that show potential earnings in Eve Online' }/
 
+    %script{ type: 'application/ld+json' }
+      :plain
+        {
+          "@context": "http://schema.org",
+          "@type": "PeopleAudience",
+          "suggestedGender": "male",
+          "suggestedMaxAge": 19,
+          "suggestedMinAge": 46,
+        }
 
   %body.d-flex.flex-column{ data:{ rails_env: Rails.env } }
 
