@@ -19,7 +19,6 @@ module Esi
       puts "About to check #{systems_ids.count} systems"
       count = 0
 
-      ActiveRecord::Base.transaction do
         systems_ids.each do |system_id|
 
           count += 1
@@ -33,6 +32,7 @@ module Esi
 
           next unless system_data['star_id']
 
+        ActiveRecord::Base.transaction do
           s = UniverseSystem.where( cpp_system_id: system_data['system_id'] ).first_or_initialize
 
           # pp system_data
