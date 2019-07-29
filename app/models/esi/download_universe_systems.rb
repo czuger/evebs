@@ -45,8 +45,37 @@ module Esi
           s.stations_ids = system_data['stations'] || []
           s.save!
 
+          update_universe_station_table s, system_data['stations']
         end
       end
     end
+
+    private
+
+    def update_universe_station_table( system, stations_data )
+
+      if stations_data
+        stations_data.each do |station_id|
+          # puts "\tChecking station : #{station_id}"
+
+          @rest_url = "universe/stations/#{station_id}/"
+          station_data = get_page_retry_on_error
+
+          trade_hub_station = Station.find_by_cpp_station_id( station_id )
+
+          station = UniverseStation.where(cpp_station_id: station_id ).first_or_initialize
+          station.name = station_data['name']
+          station.office_rental_cost = station_data['office_rental_cost']
+          station.services = station_data['services']
+          station.cpp_system_id = system.cpp_system_id
+          station.station_id = trade_hub_station&.id
+          station.security_status = system.security_status
+          station.universe_systems_id = system.id
+
+          station.save!
+        end
+      end
+    end
+
   end
 end

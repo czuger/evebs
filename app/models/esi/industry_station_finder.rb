@@ -34,17 +34,17 @@ module Esi
       end
     end
 
-    def update_security_status
-      UniverseStation.distinct.pluck(:cpp_system_id ).each do |cpp_system_id|
-        puts "Retrieving status for #{cpp_system_id}"
-
-        @rest_url = "universe/systems/#{cpp_system_id}/"
-        @params['flag'] = :secure
-        system_data = get_page_retry_on_error
-
-        UniverseStation.where(cpp_system_id: cpp_system_id ).update_all(security_status: system_data['security_status'] )
-      end
-    end
+    # def update_security_status
+    #   UniverseStation.distinct.pluck(:cpp_system_id ).each do |cpp_system_id|
+    #     puts "Retrieving status for #{cpp_system_id}"
+    #
+    #     @rest_url = "universe/systems/#{cpp_system_id}/"
+    #     @params['flag'] = :secure
+    #     system_data = get_page_retry_on_error
+    #
+    #     UniverseStation.where(cpp_system_id: cpp_system_id ).update_all(security_status: system_data['security_status'] )
+    #   end
+    # end
 
     def update_industry_systems
       @rest_url = 'industry/systems/'
@@ -73,38 +73,5 @@ module Esi
 
     private
 
-    def sub_fill_station_table
-      systems = get_page_retry_on_error
-
-      stations_office_prices = []
-
-      systems.each do |system_id|
-        puts "Checking system : #{system_id}"
-
-        @rest_url = "universe/systems/#{system_id}/"
-        system_data = get_page_retry_on_error
-
-        stations = system_data['stations']
-        if stations
-          stations.each do |station_id|
-            puts "\tChecking station : #{station_id}"
-
-            @rest_url = "universe/stations/#{station_id}/"
-            station_data = get_page_retry_on_error
-
-            trade_hub_station = Station.find_by_cpp_station_id( station_id )
-
-            station = UniverseStation.where(cpp_station_id: station_id ).first_or_initialize
-            station.name = station_data['name']
-            station.office_rental_cost = station_data['office_rental_cost']
-            station.services = station_data['services']
-            station.cpp_system_id = system_id
-            station.station_id = trade_hub_station&.id
-
-            station.save!
-          end
-        end
-      end
-    end
   end
 end
