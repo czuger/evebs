@@ -8,7 +8,7 @@ class AssetsControllerTest < ActionDispatch::IntegrationTest
 
     @asset = create( :bpc_asset, user: @user )
 
-    @user.selected_assets_station_id = @asset.station_detail_id
+    @user.selected_assets_station_id = @asset.universe_station_id
     @user.save!
   end
 
@@ -29,7 +29,7 @@ class AssetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should set my asset station id' do
-    post set_assets_station_my_assets_path, params: { asset_station_id: @asset.station_detail_id }
+    post set_assets_station_my_assets_path, params: { asset_station_id: @asset.universe_station_id }
     assert_redirected_to my_assets_path
   end
 

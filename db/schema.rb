@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_29_181528) do
+ActiveRecord::Schema.define(version: 2019_07_29_183336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_181528) do
   end
 
   create_table "bpc_assets", force: :cascade do |t|
-    t.bigint "station_detail_id"
+    t.bigint "universe_station_id"
     t.bigint "quantity", null: false
     t.boolean "touched", default: false, null: false
     t.datetime "created_at", null: false
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_181528) do
     t.bigint "user_id", null: false
     t.bigint "eve_item_id", null: false
     t.index ["eve_item_id"], name: "index_bpc_assets_on_eve_item_id"
-    t.index ["station_detail_id"], name: "index_bpc_assets_on_station_detail_id"
+    t.index ["universe_station_id"], name: "index_bpc_assets_on_universe_station_id"
   end
 
   create_table "bpc_assets_stations", force: :cascade do |t|
@@ -405,7 +405,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_181528) do
   add_foreign_key "blueprint_modifications", "blueprints"
   add_foreign_key "blueprint_modifications", "users"
   add_foreign_key "bpc_assets", "eve_items"
-  add_foreign_key "bpc_assets", "universe_stations", column: "station_detail_id"
+  add_foreign_key "bpc_assets", "universe_stations"
   add_foreign_key "bpc_assets", "users"
   add_foreign_key "bpc_assets_stations", "universe_stations"
   add_foreign_key "bpc_assets_stations", "users"
@@ -481,7 +481,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_181528) do
        JOIN eve_items bpm_mat_ei ON ((bm.eve_item_id = bpm_mat_ei.id)))
        JOIN users ue ON ((pl.user_id = ue.id)))
        LEFT JOIN blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
-       LEFT JOIN bpc_assets ba ON (((bpm_mat_ei.id = ba.eve_item_id) AND (ba.station_detail_id = ue.selected_assets_station_id)))),
+       LEFT JOIN bpc_assets ba ON (((bpm_mat_ei.id = ba.eve_item_id) AND (ba.universe_station_id = ue.selected_assets_station_id)))),
       LATERAL ( SELECT ceil((((bm.required_qtt * pl.runs_count))::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) AS raw_qtt) qtt_comp
     WHERE (pl.runs_count > 0)
     GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
