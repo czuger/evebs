@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_29_193030) do
+ActiveRecord::Schema.define(version: 2019_07_29_194423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -320,7 +320,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_193030) do
     t.float "security_status"
     t.integer "jita_distance", limit: 2
     t.jsonb "industry_costs_indices"
-    t.bigint "universe_systems_id"
+    t.bigint "universe_systems_id", null: false
     t.index ["cpp_station_id"], name: "index_universe_stations_on_cpp_station_id", unique: true
     t.index ["station_id"], name: "index_universe_stations_on_station_id"
     t.index ["universe_systems_id"], name: "index_universe_stations_on_universe_systems_id"
