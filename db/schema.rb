@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_29_184305) do
+ActiveRecord::Schema.define(version: 2019_07_29_193030) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "hstore"
   enable_extension "plpgsql"
 
   create_table "blueprint_materials", id: :serial, force: :cascade do |t|
@@ -296,6 +297,17 @@ ActiveRecord::Schema.define(version: 2019_07_29_184305) do
     t.index ["user_id"], name: "index_trade_hubs_users_on_user_id"
   end
 
+  create_table "trade_volume_estimations", force: :cascade do |t|
+    t.bigint "universe_station_id"
+    t.bigint "eve_item_id"
+    t.string "day_timestamp", null: false
+    t.bigint "volume_total_sum", default: 0, null: false
+    t.float "volume_percent", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["universe_station_id", "eve_item_id"], name: "index_trade_volume_estimations_on_us_id_and_eve_item_id", unique: true
+  end
+
   create_table "universe_stations", force: :cascade do |t|
     t.integer "cpp_system_id", null: false
     t.integer "cpp_station_id", null: false
@@ -429,6 +441,8 @@ ActiveRecord::Schema.define(version: 2019_07_29_184305) do
   add_foreign_key "sales_finals", "trade_hubs"
   add_foreign_key "structures", "universe_systems"
   add_foreign_key "trade_hubs", "regions"
+  add_foreign_key "trade_volume_estimations", "eve_items"
+  add_foreign_key "trade_volume_estimations", "universe_stations"
   add_foreign_key "universe_stations", "stations"
   add_foreign_key "universe_stations", "universe_systems", column: "universe_systems_id"
   add_foreign_key "user_sale_orders", "eve_items"

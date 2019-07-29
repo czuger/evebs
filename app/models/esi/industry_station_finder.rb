@@ -28,24 +28,6 @@ module Esi
       end
     end
 
-    def fill_station_table
-      ActiveRecord::Base.transaction do
-        sub_fill_station_table
-      end
-    end
-
-    # def update_security_status
-    #   UniverseStation.distinct.pluck(:cpp_system_id ).each do |cpp_system_id|
-    #     puts "Retrieving status for #{cpp_system_id}"
-    #
-    #     @rest_url = "universe/systems/#{cpp_system_id}/"
-    #     @params['flag'] = :secure
-    #     system_data = get_page_retry_on_error
-    #
-    #     UniverseStation.where(cpp_system_id: cpp_system_id ).update_all(security_status: system_data['security_status'] )
-    #   end
-    # end
-
     def update_industry_systems
       @rest_url = 'industry/systems/'
       systems_datas = get_all_pages
