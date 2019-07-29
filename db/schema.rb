@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_09_111450) do
+ActiveRecord::Schema.define(version: 2019_07_29_181528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,11 +61,11 @@ ActiveRecord::Schema.define(version: 2019_07_09_111450) do
 
   create_table "bpc_assets_stations", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "station_detail_id", null: false
+    t.bigint "universe_station_id", null: false
     t.boolean "touched", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["station_detail_id"], name: "index_bpc_assets_stations_on_station_detail_id"
+    t.index ["universe_station_id"], name: "index_bpc_assets_stations_on_universe_station_id"
     t.index ["user_id"], name: "index_bpc_assets_stations_on_user_id"
   end
 
@@ -256,22 +256,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_111450) do
     t.index ["trade_hub_id"], name: "index_sales_finals_on_trade_hub_id"
   end
 
-  create_table "station_details", force: :cascade do |t|
-    t.integer "cpp_system_id", null: false
-    t.integer "cpp_station_id", null: false
-    t.string "name", null: false
-    t.string "services", null: false, array: true
-    t.float "office_rental_cost", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "station_id"
-    t.float "security_status"
-    t.integer "jita_distance", limit: 2
-    t.jsonb "industry_costs_indices"
-    t.index ["cpp_station_id"], name: "index_station_details_on_cpp_station_id", unique: true
-    t.index ["station_id"], name: "index_station_details_on_station_id"
-  end
-
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
     t.string "name", limit: 255
@@ -310,6 +294,22 @@ ActiveRecord::Schema.define(version: 2019_07_09_111450) do
     t.integer "trade_hub_id"
     t.index ["trade_hub_id"], name: "index_trade_hubs_users_on_trade_hub_id"
     t.index ["user_id"], name: "index_trade_hubs_users_on_user_id"
+  end
+
+  create_table "universe_stations", force: :cascade do |t|
+    t.integer "cpp_system_id", null: false
+    t.integer "cpp_station_id", null: false
+    t.string "name", null: false
+    t.string "services", null: false, array: true
+    t.float "office_rental_cost", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "station_id"
+    t.float "security_status"
+    t.integer "jita_distance", limit: 2
+    t.jsonb "industry_costs_indices"
+    t.index ["cpp_station_id"], name: "index_universe_stations_on_cpp_station_id", unique: true
+    t.index ["station_id"], name: "index_universe_stations_on_station_id"
   end
 
   create_table "universe_systems", force: :cascade do |t|
@@ -405,9 +405,9 @@ ActiveRecord::Schema.define(version: 2019_07_09_111450) do
   add_foreign_key "blueprint_modifications", "blueprints"
   add_foreign_key "blueprint_modifications", "users"
   add_foreign_key "bpc_assets", "eve_items"
-  add_foreign_key "bpc_assets", "station_details"
+  add_foreign_key "bpc_assets", "universe_stations", column: "station_detail_id"
   add_foreign_key "bpc_assets", "users"
-  add_foreign_key "bpc_assets_stations", "station_details"
+  add_foreign_key "bpc_assets_stations", "universe_stations"
   add_foreign_key "bpc_assets_stations", "users"
   add_foreign_key "buy_orders_analytics", "eve_items"
   add_foreign_key "buy_orders_analytics", "trade_hubs"
@@ -425,15 +425,15 @@ ActiveRecord::Schema.define(version: 2019_07_09_111450) do
   add_foreign_key "public_trade_orders", "trade_hubs"
   add_foreign_key "sales_finals", "eve_items"
   add_foreign_key "sales_finals", "trade_hubs"
-  add_foreign_key "station_details", "stations"
   add_foreign_key "structures", "universe_systems"
   add_foreign_key "trade_hubs", "regions"
+  add_foreign_key "universe_stations", "stations"
   add_foreign_key "user_sale_orders", "eve_items"
   add_foreign_key "user_sale_orders", "trade_hubs"
   add_foreign_key "user_sale_orders", "users"
   add_foreign_key "user_to_user_duplication_requests", "users", column: "receiver_id"
   add_foreign_key "user_to_user_duplication_requests", "users", column: "sender_id"
-  add_foreign_key "users", "station_details", column: "selected_assets_station_id"
+  add_foreign_key "users", "universe_stations", column: "selected_assets_station_id"
   add_foreign_key "weekly_price_details", "eve_items"
   add_foreign_key "weekly_price_details", "trade_hubs"
 

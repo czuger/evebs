@@ -7,7 +7,7 @@ class DownloadMyAssetsTest < ActiveSupport::TestCase
     @user = create( :user, selected_assets_station_id: @jita_id )
 
     @vellaine = create( :vellaine )
-    create( :bpc_assets_station, user: @user, station_detail: @vellaine )
+    create( :bpc_assets_station, user: @user, universe_station: @vellaine )
 
     @cm = create( :inferno_fury_cruise_missile )
 

@@ -55,6 +55,12 @@ namespace :process do
 
     desc 'Full process - weekly'
     task :weekly => :environment do
+
+      # Updating new systems if any
+      Esi::DownloadUniverseSystems.new( debug_request: false ).update
+
+
+
       Process::ParseBlueprintsFile.new.parse
 
       Esi::DownloadBlueprints.new( { verbose_output: false } ).download

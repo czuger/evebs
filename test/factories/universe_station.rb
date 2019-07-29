@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :station_detail do
+  factory :universe_station do
     sequence :name do |n|
       "Station detail #{n}"
     end

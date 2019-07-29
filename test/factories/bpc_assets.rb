@@ -4,6 +4,6 @@ FactoryBot.define do
     touched { false }
 
     eve_item { EveItem.find_by_cpp_eve_item_id( 2621 ) || create( :inferno_fury_cruise_missile ) }
-    station_detail { StationDetail.find_by_cpp_station_id( 60002407 ) || create( :vellaine ) }
+    station_detail { UniverseStation.find_by_cpp_station_id(60002407 ) || create(:vellaine ) }
   end
 end
