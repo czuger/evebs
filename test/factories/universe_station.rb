@@ -14,6 +14,8 @@ FactoryBot.define do
 
       cpp_station_id { 60002407 }
       cpp_system_id { 30001380 }
+
+      universe_system { UniverseSystem.find_by_cpp_system_id( 30001380 ) || FactoryBot.create( :vellaine_system ) }
     end
   end
 end

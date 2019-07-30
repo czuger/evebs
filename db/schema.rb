@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_29_194423) do
+ActiveRecord::Schema.define(version: 2019_07_30_062459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -305,6 +305,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_194423) do
     t.float "volume_percent", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "orders", default: [], null: false, array: true
     t.index ["universe_station_id", "eve_item_id"], name: "index_trade_volume_estimations_on_us_id_and_eve_item_id", unique: true
   end
 
@@ -320,10 +321,10 @@ ActiveRecord::Schema.define(version: 2019_07_29_194423) do
     t.float "security_status"
     t.integer "jita_distance", limit: 2
     t.jsonb "industry_costs_indices"
-    t.bigint "universe_systems_id", null: false
+    t.bigint "universe_system_id", null: false
     t.index ["cpp_station_id"], name: "index_universe_stations_on_cpp_station_id", unique: true
     t.index ["station_id"], name: "index_universe_stations_on_station_id"
-    t.index ["universe_systems_id"], name: "index_universe_stations_on_universe_systems_id"
+    t.index ["universe_system_id"], name: "index_universe_stations_on_universe_system_id"
   end
 
   create_table "universe_systems", force: :cascade do |t|
@@ -444,7 +445,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_194423) do
   add_foreign_key "trade_volume_estimations", "eve_items"
   add_foreign_key "trade_volume_estimations", "universe_stations"
   add_foreign_key "universe_stations", "stations"
-  add_foreign_key "universe_stations", "universe_systems", column: "universe_systems_id"
+  add_foreign_key "universe_stations", "universe_systems"
   add_foreign_key "user_sale_orders", "eve_items"
   add_foreign_key "user_sale_orders", "trade_hubs"
   add_foreign_key "user_sale_orders", "users"

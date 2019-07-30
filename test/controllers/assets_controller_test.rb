@@ -6,6 +6,7 @@ class AssetsControllerTest < ActionDispatch::IntegrationTest
     @user = create( :user, last_assets_download: Time.now )
     post '/auth/developer/callback', params: { name: @user.name }
 
+    create( :vellaine_system )
     @asset = create( :bpc_asset, user: @user )
 
     @user.selected_assets_station_id = @asset.universe_station_id
