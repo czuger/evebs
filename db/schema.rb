@@ -13,7 +13,6 @@
 ActiveRecord::Schema.define(version: 2019_07_30_062459) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "hstore"
   enable_extension "plpgsql"
 
   create_table "blueprint_materials", id: :serial, force: :cascade do |t|
@@ -95,7 +94,7 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "cost"
@@ -150,9 +149,9 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "email", limit: 255
-    t.string "password_digest", limit: 255
+    t.string "name"
+    t.string "email"
+    t.string "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -259,7 +258,7 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name", limit: 255
+    t.string "name"
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -281,7 +280,7 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -375,12 +374,12 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
+    t.string "name"
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider", limit: 255
-    t.string "uid", limit: 255
+    t.string "provider"
+    t.string "uid"
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"
@@ -483,42 +482,6 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
     WHERE (boa.final_margin > (0)::double precision)
     ORDER BY boa.final_margin DESC;
   SQL
-  create_view "components_to_buys", sql_definition: <<-SQL
-      SELECT bpm_mat_ei.id,
-      pl.user_id,
-      bpm_mat_ei.name AS eve_item_name,
-      bpm_mat_ei.id AS eve_item_id,
-      (sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
-      ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.cost) AS total_cost,
-      ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.volume) AS required_volume,
-      bpm_mat_ei.base_item
-     FROM (((((((production_lists pl
-       JOIN eve_items ei ON ((ei.id = pl.eve_item_id)))
-       JOIN blueprints b ON ((ei.blueprint_id = b.id)))
-       JOIN blueprint_materials bm ON ((b.id = bm.blueprint_id)))
-       JOIN eve_items bpm_mat_ei ON ((bm.eve_item_id = bpm_mat_ei.id)))
-       JOIN users ue ON ((pl.user_id = ue.id)))
-       LEFT JOIN blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
-       LEFT JOIN bpc_assets ba ON (((bpm_mat_ei.id = ba.eve_item_id) AND (ba.universe_station_id = ue.selected_assets_station_id)))),
-      LATERAL ( SELECT ceil((((bm.required_qtt * pl.runs_count))::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) AS raw_qtt) qtt_comp
-    WHERE (pl.runs_count > 0)
-    GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
-   HAVING ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
-  SQL
-  create_view "group_eve_market_histories", sql_definition: <<-SQL
-      SELECT eve_market_histories.region_id,
-      regions.name AS region_name,
-      eve_market_histories.eve_item_id,
-      sum(eve_market_histories.volume) AS volume,
-      sum(eve_market_histories.order_count) AS orders_count,
-      max(eve_market_histories.highest) AS max_price,
-      min(eve_market_histories.lowest) AS min_price,
-      avg(eve_market_histories.average) AS avg_price
-     FROM eve_market_histories,
-      regions
-    WHERE (eve_market_histories.region_id = regions.id)
-    GROUP BY eve_market_histories.region_id, regions.name, eve_market_histories.eve_item_id;
-  SQL
   create_view "price_advice_margin_comps", sql_definition: <<-SQL
       SELECT prices_advices_sub_1.id,
       prices_advices_sub_1.user_id,
@@ -570,6 +533,28 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
                JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))))
             WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
   SQL
+  create_view "components_to_buys", sql_definition: <<-SQL
+      SELECT bpm_mat_ei.id,
+      pl.user_id,
+      bpm_mat_ei.name AS eve_item_name,
+      bpm_mat_ei.id AS eve_item_id,
+      (sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) AS qtt_to_buy,
+      ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.cost) AS total_cost,
+      ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) * bpm_mat_ei.volume) AS required_volume,
+      bpm_mat_ei.base_item
+     FROM (((((((production_lists pl
+       JOIN eve_items ei ON ((ei.id = pl.eve_item_id)))
+       JOIN blueprints b ON ((ei.blueprint_id = b.id)))
+       JOIN blueprint_materials bm ON ((b.id = bm.blueprint_id)))
+       JOIN eve_items bpm_mat_ei ON ((bm.eve_item_id = bpm_mat_ei.id)))
+       JOIN users ue ON ((pl.user_id = ue.id)))
+       LEFT JOIN blueprint_modifications bmo ON (((b.id = bmo.blueprint_id) AND (bmo.user_id = pl.user_id))))
+       LEFT JOIN bpc_assets ba ON (((bpm_mat_ei.id = ba.eve_item_id) AND (ba.universe_station_id = ue.selected_assets_station_id)))),
+      LATERAL ( SELECT ceil((((bm.required_qtt * pl.runs_count))::double precision * COALESCE(bmo.percent_modification_value, (1)::double precision))) AS raw_qtt) qtt_comp
+    WHERE (pl.runs_count > 0)
+    GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
+   HAVING ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
+  SQL
   create_view "price_advices_min_prices", sql_definition: <<-SQL
       SELECT pa.id,
       ei.id AS eve_item_id,
@@ -594,6 +579,20 @@ ActiveRecord::Schema.define(version: 2019_07_30_062459) do
        JOIN trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
        JOIN regions re ON ((re.id = tu.region_id)))
        LEFT JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))));
+  SQL
+  create_view "group_eve_market_histories", sql_definition: <<-SQL
+      SELECT eve_market_histories.region_id,
+      regions.name AS region_name,
+      eve_market_histories.eve_item_id,
+      sum(eve_market_histories.volume) AS volume,
+      sum(eve_market_histories.order_count) AS orders_count,
+      max(eve_market_histories.highest) AS max_price,
+      min(eve_market_histories.lowest) AS min_price,
+      avg(eve_market_histories.average) AS avg_price
+     FROM eve_market_histories,
+      regions
+    WHERE (eve_market_histories.region_id = regions.id)
+    GROUP BY eve_market_histories.region_id, regions.name, eve_market_histories.eve_item_id;
   SQL
   create_view "user_sale_order_details", sql_definition: <<-SQL
       SELECT uso.id,

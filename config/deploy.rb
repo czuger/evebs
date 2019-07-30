@@ -11,8 +11,6 @@ set :rbenv_type, :user # or :system, depends on your rbenv setup
 set :rbenv_ruby, '2.4.2'
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, "/var/www/eve_business_server"
-set :keep_releases, 2
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads'
 append :linked_files, 'config/mail_user_data.yml', 'public/sitemap.xml.gz', 'config/database.yml', 'config/secrets.yml', 'config/omniauth.yaml', 'config/email.txt', 'config/character_id.txt'
