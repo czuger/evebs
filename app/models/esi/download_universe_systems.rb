@@ -70,7 +70,7 @@ module Esi
           station.cpp_system_id = system.cpp_system_id
           station.station_id = trade_hub_station&.id
           station.security_status = system.security_status
-          station.universe_systems_id = system.id
+          station.universe_system = system
 
           station.save!
         end
