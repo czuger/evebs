@@ -4,7 +4,7 @@ module Esi
   class DownloadUniverseSystems < Download
 
     def initialize( debug_request: false )
-      super( 'universe/systems', {}, debug_request: debug_request )
+      super( 'universe/regions', {}, debug_request: debug_request )
     end
 
     def update
@@ -13,6 +13,10 @@ module Esi
       gomex = User.find_by_name( 'Gomex' )
 
       set_auth_token( gomex )
+
+      update_regions
+
+      return
 
       systems_ids = get_all_pages
 
@@ -51,6 +55,17 @@ module Esi
     end
 
     private
+
+    def update_regions
+      regions_ids = get_all_pages
+
+      regions_ids.each do |region_id|
+        @rest_url = "universe/regions/#{region_id}/"
+        region_data = get_page_retry_on_error
+
+        p region_data
+      end
+    end
 
     def update_universe_station_table( system, stations_data )
 
