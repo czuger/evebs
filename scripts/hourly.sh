@@ -3,7 +3,7 @@
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-cd $1
+cd "`dirname $BASH_SOURCE`/.."
 
 date >> log/hourly.log
 date >> log/hourly.err
