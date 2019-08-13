@@ -7,11 +7,17 @@ class Esi::Download
   ESI_DATA_SOURCE={ datasource: :tranquility }
 
   def initialize( rest_url = nil, params = {}, debug_request: false, verbose_output: false )
+
     @debug_request = debug_request
-    @verbose_output = verbose_output
+    @verbose_output = verbose_output || (ENV['EBS_VERBOSE_OUTPUT'] == 'true')
+
+    # p ENV['EBS_VERBOSE_OUTPUT']
+    puts 'Esi::Download - verbosity on' if @verbose_output
+
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
     @forbidden_count = 0
+
   end
 
   def get_page( page_number=nil )
