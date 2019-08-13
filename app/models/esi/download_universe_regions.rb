@@ -1,7 +1,7 @@
 require 'set'
 
 module Esi
-  class DownloadUniverseSystemsV2 < Download
+  class DownloadUniverseRegions < Download
 
     def initialize( debug_request: false )
       super( 'universe/regions', {}, debug_request: debug_request )

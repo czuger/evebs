@@ -1,0 +1,2 @@
+class UniverseConstellation < ApplicationRecord
+end
