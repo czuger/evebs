@@ -5,6 +5,8 @@ eval "$(rbenv init -)"
 
 cd "`dirname $BASH_SOURCE`/.."
 
+touch log/daily.log log/daily.err
+
 date >> log/daily.log
 date >> log/daily.err
 
