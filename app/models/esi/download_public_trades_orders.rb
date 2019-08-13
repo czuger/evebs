@@ -7,6 +7,10 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
     trade_hubs_ids = TradeHub.pluck( :eve_system_id ).to_set
     eve_items_ids = EveItem.pluck( :cpp_eve_item_id ).to_set
 
+    if @verbose_output
+      puts "Trade hub count = #{trade_hubs_ids.count}, items count = #{eve_items_ids.count}"
+    end
+
     @systems_to_name = Hash[ UniverseSystem.pluck( :cpp_system_id, :name ) ]
 
     regions_data = {}
