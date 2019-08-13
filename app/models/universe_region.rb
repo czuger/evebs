@@ -1,0 +1,2 @@
+class UniverseRegion < ApplicationRecord
+end

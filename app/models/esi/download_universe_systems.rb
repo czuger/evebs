@@ -10,10 +10,6 @@ module Esi
     def update
       puts 'Updating Systems Data'
 
-      gomex = User.find_by_name( 'Gomex' )
-
-      set_auth_token( gomex )
-
       update_regions
 
       return
