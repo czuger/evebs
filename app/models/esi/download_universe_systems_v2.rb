@@ -1,16 +1,20 @@
 require 'set'
 
 module Esi
-  class DownloadUniverseSystems < Download
+  class DownloadUniverseSystemsV2 < Download
 
     def initialize( debug_request: false )
       super( 'universe/regions', {}, debug_request: debug_request )
     end
 
-    def update
-      puts 'Updating Systems Data'
+    def download
+      puts 'Downloading regions and all sub data'
 
-      update_regions
+      data = download_regions
+
+      File.open( 'data/regions.yaml', 'w' ) do |f|
+        f.write( data.to_yaml )
+      end
 
       return
 
@@ -52,27 +56,56 @@ module Esi
 
     private
 
-    def update_regions
-
-      UniverseRegion.delete_all
-
+    def download_regions
       regions_ids = get_all_pages
+      regions = []
 
       regions_ids.each do |region_id|
-        ur = UniverseRegion.find_or_initialize_by( cpp_region_id: region_id )
+        @rest_url = "universe/regions/#{region_id}/"
+        region_data = get_page_retry_on_error
 
-        unless ur.id
-          @rest_url = "universe/regions/#{region_id}/"
-          region_data = get_page_retry_on_error
+        region = { id: region_id, name: region_data['name'], constellations: [] }
 
-          ur.name = region_data['name']
-          ur.save!
-
-          ur['constellations'].each do |constellation_id|
-
-          end
+        region_data['constellations'].each do |constellation_id|
+          region[:constellations] << download_constellation( constellation_id )
         end
+        regions << region
       end
+
+      regions
+    end
+
+    def download_constellation( constellation_id )
+      @rest_url = "universe/constellations/#{constellation_id}/"
+      constellation_data = get_page_retry_on_error
+
+      constellation = { id: constellation_id, name: constellation_data['name'], systems: [] }
+
+      constellation_data['systems'].each do |system_id|
+        constellation[:systems] = download_system( system_id )
+      end
+
+      constellation
+    end
+
+    def download_system( system_id )
+      @rest_url = "universe/systems/#{system_id}/"
+      system_data = get_page_retry_on_error
+
+      system = { id: system_id, name: system_data['name'] }
+
+      system[:name] = system_data['name']
+      system[:constellation_id] = system_data['constellation_id']
+      system[:star_id] = system_data['star_id']
+      system[:security_class] = system_data['security_class']
+      system[:security_status] = system_data['security_status']
+      system[:stations] = system_data['stations'] || []
+
+      # region_data['systems'].each do |system_id|
+      #   data = download_system( data, system_id )
+      # end
+
+      system
     end
 
     def update_universe_station_table( system, stations_data )
