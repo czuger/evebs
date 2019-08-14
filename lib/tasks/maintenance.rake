@@ -19,5 +19,10 @@ namespace :maintenance do
     end
   end
 
+  desc 'Reset crontabs'
+  task :reset_crontabs => :environment do
+    Misc::Crontab.update_all( status: false  )
+  end
+
 end
 
