@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_083618) do
+ActiveRecord::Schema.define(version: 2019_08_14_104353) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "hstore"
   enable_extension "plpgsql"
 
   create_table "blueprint_materials", id: :serial, force: :cascade do |t|
@@ -95,7 +94,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_083618) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "cost"
@@ -150,9 +149,9 @@ ActiveRecord::Schema.define(version: 2019_08_14_083618) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "email", limit: 255
-    t.string "password_digest", limit: 255
+    t.string "name"
+    t.string "email"
+    t.string "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -258,7 +257,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_083618) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name", limit: 255
+    t.string "name"
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -280,7 +279,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_083618) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -297,15 +296,14 @@ ActiveRecord::Schema.define(version: 2019_08_14_083618) do
   end
 
   create_table "trade_volume_estimations", force: :cascade do |t|
-    t.bigint "universe_station_id"
     t.bigint "eve_item_id"
-    t.string "day_timestamp", null: false
     t.bigint "volume_total_sum", default: 0, null: false
-    t.float "volume_percent", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "orders", default: [], null: false, array: true
-    t.index ["universe_station_id", "eve_item_id"], name: "index_trade_volume_estimations_on_us_id_and_eve_item_id", unique: true
+    t.bigint "universe_system_id", null: false
+    t.bigint "universe_region_id", null: false
+    t.index ["universe_region_id"], name: "index_trade_volume_estimations_on_universe_region_id"
+    t.index ["universe_system_id"], name: "index_trade_volume_estimations_on_universe_system_id"
   end
 
   create_table "universe_constellations", force: :cascade do |t|
@@ -392,12 +390,12 @@ ActiveRecord::Schema.define(version: 2019_08_14_083618) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
+    t.string "name"
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider", limit: 255
-    t.string "uid", limit: 255
+    t.string "provider"
+    t.string "uid"
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"
@@ -460,7 +458,8 @@ ActiveRecord::Schema.define(version: 2019_08_14_083618) do
   add_foreign_key "structures", "universe_systems"
   add_foreign_key "trade_hubs", "regions"
   add_foreign_key "trade_volume_estimations", "eve_items"
-  add_foreign_key "trade_volume_estimations", "universe_stations"
+  add_foreign_key "trade_volume_estimations", "universe_regions"
+  add_foreign_key "trade_volume_estimations", "universe_systems"
   add_foreign_key "universe_constellations", "universe_regions"
   add_foreign_key "universe_stations", "stations"
   add_foreign_key "universe_stations", "universe_systems"

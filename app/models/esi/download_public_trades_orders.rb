@@ -52,19 +52,6 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
 
         orders_data_hash.values.each do |order_data|
 
-          # day_timestamp = DateTime.now.strftime( '%Y%m%d' )
-          #
-          # tve = TradeVolumeEstimation.where( universe_station_id: @system_to_id[order_data['system_id'].to_i],
-          #   eve_item_id: @type_to_id[order_data['type_id'].to_i], day_timestamp: day_timestamp )
-          #   .not.where( '? = ANY (orders)', order_data['order_id'] )
-          #
-          # unless tve
-          #   # Create or update tve data and fill it. (adding )
-          #   # Il faut refaire la recherche, mais sans l'ordre, avec un first or initialise
-          #   # Le truc c'est que l'entrée peut exister, mais sans l'ordre
-          #   # Mais en laissant PG faire la recherche avec l'ordre, on va gagner un temps fou.
-          # end
-
           tve_record = { universe_station_id: order_data['system_id'], eve_item_id: order_data['type_id'], order_id: order_data['order_id'] }
           tve.puts( tve_record.to_json )
 
