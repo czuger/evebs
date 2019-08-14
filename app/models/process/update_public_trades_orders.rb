@@ -42,6 +42,8 @@ module Process
 
         puts "Sales final created : #{@sales_finals_created}"
       end
+
+      update_trade_volume_estimations
     end
 
     def update_trade_volume_estimations
