@@ -3,46 +3,28 @@ namespace :db do
     namespace :prod_to_staging do
 
       desc 'Dump full database from prod to staging'
-      task :full, [ :use_local_dump, :use_remote_dump ]  => :environment do |task, args|
+      task :full => :environment do
 
-        # p args, args.use_local_dump, (args.use_local_dump != 'y')
-
-        use_local_pg_dump = false
-        if File.exists?( '/tmp/staging.dump' )
-          # puts 'There already is a local dump. Do you want to remove it and refresh the dump ? (y/n)'
-          # result = STDIN.gets.chomp
-          use_local_pg_dump = (args.use_local_dump == 'y')
+        `ssh hw [ -e /tmp/production.dump ]`
+        unless $?.to_i == 0 # file exist
+          puts 'Dump does not exist. Dumping'
+          `ssh hw 'pg_dump -Fc -U eve_business_server -n public eve_business_server_production -f /tmp/production.dump'`
         end
 
-        unless use_local_pg_dump
-          puts 'No local dump, or local dump erased. Retrieving ...'
-          `ssh dw [ -e /tmp/staging.dump ]`
-
-          use_remote_pg_dump = false
-          if $?.to_i == 0
-            # puts 'There already is a remote dump. Do you want to remove it and refresh the dump ? (y/n)'
-            # result = STDIN.gets.chomp
-            use_remote_pg_dump = (args.use_remote_dump == 'y')
-          end
-
-          unless use_remote_pg_dump # file exist
-            # Dump and compress it
-            puts 'Running pg_dump on remote environment.'
-            `ssh dw pg_dump -Fc -n public -T "eve_market_history_archives" eve_business_server_staging -f /tmp/staging.dump`
-          end
-          # Get the remote file
-          puts 'Retrieving remote dump'
-          `scp dw:/tmp/staging.dump /tmp/`
-        end
+        puts 'Stopping staging server'
+        `cap staging puma:stop`
 
         puts 'Dropping database'
-        `dropdb eve_business_server_dev`
+        `ssh hw 'dropdb eve_business_server_staging -U eve_business_server'`
 
         puts 'Creating database'
-        `createdb eve_business_server_dev`
+        `ssh hw 'createdb eve_business_server_staging -U eve_business_server -O eve_business_server'`
 
         puts 'Inserting datas'
-        `pg_restore --no-owner -d eve_business_server_dev -n public /tmp/staging.dump`
+        `ssh hw 'pg_restore -U eve_business_server -d eve_business_server_staging -n public /tmp/production.dump'`
+
+        puts 'Starting staging server'
+        `cap staging puma:start`
       end
     end
   end
