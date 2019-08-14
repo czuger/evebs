@@ -4,22 +4,19 @@ require_relative 'download'
 # Just jita, see ...
 class Esi::DownloadHistory < Esi::Download
 
-  def initialize( debug_request: false )
-    super( nil, {}, debug_request: debug_request )
-    # p @errors_limit_remain
-  end
+  # TODO : Une fois le boulot fait, il faudra supprimer EveMarketHistory et la vue associé (ne pas oublier les modèles)
 
   def update
-    Misc::Banner.p 'About to update the table eve_market_histories'
+    Misc::Banner.p 'About to download regional sales volumes'
 
-    Region.all.each do |region|
+    @file = File.open( 'data/regional_sales_volumes.json_stream', 'w' )
+
+    UniverseRegion.all.each do |region|
       puts "Processing region #{region.name}"
-      ActiveRecord::Base.transaction do
-        update_for_given_region region
-      end
+      update_for_given_region region
     end
 
-    EveMarketHistory.where( 'server_date <= ?', Time.now - 1.month ).delete_all
+    @file.close
   end
 
   def update_for_given_region( region )
@@ -27,39 +24,28 @@ class Esi::DownloadHistory < Esi::Download
     @rest_url = "markets/#{region.cpp_region_id}/types/"
     types_ids = get_all_pages
 
-    puts "#{types_ids.count} to process"
-
-    database_cpp_items_hash = Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
-
-    types_ids.select!{ |t| database_cpp_items_hash[t] }
-
-    puts "#{types_ids.count} in database"
+    puts "#{types_ids.count} to process" if @verbose_output
 
     types_ids.each do |type_id|
-
-      item_id = database_cpp_items_hash[type_id]
 
       @rest_url = "markets/#{region.cpp_region_id}/history/"
       @params[:type_id]=type_id
 
+      total_volume = 0
+      total_isk = 0.0
       get_all_pages.each do |record|
-
-        # p record['date']
-        # p Date.parse(record['date'])
 
         next if Date.parse(record['date']) <= Time.now - 1.month
 
-        evm = EveMarketHistory.where(region_id: region.id, eve_item_id: item_id, server_date: record['date'] ).first_or_initialize
-
-        # p record
-        evm.volume = record['volume']
-        evm.order_count = record['order_count']
-        evm.highest = record['highest']
-        evm.lowest = record['lowest']
-        evm.average = record['average']
-
-        evm.save!
+        total_volume += record['volume'].to_i
+        total_isk += record['volume'].to_f*record['average'].to_f
       end
+
+      # We skip small sales
+      next if total_isk < 100000
+
+      record = { cpp_region_id: region.cpp_region_id, cpp_type_id: type_id, volume: total_volume }
+      @file.puts( record.to_json )
     end
 
   end

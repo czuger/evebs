@@ -45,5 +45,6 @@ sitemap.xml.gz
 
 data/regions_data.yaml
 data/trade_volume_estimation.json_stream
+data/regional_sales_volumes.json_stream
 
 log/
