@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_034416) do
+ActiveRecord::Schema.define(version: 2019_08_14_064907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -348,7 +348,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_034416) do
     t.integer "cpp_system_id", null: false
     t.string "name", null: false
     t.boolean "trade_hub", default: false, null: false
-    t.integer "cpp_star_id", null: false
+    t.integer "cpp_star_id"
     t.string "security_class"
     t.float "security_status", null: false
     t.integer "kill_stats_current_month", default: 0, null: false

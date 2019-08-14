@@ -39,16 +39,15 @@ module Process
     end
 
     def update_system( system, constellation_id )
-      p system
-          s = UniverseSystem.where( cpp_system_id: system[:id] ).first_or_initialize
+      s = UniverseSystem.where( cpp_system_id: system[:id] ).first_or_initialize
 
-          s.name = system[:name]
-          s.universe_constellation_id = constellation_id
-          s.cpp_star_id = system[:star_id]
-          s.security_class = system[:security_class]
-          s.security_status = system[:security_status]
+      s.name = system[:name]
+      s.universe_constellation_id = constellation_id
+      s.cpp_star_id = system[:star_id]
+      s.security_class = system[:security_class]
+      s.security_status = system[:security_status]
 
-          s.save!
+      s.save!
 
       system[:stations].each do |station|
         update_station( station, s.id, s.security_status )
