@@ -41,7 +41,7 @@ namespace :data_setup do
   desc 'Update universe - regions'
   task :regions => :environment do
     # Esi::DownloadUniverseRegions.new(debug_request: true ).download
-    Process::UpdateUniverseRegions.new.update
+    # Process::UpdateUniverseRegions.new.update
     Process::UpdateTradeHubs.new.update
   end
 
