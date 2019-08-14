@@ -48,8 +48,6 @@ namespace :db do
         puts 'Creating database'
         `createdb eve_business_server_dev`
 
-        `psql eve_business_server_dev -c 'CREATE EXTENSION hstore;'`
-
         puts 'Inserting datas'
         `pg_restore --no-owner -d eve_business_server_dev -n public /tmp/production.dump`
       end
