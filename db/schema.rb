@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_104353) do
+ActiveRecord::Schema.define(version: 2019_08_14_144103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -296,13 +296,16 @@ ActiveRecord::Schema.define(version: 2019_08_14_104353) do
   end
 
   create_table "trade_volume_estimations", force: :cascade do |t|
-    t.bigint "eve_item_id"
-    t.bigint "volume_total_sum", default: 0, null: false
+    t.bigint "eve_item_id", null: false
+    t.bigint "volume_total", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "universe_system_id", null: false
-    t.bigint "universe_region_id", null: false
-    t.index ["universe_region_id"], name: "index_trade_volume_estimations_on_universe_region_id"
+    t.bigint "region_volume_total", null: false
+    t.float "percentage", null: false
+    t.bigint "region_volume_downloaded"
+    t.bigint "trade_hub_final_estimated_volume"
+    t.index ["universe_system_id", "eve_item_id"], name: "trade_volume_estimations_fk_idx", unique: true
     t.index ["universe_system_id"], name: "index_trade_volume_estimations_on_universe_system_id"
   end
 
@@ -458,7 +461,6 @@ ActiveRecord::Schema.define(version: 2019_08_14_104353) do
   add_foreign_key "structures", "universe_systems"
   add_foreign_key "trade_hubs", "regions"
   add_foreign_key "trade_volume_estimations", "eve_items"
-  add_foreign_key "trade_volume_estimations", "universe_regions"
   add_foreign_key "trade_volume_estimations", "universe_systems"
   add_foreign_key "universe_constellations", "universe_regions"
   add_foreign_key "universe_stations", "stations"

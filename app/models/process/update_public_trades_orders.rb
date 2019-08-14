@@ -45,10 +45,12 @@ module Process
     end
 
     def update_trade_volume_estimations
-      TradeVolumeEstimation.connection.truncate('trade_volume_estimations')
+      # TradeVolumeEstimation.connection.truncate('trade_volume_estimations')
 
       set_conversion_hash
 
+      cpp_system_to_universe_region_id = Hash[ UniverseSystem.includes( { universe_constellation: :universe_region } ).pluck(:cpp_system_id,'universe_regions.id') ]
+      
       tve_batch = Libs::BatchBuffer.new( 'TradeVolumeEstimation', :insert )
 
       estimations = {}
@@ -57,26 +59,46 @@ module Process
         f.each do |line|
           data = JSON.parse( line )
 
-          system_id = data['system_id']
-          type_id = data['type_id']
+          next if data['is_buy_order']
 
-          estimations[system_id] ||= {}
-          estimations[system_id][type_id] ||= 0
-          estimations[system_id][type_id] += data['volume_total']
+          cpp_system_id = data['system_id']
+          cpp_type_id = data['type_id']
+          region_id = cpp_system_to_universe_region_id[cpp_system_id]
+
+          estimations[cpp_type_id] ||= { systems:{}, regions: {} }
+
+          estimations[cpp_type_id][:systems][cpp_system_id] ||= 0
+          estimations[cpp_type_id][:systems][cpp_system_id] += data['volume_total']
+
+          estimations[cpp_type_id][:regions][region_id] ||= 0
+          estimations[cpp_type_id][:regions][region_id] += data['volume_total']
         end
       end
 
-      estimations.each_pair do |system_id, val|
-        universe_system = UniverseSystem.find_by_cpp_system_id( system_id )
-        universe_region_id = universe_system.universe_region.id
+      import_buffer = []
 
-        val.each_pair do |type_id, volume|
-          eve_item_id = @eve_item_conversion_hash[type_id]
-          tve_batch.add_data TradeVolumeEstimation.new( universe_system_id: universe_system.id,
-                                                        eve_item_id: eve_item_id, volume_total_sum: volume,
-                                                        universe_region_id: universe_region_id )
+      # TradeVolumeEstimation.transaction do
+        estimations.each_pair do |cpp_type_id, val|
+          eve_item_id = @eve_item_conversion_hash[cpp_type_id]
+
+          val[:systems].each_pair do |cpp_system_id, volume|
+            universe_system_id = @universe_system_conversion_hash[cpp_system_id]
+            universe_region_id = cpp_system_to_universe_region_id[cpp_system_id]
+
+            region_volume = val[:regions][universe_region_id]
+
+            # puts "#{cpp_type_id}, #{universe_system_id} : #{volume}, #{region_volume}, #{volume.to_f/region_volume}"
+            import_buffer << TradeVolumeEstimation.new( universe_system_id: universe_system_id,
+                                                          eve_item_id: eve_item_id, volume_total: volume,
+                                                          region_volume_total: region_volume, percentage: volume.to_f/region_volume )
+          end
         end
-      end
+
+        TradeVolumeEstimation.import( import_buffer,
+                                      on_duplicate_key_update: {conflict_target: [:universe_system_id, :eve_item_id],
+                                                                columns: [:volume_total, :region_volume_total, :percentage] } )
+      # end
+
     end
 
     private
@@ -94,7 +116,7 @@ module Process
         server_order_data.symbolize_keys!
 
         trade_hub_id = @trade_hub_conversion_hash[ server_order_data[:system_id] ]
-        eve_item_id = @eve_item_conversion_hash[ server_order_data[:type_id] ]
+        eve_item_id = @eve_item_conversion_hash[ server_order_data[:cpp_type_id] ]
         next unless trade_hub_id && eve_item_id
 
         trade_order = PublicTradeOrder.find_by_order_id( server_order_data[:order_id] )
@@ -172,6 +194,7 @@ module Process
     def set_conversion_hash
       @trade_hub_conversion_hash ||= Hash[ TradeHub.pluck( :eve_system_id, :id ) ]
       @eve_item_conversion_hash ||= Hash[ EveItem.pluck( :cpp_eve_item_id, :id ) ]
+      @universe_system_conversion_hash ||= Hash[ UniverseSystem.pluck( :cpp_system_id, :id ) ]
     end
 
   end
