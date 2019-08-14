@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_13_195438) do
+ActiveRecord::Schema.define(version: 2019_08_14_034416) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -349,7 +349,6 @@ ActiveRecord::Schema.define(version: 2019_08_13_195438) do
     t.integer "cpp_system_id", null: false
     t.string "name", null: false
     t.boolean "trade_hub", default: false, null: false
-    t.integer "cpp_constellation_id", null: false
     t.integer "cpp_star_id", null: false
     t.string "security_class"
     t.float "security_status", null: false
@@ -358,8 +357,10 @@ ActiveRecord::Schema.define(version: 2019_08_13_195438) do
     t.integer "kill_stats_last_month", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "universe_constellations_id"
     t.index ["cpp_system_id"], name: "index_universe_systems_on_cpp_system_id", unique: true
     t.index ["trade_hub"], name: "index_universe_systems_on_trade_hub"
+    t.index ["universe_constellations_id"], name: "index_universe_systems_on_universe_constellations_id"
   end
 
   create_table "user_activity_logs", id: :serial, force: :cascade do |t|
@@ -465,6 +466,7 @@ ActiveRecord::Schema.define(version: 2019_08_13_195438) do
   add_foreign_key "universe_constellations", "universe_regions", column: "universe_regions_id"
   add_foreign_key "universe_stations", "stations"
   add_foreign_key "universe_stations", "universe_systems"
+  add_foreign_key "universe_systems", "universe_constellations", column: "universe_constellations_id"
   add_foreign_key "user_sale_orders", "eve_items"
   add_foreign_key "user_sale_orders", "trade_hubs"
   add_foreign_key "user_sale_orders", "users"

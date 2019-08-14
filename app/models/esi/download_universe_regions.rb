@@ -5,17 +5,13 @@ module Esi
 
     def initialize( debug_request: false )
       super( 'universe/regions', {}, debug_request: debug_request )
+      @regions = []
     end
 
     def download
       puts 'Downloading regions and all sub data'
 
-      data = download_regions
-
-      File.open( 'data/regions.yaml', 'w' ) do |f|
-        f.write( data.to_yaml )
-      end
-
+      download_regions
       return
 
       systems_ids = get_all_pages
@@ -58,7 +54,6 @@ module Esi
 
     def download_regions
       regions_ids = get_all_pages
-      regions = []
 
       regions_ids.each do |region_id|
         @rest_url = "universe/regions/#{region_id}/"
@@ -69,10 +64,11 @@ module Esi
         region_data['constellations'].each do |constellation_id|
           region[:constellations] << download_constellation( constellation_id )
         end
-        regions << region
+        @regions << region
+
+        write_data
       end
 
-      regions
     end
 
     def download_constellation( constellation_id )
@@ -82,7 +78,7 @@ module Esi
       constellation = { id: constellation_id, name: constellation_data['name'], systems: [] }
 
       constellation_data['systems'].each do |system_id|
-        constellation[:systems] = download_system( system_id )
+        constellation[:systems] << download_system( system_id )
       end
 
       constellation
@@ -106,6 +102,12 @@ module Esi
       # end
 
       system
+    end
+
+    def write_data
+      File.open( 'data/regions.yaml', 'w' ) do |f|
+        f.write( @regions.to_yaml )
+      end
     end
 
     def update_universe_station_table( system, stations_data )

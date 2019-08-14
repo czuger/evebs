@@ -8,7 +8,7 @@ module Process
 
       Region.transaction do
         regions.each do |regions|
-          update_region regions
+          create_region regions
         end
       end
 
@@ -52,21 +52,40 @@ module Process
 
     private
 
-    def update_region( region )
+    def create_region( region )
       db_region = UniverseRegion.find_or_create_by!( cpp_region_id: region[:id] ) do |r|
         r.name = region[:name]
       end
 
       region[:constellations].each do |constellation|
-        update_constellation( constellation, db_region.id )
+        create_constellation( constellation, db_region.id )
       end
     end
 
-    def update_constellation( constellation, region_id )
-      UniverseConstellation.find_or_create_by!( cpp_constellation_id: constellation[:id] ) do |c|
+    def create_constellation( constellation, region_id )
+      db_constellation = UniverseConstellation.find_or_create_by!( cpp_constellation_id: constellation[:id] ) do |c|
         c.name = constellation[:name]
         c.universe_regions_id = region_id
       end
+
+      constellation[:systems].each do |system|
+        update_system( system, db_constellation.id )
+      end
+    end
+
+    def update_system( system, constellation_id )
+      p system
+          s = UniverseSystem.where( cpp_system_id: system[:id] ).first_or_initialize
+
+          s.name = system[:name]
+          s.universe_constellation_id = constellation_id
+          s.cpp_star_id = system[:star_id]
+          s.security_class = system[:security_class]
+          s.security_status = system[:security_status]
+          s.stations_ids = system[:stations] || []
+          s.save!
+      #
+      #     update_universe_station_table s, system_data['stations']
     end
 
     def download_system( system_id )
