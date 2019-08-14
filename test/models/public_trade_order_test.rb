@@ -3,7 +3,7 @@ require 'test_helper'
 class PublicTradeOrderTest < ActiveSupport::TestCase
 
   def setup
-    create( :jita )
+    create( :universe_jita )
     @cm = create( :inferno_fury_cruise_missile )
 
     @esi_data = JSON.parse(

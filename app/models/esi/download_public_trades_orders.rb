@@ -20,7 +20,7 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
     tve = File.open( 'data/trade_volume_estimation.json_stream', 'w')
     File.open('data/public_trades_orders.json_stream', 'w') do |f|
 
-      Region.all.each do |region|
+      UniverseRegion.all.each do |region|
 
         if @verbose_output
           puts "About to download orders for #{region.name}"

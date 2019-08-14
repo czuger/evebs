@@ -6,14 +6,12 @@ FactoryBot.define do
 
     office_rental_cost {1.5}
     cpp_station_id {1}
-    cpp_system_id {1}
     services { [] }
 
     factory :vellaine do
       name { 'Vellaine VI - Moon 9 - Propel Dynamics Factory' }
 
       cpp_station_id { 60002407 }
-      cpp_system_id { 30001380 }
 
       universe_system { UniverseSystem.find_by_cpp_system_id( 30001380 ) || FactoryBot.create( :vellaine_system ) }
     end
