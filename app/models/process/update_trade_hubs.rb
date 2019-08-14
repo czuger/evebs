@@ -18,13 +18,15 @@ module Process
 
           raise "Unable to find system_id=#{id}" if @verbose_output && !system
 
-          region = Region.find_by_cpp_region_id( system.universe_region.cpp_region_id )
-
-          raise "Unable to find region #{system.universe_region.inspect}" if @verbose_output && !region
+          universe_region = system.universe_region
+          region = Region.find_or_create_by!( cpp_region_id: universe_region.cpp_region_id ) do |r|
+            r.name = universe_region.name
+          end
 
           TradeHub.find_or_create_by!( eve_system_id: id ) do |record|
             record.name = system.name
             record.region_id = region.id
+            record.inner = INNER_TRADE_HUBS_IDS.include?( id )
           end
         end
       end
