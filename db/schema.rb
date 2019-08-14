@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_064907) do
+ActiveRecord::Schema.define(version: 2019_08_14_080941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -312,11 +312,11 @@ ActiveRecord::Schema.define(version: 2019_08_14_064907) do
   create_table "universe_constellations", force: :cascade do |t|
     t.integer "cpp_constellation_id", null: false
     t.string "name", null: false
-    t.bigint "universe_regions_id", null: false
+    t.bigint "universe_region_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cpp_constellation_id"], name: "index_universe_constellations_on_cpp_constellation_id", unique: true
-    t.index ["universe_regions_id"], name: "index_universe_constellations_on_universe_regions_id"
+    t.index ["universe_region_id"], name: "index_universe_constellations_on_universe_region_id"
   end
 
   create_table "universe_regions", force: :cascade do |t|
@@ -461,7 +461,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_064907) do
   add_foreign_key "trade_hubs", "regions"
   add_foreign_key "trade_volume_estimations", "eve_items"
   add_foreign_key "trade_volume_estimations", "universe_stations"
-  add_foreign_key "universe_constellations", "universe_regions", column: "universe_regions_id"
+  add_foreign_key "universe_constellations", "universe_regions"
   add_foreign_key "universe_stations", "stations"
   add_foreign_key "universe_stations", "universe_systems"
   add_foreign_key "universe_systems", "universe_constellations"

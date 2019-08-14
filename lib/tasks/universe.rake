@@ -42,6 +42,7 @@ namespace :data_setup do
   task :regions => :environment do
     # Esi::DownloadUniverseRegions.new(debug_request: true ).download
     Process::UpdateUniverseRegions.new.update
+    Process::UpdateTradeHubs.new.update
   end
 
   desc 'Get the base prices for reactions'

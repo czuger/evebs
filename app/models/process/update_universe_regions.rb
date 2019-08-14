@@ -30,7 +30,7 @@ module Process
     def create_constellation( constellation, region_id )
       db_constellation = UniverseConstellation.find_or_create_by!( cpp_constellation_id: constellation[:id] ) do |c|
         c.name = constellation[:name]
-        c.universe_regions_id = region_id
+        c.universe_region_id = region_id
       end
 
       constellation[:systems].each do |system|
