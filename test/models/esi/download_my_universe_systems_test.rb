@@ -70,13 +70,13 @@ class DownloadUniverseSystemsTest < ActiveSupport::TestCase
     )
   end
 
-  test 'Download universe list, then first universe data, then first station data for that universe' do
-    dus = Esi::DownloadUniverseSystems.new
-    dus.expects(:set_auth_token)
-    dus.expects(:get_all_pages).returns(@universe_list )
-    dus.stubs(:get_page_retry_on_error).returns(@system_data, @station_data )
-    
-    dus.update
-  end
+  # test 'Download universe list, then first universe data, then first station data for that universe' do
+  #   dus = Esi::DownloadUniverseRegions.new
+  #   dus.expects(:set_auth_token)
+  #   dus.expects(:get_all_pages).returns(@universe_list )
+  #   dus.stubs(:get_page_retry_on_error).returns(@system_data, @station_data )
+  #
+  #   dus.update
+  # end
 
 end

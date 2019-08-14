@@ -57,9 +57,7 @@ namespace :process do
     task :weekly => :environment do
 
       # Updating new systems if any
-      Esi::DownloadUniverseSystems.new( debug_request: false ).update
-
-
+      # Esi::DownloadUniverseSystems.new( debug_request: false ).update
 
       Process::ParseBlueprintsFile.new.parse
 

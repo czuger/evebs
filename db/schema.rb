@@ -328,7 +328,6 @@ ActiveRecord::Schema.define(version: 2019_08_14_034416) do
   end
 
   create_table "universe_stations", force: :cascade do |t|
-    t.integer "cpp_system_id", null: false
     t.integer "cpp_station_id", null: false
     t.string "name", null: false
     t.string "services", null: false, array: true
@@ -352,7 +351,6 @@ ActiveRecord::Schema.define(version: 2019_08_14_034416) do
     t.integer "cpp_star_id", null: false
     t.string "security_class"
     t.float "security_status", null: false
-    t.integer "stations_ids", default: [], null: false, array: true
     t.integer "kill_stats_current_month", default: 0, null: false
     t.integer "kill_stats_last_month", default: 0, null: false
     t.datetime "created_at", null: false
