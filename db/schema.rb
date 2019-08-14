@@ -357,10 +357,10 @@ ActiveRecord::Schema.define(version: 2019_08_14_034416) do
     t.integer "kill_stats_last_month", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "universe_constellations_id"
+    t.bigint "universe_constellation_id"
     t.index ["cpp_system_id"], name: "index_universe_systems_on_cpp_system_id", unique: true
     t.index ["trade_hub"], name: "index_universe_systems_on_trade_hub"
-    t.index ["universe_constellations_id"], name: "index_universe_systems_on_universe_constellations_id"
+    t.index ["universe_constellation_id"], name: "index_universe_systems_on_universe_constellation_id"
   end
 
   create_table "user_activity_logs", id: :serial, force: :cascade do |t|
@@ -466,7 +466,7 @@ ActiveRecord::Schema.define(version: 2019_08_14_034416) do
   add_foreign_key "universe_constellations", "universe_regions", column: "universe_regions_id"
   add_foreign_key "universe_stations", "stations"
   add_foreign_key "universe_stations", "universe_systems"
-  add_foreign_key "universe_systems", "universe_constellations", column: "universe_constellations_id"
+  add_foreign_key "universe_systems", "universe_constellations"
   add_foreign_key "user_sale_orders", "eve_items"
   add_foreign_key "user_sale_orders", "trade_hubs"
   add_foreign_key "user_sale_orders", "users"
