@@ -52,8 +52,6 @@ module Process
       set_conversion_hash
 
       cpp_system_to_universe_region_id = Hash[ UniverseSystem.includes( { universe_constellation: :universe_region } ).pluck(:cpp_system_id,'universe_regions.id') ]
-      
-      tve_batch = Libs::BatchBuffer.new( 'TradeVolumeEstimation', :insert )
 
       estimations = {}
 
@@ -117,14 +115,16 @@ module Process
         server_order_data.symbolize_keys!
 
         trade_hub_id = @trade_hub_conversion_hash[ server_order_data[:system_id] ]
-        eve_item_id = @eve_item_conversion_hash[ server_order_data[:cpp_type_id] ]
+        eve_item_id = @eve_item_conversion_hash[ server_order_data[:type_id] ]
 
         unless trade_hub_id
           puts "Unable to find a trade hub for #{server_order_data[:system_id]} - @trade_hub_conversion_hash.count = #{@trade_hub_conversion_hash.count}" if @verbose_output
+          next
         end
 
         unless eve_item_id
-          puts "Unable to find an eve item for #{server_order_data[:cpp_type_id]} - @@eve_item_conversion_hash.count = #{@eve_item_conversion_hash.count}" if @verbose_output
+          puts "Unable to find an eve item for #{server_order_data[:type_id]} - @eve_item_conversion_hash.count = #{@eve_item_conversion_hash.count}" if @verbose_output
+          next
         end
 
         trade_order = PublicTradeOrder.find_by_order_id( server_order_data[:order_id] )
