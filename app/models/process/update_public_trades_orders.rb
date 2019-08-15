@@ -79,28 +79,27 @@ module Process
 
       import_buffer = []
 
-      # TradeVolumeEstimation.transaction do
-        estimations.each_pair do |cpp_type_id, val|
-          eve_item_id = @eve_item_conversion_hash[cpp_type_id]
+      estimations.each_pair do |cpp_type_id, val|
+        eve_item_id = @eve_item_conversion_hash[cpp_type_id]
 
-          val[:systems].each_pair do |cpp_system_id, volume|
-            universe_system_id = @universe_system_conversion_hash[cpp_system_id]
-            universe_region_id = cpp_system_to_universe_region_id[cpp_system_id]
+        val[:systems].each_pair do |cpp_system_id, volume|
+          universe_system_id = @universe_system_conversion_hash[cpp_system_id]
+          universe_region_id = cpp_system_to_universe_region_id[cpp_system_id]
 
-            region_volume = val[:regions][universe_region_id]
+          region_volume = val[:regions][universe_region_id]
 
-            # puts "#{cpp_type_id}, #{universe_system_id} : #{volume}, #{region_volume}, #{volume.to_f/region_volume}"
-            import_buffer << TradeVolumeEstimation.new( universe_system_id: universe_system_id,
-                                                          eve_item_id: eve_item_id, volume_total: volume,
-                                                          region_volume_total: region_volume, percentage: volume.to_f/region_volume )
-          end
+          # puts "#{cpp_type_id}, #{universe_system_id} : #{volume}, #{region_volume}, #{volume.to_f/region_volume}"
+          import_buffer << TradeVolumeEstimation.new( universe_system_id: universe_system_id,
+                                                        eve_item_id: eve_item_id, volume_total: volume,
+                                                        region_volume_total: region_volume, percentage: volume.to_f/region_volume )
         end
+      end
 
-        TradeVolumeEstimation.import( import_buffer,
-                                      on_duplicate_key_update: {conflict_target: [:universe_system_id, :eve_item_id],
-                                                                columns: [:volume_total, :region_volume_total, :percentage] } )
-      # end
+      TradeVolumeEstimation.import( import_buffer,
+                                    on_duplicate_key_update: {conflict_target: [:universe_system_id, :eve_item_id],
+                                                              columns: [:volume_total, :region_volume_total, :percentage] } )
 
+      TradeVolumeEstimation.update_all( 'trade_hub_final_estimated_volume = region_volume_downloaded*percentage' )
     end
 
     private
