@@ -118,7 +118,14 @@ module Process
 
         trade_hub_id = @trade_hub_conversion_hash[ server_order_data[:system_id] ]
         eve_item_id = @eve_item_conversion_hash[ server_order_data[:cpp_type_id] ]
-        next unless trade_hub_id && eve_item_id
+
+        unless trade_hub_id
+          puts "Unable to find a trade hub for #{server_order_data[:system_id]} - @trade_hub_conversion_hash.count = #{@trade_hub_conversion_hash.count}" if @verbose_output
+        end
+
+        unless eve_item_id
+          puts "Unable to find an eve item for #{server_order_data[:cpp_type_id]} - @@eve_item_conversion_hash.count = #{@eve_item_conversion_hash.count}" if @verbose_output
+        end
 
         trade_order = PublicTradeOrder.find_by_order_id( server_order_data[:order_id] )
 
