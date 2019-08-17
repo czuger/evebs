@@ -33,21 +33,26 @@ class Esi::DownloadHistory < Esi::Download
 
       total_volume = 0
       total_isk = 0.0
-      get_all_pages.each do |record|
 
-        next if Date.parse(record['date']) <= Time.now - 1.month
+      begin
+        get_all_pages.each do |record|
 
-        total_volume += record['volume'].to_i
-        total_isk += record['volume'].to_f*record['average'].to_f
+          next if Date.parse(record['date']) <= Time.now - 1.month
+
+          total_volume += record['volume'].to_i
+          total_isk += record['volume'].to_f*record['average'].to_f
+        end
+
+        # We skip small sales
+        next if total_isk < 100000
+
+        record = { cpp_region_id: region.cpp_region_id, cpp_type_id: type_id, volume: total_volume }
+        @file.puts( record.to_json )
+      rescue Esi::Errors::NotFound
+        puts "For region #{region.cpp_region_id} : #{type_id} not found, while given in #{types_ids.inspect}"
       end
 
-      # We skip small sales
-      next if total_isk < 100000
-
-      record = { cpp_region_id: region.cpp_region_id, cpp_type_id: type_id, volume: total_volume }
-      @file.puts( record.to_json )
     end
-
   end
 
 end
