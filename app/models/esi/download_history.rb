@@ -49,7 +49,7 @@ class Esi::DownloadHistory < Esi::Download
         record = { cpp_region_id: region.cpp_region_id, cpp_type_id: type_id, volume: total_volume }
         @file.puts( record.to_json )
       rescue Esi::Errors::NotFound
-        puts "For region #{region.cpp_region_id} : #{type_id} not found, while given in #{types_ids.inspect}"
+        puts "For region #{region.cpp_region_id} : #{type_id} not found."
       end
 
     end
