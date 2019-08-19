@@ -34,14 +34,13 @@ class Esi::DownloadHistory < Esi::Download
   end
 
   def start_process_and_download( regions, file_number )
-    result = fork
-    unless result
+    result = fork do
       # I'm the child
       @file = File.open( "data/regional_sales_volumes_#{file_number}.json_stream", 'w' )
       $stdout.reopen("log/regional_sales_volumes_#{file_number}.log", 'a')
       $stderr.reopen("log/regional_sales_volumes_#{file_number}.err", 'a')
 
-      Misc::Banner.p "Download start at #{Time.now} in process #{Process.pid}"
+      Misc::Banner.p "Download started in process #{Process.pid}"
 
       regions.each do |region|
         update_for_given_region region
@@ -49,11 +48,11 @@ class Esi::DownloadHistory < Esi::Download
 
       @file.close
 
-      Misc::Banner.p "Download stop at #{Time.now} in process #{Process.pid}"
-    else
-      # I'm your father luke
-      puts "Download process created : #{result}"
+      Misc::Banner.p "Download stopped in process #{Process.pid}"
     end
+
+    # I'm your father luke
+    puts "Download process created : #{result}"
 
     result
   end
