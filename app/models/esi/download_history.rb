@@ -41,11 +41,15 @@ class Esi::DownloadHistory < Esi::Download
       $stdout.reopen("log/regional_sales_volumes_#{file_number}.log", 'w')
       $stderr.reopen("log/regional_sales_volumes_#{file_number}.err", 'w')
 
+      Misc::Banner.p "Download start at #{Time.now}"
+
       regions.each do |region|
         update_for_given_region region
       end
 
       @file.close
+
+      Misc::Banner.p "Download stop at #{Time.now}"
     else
       # I'm your father luke
     end
