@@ -39,7 +39,7 @@ class Esi::Download
         break
 
       rescue JSON::ParserError => parse_error
-        puts 'Got parse error !!!'
+        warn 'Got parse error !!!'
         next
 
       rescue => e
@@ -145,7 +145,7 @@ class Esi::Download
   end
 
   def error_print( e )
-    puts "#{Time.now} - Requesting #{@rest_url}, #{@params.inspect} got '#{e}', limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
+    warn "#{Time.now} - Requesting #{@rest_url}, #{@params.inspect} got '#{e}', limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     STDOUT.flush
   end
 

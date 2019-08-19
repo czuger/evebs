@@ -9,22 +9,58 @@ class Esi::DownloadHistory < Esi::Download
   def update
     Misc::Banner.p 'About to download regional sales volumes'
 
-    @file = File.open( 'data/regional_sales_volumes.json_stream', 'w' )
+    pages_count_sum_fourth_counter = pages_count_sum_fourth = UniverseRegion.sum( :orders_pages_count )/4
+    regions = []
+    file_index = 1
 
-    UniverseRegion.all.each do |region|
-      puts "Processing region #{region.name}"
-      update_for_given_region region
+    UniverseRegion.all.order( 'orders_pages_count DESC' ).each do |region|
+
+      regions << region
+      pages_count_sum_fourth_counter -= region.orders_pages_count
+
+      if pages_count_sum_fourth_counter <= 0
+        start_process_and_download regions, file_index
+        file_index += 1
+
+        pages_count_sum_fourth_counter = pages_count_sum_fourth
+        regions = []
+      end
     end
 
-    @file.close
+    start_process_and_download regions, file_index
+
+    # Wait for all subprocess to finish, then terminate.
+    Process.wait( -1 )
+  end
+
+  def start_process_and_download( regions, file_number )
+    result = fork
+    unless result
+      # I'm the child
+      @file = File.open( "data/regional_sales_volumes_#{file_number}.json_stream", 'w' )
+      $stdout.reopen("log/regional_sales_volumes_#{file_number}.log", 'w')
+      $stderr.reopen("log/regional_sales_volumes_#{file_number}.err", 'w')
+
+      regions.each do |region|
+        update_for_given_region region
+      end
+
+      @file.close
+    else
+      # I'm your father luke
+    end
+
+    result
   end
 
   def update_for_given_region( region )
 
+    puts "About to process : #{region}" if @verbose_output
+
     @rest_url = "markets/#{region.cpp_region_id}/types/"
     types_ids = get_all_pages
 
-    puts "#{types_ids.count} to process" if @verbose_output
+    puts "#{types_ids} types_ids to process" if @verbose_output
 
     types_ids.each do |type_id|
 
@@ -49,7 +85,7 @@ class Esi::DownloadHistory < Esi::Download
         record = { cpp_region_id: region.cpp_region_id, cpp_type_id: type_id, volume: total_volume }
         @file.puts( record.to_json )
       rescue Esi::Errors::NotFound
-        puts "For region #{region.cpp_region_id} : #{type_id} not found."
+        warn "For region #{region.cpp_region_id} : #{type_id} not found."
       end
 
     end
