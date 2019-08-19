@@ -52,6 +52,7 @@ class Esi::DownloadHistory < Esi::Download
       Misc::Banner.p "Download stop at #{Time.now} in process #{Process.pid}"
     else
       # I'm your father luke
+      puts "Download process created : #{result}"
     end
 
     result
