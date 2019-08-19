@@ -59,7 +59,7 @@ class Esi::DownloadHistory < Esi::Download
 
   def update_for_given_region( region )
 
-    puts "About to process : #{region}" if @verbose_output
+    puts "About to process : #{region.name}" if @verbose_output
 
     @rest_url = "markets/#{region.cpp_region_id}/types/"
     types_ids = get_all_pages
