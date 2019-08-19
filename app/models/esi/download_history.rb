@@ -64,7 +64,7 @@ class Esi::DownloadHistory < Esi::Download
     @rest_url = "markets/#{region.cpp_region_id}/types/"
     types_ids = get_all_pages
 
-    puts "#{types_ids} types_ids to process" if @verbose_output
+    puts "#{types_ids.count} types_ids to process" if @verbose_output
 
     types_ids.each do |type_id|
 
