@@ -38,8 +38,8 @@ class Esi::DownloadHistory < Esi::Download
     unless result
       # I'm the child
       @file = File.open( "data/regional_sales_volumes_#{file_number}.json_stream", 'w' )
-      $stdout.reopen("log/regional_sales_volumes_#{file_number}.log", 'w')
-      $stderr.reopen("log/regional_sales_volumes_#{file_number}.err", 'w')
+      $stdout.reopen("log/regional_sales_volumes_#{file_number}.log", 'a')
+      $stderr.reopen("log/regional_sales_volumes_#{file_number}.err", 'a')
 
       Misc::Banner.p "Download start at #{Time.now} in process #{Process.pid}"
 
