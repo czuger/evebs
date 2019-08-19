@@ -31,6 +31,8 @@ class Esi::DownloadHistory < Esi::Download
 
     # Wait for all subprocess to finish, then terminate.
     Process.wait
+
+    Misc::Banner.p 'Download regional sales volumes finished'
   end
 
   def start_process_and_download( regions, file_number )
