@@ -30,7 +30,7 @@ class Esi::DownloadHistory < Esi::Download
     start_process_and_download regions, file_index
 
     # Wait for all subprocess to finish, then terminate.
-    Process.wait( -1 )
+    Process.wait
   end
 
   def start_process_and_download( regions, file_number )
