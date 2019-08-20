@@ -6,7 +6,7 @@ class Esi::DownloadHistory < Esi::Download
 
   # TODO : Une fois le boulot fait, il faudra supprimer EveMarketHistory et la vue associé (ne pas oublier les modèles)
 
-  def update
+  def download
     Misc::Banner.p 'About to download regional sales volumes'
 
     1.upto(Esi::DownloadHistoryReadItemsLists::PROCESSES_COUNT).each do |process_id|

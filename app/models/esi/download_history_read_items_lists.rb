@@ -7,6 +7,9 @@ class Esi::DownloadHistoryReadItemsLists < Esi::Download
   def update
     Misc::Banner.p 'About to download regional items lists and update processes ids'
 
+    # This is to avoid starting processes on processes repartition error
+    UniverseRegion.update_all( download_process_id: null )
+
     download_by_region_types_list
     update_process_ids
 
@@ -19,7 +22,7 @@ class Esi::DownloadHistoryReadItemsLists < Esi::Download
       @rest_url = "markets/#{region.cpp_region_id}/types/"
       types_ids = get_all_pages
 
-      puts "#{types_ids.count} read for region #{region.name}" if @verbose_output
+      puts "#{types_ids.count} types read for region #{region.name}" if @verbose_output
 
       region.market_items = types_ids
       region.market_items_count = types_ids.count

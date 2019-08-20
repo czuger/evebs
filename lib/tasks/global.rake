@@ -35,11 +35,15 @@ namespace :process do
     desc 'Full process - daily'
     task :daily => :environment do
 
+      Misc::Banner.p( 'Daily process started' )
+
       ActiveRecord::Base.transaction do
-
         Esi::DownloadHistoryReadItemsLists.new.update
-        Esi::DownloadHistory.new.update
+      end
 
+      Esi::DownloadHistory.new.download
+
+      ActiveRecord::Base.transaction do
         Process::UpdateRegionVolumeDownloaded.new.update
 
         Process::DeleteOldSalesFinals.delete
@@ -54,7 +58,7 @@ namespace :process do
         Misc::LastUpdate.set( :daily )
       end
 
-      Misc::Banner.p( 'Finished' )
+      Misc::Banner.p( 'Daily process finished' )
     end
 
     desc 'Full process - weekly'
