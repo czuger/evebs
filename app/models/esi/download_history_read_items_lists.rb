@@ -8,7 +8,7 @@ class Esi::DownloadHistoryReadItemsLists < Esi::Download
     Misc::Banner.p 'About to download regional items lists and update processes ids'
 
     # This is to avoid starting processes on processes repartition error
-    UniverseRegion.update_all( download_process_id: null )
+    UniverseRegion.update_all( download_process_id: nil )
 
     download_by_region_types_list
     update_process_ids
