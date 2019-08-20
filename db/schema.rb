@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_144103) do
+ActiveRecord::Schema.define(version: 2019_08_20_083343) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -325,6 +325,9 @@ ActiveRecord::Schema.define(version: 2019_08_14_144103) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "orders_pages_count", default: 0, null: false
+    t.jsonb "market_items", default: [], null: false
+    t.integer "market_items_count", default: 0, null: false
+    t.integer "download_process_id", limit: 2, default: 1, null: false
     t.index ["cpp_region_id"], name: "index_universe_regions_on_cpp_region_id", unique: true
   end
 

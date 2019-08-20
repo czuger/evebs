@@ -36,7 +36,10 @@ namespace :process do
     task :daily => :environment do
 
       ActiveRecord::Base.transaction do
+
+        Esi::DownloadHistoryReadItemsLists.new.update
         Esi::DownloadHistory.new.update
+
         Process::UpdateRegionVolumeDownloaded.new.update
 
         Process::DeleteOldSalesFinals.delete

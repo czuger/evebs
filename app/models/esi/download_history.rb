@@ -9,25 +9,9 @@ class Esi::DownloadHistory < Esi::Download
   def update
     Misc::Banner.p 'About to download regional sales volumes'
 
-    pages_count_sum_fourth_counter = pages_count_sum_fourth = UniverseRegion.sum( :orders_pages_count )/4
-    regions = []
-    file_index = 1
-
-    UniverseRegion.all.order( 'orders_pages_count DESC' ).each do |region|
-
-      regions << region
-      pages_count_sum_fourth_counter -= region.orders_pages_count
-
-      if pages_count_sum_fourth_counter <= 0
-        start_process_and_download regions, file_index
-        file_index += 1
-
-        pages_count_sum_fourth_counter = pages_count_sum_fourth
-        regions = []
-      end
+    1.upto(Esi::DownloadHistoryReadItemsLists::PROCESSES_COUNT).each do |process_id|
+      start_process_and_download( UniverseRegion.where( download_process_id: process_id ), process_id )
     end
-
-    start_process_and_download regions, file_index
 
     # Wait for all subprocess to finish, then terminate.
     Process.wait
@@ -35,12 +19,12 @@ class Esi::DownloadHistory < Esi::Download
     Misc::Banner.p 'Download regional sales volumes finished'
   end
 
-  def start_process_and_download( regions, file_number )
+  def start_process_and_download( regions, process_number )
     result = fork do
       # I'm the child
-      @file = File.open( "data/regional_sales_volumes_#{file_number}.json_stream", 'w' )
-      $stdout.reopen("log/regional_sales_volumes_#{file_number}.log", 'a')
-      $stderr.reopen("log/regional_sales_volumes_#{file_number}.err", 'a')
+      @file = File.open( "data/regional_sales_volumes_#{process_number}.json_stream", 'w' )
+      $stdout.reopen("log/regional_sales_volumes_#{process_number}.log", 'a')
+      $stderr.reopen("log/regional_sales_volumes_#{process_number}.err", 'a')
 
       Misc::Banner.p "Download started in process #{Process.pid}"
 
