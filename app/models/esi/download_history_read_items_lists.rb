@@ -9,7 +9,7 @@ class Esi::DownloadHistoryReadItemsLists < Esi::Download
   def update
     Misc::Banner.p 'About to download regional items lists and update processes ids'
 
-    # download_by_region_types_list
+    download_by_region_types_list
     update_process_ids
 
     Misc::Banner.p 'Download regional regional items lists and update of processes ids finished'
