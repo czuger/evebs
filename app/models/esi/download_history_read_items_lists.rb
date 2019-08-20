@@ -1,7 +1,5 @@
 require_relative 'download'
 
-# Seems not to require full download of all prices history
-# Just jita, see ...
 class Esi::DownloadHistoryReadItemsLists < Esi::Download
 
   PROCESSES_COUNT = 4
@@ -20,6 +18,8 @@ class Esi::DownloadHistoryReadItemsLists < Esi::Download
 
       @rest_url = "markets/#{region.cpp_region_id}/types/"
       types_ids = get_all_pages
+
+      puts "#{types_ids.count} read for region #{region.name}" if @verbose_output
 
       region.market_items = types_ids
       region.market_items_count = types_ids.count
