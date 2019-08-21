@@ -74,8 +74,6 @@ namespace :process do
       Esi::DownloadBlueprints.new( { verbose_output: false } ).download
       Esi::DownloadEveItems.new( { verbose_output: false } ).download
 
-      Process::SetEveItemDepthLevel.new.set
-
       Esi::DownloadMarketGroups.new.download
 
       Process::CleanBlueprints.new.clean
@@ -84,9 +82,10 @@ namespace :process do
         Process::UpdateMarketGroups.new.update
         Process::UpdateBlueprints.new.update
 
-        # Eve items are now updated on a hourly base due to cpp market prices integration.
         Process::UpdateEveItems.new.update
         Process::UpdateBlueprintMaterials.new.update
+
+        Misc::CheckItemsProductionsLevels.new.check
 
         # Even it does not change the DB, we want the DB chances to be available
         # once the market tree has changed

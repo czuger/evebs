@@ -2,6 +2,8 @@ module Misc
   class CheckItemsProductionsLevels
 
     def check
+      Misc::Banner.p 'Start checking productions levels'
+
       @failures = 0
       @logfile = File.open( 'log/items_productions_levels.err', 'w' )
 
@@ -19,6 +21,8 @@ module Misc
       end
 
       @logfile.close
+
+      Misc::Banner.p 'Productions levels check finished'
     end
 
     private
