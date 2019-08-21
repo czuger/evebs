@@ -38,8 +38,14 @@ module Process
 
       item.production_level = item_level
 
-      item.blueprint_materials.each do |m|
-        sub_set @eve_items[m.eve_item_id], parent_level-1
+      materials = item.blueprint_materials
+
+      if materials.empty?
+        item.base_item = true
+      else
+        item.blueprint_materials.each do |m|
+          sub_set @eve_items[m.eve_item_id], parent_level-1
+        end
       end
     end
 
