@@ -43,21 +43,21 @@ class ListItemsController < ApplicationController
     redirect_to saved_list_list_items_path, notice: 'List cleared successfully'
   end
 
-  def all
-    ActiveRecord::Base.transaction do
-      clear_user_list
-
-      EveItem.where.not( blueprint_id: nil ).where( faction: false ).pluck( :id ).in_groups_of( 500 ).each do |g|
-        links = []
-        g.each do |eve_item_id|
-          links << EveItemsUser.new( user_id: @user.id, eve_item_id: eve_item_id, )
-        end
-        EveItemsUser.import( links )
-      end
-    end
-
-    redirect_to saved_list_list_items_path, notice: 'All items are now selected'
-  end
+  # def all
+  #   ActiveRecord::Base.transaction do
+  #     clear_user_list
+  #
+  #     EveItem.where.not( blueprint_id: nil ).where( faction: false ).pluck( :id ).in_groups_of( 500 ).each do |g|
+  #       links = []
+  #       g.each do |eve_item_id|
+  #         links << EveItemsUser.new( user_id: @user.id, eve_item_id: eve_item_id, )
+  #       end
+  #       EveItemsUser.import( links )
+  #     end
+  #   end
+  #
+  #   redirect_to saved_list_list_items_path, notice: 'All items are now selected'
+  # end
 
   def save
     @saved_list = EveItemsSavedList.new( user: @user, description: params[:description], saved_ids: @user.eve_item_ids )
