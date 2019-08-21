@@ -40,11 +40,11 @@ namespace :process do
 
       Misc::Banner.p( 'Daily process started' )
 
-      # ActiveRecord::Base.transaction do
-      #   Esi::DownloadHistoryReadItemsLists.new.update
-      # end
-      #
-      # Esi::DownloadHistory.new.download
+      ActiveRecord::Base.transaction do
+        Esi::DownloadHistoryReadItemsLists.new.update
+      end
+
+      Esi::DownloadHistory.new.download
 
       ActiveRecord::Base.transaction do
         Process::UpdateTradeVolumeEstimationFromDownloadedHistoryData.new.update

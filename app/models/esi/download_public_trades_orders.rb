@@ -17,6 +17,7 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
     rejected_orders_by_trade_hub = {}
     rejected_orders_by_type = {}
 
+    # TODO : a priori le fichier tve n'est plus utilisé, le supprimer
     tve = File.open( 'data/trade_volume_estimation.json_stream', 'w')
     File.open('data/public_trades_orders.json_stream', 'w') do |f|
 
