@@ -26,16 +26,7 @@ namespace :maintenance do
 
   desc 'Monitor infinity costs'
   task :monitor_infinity_costs => :environment do
-    EveItem.where( cost: Float::INFINITY ).each do |item|
-
-      puts "#{item.name} (#{item.id}) : #{item.cost}"
-
-      item.blueprint_materials.each do |ma|
-
-        sub_ei = ma.eve_item
-        puts " >> #{sub_ei.name} (#{sub_ei.id}) : #{ma.required_qtt}*#{sub_ei.cost}"
-      end
-    end
+    Misc::MonitorUncomputedCosts.new.monitor
   end
 
 end

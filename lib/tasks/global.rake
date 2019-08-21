@@ -97,7 +97,7 @@ namespace :process do
 
       Rake::Task[ 'sitemap:refresh' ].invoke
 
-      Misc::Banner.p( 'Weekly process started' )
+      Misc::Banner.p( 'Weekly process stopped' )
     end
   end
 end
