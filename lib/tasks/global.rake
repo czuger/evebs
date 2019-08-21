@@ -64,6 +64,8 @@ namespace :process do
     desc 'Full process - weekly'
     task :weekly => :environment do
 
+      Misc::Banner.p( 'Weekly process started' )
+
       # Updating new systems if any
       # Esi::DownloadUniverseSystems.new( debug_request: false ).update
 
@@ -95,7 +97,7 @@ namespace :process do
 
       Rake::Task[ 'sitemap:refresh' ].invoke
 
-      Misc::Banner.p( 'Finished' )
+      Misc::Banner.p( 'Weekly process started' )
     end
   end
 end
