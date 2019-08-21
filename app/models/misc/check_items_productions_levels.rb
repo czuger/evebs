@@ -1,8 +1,8 @@
 module Misc
-  class MonitorUncomputedCosts
+  class CheckItemsProductionsLevels
 
-    def monitor
-      EveItem.where( cost: Float::INFINITY ).each do |item|
+    def check
+      EveItem.each do |item|
         sub_monitor( item, nil, 0 )
         puts
       end
@@ -10,7 +10,7 @@ module Misc
 
     private
 
-    def sub_monitor( item, req_qtt, level )
+    def sub_check( item, req_qtt, level )
       puts ('%02d' % item.production_level) + ' > ' * level + " - #{item.name}(#{item.id}) - #{req_qtt} * #{item.cost ? item.cost : 'NULL'}"
 
       item.blueprint_materials.each do |ma|

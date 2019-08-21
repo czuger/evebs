@@ -10,48 +10,38 @@ module Process
 
       Misc::Banner.p 'About to set eve item depth level'
 
-      # Building the material use reverse hash
-      blueprints = YAML::load_file('data/parsed_blueprints.yaml')
-      materials_use = {}
+      @min_level = 0
 
-      blueprints.values.each do |bp|
-        bp[:materials].each do |m|
-          materials_use[ m[:type_id] ] = bp[:produced_cpp_type_id]
+      @eve_items = Hash[ EveItem.all.map{ |e| [ e.id, e ] } ]
 
-          if m[:type_id] == bp[:produced_cpp_type_id]
-            puts "Material loop detcted in blueprint id #{bp[:cpp_blueprint_id]}."
-            pp bp
-            exit
-          end
+      @eve_items.values.each do |item|
+        sub_set item, 1
+      end
+
+      EveItem.transaction do
+        @eve_items.values.each do |item|
+          item.save!
         end
       end
 
-      items_production_list = blueprints.values.map{ |bp| bp[:produced_cpp_type_id] }.to_set
-
-      # Computing item production level
-      types = YAML::load_file('data/types.yaml')
-      types.each do |type_id, type|
-        type[:production_level] = 0
-        materials_use_id = materials_use[ type[:cpp_eve_item_id] ]
-
-        # We also mark items that are not produced by blueprints
-        type[:base_item] = items_production_list.include?( type_id ) ? false : true
-
-        loop do
-          # p materials_use_id
-          if materials_use_id
-            type[:production_level] -= 1
-            materials_use_id = materials_use[ materials_use_id ]
-          else
-            break
-          end
-        end
+      File.open( 'data/lowest_production_level', 'w' ) do |f|
+        f.write( @min_level )
       end
 
-      File.open('data/types.yaml', 'w') {|f| f.write types.to_yaml }
-
-      p :finished
-
+      Misc::Banner.p 'Eve item depth level set finished'
     end
+
+    def sub_set( item, parent_level )
+      item_level = item.production_level ? item.production_level : parent_level - 1
+      item_level = [ item_level, parent_level - 1 ].min
+      @min_level = [ item_level, @min_level ].min
+
+      item.production_level = item_level
+
+      item.blueprint_materials.each do |m|
+        sub_set @eve_items[m.eve_item_id], parent_level-1
+      end
+    end
+
   end
 end
