@@ -9,6 +9,8 @@ namespace :process do
     desc 'Full process - hourly'
     task :hourly => :environment do
 
+      Misc::Banner.p( 'Hourly process started' )
+
       Misc::Crontab.start( :hourly )
 
       Esi::DownloadPublicTradesOrders.new( { verbose_output: false } ).download
@@ -18,6 +20,7 @@ namespace :process do
         Process::UpdateEveItemsMarketPrices.new.update
 
         Process::UpdatePublicTradesOrders.new.update
+        Process::UpdateTradeVolumeEstimationsFromPublicTradeOrders.new.update
 
         Sql::UpdatePricesMin.execute
         Sql::UpdatePricesAdvicesImmediate.execute
@@ -29,7 +32,7 @@ namespace :process do
 
       Misc::Crontab.stop( :hourly )
 
-      Misc::Banner.p( 'Finished' )
+      Misc::Banner.p( 'Hourly process finished' )
     end
 
     desc 'Full process - daily'
@@ -37,14 +40,14 @@ namespace :process do
 
       Misc::Banner.p( 'Daily process started' )
 
-      ActiveRecord::Base.transaction do
-        Esi::DownloadHistoryReadItemsLists.new.update
-      end
+      # ActiveRecord::Base.transaction do
+      #   Esi::DownloadHistoryReadItemsLists.new.update
+      # end
+      #
+      # Esi::DownloadHistory.new.download
 
-      Esi::DownloadHistory.new.download
-
       ActiveRecord::Base.transaction do
-        Process::UpdateTradeVolumeEstimation.new.update
+        Process::UpdateTradeVolumeEstimationFromDownloadedHistoryData.new.update
 
         Process::DeleteOldSalesFinals.delete
 
@@ -94,9 +97,9 @@ namespace :process do
         Misc::LastUpdate.set( :weekly )
       end
 
-      Rake::Task[ 'sitemap:refresh' ].invoke
+      Rake::Task[ 'sitemap:refresh' ].invoke if Rails.env.production?
 
-      Misc::Banner.p( 'Weekly process stopped' )
+      Misc::Banner.p( 'Weekly process finished' )
     end
   end
 end

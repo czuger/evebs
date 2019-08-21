@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_21_105047) do
+ActiveRecord::Schema.define(version: 2019_08_21_172825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -296,17 +296,18 @@ ActiveRecord::Schema.define(version: 2019_08_21_105047) do
   end
 
   create_table "trade_volume_estimations", force: :cascade do |t|
-    t.bigint "eve_item_id", null: false
-    t.bigint "volume_total", default: 0, null: false
+    t.bigint "trade_hub_volume_computed_from_orders", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "universe_system_id", null: false
-    t.bigint "region_volume_total", null: false
-    t.float "percentage", null: false
-    t.bigint "region_volume_downloaded"
-    t.bigint "trade_hub_final_estimated_volume"
-    t.index ["universe_system_id", "eve_item_id"], name: "trade_volume_estimations_fk_idx", unique: true
-    t.index ["universe_system_id"], name: "index_trade_volume_estimations_on_universe_system_id"
+    t.bigint "region_volume_computed_from_orders"
+    t.float "trade_hub_to_region_percentage_computed_from_orders"
+    t.bigint "region_volume_downloaded_from_history"
+    t.bigint "trade_hub_volume_adjusted_from_percentage"
+    t.integer "cpp_region_id"
+    t.integer "cpp_type_id", null: false
+    t.integer "cpp_system_id", null: false
+    t.index ["cpp_region_id"], name: "index_trade_volume_estimations_on_cpp_region_id"
+    t.index ["cpp_type_id", "cpp_system_id"], name: "index_trade_volume_estimations_on_cpp_type_id_and_cpp_system_id", unique: true
   end
 
   create_table "universe_constellations", force: :cascade do |t|
@@ -463,8 +464,6 @@ ActiveRecord::Schema.define(version: 2019_08_21_105047) do
   add_foreign_key "sales_finals", "trade_hubs"
   add_foreign_key "structures", "universe_systems"
   add_foreign_key "trade_hubs", "regions"
-  add_foreign_key "trade_volume_estimations", "eve_items"
-  add_foreign_key "trade_volume_estimations", "universe_systems"
   add_foreign_key "universe_constellations", "universe_regions"
   add_foreign_key "universe_stations", "stations"
   add_foreign_key "universe_stations", "universe_systems"
