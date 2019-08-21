@@ -44,7 +44,7 @@ namespace :process do
       Esi::DownloadHistory.new.download
 
       ActiveRecord::Base.transaction do
-        Process::UpdateRegionVolumeDownloaded.new.update
+        Process::UpdateTradeVolumeEstimation.new.update
 
         Process::DeleteOldSalesFinals.delete
 

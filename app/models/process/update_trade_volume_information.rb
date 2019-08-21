@@ -1,5 +1,5 @@
 module Process
-  class UpdateRegionVolumeDownloaded < UpdateBase
+  class UpdateTradeVolumeInformation < UpdateBase
 
     def update
 
@@ -26,9 +26,10 @@ module Process
                   update_all( region_volume_downloaded: data['volume'] )
             end
           end
-
         end
       end
+
+      Sql::UpdateVolumeFromVolumeEstimations.execute
     end
 
   end
