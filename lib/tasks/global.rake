@@ -15,7 +15,7 @@ namespace :process do
       Esi::DownloadMarketsPrices.new.download
 
       ActiveRecord::Base.transaction do
-        Process::UpdateEveItems.new.update
+        Process::UpdateEveItemsMarketPrices.new.update
 
         Process::UpdatePublicTradesOrders.new.update
 

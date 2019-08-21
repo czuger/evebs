@@ -5,13 +5,19 @@ module Process
     def update
       Misc::Banner.p 'About to update items'
 
+      EveItem.transaction do
+        transact_update
+      end
+
+      Misc::Banner.p 'Update items finished'
+    end
+
+    private
+
+    def transact_update
       crlf = /(\r\n|\n\r|\r|\n)/
 
-
       types = YAML::load_file('data/types.yaml')
-      cpp_market_prices = YAML::load_file('data/cpp_market_prices.yaml')
-
-      lowest_production_level = 0
 
       blueprint_cpp_to_syntetic_key_conversion_hash = Hash[ Blueprint.pluck( :produced_cpp_type_id, :id ) ]
       market_groups_cpp_to_syntetic_key_conversion_hash = Hash[ MarketGroup.pluck( :cpp_market_group_id, :id ) ]
@@ -37,12 +43,6 @@ module Process
 
         on_db_item.market_group_id = market_groups_cpp_to_syntetic_key_conversion_hash[ type[:market_group_id] ]
 
-        mp_data = cpp_market_prices[type[:cpp_eve_item_id].to_i]
-        if mp_data
-          on_db_item.cpp_market_adjusted_price = mp_data['adjusted_price']
-          on_db_item.cpp_market_average_price = mp_data['average_price']
-        end
-
         on_db_item.faction = (type[:meta_level] ? type[:meta_level] : 0) >= 6
 
         on_db_item.save!
@@ -53,8 +53,6 @@ module Process
 
         on_db_item.save!
       end
-
-      Misc::Banner.p 'Update items finished'
     end
   end
 
