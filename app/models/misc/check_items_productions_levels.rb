@@ -22,6 +22,8 @@ module Misc
 
       @logfile.close
 
+      # TODO : need to send an email in case of failure.
+
       Misc::Banner.p 'Productions levels check finished'
     end
 
