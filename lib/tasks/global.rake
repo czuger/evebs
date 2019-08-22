@@ -70,7 +70,7 @@ namespace :process do
       Misc::Banner.p( 'Weekly process started' )
 
       # Updating new systems if any
-      Esi::DownloadUniverseRegions.new( debug_request: false ).update
+      Esi::DownloadUniverseRegions.new( debug_request: false ).download
 
       Process::ParseBlueprintsFile.new.parse
 
