@@ -14,8 +14,10 @@ module Misc
     private
 
     def self.out( string )
-      puts string
-      warn string
+      unless Rails.env.test? # Never print banners in test environment
+        puts string
+        warn string
+      end
     end
 
   end
