@@ -12,6 +12,8 @@ module Esi
       Misc::Banner.p 'Downloading regions and all sub data'
 
       download_regions
+
+      Misc::Banner.p 'Regions and sub data download finished'
     end
 
     private

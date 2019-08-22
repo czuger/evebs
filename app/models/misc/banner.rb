@@ -2,9 +2,11 @@ module Misc
   class Banner
 
     def self.p( string )
+      out ''
       out '*'*100
       out string + ' - ' + Time.now.strftime( '%c')
       out '*'*100
+      out ''
       STDOUT.flush
       STDERR.flush
     end

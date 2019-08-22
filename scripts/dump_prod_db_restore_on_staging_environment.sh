@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 dropdb eve_business_server_staging
 createdb eve_business_server_staging
 

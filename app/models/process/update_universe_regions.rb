@@ -13,6 +13,8 @@ module Process
           create_region regions
         end
       end
+
+      Misc::Banner.p 'Regions and sub data update finished'
     end
 
     private

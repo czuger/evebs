@@ -70,7 +70,7 @@ namespace :process do
       Misc::Banner.p( 'Weekly process started' )
 
       # Updating new systems if any
-      # Esi::DownloadUniverseSystems.new( debug_request: false ).update
+      Esi::DownloadUniverseRegions.new( debug_request: false ).update
 
       Process::ParseBlueprintsFile.new.parse
 
@@ -82,6 +82,8 @@ namespace :process do
       Process::CleanBlueprints.new.clean
 
       ActiveRecord::Base.transaction do
+        Process::UpdateUniverseRegions.new.update
+
         Process::UpdateMarketGroups.new.update
         Process::UpdateBlueprints.new.update
 
