@@ -1,0 +1,16 @@
+- if @breadcrumb
+
+  = link_to 'Root', market_groups_path
+  = ' > '
+
+  - @breadcrumb.each do |bc|
+    = link_to bc.name, market_groups_path( group_id: bc.id )
+    = ' > '
+
+%ul
+  - @groups.each do |group|
+    %li
+      - if group.is_a?( MarketGroup )
+        = link_to group.name, market_groups_path( group_id: group.id )
+      - else
+        = link_to group.name, item_path( group )

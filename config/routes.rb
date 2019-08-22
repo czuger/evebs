@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :market_groups, only: [ :index ]
+
   namespace :market_data do
     get ':item_id/trade_hub_detail/:trade_hub_id', action: :trade_hub_detail, as: :trade_hub_detail
     get ':item_id/market_overview/', action: :market_overview, as: :market_overview
