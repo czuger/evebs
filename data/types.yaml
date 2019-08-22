@@ -14,5 +14,3 @@
     both flight time and precision."
   :packaged_volume: 0.05
   :meta_level: 5
-  :production_level: 0
-  :base_item: false

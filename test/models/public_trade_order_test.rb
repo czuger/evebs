@@ -62,7 +62,7 @@ class PublicTradeOrderTest < ActiveSupport::TestCase
     d_pto.download
 
     assert_difference 'PublicTradeOrder.count' do
-      Process::UpdatePublicTradesOrders.new( silent_output: true ).update
+      Process::UpdatePublicTradesOrders.new.update
     end
   end
 
@@ -71,7 +71,7 @@ class PublicTradeOrderTest < ActiveSupport::TestCase
     d_pto.expects(:get_all_pages).returns(@esi_data)
     d_pto.download
 
-    Process::UpdatePublicTradesOrders.new( silent_output: true ).update
+    Process::UpdatePublicTradesOrders.new.update
 
     @esi_data[0]['volume_remain'] = 185
 
@@ -80,7 +80,7 @@ class PublicTradeOrderTest < ActiveSupport::TestCase
     d_pto.download
 
     assert_no_difference 'PublicTradeOrder.count' do
-      Process::UpdatePublicTradesOrders.new( silent_output: true ).update
+      Process::UpdatePublicTradesOrders.new.update
     end
   end
 

@@ -31,11 +31,11 @@ class ListItemsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'should select all items for user' do
-    assert_changes '@user.eve_items.count' do
-      get all_list_items_url
-    end
-  end
+  # test 'should select all items for user' do
+  #   assert_changes '@user.eve_items.count' do
+  #     get all_list_items_url
+  #   end
+  # end
 
   test 'should save current user items list, clear list and reload it' do
     assert_changes '@user.eve_items.count' do
