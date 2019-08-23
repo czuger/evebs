@@ -16,13 +16,20 @@ namespace :process do
       Misc::Crontab.start( :hourly )
 
       Esi::DownloadPublicTradesOrders.new( { verbose_output: false } ).download
+      puts 'Process mem : ' + GetProcessMem.new.kb
+
       Esi::DownloadMarketsPrices.new.download
+      puts 'Process mem : ' + GetProcessMem.new.kb
 
       ActiveRecord::Base.transaction do
         Process::UpdateEveItemsMarketPrices.new.update
+        puts 'Process mem : ' + GetProcessMem.new.kb
 
         Process::UpdatePublicTradesOrders.new.update
+        puts 'Process mem : ' + GetProcessMem.new.kb
+
         Process::UpdateTradeVolumeEstimationsFromPublicTradeOrders.new.update
+        puts 'Process mem : ' + GetProcessMem.new.kb
 
         Sql::UpdatePricesMin.execute
         Sql::UpdatePricesAdvicesImmediate.execute

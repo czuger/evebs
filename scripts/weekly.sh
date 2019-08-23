@@ -5,9 +5,6 @@ eval "$(rbenv init -)"
 
 cd "`dirname $BASH_SOURCE`/.."
 
-date >> log/weekly.log
-date >> log/weekly.err
-
 bundle exec rake process:full:weekly >>log/weekly.log 2>>log/weekly.err
 
 # Already ran in process:full:weekly

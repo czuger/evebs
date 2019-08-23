@@ -7,9 +7,6 @@ cd "`dirname $BASH_SOURCE`/.."
 
 touch log/daily.log log/daily.err
 
-date >> log/daily.log
-date >> log/daily.err
-
 bundle exec rake process:full:daily >>log/daily.log 2>>log/daily.err
 
 # cat log/daily.log log/daily.err | mail `cat config/email.txt` -s "Evebs daily process"
