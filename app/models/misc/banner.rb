@@ -1,12 +1,12 @@
 module Misc
   class Banner
 
-    def self.p( string )
-      out ''
+    def self.p( string, with_separation_lines=false )
+      out '' if with_separation_lines
       out '*'*100
       out string + ' - ' + Time.now.strftime( '%c')
       out '*'*100
-      out ''
+      out '' if with_separation_lines
       STDOUT.flush
       STDERR.flush
     end

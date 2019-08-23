@@ -91,3 +91,5 @@ gem 'bootstrap-toggle-rails', :git => 'https://github.com/czuger/bootstrap-toggl
 gem 'sitemap_generator'
 
 gem 'font-awesome-rails'
+
+gem 'time_difference'

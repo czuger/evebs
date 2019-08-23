@@ -9,7 +9,9 @@ namespace :process do
     desc 'Full process - hourly'
     task :hourly => :environment do
 
-      Misc::Banner.p( 'Hourly process started' )
+      Misc::Banner.p( 'Hourly process started', true )
+
+      chrono = Misc::Chrono.new
 
       Misc::Crontab.start( :hourly )
 
@@ -32,13 +34,16 @@ namespace :process do
 
       Misc::Crontab.stop( :hourly )
 
-      Misc::Banner.p( 'Hourly process finished' )
+      chrono.p
+      Misc::Banner.p( 'Hourly process finished', true )
     end
 
     desc 'Full process - daily'
     task :daily => :environment do
 
-      Misc::Banner.p( 'Daily process started' )
+      Misc::Banner.p( 'Daily process started', true )
+
+      chrono = Misc::Chrono.new
 
       ActiveRecord::Base.transaction do
         Esi::DownloadHistoryReadItemsLists.new.update
@@ -61,13 +66,16 @@ namespace :process do
         Misc::LastUpdate.set( :daily )
       end
 
-      Misc::Banner.p( 'Daily process finished' )
+      chrono.p
+      Misc::Banner.p( 'Daily process finished', true )
     end
 
     desc 'Full process - weekly'
     task :weekly => :environment do
 
-      Misc::Banner.p( 'Weekly process started' )
+      Misc::Banner.p( 'Weekly process started', true )
+
+      chrono = Misc::Chrono.new
 
       # Updating new systems if any
       Esi::DownloadUniverseRegions.new( debug_request: false ).download
@@ -101,7 +109,8 @@ namespace :process do
 
       Rake::Task[ 'sitemap:refresh' ].invoke if Rails.env.production?
 
-      Misc::Banner.p( 'Weekly process finished' )
+      chrono.p
+      Misc::Banner.p( 'Weekly process finished', true )
     end
   end
 end
