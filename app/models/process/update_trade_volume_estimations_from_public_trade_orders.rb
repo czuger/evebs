@@ -1,5 +1,5 @@
 module Process
-  class UpdateTradeVolumeEstimationsFromPublicTradeOrders
+  class UpdateTradeVolumeEstimationsFromPublicTradeOrders < UpdateBase
 
     def update
       Misc::Banner.p 'About to update TradeVolumeEstimation from public trades orders'
@@ -18,6 +18,8 @@ module Process
 
       estimations = {}
 
+      puts 'About to sum volumes per type and system' if @verbose_output
+
       File.open( 'data/public_trades_orders.json_stream', 'r' ) do |f|
         f.each do |line|
           data = JSON.parse( line )
@@ -33,6 +35,8 @@ module Process
           estimations[cpp_type_id][cpp_system_id] += data['volume_total']
         end
       end
+
+      puts 'Per type and system volume sum finished' if @verbose_output
 
       estimations_import_buffer = []
 
