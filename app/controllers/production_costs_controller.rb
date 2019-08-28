@@ -5,9 +5,11 @@ class ProductionCostsController < ApplicationController
   caches_page :show, :dailies_avg_prices
 
   def show
-    @title = 'Production cost estimation'
+    set_no_title_header
+
     @item = EveItem.find_by( id: params[ :id ] )
-    @meta_title = @title + ' of ' + @item.name
+    @meta_title = 'Production cost estimation for ' + @item.name
+
     raise 'Base item cost should call dailies_avg_price instead of show' if @item.base_item
   end
 
