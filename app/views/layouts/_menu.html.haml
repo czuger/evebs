@@ -10,7 +10,7 @@
 
       %ul.navbar-nav.mr-auto
         = dropdown_menu_block( 'Items' ) do
-          = dropdown_sub_menu_link( 'All items list', edit_list_items_path )
+          = dropdown_sub_menu_link( 'All items list', all_items_list_list_items_path )
           = dropdown_sub_menu_link( 'My items list', my_items_list_list_items_path )
           = dropdown_sub_menu_link( 'Groups', market_groups_path )
           .dropdown-divider
@@ -26,19 +26,19 @@
           -#.dropdown-divider
           -#= dropdown_sub_menu_link( 'Empty places', price_advices_empty_places_path )
 
-        = dropdown_menu_block( 'Production' ) do
-          = dropdown_sub_menu_link( 'Production list', edit_production_lists_path )
-          = dropdown_sub_menu_link( 'Components to buy', components_to_buys_path )
-          = dropdown_sub_menu_link( 'Components to buy - raw', components_to_buy_show_raw_path, true )
-          .dropdown-divider
-          = dropdown_sub_menu_link( 'My Assets', my_assets_path )
-          = dropdown_sub_menu_link( 'My Blueprints', blueprints_path )
-
-
-        = simple_menu_link( 'My sales orders', user_sales_orders_path )
-
-        = dropdown_menu_block( 'Misc' ) do
-          = dropdown_sub_menu_link( 'Share', user_to_user_duplication_requests_path )
+        -#= dropdown_menu_block( 'Production' ) do
+        -#  = dropdown_sub_menu_link( 'Production list', edit_production_lists_path )
+        -#  = dropdown_sub_menu_link( 'Components to buy', components_to_buys_path )
+        -#  = dropdown_sub_menu_link( 'Components to buy - raw', components_to_buy_show_raw_path, true )
+        -#  .dropdown-divider
+        -#  = dropdown_sub_menu_link( 'My Assets', my_assets_path )
+        -#  = dropdown_sub_menu_link( 'My Blueprints', blueprints_path )
+        -#
+        -#
+        -#= simple_menu_link( 'My sales orders', user_sales_orders_path )
+        -#
+        -#= dropdown_menu_block( 'Misc' ) do
+        -#  = dropdown_sub_menu_link( 'Share', user_to_user_duplication_requests_path )
           -#.dropdown-divider
           -#= dropdown_sub_menu_link( 'Dev log', dev_log_miscs_path )
 

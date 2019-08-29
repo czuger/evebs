@@ -1,18 +1,21 @@
 class ListItemsController < ApplicationController
 
-  before_action :require_logged_in!, except: [ :edit ]
+  before_action :require_logged_in!, except: [ :all_items_list ]
   before_action :set_user, :set_small_screen
 
   include Modules::CheckedProductionListIds
 
-  def edit
+  def all_items_list
     @title = 'All items list'
-    items_list false
+    # items_list false
+    set_current_group
+    @item_ids = []
   end
 
   def my_items_list
     @title = 'My items list'
-    items_list true
+    # items_list true
+    set_current_group
   end
 
   def update
@@ -126,4 +129,19 @@ class ListItemsController < ApplicationController
     @items = @items.paginate(:page => params[:page], :per_page => 20 )
     @filter = params['filter']
   end
+
+  def set_current_group
+    if params[:group_id]
+      @current_group = MarketGroup.find( params[:group_id].to_i )
+      if @current_group.leaf?
+        @items = @current_group.eve_items.order( 'faction, name' )
+        # @items = @items.
+      else
+        @groups = @current_group.children.order( :name )
+      end
+    else
+      @groups = MarketGroup.roots
+    end
+  end
+
 end

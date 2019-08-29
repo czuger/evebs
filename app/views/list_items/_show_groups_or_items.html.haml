@@ -1,0 +1,9 @@
+.container
+
+  = render partial: 'shared/errors'
+  = render partial: 'items/breadcrumb'
+
+  - if @items
+    = render partial: 'items_list'
+  - else
+    = render partial: 'groups_list'

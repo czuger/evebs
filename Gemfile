@@ -71,6 +71,8 @@ group :development, :test do
   gem 'rails-controller-testing'
 
   gem 'capybara'
+
+  gem 'better_errors'
 end
 
 gem 'simplecov', :require => false, :group => :test

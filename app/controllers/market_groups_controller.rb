@@ -1,14 +1,14 @@
 class MarketGroupsController < ApplicationController
   def index
     if params[:group_id]
-      group = MarketGroup.find( params[:group_id].to_i )
-      if group.leaf?
-        @groups = group.eve_items
+      @current_group = MarketGroup.find( params[:group_id].to_i )
+      if @current_group.leaf?
+        @groups = @current_group.eve_items
       else
-        @groups = group.children
+        @groups = @current_group.children
       end
 
-      @breadcrumb = group.ancestors.reverse
+      @breadcrumb = @current_group.ancestors.reverse
     else
       @groups = MarketGroup.roots
     end

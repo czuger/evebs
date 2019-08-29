@@ -1,0 +1,4 @@
+%ul
+  - @groups.each do |group|
+    %li
+      = link_to group.name, all_items_list_list_items_path( group_id: group.id )

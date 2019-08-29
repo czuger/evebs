@@ -49,10 +49,11 @@ Rails.application.routes.draw do
 
   resources :items, only: [ :show ]
 
-  get :items_tree, controller: :items
-  patch :items_tree_select, controller: :items
+  # get :items_tree, controller: :items
+  # patch :items_tree_select, controller: :items
 
-  resource :list_items, only: [ :edit, :update ] do
+  resource :list_items, only: [ :update ] do
+    get :all_items_list
     get :my_items_list
     post :selection_change
 

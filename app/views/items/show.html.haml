@@ -5,6 +5,8 @@
     %h1.mt-3
       = @item.name
 
+= render partial: 'breadcrumb'
+
 .row.my-4
   .col
     -# We don't show the min prices or productions costs here, only the link to allow a daily caching rather than an hourly one
