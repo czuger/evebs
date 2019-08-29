@@ -103,6 +103,8 @@ namespace :process do
         Process::UpdateBlueprints.new.update
 
         Process::UpdateEveItems.new.update
+        Process::SetEveItemDepthLevel.new.set
+
         Process::UpdateBlueprintMaterials.new.update
 
         Misc::CheckItemsProductionsLevels.new.check
