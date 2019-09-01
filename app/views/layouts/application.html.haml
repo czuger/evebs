@@ -12,17 +12,11 @@
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
     %meta{ charset: 'UTF-8' }
-    %meta{ name: :description, content: 'Eve business server is a tool that show potential earnings in Eve Online' }/
+    %meta{ name: :description, content: meta_content }
 
-    %script{ type: 'application/ld+json' }
-      :plain
-        {
-          "@context": "http://schema.org",
-          "@type": "PeopleAudience",
-          "suggestedGender": "male",
-          "suggestedMaxAge": 19,
-          "suggestedMinAge": 46
-        }
+    - if @item
+      %script{ type: 'application/ld+json' }
+        = raw json_ld_metadata
 
   %body.d-flex.flex-column{ data:{ rails_env: Rails.env } }
 
