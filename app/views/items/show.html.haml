@@ -1,26 +1,27 @@
-.row.my-4
-  .col-1
+.my-4
+  #item-logo
     = image_tag( "https://imageserver.eveonline.com/Type/#{@item.cpp_eve_item_id}_64.png", alt: @item.name )
-  .col-7
-    %h1.mt-3
+  #item-title
+    %h1
       = @item.name
 
 = render partial: 'breadcrumb'
 
 .row.my-4
-  .col
+  .col-12.col-lg.mt-1
     -# We don't show the min prices or productions costs here, only the link to allow a daily caching rather than an hourly one
     - if @item.base_item || !@item.blueprint
-      = link_to( 'Average cost', production_cost_dailies_avg_prices_path( @item, @jita.id ) )
+      = link_to( 'Average cost', production_cost_dailies_avg_prices_path( @item, @jita.id ), class: 'btn btn-primary btn-block active' )
     - else
-      = link_to( 'Production cost', production_cost_path( @item ) )
-  .col
-    = link_to( 'Jita min price', market_data_trade_hub_detail_path( @item, @jita.id ) )
-  .col
-    = link_to( 'Markets details', market_data_market_overview_path( @item ) )
-  .col
-    = link_to( 'Last month aggreagtions', production_cost_market_histories_path( @item ) )
+      = link_to( 'Production cost', production_cost_path( @item ), class: 'btn btn-primary btn-block active' )
+  .col-12.col-lg.mt-1
+    = link_to( 'Jita min price', market_data_trade_hub_detail_path( @item, @jita.id ), class: 'btn btn-primary btn-block active' )
+  .col-12.col-lg.mt-1
+    = link_to( 'Markets details', market_data_market_overview_path( @item ), class: 'btn btn-primary btn-block active' )
+  .col-12.col-lg.mt-1
+    = link_to( 'Last month aggreagtions', production_cost_market_histories_path( @item ), class: 'btn btn-primary btn-block active' )
 
+-# <a href="#" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Primary link</a>
 .row.my-4
   .col
     = raw @item.description
