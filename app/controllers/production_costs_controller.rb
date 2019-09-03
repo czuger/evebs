@@ -8,7 +8,9 @@ class ProductionCostsController < ApplicationController
     set_no_title_header
 
     @item = EveItem.find_by( id: params[ :id ] )
+
     @meta_title = 'Production cost estimation for ' + @item.name
+    @meta_content = 'This page show detailed cost estimation for ' + @item.name
 
     raise 'Base item cost should call dailies_avg_price instead of show' if @item.base_item
   end
@@ -21,10 +23,13 @@ class ProductionCostsController < ApplicationController
   end
 
   def market_histories
-    @item = EveItem.find_by( id: params[ :production_cost_id ] )
-    @title = 'Regional informations about '
+		set_no_title_header
 
-    @meta_title = @title + @item.name
+    @item = EveItem.find_by( id: params[ :production_cost_id ] )
+
+    @meta_title = 'Regional information about ' + @item.name
+		@meta_content = 'This page shows compiled information about ' + @item.name +
+			' in all regions of New Eden. Information are : total volume, average price, max price and min price.'
 
     @market_histories = @item.group_eve_market_histories.order('volume DESC')
   end

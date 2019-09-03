@@ -1,9 +1,5 @@
 module ApplicationHelper
 
-  def meta_title_helper
-    ( @meta_title || @title || 'EveBusinessServer (Beta)' ) + ' - EVE Online market information'
-  end
-
   def selected_link_class( class_string, path = root_path )
     class_string += ' active' if current_page?( path )
     class_string
@@ -83,21 +79,30 @@ module ApplicationHelper
     end
   end
 
+	# Meta and SOE
+
+	def meta_title_helper
+		( @meta_title || @title || 'EveBusinessServer (Beta)' ) + ' - EVE Online market information'
+	end
+
   def meta_content
     @meta_content || 'Eve business server is a tool that show potential earnings in Eve Online'
   end
 
   def build_soe_data
-    if @item
+
+    if controller_name == 'items'
 			md = Metadata::Item.new
 			md.add(@item, item_url( @item.id ) )
-		else
-			md = Metadata::Base.new
+		elsif
+			md = Metadata::WebPage.new( meta_title_helper, meta_content, @last_update_type )
 		end
 
-    md.add_breadcrumb( breadcrumb ) do |id|
-      list_items_url( id ? {group_id: id} : nil )
-    end
+		if %w( items list_items ).include?( controller_name )
+			md.add_breadcrumb( breadcrumb ) do |id|
+				list_items_url( id ? {group_id: id} : nil )
+			end
+		end
 
     md.to_json
   end
