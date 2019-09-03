@@ -7,55 +7,62 @@
     Eve industrial tool
 
   %h4.py-1
-    This tool has been designed for industrials in the mmo Eve Online. In this tool you can find the following things :
+    Eve Online industrial could find some usefull tools :
 
   .row.py-4
     .col.text-center
       = fa_icon 'compass 5x'
       %br
-      Comparison of production costs and buy prices in different trades hubs
+      Best profits advisor
 
     .col.text-center
       = fa_icon 'chart-line 5x'
       -#= fa_icon 'compass 5x'
       %br
-      Market prices of craftable items
+      Trades hub prices comparison
 
     .col.text-center
       = fa_icon 'industry 5x'
       %br
-      A production list that summarize the components to buy
-
-    .col.text-center
-      -#= fa_icon 'box 5x'
-      = fa_icon 'box 5x'
-      %br
-      Assets handling for your production
-
-  .row.py-4
-    .col.text-center
-      = fa_icon 'project-diagram 5x'
-      -#= fa_icon 'industry 5x'
-      %br
-      Blueprints modification for your production
-
-    .col.text-center
-      -#= fa_icon 'chart-line 5x'
-      = fa_icon 'tasks 5x'
-      %br
-      A trade tool that monitor your current orders
+      Production costs
 
     .col.text-center
       = fa_icon 'search-dollar 5x'
       -#= fa_icon 'calculator 5x'
       %br
-      Easily lower your price to be the best
-        
-    .col.text-center
-      = fa_icon 'balance-scale 5x'
-      -#= fa_icon 'calculator 5x'
-      %br
-      Don't lower prices beyond profit limit
+      Buy and sells earnings
+
+  -#
+  -#  .col.text-center
+  -#    -#= fa_icon 'box 5x'
+  -#    = fa_icon 'box 5x'
+  -#    %br
+  -#    Assets handling for your production
+  -#
+  -#.row.py-4
+  -#  .col.text-center
+  -#    = fa_icon 'project-diagram 5x'
+  -#    -#= fa_icon 'industry 5x'
+  -#    %br
+  -#    Blueprints modification for your production
+  -#
+  -#  .col.text-center
+  -#    -#= fa_icon 'chart-line 5x'
+  -#    = fa_icon 'tasks 5x'
+  -#    %br
+  -#    A trade tool that monitor your current orders
+  -#
+  -#  .col.text-center
+  -#    = fa_icon 'search-dollar 5x'
+  -#    -#= fa_icon 'calculator 5x'
+  -#    %br
+  -#    Easily lower your price to be the best
+  -#
+  -#  .col.text-center
+  -#    = fa_icon 'balance-scale 5x'
+  -#    -#= fa_icon 'calculator 5x'
+  -#    %br
+  -#    Don't lower prices beyond profit limit
 
   .text-center.py-4
     = button_to 'Sign in for custom results', '/auth/eve_online_sso', id: 'sign_in', method: :post, class: 'btn-lg btn-warning'

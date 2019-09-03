@@ -1,22 +1,32 @@
 class ListItemsController < ApplicationController
 
-  before_action :require_logged_in!, except: [ :all_items_list ]
+  before_action :require_logged_in!, except: [ :all_items_list, :show ]
   before_action :set_user, :set_small_screen
 
   include Modules::CheckedProductionListIds
 
-  def all_items_list
-    @title = 'All items list'
+  def show
+    @title = 'Types list'
     # items_list false
     set_current_group
-    @item_ids = []
+
+    @item_ids = @user.eve_item_ids.uniq.to_set if @user
   end
 
-  def my_items_list
-    @title = 'My items list'
-    # items_list true
-    set_current_group
-  end
+  # def all_items_list
+  #   @title = 'All items list'
+  #   # items_list false
+  #   set_current_group
+  #   @item_ids = []
+  # end
+	#
+  # def my_items_list
+  #   @title = 'My items list'
+  #   # items_list true
+  #   set_current_group
+	#
+  #   @my_items = true
+  # end
 
   def update
     @user = current_user

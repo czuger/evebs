@@ -26,8 +26,9 @@
 
   - @items.each do |item|
     .row
-      .col-1
-        .mt-1.ml-3
-          = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id, 'data-toggle' => 'toggle'
+      - if @item_ids
+        .col-1
+          .mt-1.ml-3
+            = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id, 'data-toggle' => 'toggle'
       .col
         = link_to item.name, item_path( item ), class: 'list-group-item list-group-item-action'

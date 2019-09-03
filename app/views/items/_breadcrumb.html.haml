@@ -2,8 +2,8 @@
 
   .my-4
 
-    = link_to 'Root', all_items_list_list_items_path
+    = link_to 'Root', list_items_path
 
     - breadcrumb.each do |bc|
       = ' > '
-      = link_to bc.name, all_items_list_list_items_path( group_id: bc.id )
+      = link_to bc.name, list_items_path( group_id: bc.id )

@@ -16,10 +16,10 @@ class ListItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should get update' do
-    patch list_items_url, params: { items: { 1 => :dummy } }
-    assert_redirected_to edit_list_items_url
-  end
+  # test 'should get update' do
+  #   patch list_items_url, params: { items: { 1 => :dummy } }
+  #   assert_redirected_to edit_list_items_url
+  # end
 
   test 'should change selection state' do
     assert_changes '@user.eve_items.count' do
