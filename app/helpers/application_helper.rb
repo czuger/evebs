@@ -87,47 +87,4 @@ module ApplicationHelper
     @meta_content || 'Eve business server is a tool that show potential earnings in Eve Online'
   end
 
-  def item_json_ld_metadata
-
-    base_data = {
-      '@context' => 'http://schema.org',
-      '@type' => 'ItemPage',
-      name: @item.name,
-      description: @meta_content,
-      url: item_url( @item.id ),
-      last_reviewed: Misc::LastUpdate.where( update_type: :daily ).first&.updated_at,
-
-      audience: {
-        '@type' => 'PeopleAudience',
-        suggestedGender: :male,
-        suggestedMaxAge: 19,
-        suggestedMinAge: 46,
-        audienceTypes: 'gamers videogames'
-      }
-    }
-
-    breadcrumb = {}
-
-    if @breadcrumb
-      breadcrumb = {
-        breadcrumb: {
-          '@type' => 'BreadcrumbList',
-          'itemListElement' => @breadcrumb.each_with_index.map{ |e, i|
-            {
-              '@type': 'ListItem',
-              'position': i,
-              'item':
-                {
-                    '@id': all_items_list_list_items_url( group_id: e.id ),
-                    'name': e.name
-                }
-            }
-          }
-        }
-      }
-    end
-
-    base_data.merge( breadcrumb ).to_json
-  end
-
 end
