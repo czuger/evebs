@@ -43,6 +43,26 @@ class ApplicationController < ActionController::Base
     @last_update_type = :weekly
   end
 
+  def build_soe_data
+    # if controller_name == 'items'
+    #   @soe_data = Metadata::Item.new( view_context,@last_update_type )
+    #   @soe_data.add(@item, item_url( @item.id ) )
+    # elsif
+    #   @soe_data = Metadata::WebPage.new( meta_title_helper, meta_content, @last_update_type )
+    # end
+		#
+    # if %w( items list_items ).include?( controller_name )
+    #   @soe_data.add_breadcrumb( breadcrumb ) do |id|
+    #     list_items_url( id ? {group_id: id} : nil )
+    #   end
+    # end
+	end
+
+	def render *args
+		build_soe_data
+		super
+	end
+
   private
 
   def current_user

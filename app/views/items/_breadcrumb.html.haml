@@ -1,7 +1,7 @@
-- if breadcrumb
+- if @breadcrumb
 
   .my-4
 
-    - breadcrumb.each_with_index do |bc, i|
+    - @breadcrumb.each_with_index do |bc, i|
       = ' > ' if i > 0
-      = link_to bc.name, list_items_path( bc.group_id ? {group_id: bc.group_id} : nil )
+      = link_to bc.name, bc.url

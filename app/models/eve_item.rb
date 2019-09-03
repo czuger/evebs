@@ -37,4 +37,9 @@ class EveItem < ApplicationRecord
     used_items
   end
 
+  def breadcrumb( view_context )
+    market_group.breadcrumb( view_context ) +
+      [ Misc::BreadcrumbElement.new( name, view_context.item_url( id ) ) ]
+  end
+
 end

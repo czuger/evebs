@@ -14,6 +14,8 @@ class ItemsController < ApplicationController
 
     @meta_title = "Information about #{@item.name}"
     @meta_content = @item.description.truncate_words( 100 )
+
+		@breadcrumb = @item.breadcrumb( view_context )
     # @jita_min_price = PricesMin.find_by_eve_item_id_and_trade_hub_id( @item.id, get_jita.id )
     # redirect_to item_market_overview_path( @item )
   end

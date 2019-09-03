@@ -11,6 +11,7 @@ class ListItemsController < ApplicationController
     set_current_group
 
     @item_ids = @user.eve_item_ids.uniq.to_set if @user
+    @breadcrumb = @current_group.breadcrumb( view_context )
   end
 
   # def all_items_list

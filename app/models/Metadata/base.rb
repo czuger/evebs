@@ -1,7 +1,7 @@
 module Metadata
 	class Base
 
-		def initialize( last_update_type= nil )
+		def initialize( view_context, last_update_type= nil )
 			@audience = {
 				'@type' => 'PeopleAudience',
 				suggestedGender: :male,
@@ -22,7 +22,11 @@ module Metadata
 			@base['Audience'] = @audience
 			@base['about'] = @about
 
+			@view_context = view_context
+
 			set_expires( last_update_type )
+
+			@view_context.item_path( 1 )
 		end
 
 		def to_json
@@ -38,10 +42,12 @@ module Metadata
 							'@type': 'ListItem',
 							'position': i+1,
 							'name': e.name,
-							item: yield( e.group_id )
+							item: @view_context.list_items( group_id: e.group_id )
 						}
 					}
 				}
+
+				@view_context.item_path( 1 )
 
 				@base['breadcrumb'] = bc
 			end
