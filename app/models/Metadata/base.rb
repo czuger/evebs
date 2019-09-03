@@ -18,7 +18,7 @@ module Metadata
 				applicationCategory: 'massively multiplayer online role-playing game'
 			}
 
-			@base = { '@context' => 'http://schema.org' }
+			@base = { '@context' => 'http://schema.org', '@type' => 'WebPage' }
 			@base['Audience'] = @audience
 			@base['about'] = @about
 		end
@@ -36,7 +36,7 @@ module Metadata
 							'@type': 'ListItem',
 							'position': i+1,
 							'name': e.name,
-							item: yield( e.id )
+							item: yield( e.group_id )
 						}
 					}
 				}

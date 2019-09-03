@@ -14,9 +14,8 @@
     %meta{ charset: 'UTF-8' }
     %meta{ name: :description, content: meta_content }
 
-    - if @item
-      %script{ type: 'application/ld+json' }
-        = raw build_breadcrumb
+    %script{ type: 'application/ld+json' }
+      = raw build_soe_data
 
   %body.d-flex.flex-column{ data:{ rails_env: Rails.env } }
 
