@@ -5,15 +5,15 @@ class ProductionCostsController < ApplicationController
   caches_page :show, :dailies_avg_prices
 
 	DAILIES_AVG_PRICES_TITLE = 'Weekly average price detail for '
+	PRODUCTION_COST_TITLE = 'Production cost estimation for '
 
   def show
-    set_no_title_header
-
     @item = EveItem.find_by( id: params[ :id ] )
 
 		raise "Should not be called only for base item : #{@item.inspect}" if @item.base_item
 
-    @meta_title = 'Production cost estimation for ' + @item.name
+		@title = DAILIES_AVG_PRICES_TITLE + view_context.link_to( @item.name, item_path( @item ) )
+		@meta_title = PRODUCTION_COST_TITLE + @item.name
     @meta_content = 'This page show detailed cost estimation for ' + @item.name
 
     raise 'Base item cost should call dailies_avg_price instead of show' if @item.base_item
