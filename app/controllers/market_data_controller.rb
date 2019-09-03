@@ -10,15 +10,10 @@ class MarketDataController < ApplicationController
 
     # set_checked_production_list_ids
 
-    @title = 'Markets prices comparison'
-
-    @meta_title = @title + ' for ' + @item.name
-    @meta_content = 'Show current sell orders for ' + @item.name + ' in the trade hub Jita.'
-
     @title = MARKET_OVERVIEW_TITLE + view_context.link_to( @item.name, item_path( @item ) )
     @meta_title = MARKET_OVERVIEW_TITLE + @item.name
 
-    @meta_content = 'Compare prices for ' + @item.name + ' in the all trade hubs. ' +
+    @meta_content = 'Compare prices for ' + @item.name + ' in  all trade hubs. ' +
 			'Compare an estimation of the expected margin, the min price, and average margin, an average price and the monthly volume.'
 
     if @item.base_item
