@@ -92,7 +92,7 @@ module ApplicationHelper
   def build_soe_data
 
     if controller_name == 'items'
-			md = Metadata::Item.new
+			md = Metadata::Item.new( @last_update_type )
 			md.add(@item, item_url( @item.id ) )
 		elsif
 			md = Metadata::WebPage.new( meta_title_helper, meta_content, @last_update_type )
