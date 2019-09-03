@@ -150,7 +150,7 @@ class ListItemsController < ApplicationController
         @groups = @current_group.children.order( :name )
       end
     else
-      @groups = MarketGroup.roots
+      @groups = MarketGroup.roots.order( :name )
     end
   end
 
