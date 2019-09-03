@@ -1,0 +1,5 @@
+en:
+  production_costs:
+    show:
+      tooltips:
+        unit_cost: Unit cost is computed by summing all components costs. Base costs are based on a week average.

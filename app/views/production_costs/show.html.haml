@@ -7,7 +7,9 @@
 %table.table.my-3
   %tr
     %th Item
-    %th.text-right Unit cost
+    %th.text-right
+      Unit cost
+      = help_tooltip( :unit_cost )
     %th.text-right Required quantity
     %th.text-right Total cost
   - @item.blueprint_materials.includes( :eve_item ).each do |material|

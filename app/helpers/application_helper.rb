@@ -36,6 +36,10 @@ module ApplicationHelper
     end
   end
 
+	def help_tooltip_from_meta_content
+		fa_icon 'question-circle', 'data-toggle' => 'tooltip', title: @meta_content, class: 'meta-content-tooltyp'
+	end
+
   def help_tooltip( tt_code )
     fa_icon 'question-circle', 'data-toggle' => 'tooltip', title: t( '.tooltips.' + tt_code.to_s )
   end
@@ -56,7 +60,6 @@ module ApplicationHelper
   end
 
   def show_last_update
-    if @last_update_type
       last_update = Misc::LastUpdate.where( update_type: @last_update_type ).first&.updated_at
 
       if last_update
@@ -75,8 +78,7 @@ module ApplicationHelper
 
         # "Last update : #{last_update.to_s} (#{last_update_string})"
 				"Last update : #{last_update_string} UTC"
-      end
-
+				
     end
   end
 

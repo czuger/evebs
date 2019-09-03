@@ -4,10 +4,14 @@ class ProductionCostsController < ApplicationController
 
   caches_page :show, :dailies_avg_prices
 
+	DAILIES_AVG_PRICES_TITLE = 'Weekly average price detail for '
+
   def show
     set_no_title_header
 
     @item = EveItem.find_by( id: params[ :id ] )
+
+		raise "Should not be called only for base item : #{@item.inspect}" if @item.base_item
 
     @meta_title = 'Production cost estimation for ' + @item.name
     @meta_content = 'This page show detailed cost estimation for ' + @item.name
@@ -18,7 +22,14 @@ class ProductionCostsController < ApplicationController
   # We put this here to ease the cache management
   def dailies_avg_prices
     @item = EveItem.find_by( id: params[ :item_id ] )
-    @title = @item.base_item ? 'Sales details included in price computation ' : 'Weekly price detail'
+
+		raise "Should be called only for base item : #{@item.inspect}" unless @item.base_item
+
+		@title = DAILIES_AVG_PRICES_TITLE + view_context.link_to( @item.name, item_path( @item ) ) + ' ' + view_context.print_total_cost_for_items( @item )
+		@meta_title = DAILIES_AVG_PRICES_TITLE + @item.name
+
+		@meta_content = 'The price of a basic item is computed over a weekly average of the price each day.'
+
     @dailies_details = @item.weekly_price_details.where(trade_hub_id: params[:trade_hub_id]).order( 'day DESC' ).paginate( :page => params[:page] )
   end
 

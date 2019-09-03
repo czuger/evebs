@@ -32,8 +32,9 @@
             .my-3
               .row
                 .col-8
-                  %h1.ml-3
+                  %h1.ml-3{ class: ( @meta_content ? 'title-with-question-mark' : nil ) }
                     = raw( @title ? @title : 'Title to be set' )
+                  = help_tooltip_from_meta_content if @meta_content
 
           .mx-3
             = yield
@@ -42,8 +43,9 @@
     %footer#sticky-footer
       .container.text-center
         %span.text-muted
-          = show_last_update
-          \-
+          - if @last_update_type
+            = show_last_update
+            \-
           version 0.1-CHANGE_TO_VERSION_NUMBER
 
 
