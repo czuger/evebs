@@ -1,7 +1,7 @@
 module Metadata
 	class Base
 
-		def initialize( breadcrumb: nil )
+		def initialize
 			@audience = {
 				'@type' => 'PeopleAudience',
 				suggestedGender: :male,
@@ -14,37 +14,34 @@ module Metadata
 				'@type' => 'VideoGame',
 				name: 'Eve Online',
 				url: 'https://www.eveonline.com/',
-				operatingSystem: 'Windows, OSX, Linux',
+				operatingSystem: 'Windows 7 Service Pack 1, Mac OS X 10.12',
 				applicationCategory: 'massively multiplayer online role-playing game'
 			}
 
 			@base = { '@context' => 'http://schema.org' }
 			@base['Audience'] = @audience
 			@base['about'] = @about
-
-			@base['BreadcrumbList'] = @breadcrumb if @breadcrumb
 		end
 
-		private
+		def to_json
+			@base.to_json
+		end
 
-		def set_breadcrumb( breadcrumb )
+		def add_breadcrumb( breadcrumb )
 			if breadcrumb
-				@breadcrumb = {
-					breadcrumb: {
-						'@type' => 'BreadcrumbList',
-						'itemListElement' => breadcrumb.each_with_index.map{ |e, i|
-							{
-								'@type': 'ListItem',
-								'position': i,
-								'item':
-									{
-										'@id': e.id, # all_items_list_list_items_url( group_id: e.id ),
-										'name': e.name
-									}
-							}
+				bc = {
+					'@type' => 'BreadcrumbList',
+					'itemListElement' => breadcrumb.each_with_index.map{ |e, i|
+						{
+							'@type': 'ListItem',
+							'position': i+1,
+							'name': e.name,
+							item: yield( e.id )
 						}
 					}
 				}
+
+				@base['breadcrumb'] = bc
 			end
 		end
 
