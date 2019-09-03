@@ -73,7 +73,8 @@ module ApplicationHelper
 
         last_update_string = date_string + last_update.hour.to_s
 
-        "Last update : #{last_update.to_s} (#{last_update_string})"
+        # "Last update : #{last_update.to_s} (#{last_update_string})"
+				"Last update : #{last_update_string}"
       end
 
     end
