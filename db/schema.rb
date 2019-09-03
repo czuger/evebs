@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_21_172825) do
+ActiveRecord::Schema.define(version: 2019_09_03_060459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 2019_08_21_172825) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "cost"
@@ -149,9 +149,9 @@ ActiveRecord::Schema.define(version: 2019_08_21_172825) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "password_digest"
+    t.string "name", limit: 255
+    t.string "email", limit: 255
+    t.string "password_digest", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -257,7 +257,7 @@ ActiveRecord::Schema.define(version: 2019_08_21_172825) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name"
+    t.string "name", limit: 255
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -279,7 +279,7 @@ ActiveRecord::Schema.define(version: 2019_08_21_172825) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -397,12 +397,12 @@ ActiveRecord::Schema.define(version: 2019_08_21_172825) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name"
+    t.string "name", limit: 255
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider"
-    t.string "uid"
+    t.string "provider", limit: 255
+    t.string "uid", limit: 255
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice"
     t.boolean "watch_my_prices"
@@ -477,34 +477,6 @@ ActiveRecord::Schema.define(version: 2019_08_21_172825) do
   add_foreign_key "weekly_price_details", "eve_items"
   add_foreign_key "weekly_price_details", "trade_hubs"
 
-  create_view "buy_orders_analytics_results", sql_definition: <<-SQL
-      SELECT boa.id,
-      u.id AS user_id,
-      boa.trade_hub_id,
-      boa.eve_item_id,
-      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
-      ei.name AS eve_item_name,
-      boa.approx_max_price,
-      boa.single_unit_cost,
-      boa.single_unit_margin,
-      boa.final_margin,
-      boa.per_job_margin,
-      ceil((boa.final_margin / boa.per_job_margin)) AS job_count,
-      boa.per_job_run_margin,
-      floor((boa.final_margin / boa.per_job_run_margin)) AS runs,
-      (floor((boa.final_margin / boa.per_job_run_margin)) * boa.per_job_run_margin) AS true_margin,
-      boa.estimated_volume_margin,
-      boa.over_approx_max_price_volume
-     FROM ((((((buy_orders_analytics boa
-       JOIN eve_items ei ON ((ei.id = boa.eve_item_id)))
-       JOIN trade_hubs tu ON ((boa.trade_hub_id = tu.id)))
-       JOIN trade_hubs_users thu ON ((boa.trade_hub_id = thu.trade_hub_id)))
-       JOIN eve_items_users eiu ON ((boa.eve_item_id = eiu.eve_item_id)))
-       JOIN users u ON (((thu.user_id = u.id) AND (eiu.user_id = u.id))))
-       JOIN regions r ON ((tu.region_id = r.id)))
-    WHERE (boa.final_margin > (0)::double precision)
-    ORDER BY boa.final_margin DESC;
-  SQL
   create_view "components_to_buys", sql_definition: <<-SQL
       SELECT bpm_mat_ei.id,
       pl.user_id,
@@ -638,5 +610,33 @@ ActiveRecord::Schema.define(version: 2019_08_21_172825) do
        JOIN trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
        JOIN regions r ON ((tu.region_id = r.id)))
        LEFT JOIN prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id))));
+  SQL
+  create_view "buy_orders_analytics_results", sql_definition: <<-SQL
+      SELECT boa.id,
+      u.id AS user_id,
+      boa.trade_hub_id,
+      boa.eve_item_id,
+      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
+      ei.name AS eve_item_name,
+      boa.approx_max_price,
+      boa.single_unit_cost,
+      boa.single_unit_margin,
+      boa.final_margin,
+      boa.per_job_margin,
+      ceil((boa.final_margin / boa.per_job_margin)) AS job_count,
+      boa.per_job_run_margin,
+      floor((boa.final_margin / boa.per_job_run_margin)) AS runs,
+      (floor((boa.final_margin / boa.per_job_run_margin)) * boa.per_job_run_margin) AS true_margin,
+      boa.estimated_volume_margin,
+      boa.over_approx_max_price_volume
+     FROM ((((((buy_orders_analytics boa
+       JOIN eve_items ei ON ((ei.id = boa.eve_item_id)))
+       JOIN trade_hubs tu ON ((boa.trade_hub_id = tu.id)))
+       JOIN trade_hubs_users thu ON ((boa.trade_hub_id = thu.trade_hub_id)))
+       JOIN eve_items_users eiu ON ((boa.eve_item_id = eiu.eve_item_id)))
+       JOIN users u ON (((thu.user_id = u.id) AND (eiu.user_id = u.id))))
+       JOIN regions r ON ((tu.region_id = r.id)))
+    WHERE ((boa.final_margin > (0)::double precision) AND (boa.over_approx_max_price_volume > 0))
+    ORDER BY boa.final_margin DESC;
   SQL
 end
