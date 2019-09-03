@@ -87,4 +87,15 @@ module ApplicationHelper
     @meta_content || 'Eve business server is a tool that show potential earnings in Eve Online'
   end
 
+  def build_breadcrumb
+    md = Metadata::Item.new
+
+    md.add(@item, item_url( @item.id ) )
+    md.add_breadcrumb( @breadcrumb ) do |id|
+      list_items_url( group_id: id )
+    end
+
+    md.to_json
+  end
+
 end
