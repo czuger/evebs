@@ -20,7 +20,11 @@ class MarketDataController < ApplicationController
       @item_prices = @item.prices_mins.includes( {trade_hub: :region} ).order( 'min_price NULLS LAST' )
     else
       @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
-    end
+		end
+
+		@breadcrumb = Misc::BreadcrumbSubItem.new( 'Market details',
+																							 view_context.market_data_market_overview_path( @item ),
+																							 @item, view_context ).breadcrumb
   end
 
   def trade_hub_detail

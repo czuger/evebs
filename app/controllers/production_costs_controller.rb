@@ -15,8 +15,6 @@ class ProductionCostsController < ApplicationController
 		@title = DAILIES_AVG_PRICES_TITLE + view_context.link_to( @item.name, item_path( @item ) )
 		@meta_title = PRODUCTION_COST_TITLE + @item.name
     @meta_content = 'This page show detailed cost estimation for ' + @item.name
-
-    raise 'Base item cost should call dailies_avg_price instead of show' if @item.base_item
   end
 
   # We put this here to ease the cache management

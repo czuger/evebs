@@ -2,6 +2,8 @@
 -#  = link_to( @item.name, item_path( @item ) )
 -#  = link_to( print_total_cost_for_items( @item ), production_cost_path( @item.id ) )
 
+= render partial: 'items/breadcrumb'
+
 - if @item.base_item
   = render partial: 'market_info_for_base_item'
 - else
