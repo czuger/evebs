@@ -152,6 +152,7 @@ class ListItemsController < ApplicationController
       end
     else
       @groups = MarketGroup.roots.order( :name )
+      @current_group = Misc::BreadcrumbRoot.new
     end
   end
 
