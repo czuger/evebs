@@ -28,6 +28,9 @@
         = render partial: 'shared/errors'
 
         %div{ class: ( :container if @small_screen ) }
+
+          = render partial: 'layouts/breadcrumb'
+
           - unless @no_title_header
             .my-3
               .row

@@ -100,9 +100,7 @@ module ApplicationHelper
 		@soe_data = Metadata::WebPage.new( meta_title_helper, meta_content, @last_update_type )
 		end
 
-		if %w( items list_items ).include?( controller_name )
-			@soe_data.add_breadcrumb
-		end
+		@soe_data.add_breadcrumb( @breadcrumb ) if @breadcrumb
 
 		@soe_data.to_json
 	end

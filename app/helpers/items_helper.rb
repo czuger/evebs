@@ -5,11 +5,4 @@ module ItemsHelper
     single_cost ? "(#{print_isk( single_cost )})" : 'N/A'
   end
 
-  def breadcrumb( item )
-    unless @breadcrumb
-      @breadcrumb = item.breadcrumb_ancestors( )
-    end
-    @breadcrumb
-  end
-
 end

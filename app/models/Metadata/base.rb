@@ -1,7 +1,7 @@
 module Metadata
 	class Base
 
-		def initialize( view_context, last_update_type= nil )
+		def initialize( last_update_type= nil )
 			@audience = {
 				'@type' => 'PeopleAudience',
 				suggestedGender: :male,
@@ -22,11 +22,7 @@ module Metadata
 			@base['Audience'] = @audience
 			@base['about'] = @about
 
-			@view_context = view_context
-
 			set_expires( last_update_type )
-
-			@view_context.item_path( 1 )
 		end
 
 		def to_json
@@ -34,23 +30,19 @@ module Metadata
 		end
 
 		def add_breadcrumb( breadcrumb )
-			if breadcrumb
-				bc = {
-					'@type' => 'BreadcrumbList',
-					'itemListElement' => breadcrumb.each_with_index.map{ |e, i|
-						{
-							'@type': 'ListItem',
-							'position': i+1,
-							'name': e.name,
-							item: @view_context.list_items( group_id: e.group_id )
-						}
+			bc = {
+				'@type' => 'BreadcrumbList',
+				'itemListElement' => breadcrumb.each_with_index.map{ |e, i|
+					{
+						'@type': 'ListItem',
+						'position': i+1,
+						'name': e.name,
+						item: e.url
 					}
 				}
+			}
 
-				@view_context.item_path( 1 )
-
-				@base['breadcrumb'] = bc
-			end
+			@base['breadcrumb'] = bc
 		end
 
 		private
