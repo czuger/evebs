@@ -16,7 +16,7 @@
     %meta{ name: :viewport, content: 'width=device-width', 'initial-scale' => 1.0 }
 
     %script{ type: 'application/ld+json' }
-      = raw @soe_data.to_json
+      = raw build_soe_data
 
   %body.d-flex.flex-column{ data:{ rails_env: Rails.env } }
 

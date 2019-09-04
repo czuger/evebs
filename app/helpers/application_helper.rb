@@ -90,6 +90,22 @@ module ApplicationHelper
 
   def meta_content
     @meta_content || 'Eve business server is a tool that show potential earnings in Eve Online'
-  end
+	end
+
+	def build_soe_data
+		if controller_name == 'items'
+			@soe_data = Metadata::Item.new(@last_update_type )
+			@soe_data.add(@item, item_url( @item.id ) )
+		elsif
+		@soe_data = Metadata::WebPage.new( meta_title_helper, meta_content, @last_update_type )
+		end
+
+		if %w( items list_items ).include?( controller_name )
+			@soe_data.add_breadcrumb
+		end
+
+		@soe_data.to_json
+	end
+
 
 end
