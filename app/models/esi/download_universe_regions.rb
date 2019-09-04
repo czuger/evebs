@@ -23,7 +23,7 @@ module Esi
 
       regions_ids.each do |region_id|
         @rest_url = "universe/regions/#{region_id}/"
-        region_data = get_page_retry_on_error
+        region_data = get_page_retry_on_error( expect: :region )
 
         region = { id: region_id, name: region_data['name'], constellations: [] }
 
@@ -39,7 +39,7 @@ module Esi
 
     def download_constellation( constellation_id )
       @rest_url = "universe/constellations/#{constellation_id}/"
-      constellation_data = get_page_retry_on_error
+      constellation_data = get_page_retry_on_error( expect: :constellation )
 
       constellation = { id: constellation_id, name: constellation_data['name'], systems: [] }
 
@@ -52,7 +52,7 @@ module Esi
 
     def download_system( system_id )
       @rest_url = "universe/systems/#{system_id}/"
-      system_data = get_page_retry_on_error
+      system_data = get_page_retry_on_error( expect: :system )
 
       system = { id: system_id, name: system_data['name'] }
 
@@ -77,7 +77,7 @@ module Esi
 
     def update_station( station_id )
       @rest_url = "universe/stations/#{station_id}/"
-      station_data = get_page_retry_on_error
+      station_data = get_page_retry_on_error( expect: :station )
 
       station = { id: station_id, name: station_data['name'] }
 

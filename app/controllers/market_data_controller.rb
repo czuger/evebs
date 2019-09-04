@@ -20,11 +20,11 @@ class MarketDataController < ApplicationController
       @item_prices = @item.prices_mins.includes( {trade_hub: :region} ).order( 'min_price NULLS LAST' )
     else
       @item_prices = @item.price_advices_min_prices.order( 'vol_month DESC NULLS LAST, margin_percent DESC NULLS LAST' )
-		end
 
-		@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Market details',
-																							 view_context.market_data_market_overview_url( @item ),
-																							 @item, view_context )
+			@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Market details',
+																															view_context.market_data_market_overview_url( @item ),
+																															@item, view_context )
+		end
   end
 
   def trade_hub_detail
@@ -39,9 +39,11 @@ class MarketDataController < ApplicationController
     @orders = PublicTradeOrder.where( trade_hub_id: params[ :trade_hub_id ], eve_item_id: params[ :item_id ], is_buy_order: false )
                   .order( 'price' ).limit( 20 )
 
-		@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Trade hub details',
-																														view_context.market_data_trade_hub_detail_url( @element, @trade_hub ),
-																														@element, view_context )
+		unless @element.base_item
+			@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Trade hub details',
+																															view_context.market_data_trade_hub_detail_url( @element, @trade_hub ),
+																															@element, view_context )
+		end
   end
 
 end

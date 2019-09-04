@@ -6,13 +6,14 @@ class ProductionCostsController < ApplicationController
 
 	DAILIES_AVG_PRICES_TITLE = 'Weekly average price detail for '
 	PRODUCTION_COST_TITLE = 'Production cost estimation for '
+	MARKET_HISTORIES_TITLE = 'Regional information about '
 
   def show
     @item = EveItem.find_by( id: params[ :id ] )
 
 		raise "Should not be called only for base item : #{@item.inspect}" if @item.base_item
 
-		@title = DAILIES_AVG_PRICES_TITLE + view_context.link_to( @item.name, item_path( @item ) )
+		@title = PRODUCTION_COST_TITLE + view_context.link_to( @item.name, item_path( @item ) )
 		@meta_title = PRODUCTION_COST_TITLE + @item.name
     @meta_content = 'This page show detailed cost estimation for ' + @item.name
 
@@ -38,17 +39,19 @@ class ProductionCostsController < ApplicationController
   def market_histories
 		@item = EveItem.find_by( id: params[ :production_cost_id ] )
 
+		@title = MARKET_HISTORIES_TITLE + view_context.link_to( @item.name, item_path( @item ) )
+
     @meta_title = 'Regional information about ' + @item.name
 		@meta_content = 'This page shows compiled information about ' + @item.name +
 			' in all regions of New Eden. Information are : total volume, average price, max price and min price.'
 
     @market_histories = @item.group_eve_market_histories.order('volume DESC')
 
-		@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Last month aggregations',
-																														production_cost_market_histories_url( @item ),
-																														@item, view_context )
-
+		unless @item.base_item
+			@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Last month aggregations',
+																															production_cost_market_histories_url( @item ),
+																															@item, view_context )
+		end
   end
-
 
 end

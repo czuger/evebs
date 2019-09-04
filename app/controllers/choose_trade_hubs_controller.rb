@@ -5,8 +5,8 @@ class ChooseTradeHubsController < ApplicationController
   def edit
     @title = 'Choose trade hub to monitor'
     @user = current_user
-    @inner_trade_hubs = TradeHub.includes(:region).where( inner: true ).where.not( region: nil ).order(:region_id, :name).to_a
-    @outer_trade_hubs = TradeHub.includes(:region).where( inner: false ).where.not( region: nil ).order(:region_id, :name).to_a
+    @inner_trade_hubs = TradeHub.includes(:region).where( inner: true ).where.not( region: nil ).order(:name).to_a
+    @outer_trade_hubs = TradeHub.includes(:region).where( inner: false ).where.not( region: nil ).order(:name).to_a
     @user_trade_hubs_ids = @user.trade_hubs.map{ |e| e.id }
   end
 
