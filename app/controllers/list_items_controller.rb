@@ -152,6 +152,7 @@ class ListItemsController < ApplicationController
       end
     else
       @groups = MarketGroup.roots.order( :name )
+			# @current_group is used for bc generation only.
       @current_group = Misc::BreadcrumbRoot.new
     end
   end
