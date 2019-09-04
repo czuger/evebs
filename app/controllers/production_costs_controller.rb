@@ -15,6 +15,10 @@ class ProductionCostsController < ApplicationController
 		@title = DAILIES_AVG_PRICES_TITLE + view_context.link_to( @item.name, item_path( @item ) )
 		@meta_title = PRODUCTION_COST_TITLE + @item.name
     @meta_content = 'This page show detailed cost estimation for ' + @item.name
+
+		@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Production cost',
+																														view_context.production_cost_url( @item ),
+																														@item, view_context )
   end
 
   # We put this here to ease the cache management
@@ -41,6 +45,11 @@ class ProductionCostsController < ApplicationController
 			' in all regions of New Eden. Information are : total volume, average price, max price and min price.'
 
     @market_histories = @item.group_eve_market_histories.order('volume DESC')
+
+		@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Last month aggregations',
+																														production_cost_market_histories_url( @item ),
+																														@item, view_context )
+
   end
 
 

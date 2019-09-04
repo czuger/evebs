@@ -38,6 +38,8 @@ class EveItem < ApplicationRecord
   end
 
   def breadcrumb( view_context )
+		return nil unless market_group
+
     bc = market_group.breadcrumb( view_context )
 		bc << Misc::BreadcrumbElement.new( name, view_context.item_url( id ) )
   end
