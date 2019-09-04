@@ -14,32 +14,6 @@ class ListItemsController < ApplicationController
     @breadcrumb = @current_group.breadcrumb( view_context )
   end
 
-  # def all_items_list
-  #   @title = 'All items list'
-  #   # items_list false
-  #   set_current_group
-  #   @item_ids = []
-  # end
-	#
-  # def my_items_list
-  #   @title = 'My items list'
-  #   # items_list true
-  #   set_current_group
-	#
-  #   @my_items = true
-  # end
-
-  def update
-    @user = current_user
-
-    current_ids = @user.eve_item_ids
-    to_remove_ids = params['items'].keys.map(&:to_i)
-    current_ids -= to_remove_ids
-
-    @user.eve_item_ids = current_ids
-    redirect_to edit_list_items_path
-  end
-
   def selection_change
     item = EveItem.find( params['id'] )
 
@@ -56,22 +30,6 @@ class ListItemsController < ApplicationController
     clear_user_list
     redirect_to saved_list_list_items_path, notice: 'List cleared successfully'
   end
-
-  # def all
-  #   ActiveRecord::Base.transaction do
-  #     clear_user_list
-  #
-  #     EveItem.where.not( blueprint_id: nil ).where( faction: false ).pluck( :id ).in_groups_of( 500 ).each do |g|
-  #       links = []
-  #       g.each do |eve_item_id|
-  #         links << EveItemsUser.new( user_id: @user.id, eve_item_id: eve_item_id, )
-  #       end
-  #       EveItemsUser.import( links )
-  #     end
-  #   end
-  #
-  #   redirect_to saved_list_list_items_path, notice: 'All items are now selected'
-  # end
 
   def save
     @saved_list = EveItemsSavedList.new( user: @user, description: params[:description], saved_ids: @user.eve_item_ids )
@@ -109,36 +67,6 @@ class ListItemsController < ApplicationController
 
   def clear_user_list
     EveItemsUser.where( user_id: @user ).delete_all
-  end
-
-  def items_list( my_items_only )
-    @user = current_user
-    @jita = TradeHub.find_by_eve_system_id( 30000142 )
-    raise 'Unable to find Jita' unless @jita
-
-    if @user
-      @item_ids = @user.eve_item_ids.uniq.to_set
-      set_checked_production_list_ids
-    end
-
-    if my_items_only
-      @items = @user.eve_items
-    else
-      @items = EveItem.all
-    end
-
-    if params['filter']
-      @items = @items.where( "lower( name ) like '%#{params['filter'].downcase}%'" )
-    else
-      @items = EveItem.none unless my_items_only
-    end
-
-    @items = @items.order( 'market_group_id, name' )
-
-    # p @items.to_sql
-
-    @items = @items.paginate(:page => params[:page], :per_page => 20 )
-    @filter = params['filter']
   end
 
   def set_current_group

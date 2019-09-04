@@ -52,13 +52,10 @@ Rails.application.routes.draw do
   # get :items_tree, controller: :items
   # patch :items_tree_select, controller: :items
 
-  resource :list_items, only: [ :show, :update ] do
-    get :all_items_list
-    get :my_items_list
+  resource :list_items, only: [ :show ] do
     post :selection_change
 
     get :clear
-    get :all
 
     post :save
     get ':saved_list_id/restore', action: :restore, as: :restore

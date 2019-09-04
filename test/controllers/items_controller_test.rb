@@ -24,6 +24,16 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   test 'should show trade_hub detail' do
     get market_data_trade_hub_detail_url( @eve_item.id, @jita.id )
     assert_response :success
-  end
+	end
+
+	test 'should show root groups' do
+		get list_items_url
+		assert_response :success
+	end
+
+	test 'should show item groups' do
+		get list_items_url( group_id: @eve_item.market_group_id )
+		assert_response :success
+	end
 
 end

@@ -68,14 +68,14 @@ class ListItemsControllerTest < ActionDispatch::IntegrationTest
   #   assert_select 'a', 'Inferno Fury Cruise Missile'
   # end
 
-  test 'show my saved list' do
-    post selection_change_list_items_url, params: { id: @item.id, check_state: 'true' }
-    post save_list_items_url, params: { description: 'Test save' }
-    get saved_list_list_items_url
-
-    assert :success
-    assert_select 'td', 'Test save'
-  end
+  # test 'show my saved list' do
+  #   post selection_change_list_items_url, params: { id: @item.id, check_state: 'true' }
+  #   post save_list_items_url, params: { description: 'Test save' }
+  #   get saved_list_list_items_url
+	#
+  #   assert :success
+  #   assert_select 'td', 'Test save'
+  # end
 
 
 end
