@@ -9,9 +9,6 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
     create( :prices_advice, eve_item_id: @eve_item.id, trade_hub_id: @jita.id )
     # @trade_hub = TradeHub.find_by_eve_system_id( 30002544 )
-
-    @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
   end
 
   test 'should show item detail' do

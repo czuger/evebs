@@ -36,9 +36,7 @@ class ProductionCostsController < ApplicationController
   end
 
   def market_histories
-		set_no_title_header
-
-    @item = EveItem.find_by( id: params[ :production_cost_id ] )
+		@item = EveItem.find_by( id: params[ :production_cost_id ] )
 
     @meta_title = 'Regional information about ' + @item.name
 		@meta_content = 'This page shows compiled information about ' + @item.name +

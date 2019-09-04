@@ -7,6 +7,7 @@ class JitaMarginsController < ApplicationController
   # caches_page :index
 
   def index
+    # TODO : refaire l'ecran d'accueil
     @no_title_header = true
     if @user
       redirect_to buy_orders_path

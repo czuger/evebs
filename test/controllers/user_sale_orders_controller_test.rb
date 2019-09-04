@@ -3,8 +3,8 @@ require 'test_helper'
 class UserSaleOrdersControllerTest < ActionDispatch::IntegrationTest
 
   def setup
+    esi_fake_login
     @user = create( :user, sales_orders_show_margin_min: true )
-    post '/auth/developer/callback', params: { name: @user.name }
 
     @blueprint = create( :blueprint )
 

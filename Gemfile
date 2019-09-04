@@ -34,9 +34,10 @@ gem 'crypt'
 
 gem 'haml-rails'
 
-gem 'omniauth'
+# gem 'omniauth'
 gem 'omniauth-eve_online-sso'
 gem "omniauth-rails_csrf_protection"
+gem 'omniauth-google-oauth2'
 
 # gem 'lazy_high_charts'
 

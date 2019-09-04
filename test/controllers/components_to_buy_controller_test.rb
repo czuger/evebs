@@ -3,8 +3,7 @@ require 'test_helper'
 class ComponentsToBuyControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
+    esi_fake_login
 
     @material_morphite = create( :material_morphite )
     @blueprint = @material_morphite.blueprint

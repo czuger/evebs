@@ -3,8 +3,7 @@ require 'test_helper'
 class ProductionListsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
+    esi_fake_login
 
     @blueprint = create( :blueprint )
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )

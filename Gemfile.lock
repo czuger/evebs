@@ -208,6 +208,10 @@ GEM
       rack (>= 1.6.2, < 3)
     omniauth-eve_online-sso (0.2.0)
       omniauth-oauth2
+    omniauth-google-oauth2 (0.6.1)
+      jwt (>= 2.0)
+      omniauth (>= 1.1.1)
+      omniauth-oauth2 (>= 1.5)
     omniauth-oauth2 (1.6.0)
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
@@ -372,8 +376,8 @@ DEPENDENCIES
   mini_racer
   mocha
   momentjs-rails
-  omniauth
   omniauth-eve_online-sso
+  omniauth-google-oauth2
   omniauth-rails_csrf_protection
   pg
   pluck_to_hash

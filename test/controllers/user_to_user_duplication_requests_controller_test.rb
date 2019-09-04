@@ -2,8 +2,7 @@ require 'test_helper'
 
 class UserToUserDuplicationRequestsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
+		esi_fake_login
 
     user2 = create( :user )
     @user_to_user_duplication_request = create( :user_to_user_duplication_request, sender: @user, receiver: user2 )

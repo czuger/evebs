@@ -3,8 +3,7 @@ require 'test_helper'
 class UsersControllerTest < ActionDispatch::IntegrationTest
 
   setup do
-    @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
+    esi_fake_login
   end
 
   test 'should get edit' do

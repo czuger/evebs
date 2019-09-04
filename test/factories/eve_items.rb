@@ -5,6 +5,7 @@ FactoryBot.define do
     cost {5}
     name {'Item test'}
     cpp_eve_item_id {123456}
+		description { "Hopla vous savez que la mamsell Huguette, la miss Miss Dahlias du messti de Bischheim était au Christkindelsmärik en compagnie de Richard Schirmeck (celui qui a un blottkopf), le mari de Chulia Roberstau, qui lui trempait sa Nüdle dans sa Schneck ! Yo dû, Pfourtz ! Ch'espère qu'ils avaient du Kabinetpapier, Gal !" }
 
     # An example of item with blueprint and market group
     factory :inferno_fury_cruise_missile do
@@ -43,6 +44,7 @@ FactoryBot.define do
       name {'Morphite'}
       cost {80}
       volume {0.01}
+			base_item { true  }
     end
 
     factory :rocket_fuel do

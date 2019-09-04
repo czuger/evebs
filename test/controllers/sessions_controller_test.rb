@@ -26,20 +26,20 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
   end
 
-  test 'developpment mode should be forbidden in production mode' do
-    get signout_url
-    OmniAuth.config.test_mode = false
-    @user = create( :user )
-
-    # We fake the production mode
-    current_mode = Rails.env
-    Rails.env = ActiveSupport::StringInquirer.new('production')
-    # Then assert that developer mode raises in production
-    assert_raises do
-      post '/auth/developer/callback', params: { name: @user.name }
-    end
-    Rails.env = current_mode
-  end
+  # test 'developpment mode should be forbidden in production mode' do
+  #   get signout_url
+  #   OmniAuth.config.test_mode = false
+  #   @user = create( :user )
+	#
+  #   # We fake the production mode
+  #   current_mode = Rails.env
+  #   Rails.env = ActiveSupport::StringInquirer.new('production')
+  #   # Then assert that developer mode raises in production
+  #   assert_raises do
+  #     post '/auth/developer/callback', params: { name: @user.name }
+  #   end
+  #   Rails.env = current_mode
+  # end
 
 
 end

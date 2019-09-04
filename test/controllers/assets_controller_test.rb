@@ -3,8 +3,9 @@ require 'test_helper'
 class AssetsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
+    esi_fake_login
+
     @user = create( :user, last_assets_download: Time.now )
-    post '/auth/developer/callback', params: { name: @user.name }
 
     create( :vellaine_system )
     @asset = create( :bpc_asset, user: @user )

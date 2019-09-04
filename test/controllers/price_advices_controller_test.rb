@@ -3,8 +3,7 @@ require 'test_helper'
 class PriceAdvicesControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
+    esi_fake_login
 
     @blueprint = create( :blueprint )
 
