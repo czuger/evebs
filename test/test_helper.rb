@@ -1,5 +1,5 @@
-# require 'simplecov'
-# SimpleCov.start 'rails'
+require 'simplecov'
+SimpleCov.start 'rails'
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
@@ -37,6 +37,8 @@ class ActiveSupport::TestCase
 
 		post '/auth/eve_online_sso'
 		follow_redirect!
+
+		@user
 	end
 
 end

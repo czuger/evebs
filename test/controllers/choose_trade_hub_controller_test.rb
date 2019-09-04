@@ -3,8 +3,7 @@ require 'test_helper'
 class ChooseTradeHubsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-     @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
+    esi_fake_login
     @trade_hub = create( :trade_hub )
   end
 

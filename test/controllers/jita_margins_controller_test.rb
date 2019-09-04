@@ -15,8 +15,7 @@ class JitaMarginsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show front page when an user is connected' do
-    @user = create( :user )
-    post '/auth/developer/callback', params: { name: @user.name }
+    esi_fake_login
 
     get '/'
     assert_redirected_to buy_orders_url

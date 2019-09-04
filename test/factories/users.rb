@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :user do
 
     # Important for OmniauthTests
-    provider {:developer}
+    provider {:eve_online_sso}
 
     sequence :name do |n|
       "User #{n}"
