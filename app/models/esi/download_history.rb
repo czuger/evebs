@@ -74,7 +74,7 @@ class Esi::DownloadHistory < Esi::Download
 					min_price = [ record['lowest'].to_f, min_price ].min
 
 					max_price = [ record['highest'].to_f, max_price.to_f ].max
-					avg_prices_list.to_a << record['average'].to_f
+					avg_prices_list = avg_prices_list.to_a << record['average'].to_f
         end
 
         # We skip small sales
