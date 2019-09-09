@@ -58,9 +58,9 @@ class Esi::DownloadHistory < Esi::Download
 
       total_volume = 0
       total_isk = 0.0
-			avg_prices_list = []
-			min_price = Float::INFINITY
-			max_price = 0.0
+			avg_prices_list = nil
+			min_price = nil
+			max_price = nil
 
       begin
         get_all_pages.each do |record|
@@ -70,16 +70,19 @@ class Esi::DownloadHistory < Esi::Download
           total_volume += record['volume'].to_i
           total_isk += record['volume'].to_f*record['average'].to_f
 
+					min_price = Float::INFINITY unless min_price
 					min_price = [ record['lowest'].to_f, min_price ].min
-					max_price = [ record['highest'].to_f, min_price ].max
-					avg_prices_list << record['average'].to_f
+
+					max_price = [ record['highest'].to_f, max_price.to_f ].max
+					avg_prices_list.to_a << record['average'].to_f
         end
 
         # We skip small sales
         # next if total_isk < 100000
 
-        record = { cpp_region_id: region.cpp_region_id, cpp_type_id: type_id, volume: total_volume, min: min_price,
-					max: max_price, avg: avg_prices_list.inject{ |sum, el| sum + el } / avg_prices_list.size }
+        record = { cpp_region_id: region.cpp_region_id, cpp_type_id: type_id, volume: total_volume,
+				 	min: min_price, max: max_price,
+				 	avg: ( avg_prices_list.inject{ |sum, el| sum + el } / avg_prices_list.size if avg_prices_list ) }
         @file.puts( record.to_json )
       rescue Esi::Errors::NotFound
         warn "For region #{region.cpp_region_id} : #{type_id} not found."
