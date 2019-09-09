@@ -4,8 +4,6 @@ require 'pp'
 
 class EveItem < ApplicationRecord
 
-  include Misc::Assert
-
   has_and_belongs_to_many :users
   belongs_to :blueprint
 
