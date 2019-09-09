@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_03_060459) do
+ActiveRecord::Schema.define(version: 2019_09_09_113534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,19 +133,19 @@ ActiveRecord::Schema.define(version: 2019_09_03_060459) do
     t.index ["user_id"], name: "index_eve_items_users_on_user_id"
   end
 
-  create_table "eve_market_histories", force: :cascade do |t|
-    t.bigint "region_id", null: false
-    t.bigint "eve_item_id", null: false
+  create_table "eve_market_histories_groups", force: :cascade do |t|
+    t.bigint "region_id"
+    t.bigint "eve_item_id"
     t.bigint "volume", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "highest"
     t.float "lowest"
     t.float "average"
-    t.bigint "order_count"
-    t.date "server_date"
-    t.index ["eve_item_id"], name: "index_eve_market_histories_on_eve_item_id"
-    t.index ["region_id"], name: "index_eve_market_histories_on_region_id"
+    t.integer "cpp_type_id", null: false
+    t.integer "cpp_region_id", null: false
+    t.index ["eve_item_id"], name: "index_eve_market_histories_groups_on_eve_item_id"
+    t.index ["region_id"], name: "index_eve_market_histories_groups_on_region_id"
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
@@ -451,8 +451,8 @@ ActiveRecord::Schema.define(version: 2019_09_03_060459) do
   add_foreign_key "eve_items", "blueprints"
   add_foreign_key "eve_items", "market_groups"
   add_foreign_key "eve_items_saved_lists", "users"
-  add_foreign_key "eve_market_histories", "eve_items"
-  add_foreign_key "eve_market_histories", "regions"
+  add_foreign_key "eve_market_histories_groups", "eve_items"
+  add_foreign_key "eve_market_histories_groups", "regions"
   add_foreign_key "prices_advices", "eve_items"
   add_foreign_key "prices_advices", "trade_hubs"
   add_foreign_key "production_lists", "eve_items"
@@ -477,6 +477,34 @@ ActiveRecord::Schema.define(version: 2019_09_03_060459) do
   add_foreign_key "weekly_price_details", "eve_items"
   add_foreign_key "weekly_price_details", "trade_hubs"
 
+  create_view "buy_orders_analytics_results", sql_definition: <<-SQL
+      SELECT boa.id,
+      u.id AS user_id,
+      boa.trade_hub_id,
+      boa.eve_item_id,
+      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
+      ei.name AS eve_item_name,
+      boa.approx_max_price,
+      boa.single_unit_cost,
+      boa.single_unit_margin,
+      boa.final_margin,
+      boa.per_job_margin,
+      ceil((boa.final_margin / boa.per_job_margin)) AS job_count,
+      boa.per_job_run_margin,
+      floor((boa.final_margin / boa.per_job_run_margin)) AS runs,
+      (floor((boa.final_margin / boa.per_job_run_margin)) * boa.per_job_run_margin) AS true_margin,
+      boa.estimated_volume_margin,
+      boa.over_approx_max_price_volume
+     FROM ((((((buy_orders_analytics boa
+       JOIN eve_items ei ON ((ei.id = boa.eve_item_id)))
+       JOIN trade_hubs tu ON ((boa.trade_hub_id = tu.id)))
+       JOIN trade_hubs_users thu ON ((boa.trade_hub_id = thu.trade_hub_id)))
+       JOIN eve_items_users eiu ON ((boa.eve_item_id = eiu.eve_item_id)))
+       JOIN users u ON (((thu.user_id = u.id) AND (eiu.user_id = u.id))))
+       JOIN regions r ON ((tu.region_id = r.id)))
+    WHERE ((boa.final_margin > (0)::double precision) AND (boa.over_approx_max_price_volume > 0))
+    ORDER BY boa.final_margin DESC;
+  SQL
   create_view "components_to_buys", sql_definition: <<-SQL
       SELECT bpm_mat_ei.id,
       pl.user_id,
@@ -498,20 +526,6 @@ ActiveRecord::Schema.define(version: 2019_09_03_060459) do
     WHERE (pl.runs_count > 0)
     GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
    HAVING ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
-  SQL
-  create_view "group_eve_market_histories", sql_definition: <<-SQL
-      SELECT eve_market_histories.region_id,
-      regions.name AS region_name,
-      eve_market_histories.eve_item_id,
-      sum(eve_market_histories.volume) AS volume,
-      sum(eve_market_histories.order_count) AS orders_count,
-      max(eve_market_histories.highest) AS max_price,
-      min(eve_market_histories.lowest) AS min_price,
-      avg(eve_market_histories.average) AS avg_price
-     FROM eve_market_histories,
-      regions
-    WHERE (eve_market_histories.region_id = regions.id)
-    GROUP BY eve_market_histories.region_id, regions.name, eve_market_histories.eve_item_id;
   SQL
   create_view "price_advice_margin_comps", sql_definition: <<-SQL
       SELECT prices_advices_sub_1.id,
@@ -610,33 +624,5 @@ ActiveRecord::Schema.define(version: 2019_09_03_060459) do
        JOIN trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
        JOIN regions r ON ((tu.region_id = r.id)))
        LEFT JOIN prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id))));
-  SQL
-  create_view "buy_orders_analytics_results", sql_definition: <<-SQL
-      SELECT boa.id,
-      u.id AS user_id,
-      boa.trade_hub_id,
-      boa.eve_item_id,
-      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
-      ei.name AS eve_item_name,
-      boa.approx_max_price,
-      boa.single_unit_cost,
-      boa.single_unit_margin,
-      boa.final_margin,
-      boa.per_job_margin,
-      ceil((boa.final_margin / boa.per_job_margin)) AS job_count,
-      boa.per_job_run_margin,
-      floor((boa.final_margin / boa.per_job_run_margin)) AS runs,
-      (floor((boa.final_margin / boa.per_job_run_margin)) * boa.per_job_run_margin) AS true_margin,
-      boa.estimated_volume_margin,
-      boa.over_approx_max_price_volume
-     FROM ((((((buy_orders_analytics boa
-       JOIN eve_items ei ON ((ei.id = boa.eve_item_id)))
-       JOIN trade_hubs tu ON ((boa.trade_hub_id = tu.id)))
-       JOIN trade_hubs_users thu ON ((boa.trade_hub_id = thu.trade_hub_id)))
-       JOIN eve_items_users eiu ON ((boa.eve_item_id = eiu.eve_item_id)))
-       JOIN users u ON (((thu.user_id = u.id) AND (eiu.user_id = u.id))))
-       JOIN regions r ON ((tu.region_id = r.id)))
-    WHERE ((boa.final_margin > (0)::double precision) AND (boa.over_approx_max_price_volume > 0))
-    ORDER BY boa.final_margin DESC;
   SQL
 end

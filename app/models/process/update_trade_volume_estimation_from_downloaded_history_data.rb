@@ -12,7 +12,7 @@ module Process
     end
 
     def transaction_update
-      1.upto(Esi::DownloadHistoryReadItemsLists::PROCESSES_COUNT).each do |process_id|
+      1.upto(Esi::DownloadHistorySetProcessCount::PROCESSES_COUNT).each do |process_id|
 
         File.open( "data/regional_sales_volumes_#{process_id}.json_stream", 'r' ) do |f|
           f.each do |line|

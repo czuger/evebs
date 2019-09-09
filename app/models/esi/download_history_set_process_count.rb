@@ -1,6 +1,8 @@
 require_relative 'download'
 
-class Esi::DownloadHistoryReadItemsLists < Esi::Download
+# This class is used to set the process counts in UniverseRegion accordingly to region items orders
+# Used only for internal purpose : balance the download of the huge amount of history market data
+class Esi::DownloadHistorySetProcessCount < Esi::Download
 
   PROCESSES_COUNT = 4
 

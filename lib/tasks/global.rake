@@ -53,7 +53,7 @@ namespace :process do
       chrono = Misc::Chrono.new
 
       ActiveRecord::Base.transaction do
-        Esi::DownloadHistoryReadItemsLists.new.update
+        Esi::DownloadHistorySetProcessCount.new.update
       end
 
       Esi::DownloadHistory.new.download
