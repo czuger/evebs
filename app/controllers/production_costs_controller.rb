@@ -45,7 +45,8 @@ class ProductionCostsController < ApplicationController
 		@meta_content = 'This page shows compiled information about ' + @item.name +
 			' in all regions of New Eden. Information are : total volume, average price, max price and min price.'
 
-    @market_histories = @item.group_eve_market_histories.order('volume DESC')
+    @market_histories = @item.eve_market_histories_groups.joins( :universe_region ).order('volume DESC')
+			.select( 'universe_regions.name AS region_name', :volume, :highest, :lowest, :average )
 
 		unless @item.base_item
 			@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Last month aggregations',
