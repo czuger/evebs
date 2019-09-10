@@ -17,7 +17,7 @@ class EveItem < ApplicationRecord
   has_many :buy_orders_analytics, dependent: :delete_all
 
   has_many :public_trade_orders, dependent: :destroy
-  has_many :eve_market_histories, :dependent => :delete_all
+  has_many :eve_market_histories_groups, :dependent => :delete_all
 
   has_many :price_advices_min_prices
 
