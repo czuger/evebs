@@ -60,6 +60,7 @@ namespace :process do
 
       ActiveRecord::Base.transaction do
         Process::UpdateTradeVolumeEstimationFromDownloadedHistoryData.new.update
+				Process::UpdateEveMarketHistoriesGroup.new.update
 
         Process::DeleteOldSalesFinals.delete
 
