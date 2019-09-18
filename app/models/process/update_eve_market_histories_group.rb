@@ -15,9 +15,10 @@ module Process
 			from_file_to_tmp_table
 
 			# TODO : on relance le processus horaire. Verifier si les données sont toujours dans la table
-			EveMarketHistoriesGroupTmpTable.where( 'eve_item_id=919 and universe_region_id = 28' )
+			p EveMarketHistoriesGroupTmpTable.where( 'cpp_region_id=10000030 and cpp_type_id=12775' ).first
 
 			Sql::UpdateEveMarketHistoriesGroups.execute
+			p EveMarketHistoriesGroup.where( 'eve_item_id=919 and universe_region_id = 28' ).first
 		end
 
 		private
