@@ -2,9 +2,9 @@ class ChangeEveMarketHistories < ActiveRecord::Migration[5.2]
   def change
 		drop_view :group_eve_market_histories
 
-		EveMarketHistoriesGroup.delete_all
-
     rename_table :eve_market_histories, :eve_market_histories_groups
+
+		EveMarketHistoriesGroup.delete_all
 
 		remove_column :eve_market_histories_groups, :order_count, :bigint
 		remove_column :eve_market_histories_groups, :server_date, :date
