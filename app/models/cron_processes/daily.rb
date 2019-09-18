@@ -11,8 +11,9 @@ module CronProcesses
 
 		def self.update_data
 			ActiveRecord::Base.transaction do
-				Process::UpdateTradeVolumeEstimationFromDownloadedHistoryData.new.update
 				Process::UpdateEveMarketHistoriesGroup.new.update
+				Sql::UpdateTradeVolumeEstimationFromDownloadedHistoryData.execute
+				# Process::UpdateTradeVolumeEstimationFromDownloadedHistoryData.new.update
 
 				Process::DeleteOldSalesFinals.delete
 
