@@ -10,7 +10,7 @@ class ProductionCostsControllerTest < ActionDispatch::IntegrationTest
     create( :prices_advice, eve_item_id: @eve_item.id, trade_hub_id: @jita.id )
     # @trade_hub = TradeHub.find_by_eve_system_id( 30002544 )
 
-    create( :eve_market_history, region: region, eve_item: @eve_item, )
+    create( :eve_market_histories_group, eve_item: @eve_item, )
 
     @morphite = create( :morphite )
     create( :weekly_price_detail, eve_item: @morphite, trade_hub_id: @jita.id )

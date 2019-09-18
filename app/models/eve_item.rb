@@ -4,6 +4,9 @@ require 'pp'
 
 class EveItem < ApplicationRecord
 
+  # TODO : Use https://github.com/norman/friendly_id
+	# To have human readable urls
+
   has_and_belongs_to_many :users
   belongs_to :blueprint
 

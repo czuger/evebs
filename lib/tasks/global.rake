@@ -52,27 +52,8 @@ namespace :process do
 
       chrono = Misc::Chrono.new
 
-      ActiveRecord::Base.transaction do
-        Esi::DownloadHistorySetProcessCount.new.update
-      end
-
-      Esi::DownloadHistory.new.download
-
-      ActiveRecord::Base.transaction do
-        Process::UpdateTradeVolumeEstimationFromDownloadedHistoryData.new.update
-				Process::UpdateEveMarketHistoriesGroup.new.update
-
-        Process::DeleteOldSalesFinals.delete
-
-        # Be sure to compute avg prices weeks before to compute items costs.
-        Sql::UpdateWeeklyPriceDetails.execute
-
-        Process::UpdateEveItemsCosts.new.update
-
-        Sql::UpdatePricesAdvicesDaily.execute
-
-        Misc::LastUpdate.set( :daily )
-      end
+      CronProcesses::Daily.download_data
+      CronProcesses::Daily.update_data
 
       chrono.p
       Misc::Banner.p( 'Daily process finished', true )

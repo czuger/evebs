@@ -13,6 +13,10 @@ module Process
 
 		def transaction_update
 			from_file_to_tmp_table
+
+			# TODO : on relance le processus horaire. Verifier si les données sont toujours dans la table
+			EveMarketHistoriesGroupTmpTable.where( 'eve_item_id=919 and universe_region_id = 28' )
+
 			Sql::UpdateEveMarketHistoriesGroups.execute
 		end
 
