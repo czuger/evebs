@@ -12,6 +12,7 @@ module PriceAdvicesHelper
 
 		result
 	end
+
   def trade_hubs_or_regions( margin_type )
     return @trade_hubs_names if margin_type == :daily
     @regions_names
