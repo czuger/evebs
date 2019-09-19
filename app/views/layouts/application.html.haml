@@ -34,7 +34,7 @@
           - unless @no_title_header
             .my-3
               .row
-                .col-8
+                .col
                   %h1.ml-3{ class: ( @meta_content ? 'title-with-question-mark' : nil ) }
                     = raw( @title ? @title : 'Title to be set' )
                   = help_tooltip_from_meta_content if @meta_content
