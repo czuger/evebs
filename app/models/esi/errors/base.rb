@@ -1,9 +1,10 @@
+require 'pp'
+
 class Esi::Errors::Base < RuntimeError
 
   def self.dispatch( exception )
-    error = exception
 
-    return Esi::Errors::SocketError.new if exception.message =~ /SocketError/
+    # return Esi::Errors::SocketError.new if exception.message =~ /SocketError/
 
     case exception.message
 
@@ -27,6 +28,9 @@ class Esi::Errors::Base < RuntimeError
         error = Esi::Errors::ServiceUnavailable.new
       when '520 status code 520'
         error = Esi::Errors::UnknownError.new
+			else
+				pp exception
+        raise 'Unhandled error'
       end
 
     error
