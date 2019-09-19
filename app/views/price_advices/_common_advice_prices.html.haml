@@ -14,15 +14,17 @@
 
     %th.text-right
       Est. margin
+      = help_tooltip( :estimated_margin )
     %th.text-right Est. margin %
 
-    %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices_monthly.tooltip.volume' ) }
+    %th.text-right
       Volume
+      = help_tooltip( :volume )
 
     - if margin_type == :daily
-      %th.text-right{ 'data-toggle' => 'tooltip', title: t( 'price_advices.advice_prices.tooltip.daily_monthly' ) }
+      %th.text-right
         Daily/monthly
-        %i.glyphicon.glyphicon-question-sign
+        = help_tooltip( :daily_monthly )
 
   - @items.each do |item|
     %tr

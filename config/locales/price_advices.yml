@@ -2,15 +2,19 @@ en:
   price_advices:
     advice_prices_monthly:
       tooltip:
-        volume: Volume sold in the last 30 days
+
         price: Average price in the region on the last 30 days
         margin: 'How much you can make with that item in that hub/region.
         From left to right : the margin in percent, the raw number and the amount of the items you need to sell (margins are computed on full production batch)'
+
     advice_prices:
       tooltip:
         price: The last minimal selling price.
-        daily_monthly: This is the difference between the price of the day and the monthly average price
 
     common_advice_prices:
       tooltips:
         cost: Cost estimation based on the average prices of subcomponents. More details to come.
+        estimated_margin: '<p>An estimated margin based on the difference between the price and the cost multiplied by the percent of the monthly volume you target.</p>
+        <p>The price is either the current min price or a weekly average of the min prices.</p>'
+        volume: Volume sold in the last 30 days
+        daily_monthly: The difference between the price of the day and the monthly average price
