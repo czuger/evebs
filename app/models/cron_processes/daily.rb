@@ -1,7 +1,21 @@
 module CronProcesses
-	class Daily
+	class Daily < Base
 
-		def self.download_data
+		def run
+			Misc::Banner.p( 'Daily process started', true )
+
+			chrono = Misc::Chrono.new
+
+			download_data unless @download_disabled
+			update_data
+
+			chrono.p
+			Misc::Banner.p( 'Daily process finished', true )
+		end
+
+		private
+
+		def download_data
 			ActiveRecord::Base.transaction do
 				Esi::DownloadHistorySetProcessCount.new.update
 			end
@@ -9,7 +23,7 @@ module CronProcesses
 			Esi::DownloadHistory.new.download
 		end
 
-		def self.update_data
+		def update_data
 			ActiveRecord::Base.transaction do
 				Process::UpdateEveMarketHistoriesGroup.new.update
 				Sql::UpdateTradeVolumeEstimationFromDownloadedHistoryData.execute

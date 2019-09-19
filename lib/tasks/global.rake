@@ -47,16 +47,7 @@ namespace :process do
 
     desc 'Full process - daily'
     task :daily => :environment do
-
-      Misc::Banner.p( 'Daily process started', true )
-
-      chrono = Misc::Chrono.new
-
-      CronProcesses::Daily.download_data
-      CronProcesses::Daily.update_data
-
-      chrono.p
-      Misc::Banner.p( 'Daily process finished', true )
+      CronProcesses::Daily.new.run
     end
 
     desc 'Full process - weekly'
