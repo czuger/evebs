@@ -1,10 +1,17 @@
 module PriceAdvicesHelper
 
-  def tooltip_price( margin_type )
-    return t( 'price_advices.advice_prices.tooltip.price' ) if margin_type == :daily
-    t( 'price_advices.advice_prices_monthly.tooltip.price' )
-  end
+  def margin_detail_tooltip( item, price, margin, margin_type )
+		result = "<p>Single unit cost : <br>#{print_isk( item.single_unit_cost )}</p>"
 
+		price_lib = ( margin_type == :daily ? 'Current min price' : 'Weekly average min price' )
+		result << "<p>#{price_lib} : <br>#{print_isk( price )}</p>"
+
+		result << "<p>Single item margin : <br>#{print_isk( price - item.single_unit_cost )}</p>"
+
+		result << "<p>Target volume (#{@user.vol_month_pcent}%) : <br>#{print_volume( item.vol_month / @user.vol_month_pcent )}</p>"
+
+		result
+	end
   def trade_hubs_or_regions( margin_type )
     return @trade_hubs_names if margin_type == :daily
     @regions_names
@@ -14,10 +21,6 @@ module PriceAdvicesHelper
     name = trade_hub.name.clone
     name << ' (' + trade_hub.region.name + ')' if trade_hub.region
     name
-  end
-
-  def trade_hub_name_with_region_v2( row_data )
-    "#{row_data['trade_hubs.name']} (#{row_data['regions.name']})"
   end
 
   def price_n_margin( margin_type, item )
