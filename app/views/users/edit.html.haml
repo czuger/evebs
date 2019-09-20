@@ -1,35 +1,44 @@
 
 = form_for @user, :url => users_path do |f|
 
+  %h2 Weekly or immediate
   .row
 
-    .col
+    .col-12.col-lg
       .form-group
         = f.label :min_pcent_for_advice
         = help_tooltip :min_pcent_for_advice
 
         = f.text_field :min_pcent_for_advice, size: 5, class: 'form-control'
 
-    .col
+    .col-12.col-lg
       .form-group
         = f.label :min_amount_for_advice
         = help_tooltip :min_amount_for_advice
 
         = f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ), class: 'form-control' )
 
-    .col
+    .col-12.col-lg
       .form-group
         = f.label :vol_month_pcent
         = f.number_field :vol_month_pcent, class: 'form-control'
 
-    .col
+  %hr
+
+  %h2 Buy orders
+
+  .row
+    .col-12.col-lg#batch_cap_check
+    .form-group
+      = f.label :batch_cap
+      = f.check_box :batch_cap, 'data-toggle' => 'toggle'
+
+    .col-12.col-lg
       .form-group
         = f.label :batch_cap_multiplier
         = f.number_field :batch_cap_multiplier, class: 'form-control'
 
-  .form-group
-    = f.label :batch_cap
-    = f.check_box :batch_cap, 'data-toggle' => 'toggle'
+  %hr
 
   .row
     .col-md-12.text-center

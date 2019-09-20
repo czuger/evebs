@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_19_165719) do
+ActiveRecord::Schema.define(version: 2019_09_20_092448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -401,12 +401,12 @@ ActiveRecord::Schema.define(version: 2019_09_19_165719) do
     t.string "provider", limit: 255
     t.string "uid", limit: 255
     t.datetime "last_changes_in_choices"
-    t.integer "min_pcent_for_advice"
+    t.integer "min_pcent_for_advice", default: 20, null: false
     t.boolean "watch_my_prices"
-    t.float "min_amount_for_advice"
+    t.integer "min_amount_for_advice", default: 5000000, null: false
     t.boolean "admin", default: false, null: false
     t.boolean "batch_cap", default: true, null: false
-    t.integer "vol_month_pcent", default: 10, null: false
+    t.integer "vol_month_pcent", default: 5, null: false
     t.datetime "expires_on"
     t.string "token"
     t.string "renew_token"
@@ -415,7 +415,7 @@ ActiveRecord::Schema.define(version: 2019_09_19_165719) do
     t.datetime "last_assets_download"
     t.boolean "download_orders_running", default: false, null: false
     t.datetime "last_orders_download"
-    t.integer "batch_cap_multiplier", default: 1, null: false
+    t.integer "batch_cap_multiplier", default: 10, null: false
     t.integer "last_duplication_receiver_id"
     t.bigint "selected_assets_station_id"
     t.boolean "download_blueprints_running", default: false, null: false
@@ -496,6 +496,53 @@ ActiveRecord::Schema.define(version: 2019_09_19_165719) do
     GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
    HAVING ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
   SQL
+  create_view "price_advices_min_prices", sql_definition: <<-SQL
+      SELECT pa.id,
+      ei.id AS eve_item_id,
+      tu.id AS trade_hub_id,
+      ((((tu.name)::text || ' ('::text) || (re.name)::text) || ')'::text) AS trade_hub_name,
+      ei.name AS item_name,
+      ei.cost,
+      pm.min_price,
+      pa.avg_price_week,
+      pa.avg_price_month,
+      pa.vol_month,
+      (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
+      pa.immediate_montly_pcent,
+      pa.margin_percent,
+          CASE
+              WHEN (ei.cost = 'Infinity'::double precision) THEN 'Infinity'::double precision
+              ELSE ((pa.avg_price_month / ei.cost) - (1)::double precision)
+          END AS avg_monthly_margin_percent
+     FROM (((((prices_advices pa
+       JOIN eve_items ei ON ((pa.eve_item_id = ei.id)))
+       JOIN blueprints bp ON ((ei.blueprint_id = bp.id)))
+       JOIN trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
+       JOIN regions re ON ((re.id = tu.region_id)))
+       LEFT JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))));
+  SQL
+  create_view "user_sale_order_details", sql_definition: <<-SQL
+      SELECT uso.id,
+      uso.user_id,
+      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
+      ei.name AS eve_item_name,
+      uso.price AS my_price,
+      pm.min_price,
+      ei.cost,
+      b.prod_qtt,
+      ((pm.min_price / ei.cost) - (1)::double precision) AS min_price_margin_pcent,
+      (pm.min_price - uso.price) AS price_delta,
+      uso.eve_item_id,
+      uso.trade_hub_id,
+      ei.cpp_eve_item_id,
+      tu.eve_system_id
+     FROM (((((user_sale_orders uso
+       JOIN eve_items ei ON ((ei.id = uso.eve_item_id)))
+       JOIN blueprints b ON ((ei.blueprint_id = b.id)))
+       JOIN trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
+       JOIN regions r ON ((tu.region_id = r.id)))
+       LEFT JOIN prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id))));
+  SQL
   create_view "price_advice_margin_comps", sql_definition: <<-SQL
       SELECT prices_advices_sub_1.id,
       prices_advices_sub_1.user_id,
@@ -546,53 +593,6 @@ ActiveRecord::Schema.define(version: 2019_09_19_165719) do
                JOIN users ur ON ((thu.user_id = ur.id)))
                JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))))
             WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
-  SQL
-  create_view "price_advices_min_prices", sql_definition: <<-SQL
-      SELECT pa.id,
-      ei.id AS eve_item_id,
-      tu.id AS trade_hub_id,
-      ((((tu.name)::text || ' ('::text) || (re.name)::text) || ')'::text) AS trade_hub_name,
-      ei.name AS item_name,
-      ei.cost,
-      pm.min_price,
-      pa.avg_price_week,
-      pa.avg_price_month,
-      pa.vol_month,
-      (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
-      pa.immediate_montly_pcent,
-      pa.margin_percent,
-          CASE
-              WHEN (ei.cost = 'Infinity'::double precision) THEN 'Infinity'::double precision
-              ELSE ((pa.avg_price_month / ei.cost) - (1)::double precision)
-          END AS avg_monthly_margin_percent
-     FROM (((((prices_advices pa
-       JOIN eve_items ei ON ((pa.eve_item_id = ei.id)))
-       JOIN blueprints bp ON ((ei.blueprint_id = bp.id)))
-       JOIN trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
-       JOIN regions re ON ((re.id = tu.region_id)))
-       LEFT JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))));
-  SQL
-  create_view "user_sale_order_details", sql_definition: <<-SQL
-      SELECT uso.id,
-      uso.user_id,
-      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
-      ei.name AS eve_item_name,
-      uso.price AS my_price,
-      pm.min_price,
-      ei.cost,
-      b.prod_qtt,
-      ((pm.min_price / ei.cost) - (1)::double precision) AS min_price_margin_pcent,
-      (pm.min_price - uso.price) AS price_delta,
-      uso.eve_item_id,
-      uso.trade_hub_id,
-      ei.cpp_eve_item_id,
-      tu.eve_system_id
-     FROM (((((user_sale_orders uso
-       JOIN eve_items ei ON ((ei.id = uso.eve_item_id)))
-       JOIN blueprints b ON ((ei.blueprint_id = b.id)))
-       JOIN trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
-       JOIN regions r ON ((tu.region_id = r.id)))
-       LEFT JOIN prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id))));
   SQL
   create_view "buy_orders_analytics_results", sql_definition: <<-SQL
       SELECT boa.id,
