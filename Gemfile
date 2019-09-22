@@ -73,7 +73,7 @@ group :development, :test do
 
   gem 'capybara'
 
-  gem 'better_errors'
+  # gem 'better_errors'
 end
 
 gem 'simplecov', :require => false, :group => :test

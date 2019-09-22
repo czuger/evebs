@@ -1,7 +1,7 @@
 
 = form_for @user, :url => users_path do |f|
 
-  %h2 Weekly or immediate
+  %b Weekly or immediate
   .row
 
     .col-12.col-lg
@@ -23,15 +23,25 @@
         = f.label :vol_month_pcent
         = f.number_field :vol_month_pcent, class: 'form-control'
 
+    -# Keep it for the record. It works but is ugly on mobile
+    -#= bootstrap_field( f, :min_pcent_for_advice, 'Min percent for advice' ) do
+    -#  - f.text_field :min_pcent_for_advice, size: 5, class: 'form-control'
+    -#
+    -#= bootstrap_field f, :min_amount_for_advice, 'Min amount for advice' do
+    -#  - f.text_field( :min_amount_for_advice, size: 30, value: number_with_delimiter( f.object.min_amount_for_advice, delimiter: ' ' ), class: 'form-control' )
+    -#
+    -#= bootstrap_field f, :vol_month_pcent, 'Vol month percent' do
+    -#  - f.number_field :vol_month_pcent, class: 'form-control'
+
   %hr
 
-  %h2 Buy orders
+  %b Buy orders
 
   .row
     .col-12.col-lg#batch_cap_check
-    .form-group
-      = f.label :batch_cap
-      = f.check_box :batch_cap, 'data-toggle' => 'toggle'
+      .form-group
+        = f.label :batch_cap
+        = f.check_box :batch_cap, 'data-toggle' => 'toggle'
 
     .col-12.col-lg
       .form-group

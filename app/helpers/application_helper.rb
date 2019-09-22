@@ -41,7 +41,7 @@ module ApplicationHelper
 	end
 
   def help_tooltip( tt_code )
-    fa_icon 'question-circle', 'data-toggle' => 'tooltip', title: t( '.tooltips.' + tt_code.to_s )
+    fa_icon 'question-circle', 'data-toggle' => 'tooltip', title: t( '.tooltips.' + tt_code.to_s ), class: 'help-tooltip'
   end
 
   def help_tooltip_with_link( tt_code, link )
