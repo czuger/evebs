@@ -39,7 +39,7 @@
         = print_isk( margin )
 
       %td.text-right
-        = print_pcent( 1 - item.single_unit_cost / price )
+        = print_pcent( item.margin_percent )
 
       %td.text-right.information_highlight_left=print_volume(item.vol_month)
 
