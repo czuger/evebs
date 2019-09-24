@@ -9,7 +9,7 @@ class ItemsController < ApplicationController
   include Modules::CheckedProductionListIds
 
   def show
-    @item = EveItem.find_by( id: params[ :id ] )
+    @item = EveItem.friendly.find( params[ :id ] )
     get_jita
 
     @meta_title = "Information about #{@item.name}"

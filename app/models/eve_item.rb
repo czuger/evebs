@@ -7,6 +7,9 @@ class EveItem < ApplicationRecord
   # TODO : Use https://github.com/norman/friendly_id
 	# To have human readable urls
 
+	extend FriendlyId
+	friendly_id :name, use: :slugged
+
   has_and_belongs_to_many :users
   belongs_to :blueprint
 

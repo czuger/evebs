@@ -98,3 +98,5 @@ gem 'font-awesome-rails'
 gem 'time_difference'
 
 gem 'get_process_mem'
+
+gem 'friendly_id', '~> 5.2.4'
