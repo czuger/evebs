@@ -2,11 +2,11 @@
 SitemapGenerator::Sitemap.default_host = 'https://evebs.ieroe.com'
 
 ITEMS_PRIORITIES = {
-	'Drones' => 1,
+	'Drones' => 0.9,
 	'Ship Equipment' => 0.8,
 	'Manufacture & Research' => 0.7,
 	'Ship and Module Modifications' => 0.1,
-	'Ammunition & Charges' => 1,
+	'Ammunition & Charges' => 0.9,
 	'Structures' => 0.2,
 	'Trade Goods' => 0,
 	'Special Edition Assets' => 0,
