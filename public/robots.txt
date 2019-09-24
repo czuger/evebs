@@ -7,3 +7,5 @@
 User-agent: *
 Disallow: /sessions
 Disallow: /auth
+
+Sitemap: https://evebs.ieroe.com/sitemap.xml.gz

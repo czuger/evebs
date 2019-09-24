@@ -5,6 +5,8 @@ SitemapGenerator::Sitemap.create do
 
   @jita = TradeHub.find_by_eve_system_id(30000142)
 
+	add root_path
+
   EveItem.find_each do |item|
     add item_path(item), changefreq: :weekly
 
