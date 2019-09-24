@@ -9,7 +9,7 @@ class ProductionCostsController < ApplicationController
 	MARKET_HISTORIES_TITLE = 'Regional information about '
 
   def show
-    @item = EveItem.find_by( id: params[ :id ] )
+    @item = EveItem.friendly.find( params[ :id ] )
 
 		raise "Should not be called only for base item : #{@item.inspect}" if @item.base_item
 
@@ -24,7 +24,7 @@ class ProductionCostsController < ApplicationController
 
   # We put this here to ease the cache management
   def dailies_avg_prices
-    @item = EveItem.find_by( id: params[ :item_id ] )
+    @item = EveItem.friendly.find( params[ :item_id ] )
 
 		raise "Should be called only for base item : #{@item.inspect}" unless @item.base_item
 
@@ -37,7 +37,7 @@ class ProductionCostsController < ApplicationController
   end
 
   def market_histories
-		@item = EveItem.find_by( id: params[ :production_cost_id ] )
+		@item = EveItem.friendly.find( params[ :production_cost_id ] )
 
 		@title = MARKET_HISTORIES_TITLE + view_context.link_to( @item.name, item_path( @item ) )
 
