@@ -1,10 +1,12 @@
 - if @breadcrumb
   .my-4
     .d-none.d-lg-block
+      -# On wide screens
       - @breadcrumb.each_with_index do |bc, i|
         = ' > ' if i > 0
         = link_to bc.name, bc.url
     .d-lg-none
+      -# On mobile
       - @breadcrumb.last(2).each_with_index do |bc, i|
         = ' > '
         = link_to bc.name, bc.url

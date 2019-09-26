@@ -22,36 +22,30 @@
   %body{ data:{ rails_env: Rails.env } }
 
 
-    -##page-content
+    #page-content
 
-    .container-fluid
+      .container-fluid
 
-      = render partial: 'layouts/menu'
-      = render partial: 'shared/errors'
+        = render partial: 'layouts/menu'
+        = render partial: 'shared/errors'
 
-      %div{ class: ( :container if @small_screen ) }
+        .d-none.d-lg-block
+          -# On wide screens
+          %div{ class: ( :container if @small_screen ) }
+            = render partial: 'layouts/body'
 
-        = render partial: 'layouts/breadcrumb'
+        .d-lg-none
+          -# On mobile
+          = render partial: 'layouts/body'
 
-        - unless @no_title_header
-          .my-3
-            .row
-              .col
-                %h1.ml-3{ class: ( @meta_content ? 'title-with-question-mark' : nil ) }
-                  = raw( @title ? @title : 'Title to be set' )
-                = help_tooltip_from_meta_content if @meta_content
 
-        .mx-3
-          = yield
 
     // Footer code found here : https://startbootstrap.com/snippets/sticky-footer-flexbox/
-    -#%footer#sticky-footer
-    -#  .container.text-center
-    -#    %span.text-muted
-    -#      - if @last_update_type
-    -#        = show_last_update
-    -#        \-
-    -#      version 0.1-CHANGE_TO_VERSION_NUMBER
+    %footer#sticky-footer
+      .container.text-center
+        %span.text-muted
+          - if @last_update_type
+            = show_last_update
+            \-
+          version 0.1-CHANGE_TO_VERSION_NUMBER
 
-
-  = hidden_field_tag :rails_mode, Rails.env
