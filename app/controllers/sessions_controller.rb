@@ -13,6 +13,9 @@ class SessionsController < ApplicationController
     user = User.from_omniauth(request.env['omniauth.auth'])
     raise "User can't be found : #{user}" unless user
     session[:user_id] = user.id
+
+		default_package( user )
+
     redirect_to buy_orders_path
   end
 
@@ -24,5 +27,21 @@ class SessionsController < ApplicationController
   def failure
     redirect_to new_sessions_path, alert: "Authentication failed, please try again."
   end
+
+	private
+
+	def default_package( user )
+		# User monitor Jita
+		user.trade_hubs << TradeHub.find_by_eve_system_id( 30000142 )
+		user.trade_hubs << TradeHub.find_by_eve_system_id( 30002187 )
+
+		[ 973, 972, 927, 917].each do |group|
+			MarketGroup.find_by_cpp_market_group_id( group ).eve_items.each do |item|
+				user.eve_items << item
+			end
+
+		end
+
+	end
 
 end

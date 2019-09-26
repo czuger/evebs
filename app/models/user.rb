@@ -2,7 +2,7 @@ require 'digest'
 
 class User < ApplicationRecord
 
-  has_many :blueprint_modifications
+  has_many :blueprint_modifications, dependent: :destroy
   has_many :components_to_buys_details
 
   has_and_belongs_to_many :eve_items
@@ -13,7 +13,7 @@ class User < ApplicationRecord
   has_many :blueprint_materials, through: :blueprints
   has_many :blueprint_components, through: :materials
 
-  has_many :components_to_buys, dependent: :delete_all
+  has_many :components_to_buys
 
   has_many :user_sale_orders, dependent: :destroy
   has_many :user_sale_order_details
@@ -24,8 +24,8 @@ class User < ApplicationRecord
   has_many :user_to_user_duplication_requests_as_senders, class_name: 'UserToUserDuplicationRequest', foreign_key: :sender_id, dependent: :destroy
   has_many :user_to_user_duplication_requests_as_receivers, class_name: 'UserToUserDuplicationRequest', foreign_key: :receiver_id, dependent: :destroy
 
-  has_many :bpc_assets
-  has_many :bpc_assets_stations
+  has_many :bpc_assets, dependent: :destroy
+  has_many :bpc_assets_stations, dependent: :destroy
   has_many :bpc_assets_stations_details, through: :bpc_assets_stations, source: :universe_station
   has_many :bpc_assets_download_errors
 
