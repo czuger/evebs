@@ -1,7 +1,7 @@
 .container
 
-  .alert.alert-warning.my-3
-    This tool is still in development, and screens may change. Final version about to come.
+  -#.alert.alert-warning.my-3
+  -#  This tool is still in development, and screens may change. Final version about to come.
 
   %h1.pt-4.pb-1
     Eve industrial tool
@@ -10,27 +10,33 @@
     Eve Online industrial could find some usefull tools :
 
   .row.py-4
-    .col.text-center
-      = fa_icon 'compass 5x'
+    .col-12.col-md.text-center.mb-3
+      = fa_icon 'money-check 5x'
       %br
-      Best profits advisor
-
-    .col.text-center
-      = fa_icon 'chart-line 5x'
-      -#= fa_icon 'compass 5x'
+      = link_to 'Example', item_path( 'nova-rage-rocket' )
       %br
-      Trades hub prices comparison
+      Information about items
 
-    .col.text-center
-      = fa_icon 'industry 5x'
-      %br
-      Production costs
-
-    .col.text-center
+    .col-12.col-md.text-center.mb-3
       = fa_icon 'search-dollar 5x'
-      -#= fa_icon 'calculator 5x'
       %br
-      Buy and sells earnings
+      = link_to 'Example', production_cost_path( 'nova-rage-rocket' )
+      %br
+      Items production cost estimation
+
+    .col-12.col-md.text-center.mb-3
+      = fa_icon 'globe 5x'
+      %br
+      = link_to 'Example', production_cost_market_histories_path( 'nova-rage-rocket' )
+      %br
+      Regional summary prices and volumes about items
+
+    .col-12.col-md.text-center.mb-3
+      = fa_icon 'percent 5x'
+      %br
+      = link_to 'Example', market_data_market_overview_path( 'nova-rage-rocket' )
+      %br
+      Margin comparison between trade hubs for items
 
   -#
   -#  .col.text-center
