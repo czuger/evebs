@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_24_100730) do
+ActiveRecord::Schema.define(version: 2019_09_26_090502) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -434,6 +434,7 @@ ActiveRecord::Schema.define(version: 2019_09_24_100730) do
     t.boolean "download_blueprints_running", default: false, null: false
     t.datetime "last_blueprints_download"
     t.integer "sales_orders_show_margin_min"
+    t.boolean "initialization_finalized", default: false, null: false
   end
 
   create_table "weekly_price_details", force: :cascade do |t|

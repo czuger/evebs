@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
     raise "User can't be found : #{user}" unless user
     session[:user_id] = user.id
 
-		default_package( user )
+		set_default_package( user )
 
     redirect_to buy_orders_path
   end
@@ -30,16 +30,24 @@ class SessionsController < ApplicationController
 
 	private
 
-	def default_package( user )
-		# User monitor Jita
-		user.trade_hubs << TradeHub.find_by_eve_system_id( 30000142 )
-		user.trade_hubs << TradeHub.find_by_eve_system_id( 30002187 )
+	def set_default_package( user )
+		return if user.initialization_finalized
 
-		[ 973, 972, 927, 917].each do |group|
-			MarketGroup.find_by_cpp_market_group_id( group ).eve_items.each do |item|
-				user.eve_items << item
+		User.transaction do
+			# User monitor Jita and Amarr
+			[ 30000142, 30002187 ].each do |th_id|
+				th = TradeHub.find_by_eve_system_id( th_id )
+				user.trade_hubs << th unless user.trade_hubs.exists?( th.id )
 			end
 
+			[ 973, 972, 927, 917].each do |group|
+				MarketGroup.find_by_cpp_market_group_id( group ).eve_items.each do |item|
+					user.eve_items << item unless user.eve_items.exists?( item.id )
+				end
+			end
+
+			user.initialization_finalized = true
+			user.save!
 		end
 
 	end
