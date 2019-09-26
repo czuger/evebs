@@ -4,39 +4,75 @@
   -#  This tool is still in development, and screens may change. Final version about to come.
 
   %h1.pt-4.pb-1
-    Eve industrial tool
+    Eve online business advisor
 
-  %h4.py-1
-    Eve Online industrial could find some usefull tools :
+  %p
+    I first designed it because I wanted a lazy tool that show me what to produce and where to sell it with the best margin.
+    Then added a lots of tools. Hope you will help you to make millions as I did. And anyway, fly safe :)
 
-  .row.py-4
-    .col-12.col-md.text-center.mb-3
-      = fa_icon 'money-check 5x'
-      %br
-      = link_to 'Example', item_path( 'nova-rage-rocket' )
-      %br
-      Information about items
+  %b Is this tool for me ?
 
-    .col-12.col-md.text-center.mb-3
-      = fa_icon 'search-dollar 5x'
-      %br
-      = link_to 'Example', production_cost_path( 'nova-rage-rocket' )
-      %br
-      Items production cost estimation
+  %p
+    If you are playing Eve Online and you are an industrial or a trader, definitely yes.
+  %p
 
-    .col-12.col-md.text-center.mb-3
-      = fa_icon 'globe 5x'
-      %br
-      = link_to 'Example', production_cost_market_histories_path( 'nova-rage-rocket' )
-      %br
-      Regional summary prices and volumes about items
+  %b What's in the public part ?
 
-    .col-12.col-md.text-center.mb-3
-      = fa_icon 'percent 5x'
-      %br
-      = link_to 'Example', market_data_market_overview_path( 'nova-rage-rocket' )
-      %br
-      Margin comparison between trade hubs for items
+  %p
+    Lots of economic information (click below to see an example) :
+
+    .row
+      .col-12.col-lg.mt-1
+        = link_to 'Information about items', item_path( 'nova-rage-rocket' ), class: 'btn btn-primary btn-block active'
+      .col-12.col-lg.mt-1
+        = link_to 'Items production cost', production_cost_path( 'nova-rage-rocket' ), class: 'btn btn-primary btn-block active'
+      .col-12.col-lg.mt-1
+        = link_to 'Regional prices and volumes', production_cost_market_histories_path( 'nova-rage-rocket' ), class: 'btn btn-primary btn-block active'
+      .col-12.col-lg.mt-1
+        = link_to 'Margin comparisons', market_data_market_overview_path( 'nova-rage-rocket' ), class: 'btn btn-primary btn-block active'
+
+  %b What's in the private part ? Why would I sign in ?
+
+  %p
+    By signing in, you can select the items and the trade hubs you want to monitor. Then you will have personalize tables showing you
+    items with the best margin. You can also filter your tables (for example : show me the items with a margin of at least 50 Millions ISK and 30%).
+  %p
+    I'm working on examples to show.
+
+
+  -#%b What will you find in it ?
+  -#
+  -#%b
+  -#  Eve Online industrial could find some usefull tools :
+  -#
+  -#.row.py-4
+  -#  .col-12.col-md.text-center.mb-3
+  -#    = fa_icon 'money-check 5x'
+  -#    %br
+  -#    = link_to 'Example', item_path( 'nova-rage-rocket' )
+  -#    %br
+  -#    Information about items
+  -#
+  -#  .col-12.col-md.text-center.mb-3
+  -#    = fa_icon 'search-dollar 5x'
+  -#    %br
+  -#    = link_to 'Example', production_cost_path( 'nova-rage-rocket' )
+  -#    %br
+  -#    Items production cost estimation
+  -#
+  -#  .col-12.col-md.text-center.mb-3
+  -#    = fa_icon 'globe 5x'
+  -#    %br
+  -#    = link_to 'Example', production_cost_market_histories_path( 'nova-rage-rocket' )
+  -#    %br
+  -#    Regional summary prices and volumes about items
+  -#
+  -#  .col-12.col-md.text-center.mb-3
+  -#    = fa_icon 'percent 5x'
+  -#    %br
+  -#    = link_to 'Example', market_data_market_overview_path( 'nova-rage-rocket' )
+  -#    %br
+  -#    Margin comparison between trade hubs for items
 
   -#
   -#  .col.text-center
@@ -71,4 +107,4 @@
   -#    Don't lower prices beyond profit limit
 
   .text-center.py-4
-    = button_to 'Sign in for custom results', '/auth/eve_online_sso', id: 'sign_in', method: :post, class: 'btn-lg btn-warning'
+    = button_to 'Sign in', '/auth/eve_online_sso', id: 'sign_in', method: :post, class: 'btn-lg btn-warning'
