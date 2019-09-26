@@ -1,35 +1,13 @@
--#- if @user
--#  .mr-3
--#    = link_to 'Clear list', clear_list_items_path, class: 'btn btn-secondary'
-
--#%table.table.table-hover
--#  %thead
--#    %tr
--#      - if @user
--#        %th.text-center Selected
--#
--#      %th
--#        Name
--#
--#  %tbody
--#    - @items.each do |item|
--#      %tr
--#        - if @user
--#          %td.text-center
--#            = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: :item_checkbox, item_id: item.id
--#
--#        %td= link_to( item.name, item_path( item ) )
-
 %ul.list-group
-  -#- @groups.each do |group|
-  -#  = link_to group.name, all_items_list_list_items_path( group_id: group.id ), class: 'list-group-item list-group-item-action'
 
   - @items.each do |item|
     - if @item_ids
       %li.list-group-item.d-flex.justify-content-between.align-items-center
-
         .mr-1
           = check_box_tag "items[#{item.id}]", 1, @item_ids.include?( item.id ), class: 'item_checkbox', item_id: item.id,
             'data-toggle' => 'toggle', 'data-on' => 'Watch', 'data-off' => 'Ignore', 'data-size' => 'large'
 
         = link_to item.name, item_path( item.slug ), class: 'list-group-item list-group-item-action'
+
+    - else
+      = link_to item.name, item_path( item.slug ), class: 'list-group-item list-group-item-action'
