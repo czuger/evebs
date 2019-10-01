@@ -6,44 +6,45 @@
       = label_tag 'select_items', 'Items'
       = select( 'select', 'items', @item_names, {include_blank: 'All'}, class: 'form-control' )
 
-%table.table
-  %tr
-    -#%th Prod. list
-    %th Trade hub
-    %th Item
-
-    %th.text-right
-      Est. margin
-      = help_tooltip( :estimated_margin )
-    %th.text-right Est. margin %
-
-    %th.text-right
-      Volume
-      = help_tooltip( :volume )
-
-    - if margin_type == :daily
-      %th.text-right
-        Daily/monthly
-        = help_tooltip( :daily_monthly )
-
-  - @items.each do |item|
+.table-responsive-md
+  %table.table
     %tr
-      -#%td.text-center= production_list_check_box( item )
-      %td.trade_hub_name=item.trade_hub_name + " (#{item.region_name})"
+      -#%th Prod. list
+      %th Trade hub
+      %th Item
 
-      %td.item_name= link_to( item.item_name, item_path( item.item_id ), target: '_blank' )
+      %th.text-right
+        Est. margin
+        = help_tooltip( :estimated_margin )
+      %th.text-right Est. margin %
 
-      - price, margin = price_n_margin( margin_type, item )
-
-      %td.text-right{ 'data-toggle' => 'tooltip', title: margin_detail_tooltip( item, price, margin, margin_type ) }
-        = print_isk( margin )
-
-      %td.text-right
-        = print_pcent( item.margin_percent )
-
-      %td.text-right.information_highlight_left=print_volume(item.vol_month)
+      %th.text-right
+        Volume
+        = help_tooltip( :volume )
 
       - if margin_type == :daily
-        %td.text-right.information_highlight_left=print_pcent( item.daily_monthly_pcent )
+        %th.text-right
+          Daily/monthly
+          = help_tooltip( :daily_monthly )
+
+    - @items.each do |item|
+      %tr
+        -#%td.text-center= production_list_check_box( item )
+        %td.trade_hub_name=item.trade_hub_name + " (#{item.region_name})"
+
+        %td.item_name= link_to( item.item_name, item_path( item.item_id ), target: '_blank' )
+
+        - price, margin = price_n_margin( margin_type, item )
+
+        %td.text-right{ 'data-toggle' => 'tooltip', title: margin_detail_tooltip( item, price, margin, margin_type ) }
+          = print_isk( margin )
+
+        %td.text-right
+          = print_pcent( item.margin_percent )
+
+        %td.text-right.information_highlight_left=print_volume(item.vol_month)
+
+        - if margin_type == :daily
+          %td.text-right.information_highlight_left=print_pcent( item.daily_monthly_pcent )
 
 = will_paginate @items

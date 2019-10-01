@@ -1,26 +1,27 @@
-%table.table.table-hover
-  %tr
-    -#%th
-    %th Trade hub
-    %th Item
-
-    %th.text-right Est. margin
-    %th.text-right Est. margin %
-    %th.text-right Estimated buy volume
-
-  - @buy_orders.each do |cp|
+.table-responsive-md
+  %table.table.table-hover
     %tr
-      -#%td.text-center= production_list_check_box( cp )
-      %td.trade_hub_name= cp.trade_hub_name
-      %td.item_name= link_to( cp.eve_item_name, item_url( cp.eve_item_id ) )
+      -#%th
+      %th Trade hub
+      %th Item
 
-      - final_margin = @user.batch_cap ? cp.capped_margin : cp.full_margin
-      %td.text-right{ 'data-toggle' => 'tooltip', title: buy_orders_margin_detail_tooltip( cp, final_margin ) }
-        = print_isk( final_margin )
+      %th.text-right Est. margin
+      %th.text-right Est. margin %
+      %th.text-right Estimated buy volume
 
-      %td.text-right
-        = print_pcent( cp.margin_pcent )
+    - @buy_orders.each do |cp|
+      %tr
+        -#%td.text-center= production_list_check_box( cp )
+        %td.trade_hub_name= cp.trade_hub_name
+        %td.item_name= link_to( cp.eve_item_name, item_url( cp.eve_item_id ) )
 
-      %td.text-right= print_volume( cp.over_approx_max_price_volume )
+        - final_margin = @user.batch_cap ? cp.capped_margin : cp.full_margin
+        %td.text-right{ 'data-toggle' => 'tooltip', title: buy_orders_margin_detail_tooltip( cp, final_margin ) }
+          = print_isk( final_margin )
+
+        %td.text-right
+          = print_pcent( cp.margin_pcent )
+
+        %td.text-right= print_volume( cp.over_approx_max_price_volume )
 
 = will_paginate @buy_orders

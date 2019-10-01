@@ -1,22 +1,23 @@
-%table.table.my-3
-  %thead
-    %tr
-      %th.text-left Region
-      %th.text-right Volume
-      %th.text-right Avg price
-      %th.text-right Max price
-      %th.text-right Min price
-
-  %tbody
-    - @market_histories.each do |mh|
+.table-responsive-md
+  %table.table.my-3
+    %thead
       %tr
-        %td.text-left
-          = mh.region_name
-        %td.text-right
-          = print_volume mh.volume.round
-        %td.text-right
-          = print_isk mh.average
-        %td.text-right
-          = print_isk mh.highest
-        %td.text-right
-          = print_isk mh.lowest
+        %th.text-left Region
+        %th.text-right Volume
+        %th.text-right Avg price
+        %th.text-right Max price
+        %th.text-right Min price
+
+    %tbody
+      - @market_histories.each do |mh|
+        %tr
+          %td.text-left
+            = mh.region_name
+          %td.text-right
+            = print_volume mh.volume.round
+          %td.text-right
+            = print_isk mh.average
+          %td.text-right
+            = print_isk mh.highest
+          %td.text-right
+            = print_isk mh.lowest
