@@ -1,5 +1,11 @@
 module PriceAdvicesHelper
 
+	AMOUNTS = { billion: { amount: 10.0 ** 9, unit: 'B'.freeze },
+							million: { amount: 10.0 ** 6, unit: 'M'.freeze },
+							kilo: { amount: 10.0 ** 3, unit: 'K'.freeze } }
+
+	ORDERED_AMOUNTS = [ :billion, :million, :kilo ]
+
   def margin_detail_tooltip( item, price, margin, margin_type )
 		result = "<p>Single unit cost : <br>#{print_isk( item.single_unit_cost )}</p>"
 
@@ -67,21 +73,63 @@ module PriceAdvicesHelper
   def print_routine( amount, kind, million_round: nil )
     case kind
       when :volume
-        number_with_delimiter(amount, separator: ",", delimiter: " ",)
+        # number_with_delimiter(amount, separator: ",", delimiter: " ",)
+
+				to_small_number( amount )
       when :isk
-        unit = 'ISK '
+        unit = ''
 
-        if million_round && amount >= 1000000
-          amount /= 1000000.0
-          unit = 'M ISK '
-        end
+        # if million_round && amount >= 1000000
+        #   amount /= 1000000.0
+        #   unit = 'M'
+        # end
 
-        number_to_currency(amount.round(2), unit: unit, separator: ",", delimiter: " ", format: '%n %u')
+        # number_to_currency(amount.round(2), unit: unit, separator: ",", delimiter: " ", format: '%n %u')
+
+				to_small_number( amount )
       when :pcent, :pcent_nomultiply
         amount = amount * 100.0 if kind == :pcent
         number_with_delimiter(amount.round( 2 ), separator: ",", delimiter: " ",) + ' %'
       else
     end
-  end
+	end
+
+	def to_small_number( amount )
+		ORDERED_AMOUNTS.each do |oa_key|
+			if amount >= AMOUNTS[oa_key][:amount]
+				new_amount = amount / AMOUNTS[oa_key][:amount]
+				return format_small_number( new_amount ) + AMOUNTS[oa_key][:unit]
+			end
+		end
+
+		format_small_number amount
+	end
+
+	def format_small_number( new_amount )
+		print_format =
+			case new_amount
+				when 0..9
+					'%1.2f'
+				when 10..99
+					'%2.1f'
+				else
+					'%3.0f'
+			end
+
+		return ( print_format % new_amount )
+	end
+
+	# TODO : mettre en place des nombres plus petits sur 4 caractères max (incluant l'unité)
+	# Ne pas mettre que c'est des isk, les gens s'en doutent bien
+	# Genre :
+	# 1,35M
+	# 35,4K
+	# 358
+	# 389K
+
+	# Etc ...
+
+	# TODO : sur mobile, afficher la taille du breadcrumb en fonction du nombre de caractères du dernier élément.
+	# Utiliser un partial avec une variable locale
 
 end
