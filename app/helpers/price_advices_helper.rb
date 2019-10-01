@@ -119,16 +119,6 @@ module PriceAdvicesHelper
 		return ( print_format % new_amount )
 	end
 
-	# TODO : mettre en place des nombres plus petits sur 4 caractères max (incluant l'unité)
-	# Ne pas mettre que c'est des isk, les gens s'en doutent bien
-	# Genre :
-	# 1,35M
-	# 35,4K
-	# 358
-	# 389K
-
-	# Etc ...
-
 	# TODO : sur mobile, afficher la taille du breadcrumb en fonction du nombre de caractères du dernier élément.
 	# Utiliser un partial avec une variable locale
 
