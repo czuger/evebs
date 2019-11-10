@@ -18,6 +18,12 @@ class ActiveSupport::TestCase
 
 		@user = create( :user )
 
+		# Jita and amarr are required for all connections as they are set by default as linked trade hubs on user creation
+		@jita = create( :jita )
+		@amarr = create( :amarr )
+
+		# pp TradeHub.all
+
 		esi_auth_hash =
 			{
 				:provider => 'eve_online_sso',

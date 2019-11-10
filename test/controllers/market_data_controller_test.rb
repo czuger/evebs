@@ -3,13 +3,12 @@ require 'test_helper'
 class MarketDataControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = create( :user, last_assets_download: Time.now )
-    post '/auth/developer/callback', params: { name: @user.name }
+    esi_fake_login
 
     @blueprint = create( :blueprint )
 
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id  )
-    @trade_hub = create( :jita )
+    @trade_hub = @jita
 
     create( :prices_min, eve_item: @eve_item, trade_hub: @trade_hub )
     create( :prices_advice, eve_item: @eve_item, trade_hub: @trade_hub )

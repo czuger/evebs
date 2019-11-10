@@ -8,7 +8,6 @@ class ProductionListsControllerTest < ActionDispatch::IntegrationTest
     @blueprint = create( :blueprint )
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
     @trade_hub = create( :rens )
-    create( :jita )
 
     @second_user = create( :user )
   end

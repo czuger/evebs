@@ -37,12 +37,14 @@ class SessionsController < ApplicationController
 			# User monitor Jita and Amarr
 			[ 30000142, 30002187 ].each do |th_id|
 				th = TradeHub.find_by_eve_system_id( th_id )
-				user.trade_hubs << th unless user.trade_hubs.exists?( th.id )
+				if th
+					user.trade_hubs << th unless ( user.trade_hubs.exists?( th.id ) )
+				end
 			end
 
-			[ 973, 972, 927, 917].each do |group|
-				MarketGroup.find_by_cpp_market_group_id( group ).eve_items.each do |item|
-					user.eve_items << item unless user.eve_items.exists?( item.id )
+			[ 973, 972, 927, 917 ].each do |group|
+				MarketGroup.find_by_cpp_market_group_id( group )&.eve_items&.each do |item|
+					user.eve_items << item unless user.eve_items.exists?( item&.id )
 				end
 			end
 

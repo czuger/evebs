@@ -8,7 +8,7 @@ class BuyOrdersControllerTest < ActionDispatch::IntegrationTest
     @blueprint = create( :blueprint )
 
     @eve_item = create( :inferno_fury_cruise_missile, blueprint_id: @blueprint.id )
-    @trade_hub = create( :jita )
+    @trade_hub = @jita
 
     @user.eve_items << @eve_item
     @user.trade_hubs << @trade_hub

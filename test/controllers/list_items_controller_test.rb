@@ -9,7 +9,6 @@ class ListItemsControllerTest < ActionDispatch::IntegrationTest
     @user.reload
 
     @item = create( :inferno_fury_cruise_missile )
-    create( :jita )
   end
 
   # test 'should get edit' do
