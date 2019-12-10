@@ -11,9 +11,7 @@ module Killmails
     SYSTEMS = [ 30000013, 30001398 ]
     DB_FILE = 'tmp/old_killmails.yaml'
 
-    def find_individuals
-      load_db
-
+    def find
       requests = []
       INDIVIDUALS.each do |i|
         request = open( "https://zkillboard.com/api/kills/characterID/#{i}/" )
@@ -25,70 +23,59 @@ module Killmails
         sleep 1
       end
 
-      puts "#{requests.count} individuals to check"
-
-      requests.each do |r|
-        r = OpenStruct.new( r )
-        # r.zkb = OpenStruct.new( r.zkb )
-
-        next if @old_db.include?( r.killmail_id )
-
-        e = Esi::Download.new( "killmails/#{r.killmail_id}/#{r.zkb['hash']}/", {}, debug_request: false )
-        page = OpenStruct.new( e.get_page )
-        page.killmail_time = DateTime.parse( page.killmail_time )
-
-        if page.killmail_time > Time.now - 1.hours
-          p page
-        else
-          puts "#{page.killmail_id} too old : #{page.killmail_time}"
-          # p page.killmail_id
-          # p @old_db
-          @old_db << page.killmail_id
-          # p @old_db
-        end
+      SYSTEMS.each do |i|
+        request = open( "https://zkillboard.com/api/solarSystemID/#{i}/" )
+        requests += JSON.parse( request.read )
       end
 
-      save_db
-    end
+      puts "#{requests.count} killmails to check"
 
-    def check_systems
-      load_db
-
-      requests = []
-      INDIVIDUALS.each do |i|
-        request = open( "https://zkillboard.com/api/kills/characterID/#{i}/" )
-
-        json_result = request.read
-        requests += JSON.parse( json_result )
-      end
-
-      puts "#{requests.count} individuals to check"
-
-      requests.each do |r|
-        r = OpenStruct.new( r )
-        # r.zkb = OpenStruct.new( r.zkb )
-
-        next if @old_db.include?( r.killmail_id )
-
-        e = Esi::Download.new( "killmails/#{r.killmail_id}/#{r.zkb['hash']}/", {}, debug_request: false )
-        page = OpenStruct.new( e.get_page )
-        page.killmail_time = DateTime.parse( page.killmail_time )
-
-        if page.killmail_time > Time.now - 1.hours
-          p page
-        else
-          puts "#{page.killmail_id} too old : #{page.killmail_time}"
-          # p page.killmail_id
-          # p @old_db
-          @old_db << page.killmail_id
-          # p @old_db
-        end
-      end
-
-      save_db
+      analyze_killmails requests
     end
 
     private
+
+    def analyze_killmails( requests )
+      load_db
+
+      puts "#{requests.count} individuals to check"
+
+      requests.each do |r|
+        r = OpenStruct.new( r )
+        # r.zkb = OpenStruct.new( r.zkb )
+
+        next if @old_db.include?( r.killmail_id )
+
+        e = Esi::Download.new( "killmails/#{r.killmail_id}/#{r.zkb['hash']}/", {}, debug_request: false )
+        page = OpenStruct.new( e.get_page )
+        page.killmail_time = DateTime.parse( page.killmail_time )
+
+        if page.killmail_time > Time.now.to_datetime.gmtime - 4.hours
+          # p page
+
+          page.attackers.each do |attacker|
+            e = Esi::Download.new( "characters/#{attacker['character_id']}/", {}, debug_request: false )
+            character = OpenStruct.new( e.get_page )
+            name = character.name
+
+            e = Esi::Download.new( "universe/systems/#{page.solar_system_id}/", {}, debug_request: false )
+            system_data = OpenStruct.new( e.get_page )
+            system_name = system_data.name
+
+            time = page.killmail_time.localtime
+            puts "#{name} spotted in #{system_name} at #{time}"
+          end
+        else
+          puts "#{page.killmail_id} too old : #{page.killmail_time}"
+          # p page.killmail_id
+          # p @old_db
+          @old_db << page.killmail_id
+          # p @old_db
+        end
+      end
+
+      save_db
+    end
 
     def load_db
       Misc::Banner.p 'DB loaded'

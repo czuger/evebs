@@ -12,8 +12,7 @@ namespace :killmails do
 
   desc 'Check individuals and systems'
   task :check_individuals_and_systems => [ :environment ] do
-    Killmails::CheckIndividualsAndSystems.new.find_individuals
-    # Killmails::CheckIndividualsAndSystems.new.check_systems
+    Killmails::CheckIndividualsAndSystems.new.find
   end
 
 end
