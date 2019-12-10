@@ -10,4 +10,10 @@ namespace :killmails do
     Killmails::SoloHunter.new.show
   end
 
+  desc 'Check individuals and systems'
+  task :check_individuals_and_systems => [ :environment ] do
+    Killmails::CheckIndividualsAndSystems.new.find_individuals
+    # Killmails::CheckIndividualsAndSystems.new.check_systems
+  end
+
 end
