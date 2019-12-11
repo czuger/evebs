@@ -8,7 +8,7 @@ module Killmails
   class CheckIndividualsAndSystems
 
     INDIVIDUALS = [ 2112875566, 96200467, 91808281, 93915289 ]
-    SYSTEMS = [ 30000013, 30001398 ]
+    SYSTEMS = [ 30000013, 30001398, 30002756 ]
     DB_FILE = 'tmp/old_killmails.yaml'
 
     def find
@@ -50,11 +50,14 @@ module Killmails
         page = OpenStruct.new( e.get_page )
         page.killmail_time = DateTime.parse( page.killmail_time )
 
-        if page.killmail_time > Time.now.to_datetime.gmtime - 4.hours
+        if page.killmail_time > Time.now.to_datetime.gmtime - 1.hours
           # p page
 
           page.attackers.each do |attacker|
             e = Esi::Download.new( "characters/#{attacker['character_id']}/", {}, debug_request: false )
+
+            next unless attacker['character_id']
+
             character = OpenStruct.new( e.get_page )
             name = character.name
 
@@ -66,7 +69,7 @@ module Killmails
             puts "#{name} spotted in #{system_name} at #{time}"
           end
         else
-          puts "#{page.killmail_id} too old : #{page.killmail_time}"
+          # puts "#{page.killmail_id} too old : #{page.killmail_time}"
           # p page.killmail_id
           # p @old_db
           @old_db << page.killmail_id
