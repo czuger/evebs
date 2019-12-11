@@ -4,7 +4,6 @@ development:
   database: dev
   pool: 5
   username: dev
-  password: dev
   host: localhost
   port: 5432
 
