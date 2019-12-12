@@ -7,33 +7,34 @@ require 'set'
 module Killmails
   class CheckIndividualsAndSystems
 
-    INDIVIDUALS = [ 2112875566, 96200467, 91808281, 93915289 ]
-    SYSTEMS = [ 30000013, 30001398, 30002756 ]
+    INDIVIDUALS = [ 2112875566, 96200467, 91808281, 93915289, 686311380, 96200467 ]
+    SYSTEMS = [ 30000013, 30001398, 30002756, 30000205 ]
     DB_FILE = 'tmp/old_killmails.yaml'
 
     def find
       requests = []
       INDIVIDUALS.each do |i|
-        request = open( "https://zkillboard.com/api/kills/characterID/#{i}/" )
-        requests += JSON.parse( request.read )
-        sleep 1
-
-        request = open( "https://zkillboard.com/api/losses/characterID/#{i}/" )
-        requests += JSON.parse( request.read )
-        sleep 1
+        request "https://zkillboard.com/api/kills/characterID/#{i}/"
+        request "https://zkillboard.com/api/losses/characterID/#{i}/"
       end
 
       SYSTEMS.each do |i|
-        request = open( "https://zkillboard.com/api/solarSystemID/#{i}/" )
-        requests += JSON.parse( request.read )
+        request "https://zkillboard.com/api/solarSystemID/#{i}/"
       end
 
-      puts "#{requests.count} killmails to check"
+      puts "#{@requests.count} killmails to check"
 
-      analyze_killmails requests
+      analyze_killmails @requests
     end
 
     private
+
+    def request( url )
+      @requests ||= []
+      request = open( url )
+      @requests += JSON.parse( request.read )
+      sleep 1
+    end
 
     def analyze_killmails( requests )
       load_db
@@ -60,13 +61,14 @@ module Killmails
 
             character = OpenStruct.new( e.get_page )
             name = character.name
+            id = attacker['character_id']
 
             e = Esi::Download.new( "universe/systems/#{page.solar_system_id}/", {}, debug_request: false )
             system_data = OpenStruct.new( e.get_page )
             system_name = system_data.name
 
             time = page.killmail_time.localtime
-            puts "#{name} spotted in #{system_name} at #{time}"
+            puts "#{name}(#{id}) spotted in #{system_name} at #{time}"
           end
         else
           # puts "#{page.killmail_id} too old : #{page.killmail_time}"
