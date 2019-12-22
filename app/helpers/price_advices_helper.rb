@@ -14,7 +14,7 @@ module PriceAdvicesHelper
 
 		result << "<p>Single item margin : <br>#{print_isk( price - item.single_unit_cost )}</p>"
 
-		result << "<p>Target volume (#{@user.vol_month_pcent}%) : <br>#{print_volume( item.vol_month / @user.vol_month_pcent )}</p>"
+		result << "<p>Target volume (#{@user.vol_month_pcent}%) : <br>#{print_volume( item.vol_month * @user.vol_month_pcent * 0.01 )}</p>"
 
 		result
 	end
