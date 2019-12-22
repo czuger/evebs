@@ -8,23 +8,25 @@ module Killmails
   class CheckIndividualsAndSystems
 
     INDIVIDUALS = [ 2112875566, 96200467, 91808281, 93915289, 686311380, 96200467 ]
-    SYSTEMS = [ 30000013, 30001398, 30002756, 30000205 ]
+    SYSTEMS = [ 30000013, 30001398, 30002756, 30000205, 30002813 ]
     DB_FILE = 'tmp/old_killmails.yaml'
 
     def find
-      requests = []
+      p 'Individuals'
       INDIVIDUALS.each do |i|
         request "https://zkillboard.com/api/kills/characterID/#{i}/"
         request "https://zkillboard.com/api/losses/characterID/#{i}/"
       end
+      analyze_killmails @requests
 
+      @requests = []
+
+      p 'Systems'
       SYSTEMS.each do |i|
         request "https://zkillboard.com/api/solarSystemID/#{i}/"
       end
-
-      puts "#{@requests.count} killmails to check"
-
       analyze_killmails @requests
+
     end
 
     private
@@ -83,7 +85,7 @@ module Killmails
     end
 
     def load_db
-      Misc::Banner.p 'DB loaded'
+      # Misc::Banner.p 'DB loaded'
       @old_db = ( File.file?( DB_FILE ) ? YAML.load_file( DB_FILE ) : Set.new )
     end
 
@@ -92,7 +94,7 @@ module Killmails
         f.write( @old_db.to_yaml )
       end
 
-      Misc::Banner.p 'DB saved'
+      # Misc::Banner.p 'DB saved'
     end
 
 

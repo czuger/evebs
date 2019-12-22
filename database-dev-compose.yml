@@ -3,11 +3,10 @@ services:
   db:
     image: postgres:9.6
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_PASSWORD: dev
       POSTGRES_USER: dev
       POSTGRES_DB: dev
-    volumes:
-      - ./Docker:/var/tmp/docker
-    # run: /bin/bash /var/tmp/docker/init-user-db.sh
+#    volumes:
+#      - ./Docker:/var/tmp/docker
