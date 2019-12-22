@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/czuger/evebs.svg?branch=master)](https://travis-ci.org/czuger/evebs)
+
 # Eve industrial tool
 
 A tool for industrials in Eve Online.
