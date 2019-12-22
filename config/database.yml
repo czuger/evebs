@@ -4,12 +4,16 @@ development:
   database: dev
   pool: 5
   username: dev
+  password: dev
   host: localhost
-  port: 5432
+  port: 5433
 
 test:
   adapter: postgresql
   encoding: unicode
-  database: eve_business_server_test
+  database: test
   pool: 5
-  username: ced
+  username: test
+  password: test
+  host: localhost
+  port: 5434
