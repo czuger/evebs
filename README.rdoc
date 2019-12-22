@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/czuger/evebs.svg?branch=master)](https://travis-ci.org/czuger/evebs)
+{<img src="https://travis-ci.org/czuger/evebs.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/czuger/evebs]
 
 # Eve industrial tool
 
