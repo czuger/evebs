@@ -1,4 +1,4 @@
-module Metadata
+module SoeMetadata
 	class Item < Base
 
 		def add( item, item_url )

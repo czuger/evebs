@@ -94,10 +94,10 @@ module ApplicationHelper
 
 	def build_soe_data
 		if controller_name == 'items'
-			@soe_data = Metadata::Item.new(@last_update_type )
+			@soe_data = SoeMetadata::Item.new(@last_update_type )
 			@soe_data.add(@item, item_url( @item.id ) )
 		elsif
-		@soe_data = Metadata::WebPage.new( meta_title_helper, meta_content, @last_update_type )
+		@soe_data = SoeMetadata::WebPage.new(meta_title_helper, meta_content, @last_update_type )
 		end
 
 		@soe_data.add_breadcrumb( @breadcrumb ) if @breadcrumb

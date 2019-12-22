@@ -1,4 +1,4 @@
-module Metadata
+module SoeMetadata
 	class Base
 
 		def initialize( last_update_type= nil )
