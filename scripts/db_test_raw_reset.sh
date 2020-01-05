@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-bin/rails db:environment:set RAILS_ENV=test
+../bin/rails db:environment:set RAILS_ENV=test
 
 export RAILS_ENV=test
 
