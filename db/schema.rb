@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_26_090502) do
+ActiveRecord::Schema.define(version: 2020_01_05_150016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,15 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
     t.index ["eve_item_id", "trade_hub_id"], name: "index_buy_orders_analytics_on_eve_item_id_and_trade_hub_id", unique: true
   end
 
+  create_table "constants", force: :cascade do |t|
+    t.string "libe", null: false
+    t.float "f_value"
+    t.string "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["libe"], name: "index_constants_on_libe", unique: true
+  end
+
   create_table "crontabs", force: :cascade do |t|
     t.string "cron_name", null: false
     t.boolean "status", default: false, null: false
@@ -94,7 +103,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
 
   create_table "eve_items", id: :serial, force: :cascade do |t|
     t.integer "cpp_eve_item_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "cost"
@@ -159,9 +168,9 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "password_digest"
+    t.string "name", limit: 255
+    t.string "email", limit: 255
+    t.string "password_digest", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -267,7 +276,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
 
   create_table "stations", id: :serial, force: :cascade do |t|
     t.integer "trade_hub_id"
-    t.string "name"
+    t.string "name", limit: 255
     t.integer "cpp_station_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -289,7 +298,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
 
   create_table "trade_hubs", id: :serial, force: :cascade do |t|
     t.integer "eve_system_id", null: false
-    t.string "name", null: false
+    t.string "name", limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "region_id"
@@ -407,12 +416,12 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.string "name"
+    t.string "name", limit: 255
     t.boolean "remove_occuped_places"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "provider"
-    t.string "uid"
+    t.string "provider", limit: 255
+    t.string "uid", limit: 255
     t.datetime "last_changes_in_choices"
     t.integer "min_pcent_for_advice", default: 20, null: false
     t.boolean "watch_my_prices"
@@ -488,6 +497,31 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
   add_foreign_key "weekly_price_details", "eve_items"
   add_foreign_key "weekly_price_details", "trade_hubs"
 
+  create_view "buy_orders_analytics_results", sql_definition: <<-SQL
+      SELECT boa.id,
+      u.id AS user_id,
+      boa.trade_hub_id,
+      boa.eve_item_id,
+      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
+      ei.name AS eve_item_name,
+      boa.over_approx_max_price_volume,
+      boa.approx_max_price,
+      boa.single_unit_cost,
+      boa.single_unit_margin,
+      ((1)::double precision - (boa.single_unit_cost / boa.approx_max_price)) AS margin_pcent,
+      ((boa.over_approx_max_price_volume)::double precision * boa.single_unit_margin) AS full_margin,
+      ((bp.nb_runs * bp.prod_qtt) * u.batch_cap_multiplier) AS batch_cap,
+      LEAST(boa.over_approx_max_price_volume, (((bp.nb_runs * bp.prod_qtt) * u.batch_cap_multiplier))::bigint) AS capped_volume,
+      ((LEAST(boa.over_approx_max_price_volume, (((bp.nb_runs * bp.prod_qtt) * u.batch_cap_multiplier))::bigint))::double precision * boa.single_unit_margin) AS capped_margin
+     FROM (((((((buy_orders_analytics boa
+       JOIN eve_items ei ON ((ei.id = boa.eve_item_id)))
+       JOIN trade_hubs tu ON ((boa.trade_hub_id = tu.id)))
+       JOIN trade_hubs_users thu ON ((boa.trade_hub_id = thu.trade_hub_id)))
+       JOIN eve_items_users eiu ON ((boa.eve_item_id = eiu.eve_item_id)))
+       JOIN users u ON (((thu.user_id = u.id) AND (eiu.user_id = u.id))))
+       JOIN regions r ON ((tu.region_id = r.id)))
+       JOIN blueprints bp ON (((ei.blueprint_id = bp.id) AND (boa.over_approx_max_price_volume > 0))));
+  SQL
   create_view "components_to_buys", sql_definition: <<-SQL
       SELECT bpm_mat_ei.id,
       pl.user_id,
@@ -509,53 +543,6 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
     WHERE (pl.runs_count > 0)
     GROUP BY bpm_mat_ei.id, pl.user_id, bpm_mat_ei.name, COALESCE(ba.quantity, (0)::bigint)
    HAVING ((sum(qtt_comp.raw_qtt) - (COALESCE(ba.quantity, (0)::bigint))::double precision) > (0)::double precision);
-  SQL
-  create_view "price_advices_min_prices", sql_definition: <<-SQL
-      SELECT pa.id,
-      ei.id AS eve_item_id,
-      tu.id AS trade_hub_id,
-      ((((tu.name)::text || ' ('::text) || (re.name)::text) || ')'::text) AS trade_hub_name,
-      ei.name AS item_name,
-      ei.cost,
-      pm.min_price,
-      pa.avg_price_week,
-      pa.avg_price_month,
-      pa.vol_month,
-      (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
-      pa.immediate_montly_pcent,
-      pa.margin_percent,
-          CASE
-              WHEN (ei.cost = 'Infinity'::double precision) THEN 'Infinity'::double precision
-              ELSE ((pa.avg_price_month / ei.cost) - (1)::double precision)
-          END AS avg_monthly_margin_percent
-     FROM (((((prices_advices pa
-       JOIN eve_items ei ON ((pa.eve_item_id = ei.id)))
-       JOIN blueprints bp ON ((ei.blueprint_id = bp.id)))
-       JOIN trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
-       JOIN regions re ON ((re.id = tu.region_id)))
-       LEFT JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))));
-  SQL
-  create_view "user_sale_order_details", sql_definition: <<-SQL
-      SELECT uso.id,
-      uso.user_id,
-      ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
-      ei.name AS eve_item_name,
-      uso.price AS my_price,
-      pm.min_price,
-      ei.cost,
-      b.prod_qtt,
-      ((pm.min_price / ei.cost) - (1)::double precision) AS min_price_margin_pcent,
-      (pm.min_price - uso.price) AS price_delta,
-      uso.eve_item_id,
-      uso.trade_hub_id,
-      ei.cpp_eve_item_id,
-      tu.eve_system_id
-     FROM (((((user_sale_orders uso
-       JOIN eve_items ei ON ((ei.id = uso.eve_item_id)))
-       JOIN blueprints b ON ((ei.blueprint_id = b.id)))
-       JOIN trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
-       JOIN regions r ON ((tu.region_id = r.id)))
-       LEFT JOIN prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id))));
   SQL
   create_view "price_advice_margin_comps", sql_definition: <<-SQL
       SELECT prices_advices_sub_1.id,
@@ -608,29 +595,51 @@ ActiveRecord::Schema.define(version: 2019_09_26_090502) do
                JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))))
             WHERE ((pa.vol_month IS NOT NULL) AND (ur.id = eiu.user_id))) prices_advices_sub_1;
   SQL
-  create_view "buy_orders_analytics_results", sql_definition: <<-SQL
-      SELECT boa.id,
-      u.id AS user_id,
-      boa.trade_hub_id,
-      boa.eve_item_id,
+  create_view "price_advices_min_prices", sql_definition: <<-SQL
+      SELECT pa.id,
+      ei.id AS eve_item_id,
+      tu.id AS trade_hub_id,
+      ((((tu.name)::text || ' ('::text) || (re.name)::text) || ')'::text) AS trade_hub_name,
+      ei.name AS item_name,
+      ei.cost,
+      pm.min_price,
+      pa.avg_price_week,
+      pa.avg_price_month,
+      pa.vol_month,
+      (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
+      pa.immediate_montly_pcent,
+      pa.margin_percent,
+          CASE
+              WHEN (ei.cost = 'Infinity'::double precision) THEN 'Infinity'::double precision
+              ELSE ((pa.avg_price_month / ei.cost) - (1)::double precision)
+          END AS avg_monthly_margin_percent
+     FROM (((((prices_advices pa
+       JOIN eve_items ei ON ((pa.eve_item_id = ei.id)))
+       JOIN blueprints bp ON ((ei.blueprint_id = bp.id)))
+       JOIN trade_hubs tu ON ((pa.trade_hub_id = tu.id)))
+       JOIN regions re ON ((re.id = tu.region_id)))
+       LEFT JOIN prices_mins pm ON (((pm.trade_hub_id = pa.trade_hub_id) AND (pa.eve_item_id = pm.eve_item_id))));
+  SQL
+  create_view "user_sale_order_details", sql_definition: <<-SQL
+      SELECT uso.id,
+      uso.user_id,
       ((((tu.name)::text || ' ('::text) || (r.name)::text) || ')'::text) AS trade_hub_name,
       ei.name AS eve_item_name,
-      boa.over_approx_max_price_volume,
-      boa.approx_max_price,
-      boa.single_unit_cost,
-      boa.single_unit_margin,
-      ((1)::double precision - (boa.single_unit_cost / boa.approx_max_price)) AS margin_pcent,
-      ((boa.over_approx_max_price_volume)::double precision * boa.single_unit_margin) AS full_margin,
-      ((bp.nb_runs * bp.prod_qtt) * u.batch_cap_multiplier) AS batch_cap,
-      LEAST(boa.over_approx_max_price_volume, (((bp.nb_runs * bp.prod_qtt) * u.batch_cap_multiplier))::bigint) AS capped_volume,
-      ((LEAST(boa.over_approx_max_price_volume, (((bp.nb_runs * bp.prod_qtt) * u.batch_cap_multiplier))::bigint))::double precision * boa.single_unit_margin) AS capped_margin
-     FROM (((((((buy_orders_analytics boa
-       JOIN eve_items ei ON ((ei.id = boa.eve_item_id)))
-       JOIN trade_hubs tu ON ((boa.trade_hub_id = tu.id)))
-       JOIN trade_hubs_users thu ON ((boa.trade_hub_id = thu.trade_hub_id)))
-       JOIN eve_items_users eiu ON ((boa.eve_item_id = eiu.eve_item_id)))
-       JOIN users u ON (((thu.user_id = u.id) AND (eiu.user_id = u.id))))
+      uso.price AS my_price,
+      pm.min_price,
+      ei.cost,
+      b.prod_qtt,
+      ((pm.min_price / ei.cost) - (1)::double precision) AS min_price_margin_pcent,
+      (pm.min_price - uso.price) AS price_delta,
+      uso.eve_item_id,
+      uso.trade_hub_id,
+      ei.cpp_eve_item_id,
+      tu.eve_system_id
+     FROM (((((user_sale_orders uso
+       JOIN eve_items ei ON ((ei.id = uso.eve_item_id)))
+       JOIN blueprints b ON ((ei.blueprint_id = b.id)))
+       JOIN trade_hubs tu ON ((uso.trade_hub_id = tu.id)))
        JOIN regions r ON ((tu.region_id = r.id)))
-       JOIN blueprints bp ON (((ei.blueprint_id = bp.id) AND (boa.over_approx_max_price_volume > 0))));
+       LEFT JOIN prices_mins pm ON (((pm.eve_item_id = uso.eve_item_id) AND (pm.trade_hub_id = uso.trade_hub_id))));
   SQL
 end
