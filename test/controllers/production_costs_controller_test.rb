@@ -17,6 +17,7 @@ class ProductionCostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get items costs' do
+    create( :taxes )
     get production_cost_url( @eve_item )
     assert_response :success
   end

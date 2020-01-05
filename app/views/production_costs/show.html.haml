@@ -33,8 +33,9 @@
   %tr{ class: cycle( :odd, :even ) }
     %td{ colspan: 3 }
       Taxes and setup costs estimation
-    %td.text-right= print_pcent( Blueprint::TAX_AMOUNT )
+    -# Taxes are now stored in compute ready format. So to show the value we have to remove 1 to the value.
+    %td.text-right= print_pcent( @taxes - 1 )
   %tr{ class: cycle( :odd, :even ) }
     %td{ colspan: 3 }
       Final cost
-    %td.text-right= print_isk( total_for_one_item * Blueprint::TAX_AMOUNT_MULTIPLIER )
+    %td.text-right= print_isk( total_for_one_item * @taxes )

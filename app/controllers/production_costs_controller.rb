@@ -20,6 +20,12 @@ class ProductionCostsController < ApplicationController
 		@breadcrumb = Misc::BreadcrumbElement.bc_from_sub_item( 'Production cost',
 																														view_context.production_cost_url( @item ),
 																														@item, view_context )
+
+		@taxes = Constant.find_by_libe( 'taxes' )
+    raise 'Taxes not set, please set them using the console.' unless @taxes
+    # Set the taxes using something like
+    # Constant.create!( libe: 'taxes', f_value: 1.13, description: 'This include the production taxes (5% est.), the broker fees (4% est.), and the sales taxes
+    @taxes = @taxes.f_value
   end
 
   # We put this here to ease the cache management
