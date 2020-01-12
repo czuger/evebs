@@ -26,48 +26,7 @@ class ListItemsController < ApplicationController
     end
   end
 
-  def clear
-    clear_user_list
-    redirect_to saved_list_list_items_path, notice: 'List cleared successfully'
-  end
-
-  def save
-    @saved_list = EveItemsSavedList.new( user: @user, description: params[:description], saved_ids: @user.eve_item_ids )
-    if @saved_list.save
-      redirect_to saved_list_list_items_path, notice: 'List saved successfully'
-    else
-      render :saved_list
-    end
-  end
-
-  def restore
-    saved_list = @user.eve_items_saved_lists.find( params[:saved_list_id] )
-
-    ActiveRecord::Base.transaction do
-      clear_user_list
-
-      saved_list&.saved_ids&.in_groups_of( 500 ).each do |g|
-        links = []
-        g.each do |eve_item_id|
-          links << EveItemsUser.new( user_id: @user.id, eve_item_id: eve_item_id, )
-        end
-        EveItemsUser.import( links )
-      end
-    end
-
-    redirect_to saved_list_list_items_path, notice: 'List successfully restored'
-  end
-
-  def saved_list
-    @title = 'My items sets'
-    @saved_lists = @user.eve_items_saved_lists.paginate(:page => params[:page], :per_page => 20 )
-  end
-
   private
-
-  def clear_user_list
-    EveItemsUser.where( user_id: @user ).delete_all
-  end
 
   def set_current_group
     if params[:group_id]

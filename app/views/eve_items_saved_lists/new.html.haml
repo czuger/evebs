@@ -1,0 +1,13 @@
+= form_tag eve_items_saved_lists_path do
+
+  .row
+
+    .col-12.col-lg
+      .form-group
+        = label_tag :description
+        = text_field_tag :description, '', class: 'form-control'
+
+  .row
+    .col-md-12.text-center
+      .actions
+        = submit_tag 'Save', class: 'btn btn-secondary'

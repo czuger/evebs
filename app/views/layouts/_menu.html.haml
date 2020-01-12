@@ -10,7 +10,14 @@
 
       %ul.navbar-nav.mr-auto
         = simple_menu_link( 'Home', root_path )
-        = simple_menu_link( 'Items', list_items_path )
+
+        = dropdown_menu_block( 'Items' ) do
+          = dropdown_sub_menu_link( 'Items', list_items_path )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'Save current list', new_eve_items_saved_list_path )
+          = dropdown_sub_menu_link( 'Show my lists', eve_items_saved_lists_path )
+          .dropdown-divider
+          = dropdown_sub_menu_link( 'Clear current items list', eve_items_saved_lists_clear_path, data: { confirm: 'Are you sure ?' } )
 
         = simple_menu_link( 'Trade hubs', edit_choose_trade_hubs_path )
 

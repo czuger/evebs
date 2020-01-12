@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
 
+  get 'eve_items_saved_lists/clear'
+  resources :eve_items_saved_lists, only: [ :index, :new, :create, :destroy ] do
+    get :load
+  end
+
   resources :market_groups, only: [ :index ]
 
   namespace :market_data do
