@@ -7,6 +7,12 @@ class EveItemsSavedListsController < ApplicationController
     @saved_lists = current_user.eve_items_saved_lists.paginate(:page => params[:page], :per_page => 20 )
   end
 
+  def show
+    @title = 'Show saved list'
+    @saved_list = current_user.eve_items_saved_lists.find( params[:id] )
+    @items = EveItem.where( id: @saved_list[:saved_ids] ).order( :name ).pluck( :name )
+  end
+
   def new
   end
 

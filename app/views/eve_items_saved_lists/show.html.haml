@@ -1,0 +1,10 @@
+%table.table.table-hover
+  %thead
+    %tr
+      %th
+        Item in list
+
+  %tbody
+    - @items.each do |item|
+      %tr
+        %td= item

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   get 'eve_items_saved_lists/clear'
-  resources :eve_items_saved_lists, only: [ :index, :new, :create, :destroy ] do
+  resources :eve_items_saved_lists, except: [ :edit, :update ] do
     get :load
   end
 
