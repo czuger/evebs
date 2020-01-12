@@ -1,18 +1,20 @@
-.container
-  .my-4
+%table.table.table-hover
+  %thead
+    %tr
+      %th
+        Description
+      %th
+      %th
 
-  %table.table.table-hover
-    %thead
+  %tbody
+    - @saved_lists.each do |saved_list|
       %tr
-        %th
-          Description
-        %th
-
-    %tbody
-      - @saved_lists.each do |saved_list|
-        %tr
-          %td= saved_list.description
-          %td= link_to 'Restore', eve_items_saved_list_load_path( saved_list ), class: 'btn btn-secondary'
-          %td= link_to 'Delete', eve_items_saved_list_path( saved_list ), class: 'btn btn-danger', data: { confirm: 'Are you sure ?' }
+        %td= saved_list.description
+        %td= link_to 'Restore', eve_items_saved_list_load_path( saved_list ), class: 'btn btn-secondary'
+        %td= link_to 'Delete', eve_items_saved_list_path( saved_list ), :method => 'delete', class: 'btn btn-danger', data: { confirm: 'Are you sure ?' }
 
   = will_paginate @saved_lists
+
+%hr
+
+= link_to 'Clear current items list', eve_items_saved_lists_clear_path, class: 'btn btn-danger', data: { confirm: 'WARNING : This will remove all the items you are currently watching. Be sure you have saved your list before continue.' }

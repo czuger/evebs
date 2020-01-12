@@ -3,7 +3,7 @@ class EveItemsSavedListsController < ApplicationController
   before_action :require_logged_in!
 
   def index
-    @title = 'My items saved lists'
+    @title = 'My saved lists'
     @saved_lists = current_user.eve_items_saved_lists.paginate(:page => params[:page], :per_page => 20 )
   end
 
@@ -27,7 +27,7 @@ class EveItemsSavedListsController < ApplicationController
 
   def destroy
     current_user.eve_items_saved_lists.destroy( params[ :id ] )
-    redirect_to eve_items_saved_lists_path, notice: 'List saved successfully'
+    redirect_to eve_items_saved_lists_path, notice: 'List removed successfully'
   end
 
   def load
