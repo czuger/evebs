@@ -11,7 +11,7 @@ class EveItemsSavedListsController < ApplicationController
   end
 
   def create
-    current_user_ids = current_user.eve_items_ids
+    current_user_ids = current_user.eve_item_ids
     @saved_list = EveItemsSavedList.new( user: current_user, description: params[:description], saved_ids: current_user_ids )
     if @saved_list.save
       redirect_to eve_items_saved_lists_path, notice: 'List saved successfully'
@@ -26,17 +26,12 @@ class EveItemsSavedListsController < ApplicationController
   end
 
   def destroy
-    @saved_list = EveItemsSavedList.new( user: current_user, description: params[:description], saved_ids: current_user_ids )
-    if @saved_list.save
-      redirect_to eve_items_saved_lists_path, notice: 'List saved successfully'
-    else
-      render :saved_list
-    end
-
+    current_user.eve_items_saved_lists.destroy( params[ :id ] )
+    redirect_to eve_items_saved_lists_path, notice: 'List saved successfully'
   end
 
   def load
-    saved_list = current_user.eve_items_saved_lists.find( params[:saved_list_id] )
+    saved_list = current_user.eve_items_saved_lists.find( params[:eve_items_saved_list_id] )
 
     ActiveRecord::Base.transaction do
       clear_user_list
@@ -50,13 +45,15 @@ class EveItemsSavedListsController < ApplicationController
       end
     end
 
-    redirect_to saved_list_list_items_path, notice: 'List successfully restored'
+    redirect_to eve_items_saved_lists_path, notice: 'List successfully restored'
   end
 
   private
 
   def clear_user_list
-    EveItemsUser.where( user_id: @user ).delete_all
+    # current_user.eve_items.delete_all
+    # is really inefficient
+    EveItemsUser.where( user_id: current_user ).delete_all
   end
 
 end
