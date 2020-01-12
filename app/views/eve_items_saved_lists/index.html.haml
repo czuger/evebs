@@ -5,12 +5,13 @@
         Description
       %th
       %th
+      %th
 
   %tbody
     - @saved_lists.each do |saved_list|
       %tr
         %td= saved_list.description
-        %td= link_to 'show', eve_items_saved_list_path( saved_list ), class: 'btn btn-secondary'
+        %td= link_to 'Show', eve_items_saved_list_path( saved_list ), class: 'btn btn-secondary'
         %td= link_to 'Restore', eve_items_saved_list_load_path( saved_list ), class: 'btn btn-secondary'
         %td= link_to 'Delete', eve_items_saved_list_path( saved_list ), :method => 'delete', class: 'btn btn-danger', data: { confirm: 'Are you sure ?' }
 
