@@ -21,19 +21,7 @@ class Esi::DownloadHistory < Esi::Download
   def start_process_and_download( regions, process_number )
     result = fork do
       # I'm the child
-      @file = File.open( "data/regional_sales_volumes_#{process_number}.json_stream", 'w' )
-      $stdout.reopen("log/regional_sales_volumes_#{process_number}.log", 'a')
-      $stderr.reopen("log/regional_sales_volumes_#{process_number}.err", 'a')
-
-      Misc::Banner.p "Download started in process #{Process.pid}"
-
-      regions.each do |region|
-        update_for_given_region region
-      end
-
-      @file.close
-
-      Misc::Banner.p "Download stopped in process #{Process.pid}"
+      do_download( regions, process_number )
     end
 
     # I'm your father luke
@@ -42,12 +30,28 @@ class Esi::DownloadHistory < Esi::Download
     result
   end
 
+  def do_download( regions, process_number )
+    @file = File.open( "data/regional_sales_volumes_#{process_number}.json_stream", 'w' )
+    # $stdout.reopen("log/regional_sales_volumes_#{process_number}.log", 'a')
+    # $stderr.reopen("log/regional_sales_volumes_#{process_number}.err", 'a')
+
+    Misc::Banner.p "Download started in process #{Process.pid}"
+
+    regions.each do |region|
+      update_for_given_region region
+    end
+
+    @file.close
+
+    Misc::Banner.p "Download stopped in process #{Process.pid}"
+  end
+
   def update_for_given_region( region )
 
     puts "About to process : #{region.name}" if @verbose_output
 
     @rest_url = "markets/#{region.cpp_region_id}/types/"
-    types_ids = get_all_pages
+    types_ids = get_all_pages( expect: :region )
 
     puts "#{types_ids.count} types_ids to process" if @verbose_output
 
@@ -63,7 +67,7 @@ class Esi::DownloadHistory < Esi::Download
 			max_price = nil
 
       begin
-        get_all_pages.each do |record|
+        get_all_pages( expect: :record ).each do |record|
 
           next if Date.parse(record['date']) <= Time.now - 1.month
 

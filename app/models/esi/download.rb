@@ -64,7 +64,7 @@ class Esi::Download
     get_page( page_number )
   end
 
-  def get_all_pages
+  def get_all_pages( expect: nil )
     result = []
     @params[:page] = 1
 
