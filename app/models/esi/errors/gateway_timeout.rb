@@ -2,7 +2,7 @@ module Esi::Errors
   class GatewayTimeout < Base
 
     def pause
-      sleep 30
+      sleep 60
     end
 
     def retry?
