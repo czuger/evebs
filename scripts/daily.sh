@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export EBS_VERBOSE_OUTPUT=true
+
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
