@@ -9,6 +9,11 @@ class Esi::DownloadHistory < Esi::Download
 
     puts `ps aux`.split( "\n" ).select{ |e| e =~ /process:full:daily/ }
 
+    if `ps aux`.split( "\n" ).select{ |e| e =~ /process:full:daily/ }.count > 1
+      Misc::Banner.p 'Process already running. Exitting.'
+      exit
+    end
+
     Misc::Banner.p 'About to download regional sales volumes'
 
     do_download( UniverseRegion.all, 1 )
