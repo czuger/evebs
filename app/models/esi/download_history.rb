@@ -58,7 +58,6 @@ class Esi::DownloadHistory < Esi::Download
     types_ids.each do |type_id|
 
       c = Misc::Chrono.new
-      c.start
       download_data_for_type_and_region( type_id, region.cpp_region_id )
       c.pl
 
@@ -96,6 +95,7 @@ class Esi::DownloadHistory < Esi::Download
       record = { cpp_region_id: region_id, cpp_type_id: type_id, volume: total_volume,
                  min: min_price, max: max_price,
                  avg: ( avg_prices_list.inject{ |sum, el| sum + el } / avg_prices_list.size if avg_prices_list ) }
+
       @file.puts( record.to_json )
     rescue Esi::Errors::NotFound
       warn "For region #{region_id} : #{type_id} not found."
