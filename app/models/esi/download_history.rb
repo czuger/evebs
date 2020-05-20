@@ -48,17 +48,19 @@ class Esi::DownloadHistory < Esi::Download
 
   def update_for_given_region( region )
 
-    puts "About to process : #{region.name}" if @verbose_output
+    puts "#{Process.pid} - About to process : #{region.name}" if @verbose_output
 
     @rest_url = "markets/#{region.cpp_region_id}/types/"
     types_ids = get_all_pages( expect: :region )
 
-    puts "#{types_ids.count} types_ids to process" if @verbose_output
+    puts "#{Process.pid} - #{types_ids.count} types_ids to process" if @verbose_output
 
     types_ids.each do |type_id|
 
       @rest_url = "markets/#{region.cpp_region_id}/history/"
       @params[:type_id]=type_id
+
+      puts "#{types_ids.count} - about to read data for #{type_id} in #{region.cpp_region_id}" if @verbose_output
 
       total_volume = 0
       total_isk = 0.0
