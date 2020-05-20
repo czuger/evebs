@@ -6,11 +6,18 @@ module Misc
     end
 
     def p
-      Misc::Banner.p ("#{Process.pid} - Total process duration : " + TimeDifference.between(Time.now, @chrono).humanize )
+      Misc::Banner.p to_s
     end
 
     def pl
-      puts ("#{Process.pid} - Total process duration : " + TimeDifference.between(Time.now, @chrono).humanize )
+      puts to_s
+    end
+
+    private
+
+    def to_s
+      diff = TimeDifference.between(Time.now, @chrono)
+      "#{Process.pid} - Total process duration : " + ( diff.humanize || "#{diff.in_seconds} seconds" )
     end
 
   end

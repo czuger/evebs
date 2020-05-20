@@ -6,14 +6,19 @@ class Esi::DownloadHistory < Esi::Download
   # TODO : Une fois le boulot fait, il faudra supprimer EveMarketHistory et la vue associé (ne pas oublier les modèles)
 
   def download
+
+    puts `ps aux`.split( "\n" ).select{ |e| e =~ /process:full:daily/ }
+
     Misc::Banner.p 'About to download regional sales volumes'
 
-    1.upto(Esi::DownloadHistorySetProcessCount::PROCESSES_COUNT).each do |process_id|
-      start_process_and_download( UniverseRegion.where( download_process_id: process_id ), process_id )
-    end
+    do_download( UniverseRegion.all, 1 )
+
+    # 1.upto(Esi::DownloadHistorySetProcessCount::PROCESSES_COUNT).each do |process_id|
+    #   start_process_and_download( UniverseRegion.where( download_process_id: process_id ), process_id )
+    # end
 
     # Wait for all subprocess to finish, then terminate.
-    Process.wait
+    # Process.wait
 
     Misc::Banner.p 'Download regional sales volumes finished'
   end
@@ -55,13 +60,13 @@ class Esi::DownloadHistory < Esi::Download
 
     puts "#{Process.pid} - #{types_ids.count} types_ids to process" if @verbose_output
 
+    c = Misc::Chrono.new
+
     types_ids.each do |type_id|
-
-      c = Misc::Chrono.new
       download_data_for_type_and_region( type_id, region.cpp_region_id )
-      c.pl
-
     end
+
+    c.pl
   end
 
   def download_data_for_type_and_region( type_id, region_id )
