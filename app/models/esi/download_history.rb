@@ -16,14 +16,14 @@ class Esi::DownloadHistory < Esi::Download
 
     Misc::Banner.p 'About to download regional sales volumes'
 
-    do_download( UniverseRegion.all, 1 )
+    # do_download( UniverseRegion.all, 1 )
 
-    # 1.upto(Esi::DownloadHistorySetProcessCount::PROCESSES_COUNT).each do |process_id|
-    #   start_process_and_download( UniverseRegion.where( download_process_id: process_id ), process_id )
-    # end
+    1.upto(Esi::DownloadHistorySetProcessCount::PROCESSES_COUNT).each do |process_id|
+      start_process_and_download( UniverseRegion.where( download_process_id: process_id ), process_id )
+    end
 
     # Wait for all subprocess to finish, then terminate.
-    # Process.wait
+    Process.wait
 
     Misc::Banner.p 'Download regional sales volumes finished'
   end
