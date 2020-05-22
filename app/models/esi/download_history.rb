@@ -23,7 +23,7 @@ class Esi::DownloadHistory < Esi::Download
     end
 
     # Wait for all subprocess to finish, then terminate.
-    Process.wait
+    Process.waitall
 
     Misc::Banner.p 'Download regional sales volumes finished'
   end
