@@ -28,7 +28,14 @@ class Esi::DownloadPublicTradesOrders < Esi::Download
         end
 
         @rest_url = "markets/#{region.cpp_region_id}/orders/"
-        orders_data = get_all_pages
+
+        begin
+          orders_data = get_all_pages
+        rescue Esi::Errors::NotFound
+          # this happens sometime for unknown reason.
+          # Just wait and retry
+          sleep 60
+        end
 
         region.orders_pages_count = orders_data.count
         region.save!
