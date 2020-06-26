@@ -17,7 +17,7 @@ class DownloadUniverseRegionsTest < ActiveSupport::TestCase
 		# dus.expects(:set_auth_token)
 		dus.expects(:get_all_pages).returns(@regions_list )
 
-		dus.expects(:get_page<_retry_on_error).with( expect: :region ).returns(@region_hash )
+		dus.expects(:get_page_retry_on_error).with( expect: :region ).returns(@region_hash )
 
 		dus.expects(:get_page_retry_on_error).with( expect: :constellation ).returns(@constellation_hash )
 
