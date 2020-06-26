@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-docker-compose -f database-dev-compose.yml stop
-docker-compose -f database-dev-compose.yml build
-docker-compose  -f database-dev-compose.yml up --force-recreate --remove-orphans -d
+
+docker rm evebs_db
+docker run -d -p 5436:5432 --name evebs_db -e POSTGRES_PASSWORD=foo evebs_db

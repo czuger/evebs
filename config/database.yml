@@ -6,7 +6,7 @@ development:
   username: dev
   password: dev
   host: localhost
-  port: 5433
+  port: 5436
 
 test:
   adapter: postgresql
@@ -16,4 +16,4 @@ test:
   username: test
   password: test
   host: localhost
-  port: 5434
+  port: 5436
