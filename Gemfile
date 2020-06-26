@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.3'
+gem 'rails', '5.2.4.3'
 gem 'pg'
 
 # Use SCSS for stylesheets
@@ -43,7 +43,8 @@ gem 'omniauth-rails_csrf_protection'
 
 gem 'rest-client'
 
-gem 'puma'
+# gem 'puma'
+gem "puma", ">= 3.12.6"
 gem 'time_diff'
 
 gem 'actionpack-page_caching'
@@ -100,3 +101,8 @@ gem 'time_difference'
 gem 'get_process_mem'
 
 gem 'friendly_id', '~> 5.2.4'
+
+gem "activesupport", ">= 5.2.4.3"
+gem "actionpack", ">= 5.2.4.3"
+gem "activestorage", ">= 5.2.4.3"
+gem "actionview", ">= 5.2.4.2"
