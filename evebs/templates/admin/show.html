@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Admin tools</h2>
+<ul class="list-group mb-3">
+  <li class="list-group-item">Last hourly: {{ last_hourly.updated_at if last_hourly else 'Never' }}</li>
+  <li class="list-group-item">Last daily: {{ last_daily.updated_at if last_daily else 'Never' }}</li>
+  <li class="list-group-item">Last weekly: {{ last_weekly.updated_at if last_weekly else 'Never' }}</li>
+</ul>
+<h4>Cron status</h4>
+<table class="table">
+  <tr><th>Name</th><th>Running</th><th>Updated</th></tr>
+  {% for c in crontabs %}
+  <tr>
+    <td>{{ c.cron_name }}</td>
+    <td>{{ 'Yes' if c.status else 'No' }}</td>
+    <td>{{ c.updated_at }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<div class="mt-3">
+  <a href="/admin_tools/activity" class="btn btn-secondary">Activity log</a>
+</div>
+{% endblock %}

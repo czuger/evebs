@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="/users" method="post">
+  <b>Weekly or immediate</b>
+  <div class="row">
+    <div class="col-12 col-lg">
+      <div class="form-group">
+        <label for="min_pcent_for_advice">Min percent for advice</label>
+        <input type="number" name="min_pcent_for_advice" id="min_pcent_for_advice"
+               value="{{ user.min_pcent_for_advice }}" class="form-control" size="5">
+      </div>
+    </div>
+    <div class="col-12 col-lg">
+      <div class="form-group">
+        <label for="min_amount_for_advice">Min amount for advice</label>
+        <input type="text" name="min_amount_for_advice" id="min_amount_for_advice"
+               value="{{ '{:,}'.format(user.min_amount_for_advice).replace(',', ' ') }}"
+               class="form-control">
+      </div>
+    </div>
+    <div class="col-12 col-lg">
+      <div class="form-group">
+        <label for="vol_month_pcent">Vol month percent</label>
+        <input type="number" name="vol_month_pcent" id="vol_month_pcent"
+               value="{{ user.vol_month_pcent }}" class="form-control">
+      </div>
+    </div>
+  </div>
+  <hr>
+  <b>Buy orders</b>
+  <div class="row">
+    <div class="col-12 col-lg">
+      <div class="form-group">
+        <label for="batch_cap">Batch cap</label>
+        <input type="checkbox" name="batch_cap" id="batch_cap"
+               {% if user.batch_cap %}checked{% endif %}>
+      </div>
+    </div>
+    <div class="col-12 col-lg">
+      <div class="form-group">
+        <label for="batch_cap_multiplier">Batch cap multiplier</label>
+        <input type="number" name="batch_cap_multiplier" id="batch_cap_multiplier"
+               value="{{ user.batch_cap_multiplier }}" class="form-control">
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <button type="submit" class="btn btn-secondary">Save</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

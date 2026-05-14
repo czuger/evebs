@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Components to buy</h2>
+<div class="table-responsive-md">
+  <table class="table">
+    <tr>
+      <th>Item</th>
+      <th class="text-right">Qty to buy</th>
+      <th class="text-right">Total cost</th>
+      <th class="text-right">Required volume (m³)</th>
+    </tr>
+    {% for c in components %}
+    <tr>
+      <td><a href="/items/{{ c.eve_item_id }}">{{ c.eve_item_name }}</a></td>
+      <td class="text-right">{{ c.qtt_to_buy | vol }}</td>
+      <td class="text-right">{{ c.total_cost | isk }}</td>
+      <td class="text-right">{{ c.required_volume | vol }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center text-muted">Nothing to buy.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ item.name }} - Weekly average price detail</h2>
+<div class="table-responsive-md">
+  <table class="table">
+    <tr>
+      <th>Day</th>
+      <th class="text-right">Volume</th>
+      <th class="text-right">Weighted avg price</th>
+    </tr>
+    {% for d in dailies_details %}
+    <tr>
+      <td>{{ d.day }}</td>
+      <td class="text-right">{{ d.volume | vol }}</td>
+      <td class="text-right">{{ d.weighted_avg_price | isk }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% include 'shared/pagination.html' %}
+{% endblock %}

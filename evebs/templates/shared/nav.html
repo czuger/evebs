@@ -1,0 +1,54 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu"
+    aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="mainMenu">
+    {% if current_user.is_authenticated %}
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link{% if request.path == '/' %} active{% endif %}" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">Items</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/list_items">Items</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/eve_items_saved_lists/new">Save current list</a>
+            <a class="dropdown-item" href="/eve_items_saved_lists">Show my lists</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if '/choose_trade_hubs' in request.path %} active{% endif %}"
+             href="/choose_trade_hubs/edit">Trade hubs</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">Earnings</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/buy_orders">Buy orders</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/price_advices/advice_prices_weekly">Weekly</a>
+            <a class="dropdown-item" href="/price_advices/advice_prices">Immediate</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if '/users' in request.path %} active{% endif %}" href="/users/edit">User</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/signout">Sign out</a>
+        </li>
+      </ul>
+      <span class="navbar-text">Logged as {{ current_user.name }}</span>
+    {% else %}
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/list_items">Items</a></li>
+      </ul>
+      <form action="/auth/eve_online_sso" method="post" class="form-inline">
+        <input type="hidden" name="csrf_token" value="">
+        <button type="submit" class="btn btn-warning">Sign in with Eve Online</button>
+      </form>
+      <span class="navbar-text ml-2">Millions may be waiting for you ...</span>
+    {% endif %}
+  </div>
+</nav>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Production list</h2>
+<form action="/production_lists/update" method="post">
+  <table class="table">
+    <tr>
+      <th>Item</th>
+      <th>Trade hub</th>
+      <th>Runs</th>
+      <th></th>
+    </tr>
+    {% for pl in production_lists %}
+    <tr>
+      <td><a href="/items/{{ pl.eve_item.slug or pl.eve_item.id }}">{{ pl.eve_item.name }}</a></td>
+      <td>{{ pl.trade_hub.name }}</td>
+      <td>
+        <input type="number" name="runs_count_{{ pl.id }}" value="{{ pl.runs_count or 0 }}"
+               min="0" class="form-control form-control-sm" style="width:80px">
+      </td>
+      <td>
+        <form action="/remove_production_list_check" method="post" style="display:inline">
+          <input type="hidden" name="trade_hub_id" value="{{ pl.trade_hub_id }}">
+          <input type="hidden" name="eve_item_id" value="{{ pl.eve_item_id }}">
+          <button type="submit" class="btn btn-sm btn-danger">×</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center text-muted">Production list is empty.</td></tr>
+    {% endfor %}
+  </table>
+  {% if production_lists %}
+  <button type="submit" class="btn btn-primary">Save runs</button>
+  {% endif %}
+</form>
+{% endblock %}

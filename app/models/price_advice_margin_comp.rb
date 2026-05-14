@@ -1,2 +1,0 @@
-class PriceAdviceMarginComp < ApplicationRecord
-end

@@ -1,2 +1,0 @@
-class Structure < ApplicationRecord
-end

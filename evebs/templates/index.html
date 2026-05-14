@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1 class="pt-4 pb-1">Eve online business advisor</h1>
+  <p>
+    I first designed it because I wanted a lazy tool that show me what to produce and where to sell it
+    with the best margin. Then added a lots of tools. Hope you will help you to make millions as I did.
+    And anyway, fly safe :)
+  </p>
+
+  <p><b>Is this tool for me?</b></p>
+  <p>If you are playing Eve Online and you are an industrial or a trader, definitely yes.</p>
+
+  <p><b>What's in the public part?</b></p>
+  <p>Lots of economic information (click below to see an example):</p>
+  <div class="row">
+    <div class="col-12 col-lg mt-1">
+      <a href="/items/nova-rage-rocket" class="btn btn-primary btn-block active">Information about items</a>
+    </div>
+    <div class="col-12 col-lg mt-1">
+      <a href="/production_costs/nova-rage-rocket" class="btn btn-primary btn-block active">Items production cost</a>
+    </div>
+    <div class="col-12 col-lg mt-1">
+      <a href="/production_costs/nova-rage-rocket/market_histories" class="btn btn-primary btn-block active">Regional prices and volumes</a>
+    </div>
+  </div>
+
+  <p class="mt-3"><b>What's in the private part? Why would I sign in?</b></p>
+  <p>
+    By signing in, you can select the items and the trade hubs you want to monitor. Then you will have
+    personalized tables showing you items with the best margin. You can also filter your tables
+    (for example: show me the items with a margin of at least 50 Millions ISK and 30%).
+  </p>
+
+  <div class="text-center py-4">
+    <form action="/auth/eve_online_sso" method="post">
+      <button type="submit" class="btn btn-lg btn-warning">Sign in with Eve Online</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

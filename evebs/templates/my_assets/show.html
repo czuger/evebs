@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>My assets</h2>
+{% if stations %}
+<form action="/my_assets/set_assets_station" method="post" class="mb-3">
+  <div class="form-inline">
+    <select name="station_id" class="form-control mr-2">
+      <option value="">-- All stations --</option>
+      {% for st in stations %}
+      <option value="{{ st.id }}"
+        {% if user.selected_assets_station_id == st.id %}selected{% endif %}>
+        {{ st.name }}
+      </option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-secondary">Set station</button>
+  </div>
+</form>
+{% endif %}
+<table class="table">
+  <tr>
+    <th>Item</th>
+    <th class="text-right">Quantity</th>
+    <th>Station</th>
+  </tr>
+  {% for asset in assets %}
+  <tr>
+    <td>{{ asset.eve_item_id }}</td>
+    <td class="text-right">{{ asset.quantity }}</td>
+    <td>{{ asset.universe_station_id or 'N/A' }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="3" class="text-center text-muted">No assets.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

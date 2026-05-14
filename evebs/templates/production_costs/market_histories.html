@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ item.name }} - Regional data</h2>
+<div class="table-responsive-md">
+  <table class="table">
+    <tr>
+      <th>Region</th>
+      <th class="text-right">Volume</th>
+      <th class="text-right">Average</th>
+      <th class="text-right">Highest</th>
+      <th class="text-right">Lowest</th>
+    </tr>
+    {% for h in market_histories %}
+    <tr>
+      <td>{{ h.universe_region.name }}</td>
+      <td class="text-right">{{ h.volume | vol }}</td>
+      <td class="text-right">{{ h.average | isk }}</td>
+      <td class="text-right">{{ h.highest | isk }}</td>
+      <td class="text-right">{{ h.lowest | isk }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

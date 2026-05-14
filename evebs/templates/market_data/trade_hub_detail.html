@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ element.name }} at {{ trade_hub.name }}</h2>
+<div class="table-responsive-md">
+  <table class="table">
+    <tr>
+      <th class="text-right">Price</th>
+      <th class="text-right">Volume remain</th>
+      <th>Range</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+      <td class="text-right">{{ order.price | isk }}</td>
+      <td class="text-right">{{ order.volume_remain | vol }}</td>
+      <td>{{ order.range }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center text-muted">No sell orders.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

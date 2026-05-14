@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if current_group %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/list_items">Items</a></li>
+      {% for anc in current_group.ancestors() %}
+        <li class="breadcrumb-item">
+          <a href="/list_items?group_id={{ anc.id }}">{{ anc.name }}</a>
+        </li>
+      {% endfor %}
+      <li class="breadcrumb-item active">{{ current_group.name }}</li>
+    </ol>
+  </nav>
+{% endif %}
+
+{% if groups %}
+  <div class="list-group">
+    {% for group in groups %}
+      <a href="/list_items?group_id={{ group.id }}" class="list-group-item list-group-item-action">
+        {{ group.name }}
+      </a>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if items %}
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Select</th>
+        <th>Item</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>
+          <input type="checkbox" class="item_checkbox"
+                 item_id="{{ item.id }}"
+                 {% if item.id in item_ids %}checked{% endif %}>
+        </td>
+        <td><a href="/items/{{ item.slug or item.id }}">{{ item.name }}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% block scripts %}
+<script>
+$(function() {
+  $('.item_checkbox').change(function() {
+    var state = $(this).is(':checked');
+    var id = $(this).attr('item_id');
+    $.post('/list_items/selection_change', { id: id, check_state: state })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        $('#error_area').html(errorThrown).show().delay(3000).fadeOut(3000);
+      });
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}

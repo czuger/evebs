@@ -1,0 +1,36 @@
+<div class="table-responsive-md">
+  <table class="table">
+    <tr>
+      <th>Trade hub</th>
+      <th>Item</th>
+      <th class="text-right">Est. margin</th>
+      <th class="text-right">Est. margin %</th>
+      <th class="text-right information_highlight_left">Volume</th>
+      {% if margin_type == 'daily' %}
+      <th class="text-right information_highlight_left">Daily/monthly</th>
+      {% endif %}
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td class="trade_hub_name">{{ item.trade_hub_name }} ({{ item.region_name }})</td>
+      <td class="item_name">
+        <a href="/items/{{ item.item_id }}" target="_blank">{{ item.item_name }}</a>
+      </td>
+      {% if margin_type == 'daily' %}
+        {% set margin = item.margin_comp_immediate %}
+      {% else %}
+        {% set margin = item.margin_comp_weekly %}
+      {% endif %}
+      <td class="text-right">{{ margin | isk }}</td>
+      <td class="text-right">{{ item.margin_percent | pcent }}</td>
+      <td class="text-right information_highlight_left">{{ item.vol_month | vol }}</td>
+      {% if margin_type == 'daily' %}
+      <td class="text-right information_highlight_left">{{ item.daily_monthly_pcent | pcent }}</td>
+      {% endif %}
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-center text-muted">No items found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% include 'shared/pagination.html' %}

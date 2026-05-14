@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="table-responsive-md">
+  <table class="table table-hover">
+    <tr>
+      <th>Trade hub</th>
+      <th>Item</th>
+      <th class="text-right">Est. margin</th>
+      <th class="text-right">Est. margin %</th>
+      <th class="text-right">Estimated buy volume</th>
+    </tr>
+    {% for cp in buy_orders %}
+    <tr>
+      <td class="trade_hub_name">{{ cp.trade_hub_name }}</td>
+      <td class="item_name">
+        <a href="/items/{{ cp.eve_item_id }}">{{ cp.eve_item_name }}</a>
+      </td>
+      {% set final_margin = cp.capped_margin if user.batch_cap else cp.full_margin %}
+      <td class="text-right">{{ final_margin | isk }}</td>
+      <td class="text-right">{{ cp.margin_pcent | pcent }}</td>
+      <td class="text-right">{{ cp.over_approx_max_price_volume | vol }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted">No buy orders found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% include 'shared/pagination.html' %}
+{% endblock %}
