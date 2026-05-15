@@ -34,9 +34,19 @@ else
   echo "Role created."
 fi
 
-# Create database if it doesn't exist
+# Create database, offering to drop it first if it already exists
 if $PSQL -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" | grep -q 1; then
-  echo "Database '$DB_NAME' already exists — skipping creation."
+  echo "Database '$DB_NAME' already exists."
+  read -r -p "Drop and recreate it? [y/N] " CONFIRM
+  if [[ "$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+    echo "Dropping database '$DB_NAME'..."
+    $PSQL -c "DROP DATABASE $DB_NAME;"
+    echo "Creating database '$DB_NAME'..."
+    $PSQL -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
+    echo "Database recreated."
+  else
+    echo "Keeping existing database."
+  fi
 else
   echo "Creating database '$DB_NAME'..."
   $PSQL -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"

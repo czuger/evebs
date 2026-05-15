@@ -50,9 +50,6 @@ def create_app(config_class=Config):
     app.register_blueprint(my_assets_bp)
     app.register_blueprint(admin_bp)
 
-    with app.app_context():
-        _create_views()
-
     return app
 
 
