@@ -34,11 +34,25 @@ class ServiceUnavailable(EsiError):
 
 
 class ErrorLimited(EsiError):
+    """Legacy 420: more than 100 non-2xx/3xx responses per minute."""
     def should_retry(self):
         return True
 
     def pause(self):
         time.sleep(60)
+
+
+class RateLimited(EsiError):
+    """429: new-style token-bucket rate limit exhausted."""
+    def __init__(self, message='', retry_after=60):
+        super().__init__(message)
+        self._retry_after = int(retry_after)
+
+    def should_retry(self):
+        return True
+
+    def pause(self):
+        time.sleep(self._retry_after)
 
 
 class OpenTimeout(EsiError):
@@ -79,8 +93,9 @@ def dispatch(status_code, message=''):
         504: GatewayTimeout,
         502: BadGateway,
         403: Forbidden,
-        420: ErrorLimited,
         404: NotFound,
+        420: ErrorLimited,
+        429: RateLimited,
         503: ServiceUnavailable,
         520: UnknownError,
     }

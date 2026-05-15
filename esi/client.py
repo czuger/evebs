@@ -32,6 +32,14 @@ class EsiClient:
         while True:
             try:
                 resp = requests.get(url, params=self.params, timeout=30)
+
+                if resp.status_code == 429:
+                    retry_after = resp.headers.get('Retry-After', 60)
+                    error = esi_errors.RateLimited(f'HTTP 429: rate limited', retry_after=retry_after)
+                    self._print_error(error, url)
+                    error.pause()
+                    continue
+
                 if not resp.ok:
                     error = esi_errors.dispatch(resp.status_code, resp.text)
                     self._print_error(error, url)
@@ -41,6 +49,7 @@ class EsiClient:
                     raise error
 
                 self._pages_count = int(resp.headers.get('x-pages', 0))
+                self._backoff_if_needed(resp.headers)
                 try:
                     return resp.json()
                 except json.JSONDecodeError:
@@ -104,6 +113,16 @@ class EsiClient:
             user.expires_on = datetime.utcnow() + timedelta(seconds=data.get('expires_in', 1200))
             from evebs.extensions import db
             db.session.commit()
+
+    def _backoff_if_needed(self, headers):
+        remaining = headers.get('X-Ratelimit-Remaining')
+        if remaining is None:
+            return
+        remaining = int(remaining)
+        if remaining < 5:
+            time.sleep(2)
+        elif remaining < 15:
+            time.sleep(0.5)
 
     def _build_url(self):
         return ESI_BASE + self.rest_url.lstrip('/')
