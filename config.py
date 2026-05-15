@@ -17,7 +17,7 @@ _db = _cfg['database']
 class Config:
     SECRET_KEY = _cfg.get('secret_key', 'dev-secret-change-in-production')
 
-    SQLALCHEMY_DATABASE_URI = (
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or (
         f"postgresql+psycopg://{_db['user']}:{_db['password']}"
         f"@{_db['host']}:{_db['port']}/{_db['name']}"
     )
@@ -38,3 +38,11 @@ class Config:
 
     PER_PAGE = 12
     VERBOSE_OUTPUT = False
+
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql+psycopg://{_db['user']}:{_db['password']}"
+        f"@{_db['host']}:{_db['port']}/{_db['name']}_test"
+    )

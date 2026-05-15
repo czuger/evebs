@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 # Creates the PostgreSQL role and database from config/config.json.
 # Run once as a user with superuser privileges: bash scripts/setup_db.sh
+# Use --test-db to create only the test database (evebs_test) instead.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="$SCRIPT_DIR/../config/config.json"
+
+CREATE_TEST=false
+for arg in "$@"; do
+  [[ "$arg" == "--test-db" ]] && CREATE_TEST=true
+done
 
 if ! command -v python3 &>/dev/null; then
   echo "python3 is required to parse config.json" >&2
@@ -34,29 +40,55 @@ else
   echo "Role created."
 fi
 
-# Create database, offering to drop it first if it already exists
-if $PSQL -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" | grep -q 1; then
-  echo "Database '$DB_NAME' already exists."
-  read -r -p "Drop and recreate it? [y/N] " CONFIRM
-  if [[ "$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
-    echo "Dropping database '$DB_NAME'..."
-    $PSQL -c "DROP DATABASE $DB_NAME;"
+if ! $CREATE_TEST; then
+  # Create database, offering to drop it first if it already exists
+  if $PSQL -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" | grep -q 1; then
+    echo "Database '$DB_NAME' already exists."
+    read -r -p "Drop and recreate it? [y/N] " CONFIRM
+    if [[ "$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+      echo "Dropping database '$DB_NAME'..."
+      $PSQL -c "DROP DATABASE $DB_NAME;"
+      echo "Creating database '$DB_NAME'..."
+      $PSQL -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
+      echo "Database recreated."
+    else
+      echo "Keeping existing database."
+    fi
+  else
     echo "Creating database '$DB_NAME'..."
     $PSQL -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
-    echo "Database recreated."
-  else
-    echo "Keeping existing database."
+    echo "Database created."
   fi
-else
-  echo "Creating database '$DB_NAME'..."
-  $PSQL -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
-  echo "Database created."
+
+  # Ensure ownership and privileges
+  echo "Granting privileges..."
+  $PSQL -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
+  $PSQL -d "$DB_NAME" -c "GRANT ALL ON SCHEMA public TO $DB_USER;"
 fi
 
-# Ensure ownership and privileges
-echo "Granting privileges..."
-$PSQL -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
-$PSQL -d "$DB_NAME" -c "GRANT ALL ON SCHEMA public TO $DB_USER;"
+if $CREATE_TEST; then
+  TEST_DB="${DB_NAME}_test"
+  echo ""
+  echo "Setting up test database '$TEST_DB'..."
+  if $PSQL -tAc "SELECT 1 FROM pg_database WHERE datname='$TEST_DB'" | grep -q 1; then
+    echo "Database '$TEST_DB' already exists."
+    read -r -p "Drop and recreate it? [y/N] " CONFIRM
+    if [[ "$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+      echo "Dropping database '$TEST_DB'..."
+      $PSQL -c "DROP DATABASE $TEST_DB;"
+      echo "Creating database '$TEST_DB'..."
+      $PSQL -c "CREATE DATABASE $TEST_DB OWNER $DB_USER;"
+      echo "Test database recreated."
+    else
+      echo "Keeping existing test database."
+    fi
+  else
+    $PSQL -c "CREATE DATABASE $TEST_DB OWNER $DB_USER;"
+    echo "Test database created."
+  fi
+  $PSQL -c "GRANT ALL PRIVILEGES ON DATABASE $TEST_DB TO $DB_USER;"
+  $PSQL -d "$TEST_DB" -c "GRANT ALL ON SCHEMA public TO $DB_USER;"
+fi
 
 echo ""
-echo "Done. Run 'flask db upgrade' to apply migrations."
+echo "Done. Run 'bash scripts/migrate.sh' to apply migrations (--test for test DB)."

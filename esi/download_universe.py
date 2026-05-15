@@ -23,15 +23,13 @@ def download_universe():
             region = UniverseRegion(
                 cpp_region_id=region_id,
                 name=name,
-                description=detail.get('description'),
-                constellations=constellation_ids,
+                description=detail.get('description', ''),
             )
             db.session.add(region)
             print(f'[{i}/{len(region_ids)}] + Region: {name} ({len(constellation_ids)} constellations)')
         else:
             region.name = name
             region.description = detail.get('description', region.description)
-            region.constellations = constellation_ids
             print(f'[{i}/{len(region_ids)}] ~ Region: {name} ({len(constellation_ids)} constellations)')
 
         db.session.flush()
@@ -42,10 +40,11 @@ def download_universe():
 
 
 def _download_constellations(region, constellation_ids):
-    for constellation_id in constellation_ids:
+    total = len(constellation_ids)
+    for i, constellation_id in enumerate(constellation_ids, 1):
         detail = EsiClient(f'universe/constellations/{constellation_id}/').get_page()
         if not detail:
-            print(f'  Constellation {constellation_id}: no data, skipping')
+            print(f'  [{i}/{total}] Constellation {constellation_id}: no data, skipping')
             continue
 
         name = detail.get('name', '')
@@ -61,20 +60,21 @@ def _download_constellations(region, constellation_ids):
                 universe_region_id=region.id,
             )
             db.session.add(constellation)
-            print(f'  + Constellation: {name} ({len(system_ids)} systems)')
+            print(f'  [{i}/{total}] + Constellation: {name} ({len(system_ids)} systems)')
         else:
             constellation.name = name
-            print(f'  ~ Constellation: {name} ({len(system_ids)} systems)')
+            print(f'  [{i}/{total}] ~ Constellation: {name} ({len(system_ids)} systems)')
 
         db.session.flush()
         _download_systems(constellation, system_ids)
 
 
 def _download_systems(constellation, system_ids):
-    for system_id in system_ids:
+    total = len(system_ids)
+    for i, system_id in enumerate(system_ids, 1):
         detail = EsiClient(f'universe/systems/{system_id}/').get_page()
         if not detail:
-            print(f'    System {system_id}: no data, skipping')
+            print(f'    [{i}/{total}] System {system_id}: no data, skipping')
             continue
 
         name = detail.get('name', '')
@@ -87,9 +87,10 @@ def _download_systems(constellation, system_ids):
                 cpp_system_id=system_id,
                 name=name,
                 security_status=sec,
-                security_class=detail.get('security_class'),
-                cpp_star_id=detail.get('star_id'),
+                security_class=detail.get('security_class', ''),
+                cpp_star_id=detail.get('star_id', 0),
                 universe_constellation_id=constellation.id,
+                trade_hub=False,
             )
             db.session.add(system)
             verb = '+'
@@ -100,17 +101,18 @@ def _download_systems(constellation, system_ids):
             system.cpp_star_id = detail.get('star_id', system.cpp_star_id)
             verb = '~'
 
-        print(f'    {verb} System: {name} (sec {sec:.2f}, {len(station_ids)} stations)')
+        print(f'    [{i}/{total}] {verb} System: {name} (sec {sec:.2f}, {len(station_ids)} stations)')
 
         db.session.flush()
         _download_stations(system, station_ids)
 
 
 def _download_stations(system, station_ids):
-    for station_id in station_ids:
+    total = len(station_ids)
+    for i, station_id in enumerate(station_ids, 1):
         detail = EsiClient(f'universe/stations/{station_id}/').get_page()
         if not detail:
-            print(f'      Station {station_id}: no data, skipping')
+            print(f'      [{i}/{total}] Station {station_id}: no data, skipping')
             continue
 
         name = detail.get('name', '')
@@ -123,6 +125,9 @@ def _download_stations(system, station_ids):
                 office_rental_cost=detail.get('office_rental_cost', 0.0),
                 security_status=detail.get('security_status'),
                 universe_system_id=system.id,
+                cpp_owner_id=detail.get('owner', 0),
+                reprocessing_efficiency=detail.get('reprocessing_efficiency', 0.0),
+                reprocessing_stations_take=detail.get('reprocessing_stations_take', 0.0),
             )
             db.session.add(station)
             verb = '+'
@@ -133,7 +138,7 @@ def _download_stations(system, station_ids):
             verb = '~'
 
         station.services = detail.get('services', [])
-        print(f'      {verb} Station: {name}')
+        print(f'      [{i}/{total}] {verb} Station: {name}')
 
 
 if __name__ == '__main__':

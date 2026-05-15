@@ -16,7 +16,7 @@ class UniverseSystem(db.Model):
     security_class = db.Column(db.Text, nullable=False)
     security_status = db.Column(db.Float, nullable=False)
 
-    trade_hub = db.Column(db.Boolean, nullable=True)
+    trade_hub = db.Column(db.Boolean, nullable=False, default=False)
     kill_stats_current_month = db.Column(db.Integer, nullable=True)
     kill_stats_last_month = db.Column(db.Integer, nullable=True)
 
