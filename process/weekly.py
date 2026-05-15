@@ -11,11 +11,9 @@ with app.app_context():
 
     print('=== Weekly process started ===')
 
-    from esi.download_universe_regions import download_universe_regions
+    from esi.download_universe import download_universe
 
-    verbose = os.environ.get('EBS_VERBOSE_OUTPUT', 'false').lower() == 'true'
-
-    download_universe_regions()
+    download_universe()
 
     # Blueprint and eve item downloads are data-heavy; see esi/ for individual downloaders
     # Run them manually or via scripts/weekly.sh

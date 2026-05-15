@@ -11,7 +11,7 @@ def update_base_item_costs():
     from sqlalchemy import text
     db.session.execute(text(
         "UPDATE eve_items SET cost = weekly_avg_price, updated_at = :now "
-        "WHERE base_item = 1"
+        "WHERE base_item = TRUE"
     ), {'now': datetime.utcnow()})
     db.session.commit()
     print('Base item costs updated.')

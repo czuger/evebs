@@ -50,6 +50,9 @@ def create_app(config_class=Config):
     app.register_blueprint(my_assets_bp)
     app.register_blueprint(admin_bp)
 
+    with app.app_context():
+        _create_views()
+
     return app
 
 
@@ -72,9 +75,9 @@ def _create_views():
               (1.0 - (boa.single_unit_cost / boa.approx_max_price)) AS margin_pcent,
               (boa.over_approx_max_price_volume * boa.single_unit_margin) AS full_margin,
               (bp.nb_runs * bp.prod_qtt * u.batch_cap_multiplier) AS batch_cap,
-              MIN(CAST(boa.over_approx_max_price_volume AS REAL),
+              LEAST(CAST(boa.over_approx_max_price_volume AS REAL),
                   CAST(bp.nb_runs * bp.prod_qtt * u.batch_cap_multiplier AS REAL)) AS capped_volume,
-              (MIN(CAST(boa.over_approx_max_price_volume AS REAL),
+              (LEAST(CAST(boa.over_approx_max_price_volume AS REAL),
                    CAST(bp.nb_runs * bp.prod_qtt * u.batch_cap_multiplier AS REAL))
                * boa.single_unit_margin) AS capped_margin
             FROM buy_orders_analytics boa
@@ -83,7 +86,7 @@ def _create_views():
             JOIN trade_hubs_users thu ON boa.trade_hub_id = thu.trade_hub_id
             JOIN eve_items_users eiu ON boa.eve_item_id = eiu.eve_item_id
             JOIN users u ON thu.user_id = u.id AND eiu.user_id = u.id
-            JOIN regions r ON tu.region_id = r.id
+            JOIN universe_regions r ON tu.region_id = r.id
             JOIN blueprints bp ON ei.blueprint_id = bp.id
             WHERE boa.over_approx_max_price_volume > 0
         """),
@@ -109,7 +112,7 @@ def _create_views():
             JOIN eve_items ei ON pa.eve_item_id = ei.id
             JOIN blueprints bp ON ei.blueprint_id = bp.id
             JOIN trade_hubs tu ON pa.trade_hub_id = tu.id
-            JOIN regions re ON re.id = tu.region_id
+            JOIN universe_regions re ON re.id = tu.region_id
             LEFT JOIN prices_mins pm ON pm.trade_hub_id = pa.trade_hub_id
               AND pa.eve_item_id = pm.eve_item_id
         """),
@@ -132,7 +135,7 @@ def _create_views():
             JOIN eve_items ei ON ei.id = uso.eve_item_id
             JOIN blueprints b ON ei.blueprint_id = b.id
             JOIN trade_hubs tu ON uso.trade_hub_id = tu.id
-            JOIN regions r ON tu.region_id = r.id
+            JOIN universe_regions r ON tu.region_id = r.id
             LEFT JOIN prices_mins pm ON pm.eve_item_id = uso.eve_item_id
               AND pm.trade_hub_id = uso.trade_hub_id
         """),
@@ -152,7 +155,7 @@ def _create_views():
               pa.immediate_montly_pcent AS daily_monthly_pcent,
               pa.margin_percent,
               CASE
-                WHEN ur.batch_cap THEN MIN(
+                WHEN ur.batch_cap THEN LEAST(
                   CAST(bp.nb_runs * bp.prod_qtt * ur.batch_cap_multiplier AS REAL),
                   CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL))
                 ELSE CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL)
@@ -160,25 +163,25 @@ def _create_views():
               ur.min_amount_for_advice,
               ur.min_pcent_for_advice,
               (pm.min_price * CASE
-                WHEN ur.batch_cap THEN MIN(
+                WHEN ur.batch_cap THEN LEAST(
                   CAST(bp.nb_runs * bp.prod_qtt * ur.batch_cap_multiplier AS REAL),
                   CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL))
                 ELSE CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL)
               END
               - ei.cost * CASE
-                WHEN ur.batch_cap THEN MIN(
+                WHEN ur.batch_cap THEN LEAST(
                   CAST(bp.nb_runs * bp.prod_qtt * ur.batch_cap_multiplier AS REAL),
                   CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL))
                 ELSE CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL)
               END) AS margin_comp_immediate,
               (ei.weekly_avg_price * CASE
-                WHEN ur.batch_cap THEN MIN(
+                WHEN ur.batch_cap THEN LEAST(
                   CAST(bp.nb_runs * bp.prod_qtt * ur.batch_cap_multiplier AS REAL),
                   CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL))
                 ELSE CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL)
               END
               - ei.cost * CASE
-                WHEN ur.batch_cap THEN MIN(
+                WHEN ur.batch_cap THEN LEAST(
                   CAST(bp.nb_runs * bp.prod_qtt * ur.batch_cap_multiplier AS REAL),
                   CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL))
                 ELSE CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL)
@@ -187,7 +190,7 @@ def _create_views():
             JOIN eve_items ei ON pa.eve_item_id = ei.id
             JOIN blueprints bp ON ei.blueprint_id = bp.id
             JOIN trade_hubs tu ON pa.trade_hub_id = tu.id
-            JOIN regions re ON re.id = tu.region_id
+            JOIN universe_regions re ON re.id = tu.region_id
             JOIN trade_hubs_users thu ON thu.trade_hub_id = pa.trade_hub_id
             JOIN eve_items_users eiu ON eiu.eve_item_id = pa.eve_item_id
             JOIN users ur ON thu.user_id = ur.id AND eiu.user_id = ur.id

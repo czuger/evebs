@@ -1,9 +1,11 @@
 from datetime import datetime
+from sqlalchemy import UniqueConstraint
 from evebs.extensions import db
 
 
 class PricesAdvice(db.Model):
     __tablename__ = 'prices_advices'
+    __table_args__ = (UniqueConstraint('eve_item_id', 'trade_hub_id'),)
 
     id = db.Column(db.Integer, primary_key=True)
     eve_item_id = db.Column(db.Integer, db.ForeignKey('eve_items.id'), nullable=False)

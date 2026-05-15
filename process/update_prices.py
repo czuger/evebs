@@ -74,7 +74,7 @@ def update_buy_orders_analytics():
     db.session.execute(text("""
         UPDATE buy_orders_analytics SET
             estimated_volume_margin = single_unit_margin * over_approx_max_price_volume,
-            final_margin = MIN(
+            final_margin = LEAST(
                 single_unit_margin * over_approx_max_price_volume,
                 single_unit_margin * (
                     SELECT nb_runs * prod_qtt FROM blueprints
@@ -102,11 +102,12 @@ def update_prices_advices_immediate():
 
     # Insert missing combinations from sales_finals
     db.session.execute(text("""
-        INSERT OR IGNORE INTO prices_advices (eve_item_id, trade_hub_id, created_at, updated_at)
+        INSERT INTO prices_advices (eve_item_id, trade_hub_id, created_at, updated_at)
         SELECT DISTINCT sf.eve_item_id, sf.trade_hub_id, :now, :now
         FROM sales_finals sf
         JOIN eve_items ei ON sf.eve_item_id = ei.id
         WHERE ei.blueprint_id IS NOT NULL
+        ON CONFLICT (eve_item_id, trade_hub_id) DO NOTHING
     """), {'now': now})
 
     # Clear where no sales data

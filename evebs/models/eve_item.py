@@ -31,14 +31,13 @@ class EveItem(db.Model):
     users = db.relationship('User', secondary=eve_items_users, back_populates='eve_items')
     market_group = db.relationship('MarketGroup', back_populates='eve_items')
     blueprint = db.relationship('Blueprint', back_populates='eve_item')
-    blueprint_materials = db.relationship('BlueprintMaterial', foreign_keys='BlueprintMaterial.eve_item_id')
+    blueprint_materials = db.relationship('BlueprintMaterial', foreign_keys='BlueprintMaterial.eve_item_id', back_populates='eve_item')
     prices_mins = db.relationship('PricesMin', back_populates='eve_item', cascade='all, delete-orphan')
     sales_finals = db.relationship('SalesFinal', back_populates='eve_item', cascade='all, delete-orphan')
     prices_advices = db.relationship('PricesAdvice', back_populates='eve_item', cascade='all, delete-orphan')
     buy_orders_analytics = db.relationship('BuyOrdersAnalytic', back_populates='eve_item', cascade='all, delete-orphan')
     public_trade_orders = db.relationship('PublicTradeOrder', back_populates='eve_item', cascade='all, delete-orphan')
     eve_market_histories_groups = db.relationship('EveMarketHistoriesGroup', back_populates='eve_item', cascade='all, delete-orphan')
-    price_advices_min_prices = db.relationship('PriceAdvicesMinPrice', back_populates='eve_item')
     weekly_price_details = db.relationship('WeeklyPriceDetail', back_populates='eve_item', cascade='all, delete-orphan')
 
     @property

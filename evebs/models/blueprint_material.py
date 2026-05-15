@@ -13,4 +13,4 @@ class BlueprintMaterial(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     blueprint = db.relationship('Blueprint', back_populates='blueprint_materials')
-    eve_item = db.relationship('EveItem', foreign_keys=[eve_item_id])
+    eve_item = db.relationship('EveItem', foreign_keys=[eve_item_id], back_populates='blueprint_materials')

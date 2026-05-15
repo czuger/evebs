@@ -11,10 +11,10 @@ bp = Blueprint('choose_trade_hubs', __name__)
 @login_required
 def edit():
     user = current_user
-    inner = TradeHub.query.filter_by(inner=True).join(TradeHub.region).order_by(TradeHub.name).all()
-    inner = [th for th in inner if th.region is not None]
-    outer = TradeHub.query.filter_by(inner=False).join(TradeHub.region).order_by(TradeHub.name).all()
-    outer = [th for th in outer if th.region is not None]
+    inner = TradeHub.query.filter_by(inner=True).join(TradeHub.universe_region).order_by(TradeHub.name).all()
+    inner = [th for th in inner if th.universe_region is not None]
+    outer = TradeHub.query.filter_by(inner=False).join(TradeHub.universe_region).order_by(TradeHub.name).all()
+    outer = [th for th in outer if th.universe_region is not None]
     user_hub_ids = set(user.trade_hub_ids)
     return render_template('choose_trade_hubs/edit.html',
                            title='Choose trade hubs to monitor',

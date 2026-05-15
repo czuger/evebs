@@ -1,6 +1,5 @@
 from evebs.models.associations import eve_items_users, trade_hubs_users
 from evebs.models.user import User, load_user
-from evebs.models.region import Region
 from evebs.models.trade_hub import TradeHub
 from evebs.models.market_group import MarketGroup
 from evebs.models.blueprint import Blueprint
