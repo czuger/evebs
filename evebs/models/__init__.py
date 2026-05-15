@@ -19,7 +19,6 @@ from evebs.models.universe_region import UniverseRegion
 from evebs.models.universe_constellation import UniverseConstellation
 from evebs.models.universe_system import UniverseSystem
 from evebs.models.universe_station import UniverseStation
-from evebs.models.station import Station
 from evebs.models.structure import Structure
 from evebs.models.constant import Constant
 from evebs.models.last_update import LastUpdate

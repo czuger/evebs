@@ -7,14 +7,19 @@ class UniverseSystem(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     cpp_system_id = db.Column(db.Integer, nullable=False, unique=True)
-    name = db.Column(db.String, nullable=False)
-    trade_hub = db.Column(db.Boolean, default=False, nullable=False)
-    cpp_star_id = db.Column(db.Integer)
-    security_class = db.Column(db.String)
-    security_status = db.Column(db.Float, nullable=False)
-    kill_stats_current_month = db.Column(db.Integer, default=0, nullable=False)
-    kill_stats_last_month = db.Column(db.Integer, default=0, nullable=False)
+    cpp_star_id = db.Column(db.Integer, nullable=False)
+
     universe_constellation_id = db.Column(db.BigInteger, db.ForeignKey('universe_constellations.id'))
+
+    name = db.Column(db.Text, nullable=False)
+
+    security_class = db.Column(db.Text, nullable=False)
+    security_status = db.Column(db.Float, nullable=False)
+
+    trade_hub = db.Column(db.Boolean, nullable=True)
+    kill_stats_current_month = db.Column(db.Integer, nullable=True)
+    kill_stats_last_month = db.Column(db.Integer, nullable=True)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

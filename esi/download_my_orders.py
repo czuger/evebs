@@ -18,7 +18,7 @@ class DownloadMyOrders:
             db.session.commit()
             return
 
-        from evebs.models import EveItem, Station, UserSaleOrder, ProductionList
+        from evebs.models import EveItem, UniverseStation, TradeHub, UserSaleOrder, ProductionList
         from evebs.extensions import db
         from datetime import datetime
 
@@ -26,7 +26,12 @@ class DownloadMyOrders:
 
         for page in pages:
             eve_item_id = EveItem.to_eve_item_id(page['type_id'])
-            trade_hub_id = Station.to_trade_hub_id(page['location_id'])
+            us = UniverseStation.query.filter_by(cpp_station_id=page['location_id']).first()
+            if us and us.universe_system:
+                hub = TradeHub.query.filter_by(eve_system_id=us.universe_system.cpp_system_id).first()
+                trade_hub_id = hub.id if hub else None
+            else:
+                trade_hub_id = None
 
             if not trade_hub_id:
                 continue

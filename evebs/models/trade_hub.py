@@ -15,7 +15,6 @@ class TradeHub(db.Model):
 
     universe_region = db.relationship('UniverseRegion', back_populates='trade_hubs')
     users = db.relationship('User', secondary=trade_hubs_users, back_populates='trade_hubs')
-    stations = db.relationship('Station', back_populates='trade_hub')
     prices_mins = db.relationship('PricesMin', back_populates='trade_hub')
     prices_advices = db.relationship('PricesAdvice', back_populates='trade_hub')
     public_trade_orders = db.relationship('PublicTradeOrder', back_populates='trade_hub')

@@ -1,7 +1,8 @@
-- Use the current jita_margin screen
-- Create one and use the epic blueprint (hide for non admin)
-- Show that as a front screen
-- Message :
-    Industrial and traders, you can raise your earnings with low effort.
-    ( mettre les examples)
-    More inside ...
+- read universe_region and adapt code and migration if required
+- read universe_constellation and adapt code and migration if required
+- read universe_system and adapt code and migration if required
+- read universe_station and adapt code and migration if required
+
+- remove station.py, relink trade hub to universe_station
+
+DON'T modify universe_* models, adapt existing code to new content.
