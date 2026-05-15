@@ -1,6 +1,6 @@
 from flask import Flask
 from config import Config
-from evebs.extensions import db, login_manager
+from evebs.extensions import db, migrate, login_manager
 from evebs import helpers
 
 
@@ -9,6 +9,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     helpers.register(app)
@@ -48,10 +49,6 @@ def create_app(config_class=Config):
     app.register_blueprint(eve_items_saved_lists_bp)
     app.register_blueprint(my_assets_bp)
     app.register_blueprint(admin_bp)
-
-    with app.app_context():
-        db.create_all()
-        _create_views()
 
     return app
 
