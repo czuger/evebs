@@ -6,10 +6,8 @@ from evebs.extensions import db
 class UniverseStation(db.Model):
     __tablename__ = 'universe_stations'
 
-    id = db.Column(db.BigInteger, primary_key=True)
-
-    cpp_station_id = db.Column(db.BigInteger, nullable=False, unique=True)
-    cpp_owner_id = db.Column(db.BigInteger, nullable=False)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
+    owner_id = db.Column(db.BigInteger, nullable=False)
 
     universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'), nullable=False)
 

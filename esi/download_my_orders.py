@@ -26,9 +26,9 @@ class DownloadMyOrders:
 
         for page in pages:
             eve_item_id = EveItem.to_eve_item_id(page['type_id'])
-            us = UniverseStation.query.filter_by(cpp_station_id=page['location_id']).first()
+            us = UniverseStation.query.filter_by(id=page['location_id']).first()
             if us and us.universe_system:
-                hub = TradeHub.query.filter_by(eve_system_id=us.universe_system.cpp_system_id).first()
+                hub = TradeHub.query.filter_by(eve_system_id=us.universe_system.id).first()
                 trade_hub_id = hub.id if hub else None
             else:
                 trade_hub_id = None

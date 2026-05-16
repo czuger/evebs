@@ -5,9 +5,7 @@ from evebs.extensions import db
 class UniverseRegion(db.Model):
     __tablename__ = 'universe_regions'
 
-    id = db.Column(db.BigInteger, primary_key=True)
-
-    cpp_region_id = db.Column(db.BigInteger, nullable=False, unique=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
 
     name = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)

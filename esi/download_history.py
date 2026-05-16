@@ -49,7 +49,7 @@ def _download_chunk(region_ids, process_number, verbose):
             if verbose:
                 print(f'[{process_number}] Processing {region.name}')
 
-            client = EsiClient(f'markets/{region.cpp_region_id}/types/')
+            client = EsiClient(f'markets/{region.id}/types/')
             try:
                 type_ids = client.get_all_pages()
             except Exception as e:
@@ -57,7 +57,7 @@ def _download_chunk(region_ids, process_number, verbose):
                 continue
 
             for type_id in type_ids:
-                hist_client = EsiClient(f'markets/{region.cpp_region_id}/history/',
+                hist_client = EsiClient(f'markets/{region.id}/history/',
                                         params={'type_id': type_id})
                 try:
                     records = hist_client.get_all_pages()
@@ -92,7 +92,7 @@ def _download_chunk(region_ids, process_number, verbose):
                     continue
 
                 record = {
-                    'cpp_region_id': region.cpp_region_id,
+                    'region_id': region.id,
                     'cpp_type_id': type_id,
                     'volume': total_volume,
                     'min': min_price,

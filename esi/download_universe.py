@@ -18,10 +18,10 @@ def download_universe():
         name = detail.get('name', '')
         constellation_ids = detail.get('constellations', [])
 
-        region = UniverseRegion.query.filter_by(cpp_region_id=region_id).first()
+        region = UniverseRegion.query.filter_by(id=region_id).first()
         if not region:
             region = UniverseRegion(
-                cpp_region_id=region_id,
+                id=region_id,
                 name=name,
                 description=detail.get('description', ''),
             )
@@ -50,12 +50,10 @@ def _download_constellations(region, constellation_ids):
         name = detail.get('name', '')
         system_ids = detail.get('systems', [])
 
-        constellation = UniverseConstellation.query.filter_by(
-            cpp_constellation_id=constellation_id
-        ).first()
+        constellation = UniverseConstellation.query.filter_by(id=constellation_id).first()
         if not constellation:
             constellation = UniverseConstellation(
-                cpp_constellation_id=constellation_id,
+                id=constellation_id,
                 name=name,
                 universe_region_id=region.id,
             )
@@ -81,14 +79,14 @@ def _download_systems(constellation, system_ids):
         sec = detail.get('security_status', 0.0)
         station_ids = detail.get('stations', [])
 
-        system = UniverseSystem.query.filter_by(cpp_system_id=system_id).first()
+        system = UniverseSystem.query.filter_by(id=system_id).first()
         if not system:
             system = UniverseSystem(
-                cpp_system_id=system_id,
+                id=system_id,
                 name=name,
                 security_status=sec,
                 security_class=detail.get('security_class', ''),
-                cpp_star_id=detail.get('star_id', 0),
+                star_id=detail.get('star_id', 0),
                 universe_constellation_id=constellation.id,
                 trade_hub=False,
             )
@@ -98,7 +96,7 @@ def _download_systems(constellation, system_ids):
             system.name = name
             system.security_status = sec
             system.security_class = detail.get('security_class', system.security_class)
-            system.cpp_star_id = detail.get('star_id', system.cpp_star_id)
+            system.star_id = detail.get('star_id', system.star_id)
             verb = '~'
 
         print(f'    [{i}/{total}] {verb} System: {name} (sec {sec:.2f}, {len(station_ids)} stations)')
@@ -117,15 +115,15 @@ def _download_stations(system, station_ids):
 
         name = detail.get('name', '')
 
-        station = UniverseStation.query.filter_by(cpp_station_id=station_id).first()
+        station = UniverseStation.query.filter_by(id=station_id).first()
         if not station:
             station = UniverseStation(
-                cpp_station_id=station_id,
+                id=station_id,
                 name=name,
                 office_rental_cost=detail.get('office_rental_cost', 0.0),
                 security_status=detail.get('security_status'),
                 universe_system_id=system.id,
-                cpp_owner_id=detail.get('owner', 0),
+                owner_id=detail.get('owner', 0),
                 reprocessing_efficiency=detail.get('reprocessing_efficiency', 0.0),
                 reprocessing_stations_take=detail.get('reprocessing_stations_take', 0.0),
             )

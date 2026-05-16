@@ -1,8 +1,0 @@
-- read universe_region and adapt code and migration if required
-- read universe_constellation and adapt code and migration if required
-- read universe_system and adapt code and migration if required
-- read universe_station and adapt code and migration if required
-
-- remove station.py, relink trade hub to universe_station
-
-DON'T modify universe_* models, adapt existing code to new content.

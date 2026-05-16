@@ -28,7 +28,7 @@ class DownloadMyAssets:
             if not eve_item_id:
                 continue
 
-            station = UniverseStation.query.filter_by(cpp_station_id=location_id).first()
+            station = UniverseStation.query.filter_by(id=location_id).first()
             station_id = station.id if station else None
 
             bpc = BpcAsset.query.filter_by(

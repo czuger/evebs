@@ -8,7 +8,7 @@ Create Date: 2026-05-16
 from alembic import op
 import sqlalchemy as sa
 
-revision = '0002_universe_cpp_fields_to_bigint'
+revision = '0002_universe_bigint'
 down_revision = '0001_initial_schema'
 branch_labels = None
 depends_on = None

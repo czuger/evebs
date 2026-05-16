@@ -5,9 +5,8 @@ from evebs.extensions import db
 class UniverseSystem(db.Model):
     __tablename__ = 'universe_systems'
 
-    id = db.Column(db.BigInteger, primary_key=True)
-    cpp_system_id = db.Column(db.BigInteger, nullable=False, unique=True)
-    cpp_star_id = db.Column(db.BigInteger, nullable=False)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
+    star_id = db.Column(db.BigInteger, nullable=False)
 
     universe_constellation_id = db.Column(db.BigInteger, db.ForeignKey('universe_constellations.id'))
 

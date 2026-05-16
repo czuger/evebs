@@ -14,7 +14,7 @@ class DownloadPublicTradesOrders:
         trade_hub_ids = set(row[0] for row in TradeHub.query.with_entities(TradeHub.eve_system_id).all())
         eve_item_ids = set(row[0] for row in EveItem.query.with_entities(EveItem.cpp_eve_item_id).all())
         systems_to_name = {r[0]: r[1] for r in UniverseSystem.query.with_entities(
-            UniverseSystem.cpp_system_id, UniverseSystem.name).all()}
+            UniverseSystem.id, UniverseSystem.name).all()}
 
         if self.verbose:
             print(f'Trade hub count = {len(trade_hub_ids)}, items count = {len(eve_item_ids)}')
@@ -28,7 +28,7 @@ class DownloadPublicTradesOrders:
                 if self.verbose:
                     print(f'Downloading orders for {region.name}')
 
-                client = EsiClient(f'markets/{region.cpp_region_id}/orders/',
+                client = EsiClient(f'markets/{region.id}/orders/',
                                    verbose=self.verbose)
                 try:
                     orders_data = client.get_all_pages()

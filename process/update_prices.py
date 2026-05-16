@@ -233,7 +233,7 @@ def update_market_histories():
     import json
     from evebs.models import EveMarketHistoriesGroup, UniverseRegion
 
-    region_map = {str(r.cpp_region_id): r.id for r in UniverseRegion.query.all()}
+    region_ids = {r.id for r in UniverseRegion.query.all()}
     from evebs.models import EveItem
     item_map = {str(i.cpp_eve_item_id): i.id for i in EveItem.query.all()}
 
@@ -248,7 +248,9 @@ def update_market_histories():
                 except json.JSONDecodeError:
                     continue
 
-                region_id = region_map.get(str(rec.get('cpp_region_id')))
+                region_id = rec.get('region_id')
+                if region_id not in region_ids:
+                    region_id = None
                 item_id = item_map.get(str(rec.get('cpp_type_id')))
                 if not region_id or not item_id:
                     continue
