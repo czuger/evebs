@@ -25,3 +25,4 @@ class UniverseSystem(db.Model):
     universe_constellation = db.relationship('UniverseConstellation', back_populates='universe_systems')
     structures = db.relationship('Structure', back_populates='universe_system')
     universe_stations = db.relationship('UniverseStation', back_populates='universe_system')
+    market_orders = db.relationship('MarketOrder', back_populates='universe_system')

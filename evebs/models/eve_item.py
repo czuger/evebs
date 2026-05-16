@@ -11,7 +11,7 @@ class EveItem(db.Model):
     cpp_eve_item_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
     cost = db.Column(db.Float)
-    market_group_id = db.Column(db.Integer, db.ForeignKey('market_groups.id'))
+    market_group_id = db.Column(db.BigInteger, db.ForeignKey('market_groups.id'))
     blueprint_id = db.Column(db.BigInteger, db.ForeignKey('blueprints.id'))
     volume = db.Column(db.Float)
     production_level = db.Column(db.Integer)
