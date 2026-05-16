@@ -7,7 +7,7 @@ class UniverseRegion(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
 
-    cpp_region_id = db.Column(db.Integer, nullable=False, unique=True)
+    cpp_region_id = db.Column(db.BigInteger, nullable=False, unique=True)
 
     name = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)

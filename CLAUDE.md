@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Eve Industrial Tool — a Flask web app for Eve Online players to track market margins, manage production lists, and monitor sales orders.
 
 - **Language**: Python 3
-- **Framework**: Flask with SQLAlchemy (SQLite database)
+- **Framework**: Flask with SQLAlchemy (PostgreSQL database via psycopg)
 - **Auth**: Eve Online SSO (OAuth 2.0 via Eve ESI)
 - **Templates**: Jinja2 HTML (Bootstrap 4 via CDN)
 
@@ -46,7 +46,7 @@ scripts/weekly.sh
 
 ### SQL Views
 
-Five read-only views are created in `evebs/__init__.py:_create_views()` on every app startup (DROP + CREATE). They are SQLite-compatible rewrites of the original PostgreSQL views. The view-backed models have `__table_args__ = {'info': {'is_view': True}}`.
+Five read-only views are created in `evebs/__init__.py:_create_views()` on every app startup (DROP + CREATE). The view-backed models have `__table_args__ = {'info': {'is_view': True}}`.
 
 ### ESI API Layer (`esi/`)
 
@@ -68,15 +68,15 @@ Three periodic jobs orchestrated by shell scripts:
 
 **Weekly**: Refresh universe/blueprint/item data
 
-The `process/update_prices.py` module contains all the batch SQL update functions, using SQLite-compatible `ON CONFLICT ... DO UPDATE SET` (upsert) syntax.
+The `process/update_prices.py` module contains all the batch SQL update functions, using `ON CONFLICT ... DO UPDATE SET` (upsert) syntax.
 
 ### Authentication
 
-Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials read from `config/omniauth.yaml` (key `:esi` → `[client_id, secret_key]`) or env vars `ESI_CLIENT_ID` / `ESI_SECRET_KEY`.
+Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials read from `config/config.json` or env vars `ESI_CLIENT_ID` / `ESI_SECRET_KEY`.
 
 ### Configuration
 
-`config.py` reads `config/omniauth.yaml` for Eve SSO credentials and sets Flask/SQLAlchemy config. Database is `evebs.db` (SQLite) by default, overridable with `DATABASE_URL` env var.
+`config.py` reads `config/config.json` for Eve SSO credentials and database connection. Database is PostgreSQL; connection built from `config.json` fields or overridable with `DATABASE_URL` env var.
 
 ## Key Data Model
 
@@ -89,5 +89,5 @@ Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials read from `config/omni
 
 ## Configuration Files (not in git)
 
-- `config/omniauth.yaml` — Eve SSO client ID and secret (key: `:esi`)
+- `config/config.json` — database connection, Eve SSO client ID and secret, Flask secret key
 - `config/email.txt` — recipient for cron process notification emails

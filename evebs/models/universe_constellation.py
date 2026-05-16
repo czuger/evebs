@@ -7,7 +7,7 @@ class UniverseConstellation(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
 
-    cpp_constellation_id = db.Column(db.Integer, nullable=False, unique=True)
+    cpp_constellation_id = db.Column(db.BigInteger, nullable=False, unique=True)
     universe_region_id = db.Column(db.BigInteger, db.ForeignKey('universe_regions.id'), nullable=False)
 
     name = db.Column(db.Text, nullable=False)
