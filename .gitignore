@@ -19,7 +19,7 @@ var/
 sdist/
 develop-eggs/
 .installed.cfg
-lib/
+oldies/lib/
 lib64/
 .eggs/
 *.egg-link
@@ -92,7 +92,7 @@ docs/_build/
 /log/*.txt
 /tmp
 
-vendor/bundle
+oldies/vendor/bundle
 
 sqlite.sqlite3
 
@@ -120,10 +120,10 @@ items_tree.json.bckp
 
 sitemap.xml.gz
 
-data/regions_data.yaml
-data/trade_volume_estimation.json_stream
+oldies/data/regions_data.yaml
+oldies/data/trade_volume_estimation.json_stream
 
-data/regional_sales_volumes.json_stream
-data/regional_sales_volumes_*.json_stream
+oldies/data/regional_sales_volumes.json_stream
+oldies/data/regional_sales_volumes_*.json_stream
 
 log/
