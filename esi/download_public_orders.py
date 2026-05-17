@@ -1,3 +1,4 @@
+"""This is legacy"""
 import json
 import os
 from esi.client import EsiClient

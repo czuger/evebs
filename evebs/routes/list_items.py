@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, abort
 from flask_login import current_user, login_required
 
 from evebs.extensions import db
-from evebs.models import EveItem, MarketGroup
+from evebs.models import EveItem, MarketGroup, UniverseType
 
 bp = Blueprint('list_items', __name__)
 
@@ -19,8 +19,9 @@ def show():
     if group_id:
         current_group = MarketGroup.query.get_or_404(group_id)
         if current_group.is_leaf():
-            items = EveItem.query.filter_by(market_group_id=group_id).order_by(
-                EveItem.faction, EveItem.name
+            items = UniverseType.query.filter_by(market_group_id=group_id).order_by(
+                # UniverseType.faction, EveItem.name
+                UniverseType.name
             ).all()
             groups = None
         else:

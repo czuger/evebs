@@ -7,5 +7,5 @@ bp = Blueprint('main', __name__)
 @bp.route('/')
 def index():
     if current_user.is_authenticated:
-        return redirect(url_for('buy_orders.show'))
+        return redirect(url_for('list_items.show'))
     return render_template('index.html', title='Eve Online Business Advisor')

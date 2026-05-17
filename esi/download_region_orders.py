@@ -84,7 +84,7 @@ def _ensure_type(type_id):
 
     _ensure_group(detail['group_id'])
 
-    market_group_id = detail['market_group_id']
+    market_group_id = detail.get('market_group_id')
     if market_group_id:
         _ensure_market_group(market_group_id)
 

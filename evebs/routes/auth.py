@@ -15,8 +15,15 @@ bp = Blueprint('auth', __name__)
 
 EVE_AUTH_URL = 'https://login.eveonline.com/v2/oauth/authorize'
 EVE_TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'
-EVE_VERIFY_URL = 'https://esi.evetech.net/verify/'
 EVE_CHAR_INFO_URL = 'https://esi.evetech.net/latest/characters/{}/'
+
+
+def _decode_jwt_payload(token):
+    payload_b64 = token.split('.')[1]
+    padding = 4 - len(payload_b64) % 4
+    if padding != 4:
+        payload_b64 += '=' * padding
+    return json.loads(base64.urlsafe_b64decode(payload_b64))
 
 DEFAULT_SCOPES = ' '.join([
     'esi-characters.read_orders.v1',
@@ -67,10 +74,10 @@ def callback():
     refresh_token = token_data.get('refresh_token')
     expires_in = token_data.get('expires_in', 1200)
 
-    verify = requests.get(EVE_VERIFY_URL, headers={'Authorization': f'Bearer {access_token}'})
-    char_data = verify.json()
-    uid = str(char_data.get('CharacterID'))
-    name = char_data.get('CharacterName')
+    jwt_payload = _decode_jwt_payload(access_token)
+    sub = jwt_payload.get('sub', '')  # "CHARACTER:EVE:12345678"
+    uid = str(sub.split(':')[-1])
+    name = jwt_payload.get('name')
 
     user = User.query.filter_by(uid=uid).first()
     if not user:
@@ -110,7 +117,7 @@ def _set_default_package(user):
             user.trade_hubs.append(th)
 
     for group_cpp_id in [973, 972, 927, 917]:
-        mg = MarketGroup.query.filter_by(cpp_market_group_id=group_cpp_id).first()
+        mg = MarketGroup.query.filter_by(id=group_cpp_id).first()
         if mg:
             for item in mg.eve_items:
                 if item not in user.eve_items:

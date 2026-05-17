@@ -10,5 +10,21 @@ class MarketGroup(db.Model):
     parent_group_id = db.Column(db.BigInteger, db.ForeignKey('market_groups.id'))
 
     parent = db.relationship('MarketGroup', remote_side=[id], backref='children')
+
+    @classmethod
+    def roots(cls):
+        return cls.query.filter_by(parent_group_id=None)
+
+    def is_leaf(self):
+        return not self.children
+
+    def ancestors(self):
+        chain = []
+        node = self.parent
+        while node:
+            chain.append(node)
+            node = node.parent
+        chain.reverse()
+        return chain
     universe_types = db.relationship('UniverseType', back_populates='market_group')
     eve_items = db.relationship('EveItem', back_populates='market_group')
