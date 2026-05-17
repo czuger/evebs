@@ -22,6 +22,7 @@ from evebs.models.universe_category import UniverseCategory
 from evebs.models.universe_group import UniverseGroup
 from evebs.models.universe_type import UniverseType
 from evebs.models.market_order import MarketOrder
+from evebs.models.market_price import MarketPrice
 from evebs.models.structure import Structure
 from evebs.models.constant import Constant
 from evebs.models.last_update import LastUpdate
