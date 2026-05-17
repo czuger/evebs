@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 
 from evebs.extensions import db
 from sqlalchemy.orm import joinedload
-from evebs.models import BpcAsset, UniverseStation
+from evebs.models import BpcAsset, UniverseStation, MarketPrice
 
 bp = Blueprint('my_assets', __name__)
 
@@ -25,6 +25,18 @@ def show():
         q = q.filter(BpcAsset.universe_station_id == user.selected_assets_station_id)
     assets = q.all()
 
+    type_ids = [a.eve_item_id for a in assets if a.eve_item_id]
+    market_prices = {
+        mp.type_id: mp
+        for mp in MarketPrice.query.filter(MarketPrice.type_id.in_(type_ids)).all()
+    }
+
+    def asset_value(a):
+        mp = market_prices.get(a.eve_item_id)
+        return (mp.average_price or 0) * a.quantity if mp else 0
+
+    assets = sorted(assets, key=asset_value, reverse=True)
+
     # All distinct stations the user has assets at (for the station selector)
     station_ids = (db.session.query(BpcAsset.universe_station_id)
                    .filter_by(user_id=user.id)
@@ -34,6 +46,7 @@ def show():
     return render_template('my_assets/show.html',
                            title='My assets',
                            assets=assets,
+                           market_prices=market_prices,
                            stations=stations,
                            user=user)
 

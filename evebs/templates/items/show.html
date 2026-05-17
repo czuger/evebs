@@ -1,51 +1,76 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="my-4 d-flex align-items-center">
-  <img src="https://imageserver.eveonline.com/Type/{{ item.cpp_eve_item_id }}_64.png"
-       alt="{{ item.name }}" class="mr-3">
-  <h1>{{ item.name }}</h1>
+{% if item.market_group %}
+  {% set _anc = item.market_group.ancestors() %}
+  {% set _root = _anc[0] if _anc else item.market_group %}
+  {% set _img = 'bp' if _root.name == 'Blueprints & Reactions' else 'icon' %}
+{% else %}
+  {% set _img = 'icon' %}
+{% endif %}
+
+<div class="my-4 d-flex align-items-center gap-3">
+  <img src="https://images.evetech.net/types/{{ item.id }}/{{ _img }}" alt="{{ item.name }}" width="64" height="64">
+  <div>
+    <h1 class="mb-0">{{ item.name }}</h1>
+    {% if item.market_group %}
+      <small class="text-muted">{{ item.market_group.name }}</small>
+    {% endif %}
+  </div>
 </div>
 
-<div class="row my-4">
-  {% if item.base_item or not item.blueprint %}
-    <div class="col-12 col-lg mt-1">
-      <a href="/production_costs/{{ item.slug or item.id }}/dailies_avg_prices/{{ jita.id }}"
-         class="btn btn-primary btn-block active">Average cost</a>
+<div class="row g-3 mb-4">
+  <div class="col-12 col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">ESI Average price</h6>
+        <p class="card-text fs-5 fw-semibold">
+          {{ market_price.average_price | isk if market_price and market_price.average_price else '—' }}
+        </p>
+        <h6 class="card-subtitle mb-2 text-muted">ESI Adjusted price</h6>
+        <p class="card-text">
+          {{ market_price.adjusted_price | isk if market_price and market_price.adjusted_price else '—' }}
+        </p>
+      </div>
     </div>
-  {% else %}
-    <div class="col-12 col-lg mt-1">
-      <a href="/production_costs/{{ item.slug or item.id }}"
-         class="btn btn-primary btn-block active">Production cost</a>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-3 text-muted">Physical properties</h6>
+        <dl class="row mb-0 small">
+          <dt class="col-6 text-muted fw-normal">Volume</dt>
+          <dd class="col-6 text-end">{{ item.volume }} m³</dd>
+          <dt class="col-6 text-muted fw-normal">Packaged</dt>
+          <dd class="col-6 text-end">{{ item.packaged_volume }} m³</dd>
+          <dt class="col-6 text-muted fw-normal">Mass</dt>
+          <dd class="col-6 text-end">{{ item.mass }} kg</dd>
+        </dl>
+      </div>
     </div>
-  {% endif %}
-  <div class="col-12 col-lg mt-1">
-    <a href="/market_data/{{ item.id }}/trade_hub_detail/{{ jita.id }}"
-       class="btn btn-primary btn-block active">Jita min price</a>
   </div>
-  <div class="col-12 col-lg mt-1">
-    <a href="/market_data/{{ item.id }}/market_overview/"
-       class="btn btn-primary btn-block active">Markets details</a>
-  </div>
-  <div class="col-12 col-lg mt-1">
-    <a href="/production_costs/{{ item.slug or item.id }}/market_histories"
-       class="btn btn-primary btn-block active">Last month aggregations</a>
+
+  <div class="col-12 col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body d-flex flex-column gap-2">
+        <h6 class="card-subtitle mb-1 text-muted">Actions</h6>
+        {% if item.base_item or not item.blueprint %}
+          <a href="/production_costs/{{ item.id }}/market_prices_average" class="btn btn-outline-primary btn-sm w-100">Average cost</a>
+        {% else %}
+          <a href="/production_costs/{{ item.id }}" class="btn btn-outline-primary btn-sm w-100">Production cost</a>
+        {% endif %}
+        <a href="/market_data/{{ item.id }}/trade_hub_detail/{{ jita.id }}" class="btn btn-outline-secondary btn-sm w-100">Jita min price</a>
+        <a href="/market_data/{{ item.id }}/market_overview/" class="btn btn-outline-secondary btn-sm w-100">Market overview</a>
+        <a href="/production_costs/{{ item.id }}/market_histories" class="btn btn-outline-secondary btn-sm w-100">Last month aggregations</a>
+        <a href="https://everef.net/types/{{ item.id }}" target="_blank" class="btn btn-link btn-sm w-100 p-0 text-muted">everef.net ↗</a>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="row my-4">
-  <div class="col">{{ item.description | safe if item.description }}</div>
+{% if item.description %}
+<div class="card shadow-sm mb-4">
+  <div class="card-body text-muted small">{{ item.description | safe }}</div>
 </div>
-
-<div class="row my-4">
-  <div class="col">Volume: {{ item.volume }} m³</div>
-  <div class="col">Volume packaged: {{ item.packaged_volume }} m³</div>
-  <div class="col">Mass: {{ item.mass }} kg</div>
-</div>
-
-<div class="row my-4">
-  <div class="col">
-    More details at:
-    <a href="https://everef.net/type/{{ item.cpp_eve_item_id }}" target="_blank">everef.net</a>
-  </div>
-</div>
+{% endif %}
 {% endblock %}

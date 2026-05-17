@@ -5,18 +5,18 @@
   <table class="table">
     <tr>
       <th>Region</th>
-      <th class="text-right">Volume</th>
-      <th class="text-right">Average</th>
-      <th class="text-right">Highest</th>
-      <th class="text-right">Lowest</th>
+      <th class="text-end">Volume</th>
+      <th class="text-end">Average</th>
+      <th class="text-end">Highest</th>
+      <th class="text-end">Lowest</th>
     </tr>
     {% for h in market_histories %}
     <tr>
       <td>{{ h.universe_region.name }}</td>
-      <td class="text-right">{{ h.volume | vol }}</td>
-      <td class="text-right">{{ h.average | isk }}</td>
-      <td class="text-right">{{ h.highest | isk }}</td>
-      <td class="text-right">{{ h.lowest | isk }}</td>
+      <td class="text-end">{{ h.volume | vol }}</td>
+      <td class="text-end">{{ h.average | isk }}</td>
+      <td class="text-end">{{ h.highest | isk }}</td>
+      <td class="text-end">{{ h.lowest | isk }}</td>
     </tr>
     {% endfor %}
   </table>

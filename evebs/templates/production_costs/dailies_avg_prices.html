@@ -5,14 +5,14 @@
   <table class="table">
     <tr>
       <th>Day</th>
-      <th class="text-right">Volume</th>
-      <th class="text-right">Weighted avg price</th>
+      <th class="text-end">Volume</th>
+      <th class="text-end">Weighted avg price</th>
     </tr>
     {% for d in dailies_details %}
     <tr>
       <td>{{ d.day }}</td>
-      <td class="text-right">{{ d.volume | vol }}</td>
-      <td class="text-right">{{ d.weighted_avg_price | isk }}</td>
+      <td class="text-end">{{ d.volume | vol }}</td>
+      <td class="text-end">{{ d.weighted_avg_price | isk }}</td>
     </tr>
     {% endfor %}
   </table>

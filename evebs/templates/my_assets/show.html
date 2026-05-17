@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>My assets</h2>
+<h2 class="my-4">My assets</h2>
 {% if stations %}
 <form action="/my_assets/set_assets_station" method="post" class="mb-3">
-  <div class="form-inline">
-    <select name="station_id" class="form-control mr-2">
-      <option value="">-- All stations --</option>
+  <div class="d-flex align-items-center gap-2">
+    <select name="station_id" class="form-select w-auto" onchange="this.form.submit()">
+      <option value="">— All stations —</option>
       {% for st in stations %}
       <option value="{{ st.id }}"
         {% if user.selected_assets_station_id == st.id %}selected{% endif %}>
@@ -13,24 +13,57 @@
       </option>
       {% endfor %}
     </select>
-    <button type="submit" class="btn btn-secondary">Set station</button>
+    <noscript><button type="submit" class="btn btn-secondary">Set station</button></noscript>
   </div>
 </form>
 {% endif %}
-<table class="table">
-  <tr>
-    <th>Item</th>
-    <th class="text-right">Quantity</th>
-    <th>Station</th>
-  </tr>
-  {% for asset in assets %}
-  <tr>
-    <td>{{ asset.universe_type.name if asset.universe_type else asset.eve_item_id }}</td>
-    <td class="text-right">{{ asset.quantity }}</td>
-    <td>{{ asset.universe_station.name if asset.universe_station else 'N/A' }}</td>
-  </tr>
-  {% else %}
-  <tr><td colspan="3" class="text-center text-muted">No assets.</td></tr>
-  {% endfor %}
-</table>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-striped align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Item</th>
+          <th class="text-end">Quantity</th>
+          <th class="text-end">Avg price</th>
+          <th class="text-end">Value</th>
+          <th>Station</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in assets %}
+        <tr>
+          <td>
+            {% if asset.universe_type %}
+              {% set _anc = asset.universe_type.market_group.ancestors() if asset.universe_type.market_group else [] %}
+              {% set _root = _anc[0] if _anc else asset.universe_type.market_group %}
+              {% set _img = 'bp' if _root and _root.name == 'Blueprints & Reactions' else 'icon' %}
+              <img src="https://images.evetech.net/types/{{ asset.universe_type.id }}/{{ _img }}"
+                   width="32" height="32" alt="" class="me-2">
+              <a href="/items/{{ asset.universe_type.id }}" class="text-decoration-none">{{ asset.universe_type.name }}</a>
+            {% else %}
+              {{ asset.eve_item_id }}
+            {% endif %}
+          </td>
+          <td class="text-end qty" data-value="{{ asset.quantity }}">{{ asset.quantity }}</td>
+          {% set _mp = market_prices.get(asset.eve_item_id) %}
+          <td class="text-end text-muted">{{ _mp.average_price | isk if _mp else '—' }}</td>
+          <td class="text-end fw-semibold">{{ (_mp.average_price * asset.quantity) | isk if _mp and _mp.average_price else '—' }}</td>
+          <td class="text-muted small">{{ asset.universe_station.name if asset.universe_station else 'N/A' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center text-muted py-4">No assets.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  const locale = navigator.language.startsWith('fr') ? 'fr-FR' : 'en-US';
+  const fmt = new Intl.NumberFormat(locale);
+  document.querySelectorAll('.qty').forEach(el => {
+    el.textContent = fmt.format(el.dataset.value);
+  });
+</script>
 {% endblock %}
