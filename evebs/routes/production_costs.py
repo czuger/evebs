@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort, request
 from flask_login import current_user
 
-from evebs.models import EveItem, Constant, TradeHub, WeeklyPriceDetail
+from evebs.models import UniverseType, Constant, TradeHub, WeeklyPriceDetail
 
 bp = Blueprint('production_costs', __name__)
 PER_PAGE = 20
@@ -9,7 +9,7 @@ PER_PAGE = 20
 
 @bp.route('/production_costs/<slug>')
 def show(slug):
-    item = EveItem.find_by_slug(slug)
+    item = UniverseType.find_by_slug(slug)
     if item is None:
         abort(404)
     if item.base_item:
@@ -24,7 +24,7 @@ def show(slug):
 
 @bp.route('/production_costs/<item_slug>/dailies_avg_prices/<int:trade_hub_id>')
 def dailies_avg_prices(item_slug, trade_hub_id):
-    item = EveItem.find_by_slug(item_slug)
+    item = UniverseType.find_by_slug(item_slug)
     if item is None:
         abort(404)
     if not item.base_item:
@@ -44,9 +44,9 @@ def dailies_avg_prices(item_slug, trade_hub_id):
 
 @bp.route('/production_costs/<slug>/market_histories')
 def market_histories(slug):
-    from evebs.models import EveMarketHistoriesGroup
+    from evebs.models import EveMarketHistoriesGroup  # noqa: F401
     from sqlalchemy.orm import joinedload
-    item = EveItem.find_by_slug(slug)
+    item = UniverseType.find_by_slug(slug)
     if item is None:
         abort(404)
     histories = (EveMarketHistoriesGroup.query

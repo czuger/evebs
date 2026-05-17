@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
-from evebs.models import ProductionList, EveItem, TradeHub
+from evebs.models import ProductionList, TradeHub
 
 bp = Blueprint('production_lists', __name__)
 

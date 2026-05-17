@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, abort,
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
-from evebs.models import EveItemsSavedList, EveItem
+from evebs.models import EveItemsSavedList, UniverseType
 
 bp = Blueprint('eve_items_saved_lists', __name__)
 
@@ -47,7 +47,7 @@ def load(list_id):
     user = current_user
     saved = EveItemsSavedList.query.filter_by(id=list_id, user_id=user.id).first_or_404()
     ids = saved.get_ids()
-    items = EveItem.query.filter(EveItem.id.in_(ids)).all()
+    items = UniverseType.query.filter(UniverseType.id.in_(ids)).all()
     user.eve_items.clear()
     for item in items:
         user.eve_items.append(item)

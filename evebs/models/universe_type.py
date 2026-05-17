@@ -22,3 +22,10 @@ class UniverseType(db.Model):
     universe_group = db.relationship('UniverseGroup', back_populates='universe_types')
     market_group = db.relationship('MarketGroup', back_populates='universe_types')
     market_orders = db.relationship('MarketOrder', back_populates='universe_type')
+
+    @classmethod
+    def find_by_slug(cls, slug):
+        try:
+            return cls.query.get(int(slug))
+        except (ValueError, TypeError):
+            return None

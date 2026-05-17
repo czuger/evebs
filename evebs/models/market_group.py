@@ -27,4 +27,3 @@ class MarketGroup(db.Model):
         chain.reverse()
         return chain
     universe_types = db.relationship('UniverseType', back_populates='market_group')
-    eve_items = db.relationship('EveItem', back_populates='market_group')

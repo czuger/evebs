@@ -234,8 +234,8 @@ def update_market_histories():
     from evebs.models import EveMarketHistoriesGroup, UniverseRegion
 
     region_ids = {r.id for r in UniverseRegion.query.all()}
-    from evebs.models import EveItem
-    item_map = {str(i.cpp_eve_item_id): i.id for i in EveItem.query.all()}
+    from evebs.models import UniverseType
+    item_map = {str(i.id): i.id for i in UniverseType.query.all()}
 
     for filepath in glob.glob('data/regional_sales_volumes_*.json_stream'):
         with open(filepath) as f:

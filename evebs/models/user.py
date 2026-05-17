@@ -37,7 +37,13 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    eve_items = db.relationship('EveItem', secondary=eve_items_users, back_populates='users')
+    eve_items = db.relationship(
+        'UniverseType',
+        secondary=eve_items_users,
+        primaryjoin='User.id == foreign(eve_items_users.c.user_id)',
+        secondaryjoin='foreign(eve_items_users.c.eve_item_id) == UniverseType.id',
+        viewonly=True,
+    )
     trade_hubs = db.relationship('TradeHub', secondary=trade_hubs_users, back_populates='users')
     production_lists = db.relationship('ProductionList', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')

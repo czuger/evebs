@@ -25,9 +25,9 @@
   </tr>
   {% for asset in assets %}
   <tr>
-    <td>{{ asset.eve_item_id }}</td>
+    <td>{{ asset.universe_type.name if asset.universe_type else asset.eve_item_id }}</td>
     <td class="text-right">{{ asset.quantity }}</td>
-    <td>{{ asset.universe_station_id or 'N/A' }}</td>
+    <td>{{ asset.universe_station.name if asset.universe_station else 'N/A' }}</td>
   </tr>
   {% else %}
   <tr><td colspan="3" class="text-center text-muted">No assets.</td></tr>

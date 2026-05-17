@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort
 from flask_login import current_user
 
-from evebs.models import EveItem, TradeHub, Constant, UniverseType
+from evebs.models import TradeHub, Constant, UniverseType
 
 bp = Blueprint('items', __name__)
 

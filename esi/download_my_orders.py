@@ -18,14 +18,14 @@ class DownloadMyOrders:
             db.session.commit()
             return
 
-        from evebs.models import EveItem, UniverseStation, TradeHub, UserSaleOrder, ProductionList
+        from evebs.models import UniverseStation, TradeHub, UserSaleOrder, ProductionList
         from evebs.extensions import db
         from datetime import datetime
 
         current_order_ids = [o.id for o in UserSaleOrder.query.filter_by(user_id=user.id).all()]
 
         for page in pages:
-            eve_item_id = EveItem.to_eve_item_id(page['type_id'])
+            eve_item_id = page['type_id']
             us = UniverseStation.query.filter_by(id=page['location_id']).first()
             if us and us.universe_system:
                 hub = TradeHub.query.filter_by(eve_system_id=us.universe_system.id).first()

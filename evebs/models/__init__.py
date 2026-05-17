@@ -3,7 +3,6 @@ from evebs.models.user import User, load_user
 from evebs.models.trade_hub import TradeHub
 from evebs.models.market_group import MarketGroup
 from evebs.models.blueprint import Blueprint
-from evebs.models.eve_item import EveItem
 from evebs.models.blueprint_material import BlueprintMaterial
 from evebs.models.blueprint_modification import BlueprintModification
 from evebs.models.prices_min import PricesMin

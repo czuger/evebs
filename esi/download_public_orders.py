@@ -10,10 +10,10 @@ class DownloadPublicTradesOrders:
         self.verbose = verbose
 
     def download(self):
-        from evebs.models import TradeHub, EveItem, UniverseRegion, UniverseSystem
+        from evebs.models import TradeHub, UniverseType, UniverseRegion, UniverseSystem
 
         trade_hub_ids = set(row[0] for row in TradeHub.query.with_entities(TradeHub.eve_system_id).all())
-        eve_item_ids = set(row[0] for row in EveItem.query.with_entities(EveItem.cpp_eve_item_id).all())
+        eve_item_ids = set(row[0] for row in UniverseType.query.with_entities(UniverseType.id).all())
         systems_to_name = {r[0]: r[1] for r in UniverseSystem.query.with_entities(
             UniverseSystem.id, UniverseSystem.name).all()}
 

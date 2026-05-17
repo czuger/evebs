@@ -14,7 +14,7 @@ class Blueprint(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    eve_item = db.relationship('EveItem', back_populates='blueprint', uselist=False)
+    eve_item = db.relationship('UniverseType', primaryjoin='Blueprint.produced_cpp_type_id == UniverseType.id', foreign_keys='[Blueprint.produced_cpp_type_id]', uselist=False, viewonly=True)
     blueprint_materials = db.relationship('BlueprintMaterial', back_populates='blueprint', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='blueprint')
 

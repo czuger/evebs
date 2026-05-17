@@ -9,7 +9,7 @@ class BuyOrdersAnalytic(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     trade_hub_id = db.Column(db.BigInteger, db.ForeignKey('trade_hubs.id'), nullable=False)
-    eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False)
+    eve_item_id = db.Column(db.BigInteger, db.ForeignKey('universe_types.id'), nullable=False)
     approx_max_price = db.Column(db.Float)
     over_approx_max_price_volume = db.Column(db.BigInteger)
     single_unit_cost = db.Column(db.Float)
@@ -22,4 +22,4 @@ class BuyOrdersAnalytic(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     trade_hub = db.relationship('TradeHub', back_populates='buy_orders_analytics')
-    eve_item = db.relationship('EveItem', back_populates='buy_orders_analytics')
+    eve_item = db.relationship('UniverseType', primaryjoin='BuyOrdersAnalytic.eve_item_id == UniverseType.id', foreign_keys='[BuyOrdersAnalytic.eve_item_id]', viewonly=True)

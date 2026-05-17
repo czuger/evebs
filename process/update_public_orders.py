@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timedelta
 
 from evebs.extensions import db
-from evebs.models import PublicTradeOrder, TradeHub, EveItem, SalesFinal
+from evebs.models import PublicTradeOrder, TradeHub, UniverseType, SalesFinal
 
 
 def run(verbose=False):
@@ -11,8 +11,7 @@ def run(verbose=False):
 
     trade_hub_map = {r[0]: r[1] for r in TradeHub.query.with_entities(
         TradeHub.eve_system_id, TradeHub.id).all()}
-    item_map = {r[0]: r[1] for r in EveItem.query.with_entities(
-        EveItem.cpp_eve_item_id, EveItem.id).all()}
+    item_map = {r[0]: r[0] for r in UniverseType.query.with_entities(UniverseType.id).all()}
 
     PublicTradeOrder.query.update({'touched': False})
     db.session.flush()

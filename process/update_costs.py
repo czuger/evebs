@@ -1,7 +1,7 @@
 """Update item costs: base items from weekly avg, crafted items from components."""
 import math
 from evebs.extensions import db
-from evebs.models import EveItem, Blueprint, BlueprintMaterial, Constant
+from evebs.models import UniverseType, Blueprint, BlueprintMaterial, Constant
 from datetime import datetime
 
 
@@ -26,9 +26,9 @@ def update_crafted_item_costs(production_level):
         return
     taxes = taxes_const.f_value
 
-    items = EveItem.query.filter_by(
+    items = UniverseType.query.filter_by(
         base_item=False, production_level=production_level
-    ).filter(EveItem.blueprint_id.isnot(None)).all()
+    ).filter(UniverseType.blueprint_id.isnot(None)).all()
 
     for item in items:
         bp = item.blueprint
@@ -55,8 +55,8 @@ def update_all_costs():
     update_base_item_costs()
     # Update crafted items level by level (base first, then higher)
     max_levels = db.session.execute(
-        db.select(db.func.max(EveItem.production_level)).filter(
-            EveItem.base_item.is_(False), EveItem.blueprint_id.isnot(None)
+        db.select(db.func.max(UniverseType.production_level)).filter(
+            UniverseType.base_item.is_(False), UniverseType.blueprint_id.isnot(None)
         )
     ).scalar() or 5
     for level in range(1, max_levels + 1):

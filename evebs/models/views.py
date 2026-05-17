@@ -41,8 +41,8 @@ class PriceAdvicesMinPrice(db.Model):
     margin_percent = db.Column(db.Float)
     avg_monthly_margin_percent = db.Column(db.Float)
 
-    eve_item = db.relationship('EveItem', foreign_keys=[eve_item_id],
-                               primaryjoin='PriceAdvicesMinPrice.eve_item_id == EveItem.id',
+    eve_item = db.relationship('UniverseType', foreign_keys=[eve_item_id],
+                               primaryjoin='PriceAdvicesMinPrice.eve_item_id == UniverseType.id',
                                viewonly=True)
 
 

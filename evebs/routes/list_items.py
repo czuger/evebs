@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, abort
 from flask_login import current_user, login_required
 
 from evebs.extensions import db
-from evebs.models import EveItem, MarketGroup, UniverseType
+from evebs.models import MarketGroup, UniverseType
 
 bp = Blueprint('list_items', __name__)
 
@@ -20,7 +20,6 @@ def show():
         current_group = MarketGroup.query.get_or_404(group_id)
         if current_group.is_leaf():
             items = UniverseType.query.filter_by(market_group_id=group_id).order_by(
-                # UniverseType.faction, EveItem.name
                 UniverseType.name
             ).all()
             groups = None
@@ -47,7 +46,7 @@ def show():
 def selection_change():
     item_id = request.form.get('id', type=int)
     check_state = request.form.get('check_state') == 'true'
-    item = EveItem.query.get_or_404(item_id)
+    item = UniverseType.query.get_or_404(item_id)
     user = current_user
     if check_state:
         if item not in user.eve_items:
