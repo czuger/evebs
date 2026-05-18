@@ -69,6 +69,19 @@
 </div>
 
 {# ── Nearby market orders ── #}
+{% if current_user.is_authenticated and current_station %}
+<form method="GET" class="d-flex align-items-center gap-2 mb-3">
+  <label class="text-muted small mb-0" for="max_jumps_sel">Search range:</label>
+  <select id="max_jumps_sel" name="max_jumps" class="form-select form-select-sm w-auto"
+          onchange="this.form.submit()">
+    {% for j in [1, 2, 3, 5, 10, 15, 20, 30] %}
+    <option value="{{ j }}" {{ 'selected' if j == effective_max_jumps }}>
+      {{ j }} jump{{ 's' if j != 1 }}{% if j == current_user.max_jumps %} (default){% endif %}
+    </option>
+    {% endfor %}
+  </select>
+</form>
+{% endif %}
 <div class="row g-3 mb-4">
 
   {# Sell orders (lowest first) #}
@@ -87,11 +100,19 @@
           <p class="text-muted small p-3 mb-0">No sell orders found within range.</p>
         {% else %}
           <table class="table table-sm mb-0">
-            <thead class="thead-light"><tr><th>System</th><th class="text-end">Price</th><th class="text-end">Volume</th><th>Range</th></tr></thead>
+            <thead class="thead-light"><tr><th>Sec</th><th>System</th><th>Station</th><th class="text-end">Jumps</th><th class="text-end">Price</th><th class="text-end">Volume</th><th>Range</th></tr></thead>
             <tbody>
               {% for o in sellers %}
+              {% set sec = o.universe_system.security_status if o.universe_system else none %}
+              {% set station = stations_by_id.get(o.location_id) %}
+              {% set sys_info = nearby_info.get(o.universe_system.name) if o.universe_system else none %}
               <tr>
+                <td class="text-nowrap fw-semibold {% if sec is not none %}{% if sec >= 0.5 %}text-success{% elif sec >= 0.1 %}text-warning{% else %}text-danger{% endif %}{% endif %}">
+                  {{ '%.1f' | format(sec) if sec is not none else '—' }}
+                </td>
                 <td>{{ o.universe_system.name if o.universe_system else '—' }}</td>
+                <td class="text-muted small">{{ station.name if station else '—' }}</td>
+                <td class="text-end text-muted">{{ sys_info.jumps if sys_info else '—' }}</td>
                 <td class="text-end text-danger">{{ o.price | isk }}</td>
                 <td class="text-end">{{ o.volume_remain }}</td>
                 <td class="text-muted small">{{ o.range }}</td>
@@ -120,11 +141,19 @@
           <p class="text-muted small p-3 mb-0">No buy orders found within range.</p>
         {% else %}
           <table class="table table-sm mb-0">
-            <thead class="thead-light"><tr><th>System</th><th class="text-end">Price</th><th class="text-end">Volume</th><th>Range</th></tr></thead>
+            <thead class="thead-light"><tr><th>Sec</th><th>System</th><th>Station</th><th class="text-end">Jumps</th><th class="text-end">Price</th><th class="text-end">Volume</th><th>Range</th></tr></thead>
             <tbody>
               {% for o in buyers %}
+              {% set sec = o.universe_system.security_status if o.universe_system else none %}
+              {% set station = stations_by_id.get(o.location_id) %}
+              {% set sys_info = nearby_info.get(o.universe_system.name) if o.universe_system else none %}
               <tr>
+                <td class="text-nowrap fw-semibold {% if sec is not none %}{% if sec >= 0.5 %}text-success{% elif sec >= 0.1 %}text-warning{% else %}text-danger{% endif %}{% endif %}">
+                  {{ '%.1f' | format(sec) if sec is not none else '—' }}
+                </td>
                 <td>{{ o.universe_system.name if o.universe_system else '—' }}</td>
+                <td class="text-muted small">{{ station.name if station else '—' }}</td>
+                <td class="text-end text-muted">{{ sys_info.jumps if sys_info else '—' }}</td>
                 <td class="text-end text-success">{{ o.price | isk }}</td>
                 <td class="text-end">{{ o.volume_remain }}</td>
                 <td class="text-muted small">{{ o.range }}</td>
