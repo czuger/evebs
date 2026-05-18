@@ -11,9 +11,11 @@ PER_PAGE = 20
 @bp.route('/production_costs/<int:type_id>')
 def show(type_id):
     """Render the production cost breakdown for a crafted item."""
+    from itertools import groupby
     from sqlalchemy.orm import joinedload
     from sqlalchemy import func
-    from evebs.models import Blueprint, MarketPrice, BpcAsset
+    from evebs.models import Blueprint, BlueprintMaterial, MarketPrice, BpcAsset, UniverseStation, UniverseSystem, MarketOrder
+    from evebs.engine.routing import find_systems_within_jumps
 
     item = UniverseType.query.get(type_id)
     if item is None:
@@ -21,11 +23,16 @@ def show(type_id):
 
     blueprint = (Blueprint.query
                  .filter_by(produced_type_id=type_id)
-                 .options(joinedload(Blueprint.blueprint_materials))
+                 .options(joinedload(Blueprint.blueprint_materials)
+                          .joinedload(BlueprintMaterial.universe_type))
                  .first())
 
     market_prices = {}
     owned_quantities = {}
+    current_station = None
+    output_buyers = []
+    input_sellers = {}
+
     if blueprint:
         mat_type_ids = [m.universe_type_id for m in blueprint.blueprint_materials]
         market_prices = {
@@ -46,6 +53,77 @@ def show(type_id):
             )
             owned_quantities = {eve_item_id: int(total) for eve_item_id, total in rows}
 
+            # Determine current station: station with highest Σ(owned_qty × material.volume)
+            mat_volumes = {
+                m.universe_type_id: (m.universe_type.volume or 0)
+                for m in blueprint.blueprint_materials
+                if m.universe_type
+            }
+            asset_rows = (
+                BpcAsset.query
+                .options(
+                    joinedload(BpcAsset.universe_station)
+                    .joinedload(UniverseStation.universe_system)
+                )
+                .filter(
+                    BpcAsset.user_id == current_user.id,
+                    BpcAsset.eve_item_id.in_(mat_type_ids),
+                    BpcAsset.universe_station_id.isnot(None),
+                )
+                .all()
+            )
+            station_scores = {}
+            station_objects = {}
+            for asset in asset_rows:
+                vol = mat_volumes.get(asset.eve_item_id, 0)
+                sid = asset.universe_station_id
+                station_scores[sid] = station_scores.get(sid, 0) + asset.quantity * vol
+                station_objects[sid] = asset.universe_station
+
+            if station_scores:
+                best_sid = max(station_scores, key=station_scores.__getitem__)
+                current_station = station_objects[best_sid]
+
+            if current_station and current_station.universe_system:
+                nearby_info = find_systems_within_jumps(
+                    current_station.universe_system.name,
+                    max_jumps=5,
+                    avoid_lowsec=True,
+                    avoid_nullsec=True,
+                )
+                nearby_system_ids = [
+                    s.id for s in UniverseSystem.query.filter(
+                        UniverseSystem.name.in_(nearby_info.keys())
+                    ).all()
+                ]
+
+                output_buyers = (
+                    MarketOrder.query
+                    .options(joinedload(MarketOrder.universe_system))
+                    .filter(
+                        MarketOrder.is_buy_order == True,  # noqa: E712
+                        MarketOrder.type_id == type_id,
+                        MarketOrder.system_id.in_(nearby_system_ids),
+                    )
+                    .order_by(MarketOrder.price.desc())
+                    .limit(20)
+                    .all()
+                )
+
+                raw_sellers = (
+                    MarketOrder.query
+                    .options(joinedload(MarketOrder.universe_system))
+                    .filter(
+                        MarketOrder.is_buy_order == False,  # noqa: E712
+                        MarketOrder.type_id.in_(mat_type_ids),
+                        MarketOrder.system_id.in_(nearby_system_ids),
+                    )
+                    .order_by(MarketOrder.type_id, MarketOrder.price.asc())
+                    .all()
+                )
+                for tid, grp in groupby(raw_sellers, key=lambda o: o.type_id):
+                    input_sellers[tid] = list(grp)[:3]
+
     taxes = Constant.query.filter_by(libe='taxes').first()
     taxes_value = taxes.f_value if taxes else 1.13
     return render_template('production_costs/show.html',
@@ -54,6 +132,9 @@ def show(type_id):
                            market_prices=market_prices,
                            owned_quantities=owned_quantities,
                            taxes=taxes_value,
+                           current_station=current_station,
+                           output_buyers=output_buyers,
+                           input_sellers=input_sellers,
                            title=f'Production cost — {item.name}')
 
 

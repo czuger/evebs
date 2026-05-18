@@ -126,5 +126,98 @@
   </div>
 </div>
 
+
+{# ── Buyers for output ── #}
+<div class="card shadow-sm mt-4">
+  <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+    <span>Buyers for output</span>
+    {% if current_station %}
+    <small class="text-muted fw-normal">nearby {{ current_station.name }} (≤5 jumps, highsec)</small>
+    {% endif %}
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>System</th>
+          <th class="text-end">Price</th>
+          <th class="text-end">Volume remaining</th>
+          <th>Range</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if output_buyers %}
+          {% for order in output_buyers %}
+          <tr>
+            <td>{{ order.universe_system.name if order.universe_system else order.system_id }}</td>
+            <td class="text-end text-success fw-semibold">{{ order.price | isk }}</td>
+            <td class="text-end">{{ order.volume_remain | vol }}</td>
+            <td class="text-muted">{{ order.range }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="4" class="text-center text-muted py-3">
+            {% if current_station %}No buy orders nearby.{% else %}Log in and have materials in your assets to detect your current station.{% endif %}
+          </td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{# ── Sellers for input ── #}
+<div class="card shadow-sm mt-4 mb-4">
+  <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+    <span>Sellers for input</span>
+    {% if current_station %}
+    <small class="text-muted fw-normal">nearby {{ current_station.name }} (≤5 jumps, highsec)</small>
+    {% endif %}
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Material</th>
+          <th>System</th>
+          <th class="text-end">Price</th>
+          <th class="text-end">Volume remaining</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set has_any = input_sellers | length > 0 %}
+        {% if has_any %}
+          {% for material in blueprint.blueprint_materials %}
+            {% set orders = input_sellers.get(material.universe_type_id) %}
+            {% if orders %}
+              {% for order in orders %}
+              <tr>
+                {% if loop.first %}
+                <td rowspan="{{ orders | length }}" class="align-middle">
+                  {% if material.universe_type %}
+                    <img src="https://images.evetech.net/types/{{ material.universe_type_id }}/icon"
+                         width="24" height="24" alt="" class="me-1 rounded">
+                    {{ material.universe_type.name }}
+                  {% else %}
+                    {{ material.universe_type_id }}
+                  {% endif %}
+                </td>
+                {% endif %}
+                <td>{{ order.universe_system.name if order.universe_system else order.system_id }}</td>
+                <td class="text-end fw-semibold">{{ order.price | isk }}</td>
+                <td class="text-end">{{ order.volume_remain | vol }}</td>
+              </tr>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="4" class="text-center text-muted py-3">
+            {% if current_station %}No sell orders nearby.{% else %}Log in and have materials in your assets to detect your current station.{% endif %}
+          </td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 {% endif %}
 {% endblock %}
