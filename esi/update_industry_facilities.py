@@ -26,6 +26,8 @@ def update_industry_facilities():
             tax=r.get('tax'),
         ))
 
+        print(r.get('tax'))
+
     db.session.bulk_save_objects(facilities)
     db.session.commit()
     print(f'Replaced industry_facilities with {len(facilities)} records.')

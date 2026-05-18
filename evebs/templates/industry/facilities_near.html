@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="my-4">Industry facilities near me</h1>
+
+<p id="status" class="text-muted">Loading…</p>
+
+<table class="table table-sm table-hover d-none" id="facilities-table">
+  <thead class="thead-light">
+    <tr>
+      <th>Facility</th>
+      <th>Region</th>
+      <th>System</th>
+      <th>Jumps</th>
+      <th>Sec</th>
+      <th>Cost Index</th>
+      <th>Tax</th>
+      <th>Total Cost</th>
+    </tr>
+  </thead>
+  <tbody id="facilities-body"></tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center mt-2 d-none" id="pagination-bar">
+  <small id="pagination-info" class="text-muted"></small>
+  <nav><ul class="pagination pagination-sm mb-0" id="pagination-pages"></ul></nav>
+</div>
+
+<script>
+const PER_PAGE = 20;
+let _rows = [];
+let _page = 1;
+
+function pct(v) { return (v * 100).toFixed(2) + '%'; }
+function secClass(s) {
+  if (s >= 0.5) return 'text-success';
+  if (s > 0.0)  return 'text-warning';
+  return 'text-danger';
+}
+
+function renderPage(page) {
+  _page = page;
+  const start = (page - 1) * PER_PAGE;
+  const slice = _rows.slice(start, start + PER_PAGE);
+  const tbody = document.getElementById('facilities-body');
+  tbody.innerHTML = '';
+  slice.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td>${r.name}</td>` +
+      `<td>${r.region_name}</td>` +
+      `<td>${r.system_name}</td>` +
+      `<td>${r.jumps}</td>` +
+      `<td class="${secClass(r.security)}">${r.security.toFixed(1)}</td>` +
+      `<td>${pct(r.cost_index)}</td>` +
+      `<td>${pct(r.tax)}</td>` +
+      `<td><strong>${pct(r.total_cost)}</strong></td>`;
+    tbody.appendChild(tr);
+  });
+
+  const total = _rows.length;
+  const totalPages = Math.ceil(total / PER_PAGE);
+  document.getElementById('pagination-info').textContent =
+    `${start + 1}–${Math.min(start + PER_PAGE, total)} of ${total}`;
+
+  const ul = document.getElementById('pagination-pages');
+  ul.innerHTML = '';
+  for (let p = 1; p <= totalPages; p++) {
+    const li = document.createElement('li');
+    li.className = 'page-item' + (p === page ? ' active' : '');
+    li.innerHTML = `<a class="page-link" href="#">${p}</a>`;
+    li.querySelector('a').addEventListener('click', e => { e.preventDefault(); renderPage(p); });
+    ul.appendChild(li);
+  }
+}
+
+fetch('/api/industry/facilities/near/')
+  .then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d.error || 'Error')))
+  .then(rows => {
+    const status = document.getElementById('status');
+    if (!rows.length) {
+      status.textContent = 'No industry facilities found within range.';
+      return;
+    }
+    _rows = rows;
+    status.classList.add('d-none');
+    document.getElementById('facilities-table').classList.remove('d-none');
+    document.getElementById('pagination-bar').classList.remove('d-none');
+    renderPage(1);
+  })
+  .catch(err => {
+    const status = document.getElementById('status');
+    status.textContent = typeof err === 'string' ? err : 'Failed to load facilities.';
+    status.classList.replace('text-muted', 'text-danger');
+  });
+</script>
+{% endblock %}
