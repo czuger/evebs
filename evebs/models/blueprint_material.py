@@ -7,12 +7,12 @@ class BlueprintMaterial(db.Model):
 
     __tablename__ = 'blueprint_materials'
 
-    id = db.Column(db.Integer, primary_key=True)
-    blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
-    required_qtt = db.Column(db.Integer, nullable=False)
-    eve_item_id = db.Column(db.BigInteger, db.ForeignKey('universe_types.id'), nullable=False)
+    id = db.Column(db.BigInteger, primary_key=True)
+    blueprint_id = db.Column(db.BigInteger, db.ForeignKey('blueprints.id'), nullable=False)
+    required_qtt = db.Column(db.BigInteger, nullable=False)
+    universe_type_id = db.Column(db.BigInteger, db.ForeignKey('universe_types.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     blueprint = db.relationship('Blueprint', back_populates='blueprint_materials')
-    eve_item = db.relationship('UniverseType', primaryjoin='BlueprintMaterial.eve_item_id == UniverseType.id', foreign_keys='[BlueprintMaterial.eve_item_id]', viewonly=True)
+    universe_type = db.relationship('UniverseType', primaryjoin='BlueprintMaterial.universe_type_id == UniverseType.id', foreign_keys='[BlueprintMaterial.universe_type_id]', viewonly=True)

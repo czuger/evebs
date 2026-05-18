@@ -9,12 +9,12 @@
     <th class="text-end">Total cost</th>
   </tr>
   {% for material in item.blueprint.blueprint_materials if item.blueprint %}
-    {% set component = material.eve_item %}
+    {% set component = material.universe_type %}
     {% if component %}
       {% set total = (component.cost or 0) * material.required_qtt %}
       {% set _ = total_for_batch.__setattr__('value', total_for_batch.value + total) %}
       <tr>
-        <td><a href="/items/{{ component.slug or component.id }}">{{ component.name }}</a></td>
+        <td><a href="/items/{{ component.id }}">{{ component.name }}</a></td>
         <td class="text-end">{{ component.cost | isk }}</td>
         <td class="text-end">{{ material.required_qtt | vol }}</td>
         <td class="text-end">{{ total | isk }}</td>

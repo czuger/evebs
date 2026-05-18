@@ -129,3 +129,5 @@ oldies/data/regional_sales_volumes_*.json_stream
 log/
 
 TODO.txt
+/eve_static_data
+data/eve_static_data/

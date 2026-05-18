@@ -37,7 +37,7 @@ def update_crafted_item_costs(production_level):
         total = 0.0
         infinite = False
         for mat in bp.blueprint_materials:
-            comp = mat.eve_item
+            comp = mat.universe_type
             if comp is None or comp.cost is None:
                 infinite = True
                 break
