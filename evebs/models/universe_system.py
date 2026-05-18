@@ -25,6 +25,7 @@ class UniverseSystem(db.Model):
     trade_hub = db.Column(db.Boolean, nullable=False, default=False)
     kill_stats_current_month = db.Column(db.Integer, nullable=True)
     kill_stats_last_month = db.Column(db.Integer, nullable=True)
+    cost_indices = db.Column(db.JSON, nullable=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
