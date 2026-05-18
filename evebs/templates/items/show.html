@@ -16,6 +16,14 @@
       <small class="text-muted">{{ item.market_group.name }}</small>
     {% endif %}
   </div>
+  {% if current_user.is_authenticated and trade_hub_regions %}
+  <form method="POST" action="/items/{{ item.id }}/mark_interesting" class="ms-auto">
+    {% for rid, rname in trade_hub_regions %}<input type="hidden" name="region_id" value="{{ rid }}">{% endfor %}
+    <input type="hidden" name="type_id" value="{{ item.id }}">
+    {% if effective_max_jumps %}<input type="hidden" name="max_jumps" value="{{ effective_max_jumps }}">{% endif %}
+    <button type="submit" class="btn btn-outline-secondary btn-sm">★ Interesting</button>
+  </form>
+  {% endif %}
 </div>
 
 <div class="row g-3 mb-4">
