@@ -22,7 +22,6 @@ class UniverseStation(db.Model):
 
     security_status = db.Column(db.Float)
     jita_distance = db.Column(db.Integer)
-    industry_costs_indices = db.Column('industry_costs_indices', db.JSON)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -28,6 +28,7 @@ from evebs.models.constant import Constant
 from evebs.models.last_update import LastUpdate
 from evebs.models.crontab import Crontab
 from evebs.models.weekly_price_detail import WeeklyPriceDetail
+from evebs.models.industry_facility import IndustryFacility
 from evebs.models.bpc_asset import BpcAsset
 from evebs.models.bpc_assets_station import BpcAssetsStation
 from evebs.models.user_to_user_duplication_request import UserToUserDuplicationRequest
