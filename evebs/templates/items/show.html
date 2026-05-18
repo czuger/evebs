@@ -68,6 +68,77 @@
   </div>
 </div>
 
+{# ── Nearby market orders ── #}
+<div class="row g-3 mb-4">
+
+  {# Sell orders (lowest first) #}
+  <div class="col-12 col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header fw-semibold">
+        Sell orders nearby
+        {% if current_station %}<small class="text-muted fw-normal ms-2">from {{ current_station.name }}</small>{% endif %}
+      </div>
+      <div class="card-body p-0">
+        {% if not current_user.is_authenticated %}
+          <p class="text-muted small p-3 mb-0">Log in to see nearby orders.</p>
+        {% elif not current_station %}
+          <p class="text-muted small p-3 mb-0"><a href="/users/edit">Set your location</a> to see nearby orders.</p>
+        {% elif not sellers %}
+          <p class="text-muted small p-3 mb-0">No sell orders found within range.</p>
+        {% else %}
+          <table class="table table-sm mb-0">
+            <thead class="thead-light"><tr><th>System</th><th class="text-end">Price</th><th class="text-end">Volume</th><th>Range</th></tr></thead>
+            <tbody>
+              {% for o in sellers %}
+              <tr>
+                <td>{{ o.universe_system.name if o.universe_system else '—' }}</td>
+                <td class="text-end text-danger">{{ o.price | isk }}</td>
+                <td class="text-end">{{ o.volume_remain }}</td>
+                <td class="text-muted small">{{ o.range }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {# Buy orders (highest first) #}
+  <div class="col-12 col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header fw-semibold">
+        Buy orders nearby
+        {% if current_station %}<small class="text-muted fw-normal ms-2">from {{ current_station.name }}</small>{% endif %}
+      </div>
+      <div class="card-body p-0">
+        {% if not current_user.is_authenticated %}
+          <p class="text-muted small p-3 mb-0">Log in to see nearby orders.</p>
+        {% elif not current_station %}
+          <p class="text-muted small p-3 mb-0"><a href="/users/edit">Set your location</a> to see nearby orders.</p>
+        {% elif not buyers %}
+          <p class="text-muted small p-3 mb-0">No buy orders found within range.</p>
+        {% else %}
+          <table class="table table-sm mb-0">
+            <thead class="thead-light"><tr><th>System</th><th class="text-end">Price</th><th class="text-end">Volume</th><th>Range</th></tr></thead>
+            <tbody>
+              {% for o in buyers %}
+              <tr>
+                <td>{{ o.universe_system.name if o.universe_system else '—' }}</td>
+                <td class="text-end text-success">{{ o.price | isk }}</td>
+                <td class="text-end">{{ o.volume_remain }}</td>
+                <td class="text-muted small">{{ o.range }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
 {% if item.description %}
 <div class="card shadow-sm mb-4">
   <div class="card-body text-muted small">{{ item.description | safe }}</div>
