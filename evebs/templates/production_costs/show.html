@@ -15,6 +15,14 @@
     <h1 class="mb-0"><a href="/items/{{ item.id }}" class="text-decoration-none text-body">{{ item.name }}</a></h1>
     <small class="text-muted">Production cost breakdown</small>
   </div>
+  {% if blueprint and trade_hub_regions %}
+  <form method="POST" action="/production_costs/{{ item.id }}/mark_interesting" class="ms-auto">
+    {% for rid, rname in trade_hub_regions %}<input type="hidden" name="region_id" value="{{ rid }}">{% endfor %}
+    {% for material in blueprint.blueprint_materials %}<input type="hidden" name="type_id" value="{{ material.universe_type_id }}">{% endfor %}
+    <input type="hidden" name="type_id" value="{{ item.id }}">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">★ Interesting</button>
+  </form>
+  {% endif %}
 </div>
 
 {% if not blueprint %}

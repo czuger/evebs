@@ -7,21 +7,34 @@ from evebs.extensions import db
 from evebs.models import (
     UniverseRegion, UniverseSystem,
     UniverseCategory, UniverseGroup, UniverseType,
-    MarketGroup, MarketOrder,
+    MarketGroup, MarketOrder, IndustryInterestingItem,
 )
 
 
-def download_region_orders():
-    """Fetch and upsert market orders for every region, creating missing types on the fly."""
+def download_region_orders(interesting_only=False):
+    """Fetch and upsert market orders for every region, creating missing types on the fly.
+
+    If interesting_only is True, only download orders for items listed in
+    IndustryInterestingItem for each region.
+    """
     regions = UniverseRegion.query.all()
     known_system_ids = {r[0] for r in UniverseSystem.query.with_entities(UniverseSystem.id).all()}
 
     for i, region in enumerate(regions, 1):
+        if interesting_only:
+            allowed = {r.item_id for r in IndustryInterestingItem.query.filter_by(region_id=region.id).all()}
+            if not allowed:
+                continue
         try:
             type_ids = EsiClient(f'markets/{region.id}/types/').get_all_pages()
         except NotFound:
             print(f'[{i}/{len(regions)}] {region.name}: no types, skipping')
             continue
+
+        if interesting_only:
+            type_ids = [t for t in type_ids if t in allowed]
+            if not type_ids:
+                continue
 
         print(f'[{i}/{len(regions)}] {region.name} ({len(type_ids)} types)')
 
@@ -187,4 +200,4 @@ if __name__ == '__main__':
 
     from run import app
     with app.app_context():
-        download_region_orders()
+        download_region_orders(interesting_only='--interesting-only' in sys.argv or '-i' in sys.argv)
