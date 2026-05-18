@@ -33,6 +33,10 @@ class User(UserMixin, db.Model):
     download_blueprints_running = db.Column(db.Boolean, default=False, nullable=False)
     last_blueprints_download = db.Column(db.DateTime)
     selected_assets_station_id = db.Column(db.BigInteger, db.ForeignKey('universe_stations.id'))
+    user_location_station_id = db.Column(db.BigInteger, db.ForeignKey('universe_stations.id'))
+    avoid_low_sec = db.Column(db.Boolean, default=False, nullable=False)
+    avoid_null_sec = db.Column(db.Boolean, default=False, nullable=False)
+    max_jumps = db.Column(db.Integer, default=5, nullable=False)
     last_duplication_receiver_id = db.Column(db.Integer)
     sales_orders_show_margin_min = db.Column(db.Integer)
     initialization_finalized = db.Column(db.Boolean, default=False, nullable=False)
@@ -50,6 +54,9 @@ class User(UserMixin, db.Model):
     production_lists = db.relationship('ProductionList', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')
     user_sale_orders = db.relationship('UserSaleOrder', back_populates='user', cascade='all, delete-orphan')
+    user_location_station = db.relationship(
+        'UniverseStation', foreign_keys=[user_location_station_id]
+    )
     bpc_assets = db.relationship('BpcAsset', back_populates='user', cascade='all, delete-orphan')
     bpc_assets_stations = db.relationship('BpcAssetsStation', back_populates='user', cascade='all, delete-orphan')
     eve_items_saved_lists = db.relationship('EveItemsSavedList', back_populates='user', cascade='all, delete-orphan')

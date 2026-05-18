@@ -1,54 +1,108 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<h1 class="my-4">Settings</h1>
+
+{# ── My location ── #}
+<div class="card shadow-sm mb-4">
+  <div class="card-header fw-semibold">My location</div>
+  <div class="card-body d-flex align-items-center justify-content-between gap-3">
+    <div>
+      {% if user.user_location_station %}
+        <div class="fw-semibold">{{ user.user_location_station.name }}</div>
+        {% if user.user_location_station.universe_system %}
+          <small class="text-muted">{{ user.user_location_station.universe_system.name }}</small>
+        {% endif %}
+      {% else %}
+        <span class="text-muted">Unknown — click Refresh to detect your current station.</span>
+      {% endif %}
+    </div>
+    <form action="/users/refresh_location" method="post">
+      <button type="submit" class="btn btn-outline-secondary btn-sm">Refresh location</button>
+    </form>
+  </div>
+</div>
+
+{# ── Main preferences form ── #}
 <form action="/users" method="post">
-  <b>Weekly or immediate</b>
-  <div class="row">
-    <div class="col-12 col-lg">
-      <div class="form-group">
-        <label for="min_pcent_for_advice">Min percent for advice</label>
-        <input type="number" name="min_pcent_for_advice" id="min_pcent_for_advice"
-               value="{{ user.min_pcent_for_advice }}" class="form-control" size="5">
-      </div>
-    </div>
-    <div class="col-12 col-lg">
-      <div class="form-group">
-        <label for="min_amount_for_advice">Min amount for advice</label>
-        <input type="text" name="min_amount_for_advice" id="min_amount_for_advice"
-               value="{{ '{:,}'.format(user.min_amount_for_advice).replace(',', ' ') }}"
-               class="form-control">
-      </div>
-    </div>
-    <div class="col-12 col-lg">
-      <div class="form-group">
-        <label for="vol_month_pcent">Vol month percent</label>
-        <input type="number" name="vol_month_pcent" id="vol_month_pcent"
-               value="{{ user.vol_month_pcent }}" class="form-control">
-      </div>
-    </div>
-  </div>
-  <hr>
-  <b>Buy orders</b>
-  <div class="row">
-    <div class="col-12 col-lg">
-      <div class="form-group">
-        <label for="batch_cap">Batch cap</label>
-        <input type="checkbox" name="batch_cap" id="batch_cap"
-               {% if user.batch_cap %}checked{% endif %}>
-      </div>
-    </div>
-    <div class="col-12 col-lg">
-      <div class="form-group">
-        <label for="batch_cap_multiplier">Batch cap multiplier</label>
-        <input type="number" name="batch_cap_multiplier" id="batch_cap_multiplier"
-               value="{{ user.batch_cap_multiplier }}" class="form-control">
+
+  {# Price advice #}
+  <div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold">Price advice</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label for="min_pcent_for_advice" class="form-label">Min percent for advice</label>
+          <input type="number" name="min_pcent_for_advice" id="min_pcent_for_advice"
+                 value="{{ user.min_pcent_for_advice }}" class="form-control">
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="min_amount_for_advice" class="form-label">Min amount for advice</label>
+          <input type="text" name="min_amount_for_advice" id="min_amount_for_advice"
+                 value="{{ '{:,}'.format(user.min_amount_for_advice).replace(',', ' ') }}"
+                 class="form-control">
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="vol_month_pcent" class="form-label">Vol month percent</label>
+          <input type="number" name="vol_month_pcent" id="vol_month_pcent"
+                 value="{{ user.vol_month_pcent }}" class="form-control">
+        </div>
       </div>
     </div>
   </div>
-  <hr>
-  <div class="row">
-    <div class="col-md-12 text-center">
-      <button type="submit" class="btn btn-secondary">Save</button>
+
+  {# Routing preferences #}
+  <div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold">Routing preferences</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <div class="form-check">
+            <input type="checkbox" name="avoid_low_sec" id="avoid_low_sec"
+                   class="form-check-input" {% if user.avoid_low_sec %}checked{% endif %}>
+            <label for="avoid_low_sec" class="form-check-label">Avoid low security space</label>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-check">
+            <input type="checkbox" name="avoid_null_sec" id="avoid_null_sec"
+                   class="form-check-input" {% if user.avoid_null_sec %}checked{% endif %}>
+            <label for="avoid_null_sec" class="form-check-label">Avoid null security space</label>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="max_jumps" class="form-label">Max jumps</label>
+          <input type="number" name="max_jumps" id="max_jumps" min="1" max="100"
+                 value="{{ user.max_jumps }}" class="form-control">
+        </div>
+      </div>
     </div>
   </div>
+
+  {# Buy orders #}
+  <div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold">Buy orders</div>
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-4">
+          <div class="form-check">
+            <input type="checkbox" name="batch_cap" id="batch_cap"
+                   class="form-check-input" {% if user.batch_cap %}checked{% endif %}>
+            <label for="batch_cap" class="form-check-label">Batch cap</label>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="batch_cap_multiplier" class="form-label">Batch cap multiplier</label>
+          <input type="number" name="batch_cap_multiplier" id="batch_cap_multiplier"
+                 value="{{ user.batch_cap_multiplier }}" class="form-control">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary px-5">Save settings</button>
+  </div>
+
 </form>
 {% endblock %}

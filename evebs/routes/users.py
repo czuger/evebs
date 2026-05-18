@@ -11,7 +11,7 @@ bp = Blueprint('users', __name__)
 def edit():
     """Render the user settings form."""
     return render_template('users/edit.html',
-                           title='Editing user',
+                           title='Settings',
                            user=current_user)
 
 
@@ -30,10 +30,37 @@ def update():
         user.vol_month_pcent = int(request.form.get('vol_month_pcent', user.vol_month_pcent))
         user.batch_cap = request.form.get('batch_cap') == 'on'
         user.batch_cap_multiplier = int(request.form.get('batch_cap_multiplier', user.batch_cap_multiplier))
+        user.avoid_low_sec = request.form.get('avoid_low_sec') == 'on'
+        user.avoid_null_sec = request.form.get('avoid_null_sec') == 'on'
+        user.max_jumps = int(request.form.get('max_jumps', user.max_jumps))
     except (ValueError, TypeError):
         flash('Invalid input.')
         return redirect(url_for('users.edit'))
 
     db.session.commit()
-    flash('User updated successfully.')
+    flash('Settings saved.')
+    return redirect(url_for('users.edit'))
+
+
+@bp.route('/users/refresh_location', methods=['POST'])
+@login_required
+def refresh_location():
+    """Fetch the character's current location from ESI and store the station if applicable."""
+    from esi.client import EsiClient
+
+    client = EsiClient(f'characters/{current_user.uid}/location/')
+    if not client.set_auth_token(current_user):
+        flash('Token expired — please log in again.')
+        return redirect(url_for('users.edit'))
+
+    location = client.get_page()
+    station_id = (location or {}).get('station_id')
+
+    if station_id:
+        current_user.user_location_station_id = station_id
+        db.session.commit()
+        flash('Location updated.')
+    else:
+        flash('You are docked in a structure — location not stored.')
+
     return redirect(url_for('users.edit'))
