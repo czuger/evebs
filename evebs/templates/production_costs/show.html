@@ -24,13 +24,14 @@
   {% endif %}
 {% endfor %}
 {% set cost_per_item = ns.fab_cost / blueprint.prod_qtt if blueprint.prod_qtt else 0 %}
-{% set final_cost = cost_per_item * taxes %}
+{% set tax_amount = ns.fab_cost * tax_rate %}
+{% set final_cost = cost_per_item * (1 + tax_rate) %}
 {% set result_mp = market_prices.get(item.id) %}
 {% set result_price = result_mp.adjusted_price if result_mp and result_mp.adjusted_price else none %}
 {% set margin = result_price - final_cost if result_price is not none else none %}
 
 <div class="row g-3 mb-4">
-  <div class="col-6 col-md-3">
+  <div class="col-6 col-md">
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
         <div class="text-muted small mb-1">Batch size</div>
@@ -38,16 +39,33 @@
       </div>
     </div>
   </div>
-  <div class="col-6 col-md-3">
+  <div class="col-6 col-md">
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
-        <div class="text-muted small mb-1">Cost per item</div>
-        <div class="fs-5 fw-semibold">{{ final_cost | isk }}</div>
-        <div class="text-muted small">incl. {{ ((taxes - 1) * 100) | round(1) }}% taxes</div>
+        <div class="text-muted small mb-1">Materials cost</div>
+        <div class="fs-5 fw-semibold">{{ cost_per_item | isk }}</div>
+        <div class="text-muted small">per item, pre-tax</div>
       </div>
     </div>
   </div>
-  <div class="col-6 col-md-3">
+  <div class="col-6 col-md">
+    <div class="card h-100 shadow-sm text-center">
+      <div class="card-body">
+        <div class="text-muted small mb-1">Tax</div>
+        {% if tax_rate > 0 %}
+        <div class="fs-5 fw-semibold">{{ (tax_rate * 100) | round(2) }}%</div>
+        <div class="text-muted small">{{ tax_amount | isk }} batch total</div>
+        {% if cheapest_facility %}
+        <div class="text-muted small text-truncate" title="{{ cheapest_facility.name }}">{{ cheapest_facility.name }}</div>
+        {% endif %}
+        {% else %}
+        <div class="fs-5 fw-semibold text-muted">—</div>
+        <div class="text-muted small">no facility in range</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
         <div class="text-muted small mb-1">Result price</div>
@@ -56,7 +74,7 @@
       </div>
     </div>
   </div>
-  <div class="col-6 col-md-3">
+  <div class="col-6 col-md">
     <div class="card h-100 shadow-sm text-center {{ 'border-success' if margin is not none and margin > 0 else ('border-danger' if margin is not none else '') }}">
       <div class="card-body">
         <div class="text-muted small mb-1">Margin / item</div>

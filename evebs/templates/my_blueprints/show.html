@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
+{% block scripts %}
+<script>
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+    new bootstrap.Popover(el);
+  });
+</script>
+{% endblock %}
 {% block content %}
-<h2 class="my-4">My blueprints</h2>
+<div class="d-flex align-items-baseline gap-3 my-4">
+  <h2 class="mb-0">My blueprints</h2>
+  {% if cheapest_facility %}
+  <small class="text-muted">tax via {{ cheapest_facility.name }} — {{ (tax_rate * 100) | round(2) }}%</small>
+  {% endif %}
+</div>
+
+{# Pre-compute popover strings once (same for every row) #}
+{% if tax_rate > 0 %}
+{% set _ci   = (cheapest_facility.cost_index * 100) | round(2) %}
+{% set _ft   = current_user.facility_tax %}
+{% set _scc  = current_user.scc_surcharge %}
+{% set _tot  = (tax_rate * 100) | round(2) %}
+{% set _pop_content = 'System index: ' ~ _ci ~ '%<br>Facility tax: ' ~ _ft ~ '%<br>SCC surcharge: ' ~ _scc ~ '%<hr class="my-1 border-secondary">Total: <strong>' ~ _tot ~ '%</strong>' %}
+{% endif %}
 <div class="card shadow-sm">
   <div class="table-responsive">
     <table class="table table-hover table-striped align-middle mb-0">
@@ -8,7 +29,8 @@
         <tr>
           <th>Blueprint</th>
           <th class="text-end">Qty</th>
-          <th class="text-end">Fab cost / run</th>
+          <th class="text-end">Materials / run</th>
+          <th class="text-end">Tax / run</th>
           <th class="text-end">Result value / run</th>
           <th class="text-end">Benefit / run</th>
         </tr>
@@ -26,6 +48,17 @@
           <td class="text-end">{{ row.asset.quantity }}</td>
           <td class="text-end text-muted">{{ row.fab_cost | isk }}</td>
           <td class="text-end text-muted">
+            {% if tax_rate > 0 %}
+            <span data-bs-toggle="popover"
+                  data-bs-trigger="hover focus"
+                  data-bs-placement="left"
+                  data-bs-html="true"
+                  data-bs-title="{{ cheapest_facility.name }}"
+                  data-bs-content="{{ _pop_content }}"
+                  style="cursor:help; border-bottom:1px dashed currentColor">{{ row.tax_amount | isk }}</span>
+            {% else %}—{% endif %}
+          </td>
+          <td class="text-end text-muted">
             {% if row.result_price is not none %}
               {{ (row.result_price * bp.prod_qtt) | isk }}
             {% else %}—{% endif %}
@@ -37,10 +70,11 @@
           </td>
         </tr>
         {% else %}
-        <tr><td colspan="5" class="text-center text-muted py-4">No blueprints found in your assets.</td></tr>
+        <tr><td colspan="6" class="text-center text-muted py-4">No blueprints found in your assets.</td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+{% include 'shared/pagination.html' %}
 {% endblock %}

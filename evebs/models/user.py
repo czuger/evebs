@@ -38,6 +38,8 @@ class User(UserMixin, db.Model):
     avoid_null_sec = db.Column(db.Boolean, default=False, nullable=False)
     max_jumps = db.Column(db.Integer, default=5, nullable=False)
     last_duplication_receiver_id = db.Column(db.Integer)
+    facility_tax = db.Column(db.Float, default=0.25, nullable=False)
+    scc_surcharge = db.Column(db.Float, default=4.0, nullable=False)
     sales_orders_show_margin_min = db.Column(db.Integer)
     initialization_finalized = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

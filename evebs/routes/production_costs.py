@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, request
 from flask_login import current_user
 
 from evebs.extensions import db
-from evebs.models import UniverseType, Constant, TradeHub, WeeklyPriceDetail
+from evebs.models import UniverseType, TradeHub, WeeklyPriceDetail
 
 bp = Blueprint('production_costs', __name__)
 PER_PAGE = 20
@@ -32,6 +32,9 @@ def show(type_id):
     current_station = None
     output_buyers = []
     input_sellers = {}
+
+    cheapest_facility = None
+    tax_rate = 0.0
 
     if blueprint:
         mat_type_ids = [m.universe_type_id for m in blueprint.blueprint_materials]
@@ -85,6 +88,21 @@ def show(type_id):
                 current_station = station_objects[best_sid]
 
             if current_station and current_station.universe_system:
+                from evebs.engine.industry import get_industry_facilities_near
+                facilities = get_industry_facilities_near(
+                    current_station.universe_system.name,
+                    max_jumps=current_user.max_jumps,
+                    activity='manufacturing',
+                    avoid_lowsec=current_user.avoid_low_sec,
+                    avoid_nullsec=current_user.avoid_null_sec,
+                )
+                if facilities:
+                    cheapest_facility = facilities[0]
+                    cost_index = cheapest_facility['cost_index']
+                    tax_rate = cost_index * (
+                        1 + current_user.facility_tax / 100 + current_user.scc_surcharge / 100
+                    )
+
                 nearby_info = find_systems_within_jumps(
                     current_station.universe_system.name,
                     max_jumps=5,
@@ -124,14 +142,13 @@ def show(type_id):
                 for tid, grp in groupby(raw_sellers, key=lambda o: o.type_id):
                     input_sellers[tid] = list(grp)[:3]
 
-    taxes = Constant.query.filter_by(libe='taxes').first()
-    taxes_value = taxes.f_value if taxes else 1.13
     return render_template('production_costs/show.html',
                            item=item,
                            blueprint=blueprint,
                            market_prices=market_prices,
                            owned_quantities=owned_quantities,
-                           taxes=taxes_value,
+                           tax_rate=tax_rate,
+                           cheapest_facility=cheapest_facility,
                            current_station=current_station,
                            output_buyers=output_buyers,
                            input_sellers=input_sellers,
