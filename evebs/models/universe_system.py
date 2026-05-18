@@ -6,6 +6,9 @@ class UniverseSystem(db.Model):
     """A solar system with security status, stargate connections, and trade hub flag."""
 
     __tablename__ = 'universe_systems'
+    __table_args__ = (
+        db.Index('ix_universe_systems_trade_hub', 'trade_hub', postgresql_where=db.text('trade_hub = TRUE')),
+    )
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
     star_id = db.Column(db.BigInteger, nullable=False)
