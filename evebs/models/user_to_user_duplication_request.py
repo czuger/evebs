@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class UserToUserDuplicationRequest(db.Model):
+    """Request to copy one user's settings or items to another user."""
+
     __tablename__ = 'user_to_user_duplication_requests'
 
     id = db.Column(db.BigInteger, primary_key=True)

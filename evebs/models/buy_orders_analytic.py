@@ -4,6 +4,8 @@ from evebs.extensions import db
 
 
 class BuyOrdersAnalytic(db.Model):
+    """Computed buy-order margin analysis for an item at a trade hub."""
+
     __tablename__ = 'buy_orders_analytics'
     __table_args__ = (UniqueConstraint('trade_hub_id', 'eve_item_id'),)
 

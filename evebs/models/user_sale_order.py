@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class UserSaleOrder(db.Model):
+    """A sell order the user has placed at a trade hub."""
+
     __tablename__ = 'user_sale_orders'
 
     id = db.Column(db.Integer, primary_key=True)

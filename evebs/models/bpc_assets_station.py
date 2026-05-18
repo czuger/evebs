@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class BpcAssetsStation(db.Model):
+    """Station the user has marked as a container for their BPC assets."""
+
     __tablename__ = 'bpc_assets_stations'
 
     id = db.Column(db.BigInteger, primary_key=True)

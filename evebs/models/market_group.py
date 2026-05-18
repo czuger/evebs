@@ -2,6 +2,8 @@ from evebs.extensions import db
 
 
 class MarketGroup(db.Model):
+    """Eve market category tree node; items sit at leaf groups."""
+
     __tablename__ = 'market_groups'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)  # called market_group_id in the fetch request
@@ -13,12 +15,15 @@ class MarketGroup(db.Model):
 
     @classmethod
     def roots(cls):
+        """Return all top-level groups (no parent)."""
         return cls.query.filter_by(parent_group_id=None)
 
     def is_leaf(self):
+        """True when this group has no children and directly contains items."""
         return not self.children
 
     def ancestors(self):
+        """Return the path from root to this node's parent, root first."""
         chain = []
         node = self.parent
         while node:

@@ -9,6 +9,7 @@ bp = Blueprint('components_to_buys', __name__)
 @bp.route('/components_to_buys')
 @login_required
 def show():
+    """Render the list of components the user needs to purchase."""
     user = current_user
     components = ComponentToBuy.query.filter_by(user_id=user.id).all()
     return render_template('components_to_buys/show.html',

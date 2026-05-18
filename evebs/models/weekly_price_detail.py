@@ -4,6 +4,8 @@ from evebs.extensions import db
 
 
 class WeeklyPriceDetail(db.Model):
+    """Daily volume-weighted average price for an item at a hub (7-day rolling window)."""
+
     __tablename__ = 'weekly_price_details'
     __table_args__ = (UniqueConstraint('eve_item_id', 'trade_hub_id', 'day'),)
 

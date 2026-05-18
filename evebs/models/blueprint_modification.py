@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class BlueprintModification(db.Model):
+    """Per-user percentage adjustment applied to a blueprint's cost calculation."""
+
     __tablename__ = 'blueprint_modifications'
 
     id = db.Column(db.Integer, primary_key=True)

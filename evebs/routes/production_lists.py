@@ -10,6 +10,7 @@ bp = Blueprint('production_lists', __name__)
 @bp.route('/production_lists/edit')
 @login_required
 def edit():
+    """Render the user's production list."""
     user = current_user
     production_lists = ProductionList.query.filter_by(user_id=user.id).all()
     return render_template('production_lists/edit.html',
@@ -21,6 +22,7 @@ def edit():
 @bp.route('/production_lists', methods=['POST'])
 @login_required
 def create():
+    """Add an item + trade hub pair to the user's production list."""
     user = current_user
     eve_item_id = request.form.get('eve_item_id', type=int)
     trade_hub_id = request.form.get('trade_hub_id', type=int)
@@ -44,6 +46,7 @@ def create():
 @bp.route('/production_lists/update', methods=['POST'])
 @login_required
 def update():
+    """Update run counts for production list entries."""
     user = current_user
     for key, value in request.form.items():
         if key.startswith('runs_count_'):
@@ -61,6 +64,7 @@ def update():
 @bp.route('/remove_production_list_check', methods=['POST'])
 @login_required
 def remove_check():
+    """Remove an item from the user's production list."""
     user = current_user
     trade_hub_id = request.form.get('trade_hub_id', type=int)
     eve_item_id = request.form.get('eve_item_id', type=int)

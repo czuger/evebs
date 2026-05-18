@@ -2,6 +2,8 @@ from evebs.extensions import db
 
 
 class BuyOrdersAnalyticsResult(db.Model):
+    """Read-only view joining buy order analytics with user and item context."""
+
     __tablename__ = 'buy_orders_analytics_results'
     __table_args__ = {'info': {'is_view': True}}
 
@@ -23,6 +25,8 @@ class BuyOrdersAnalyticsResult(db.Model):
 
 
 class PriceAdvicesMinPrice(db.Model):
+    """Read-only view combining price advice with current min prices."""
+
     __tablename__ = 'price_advices_min_prices'
     __table_args__ = {'info': {'is_view': True}}
 
@@ -47,6 +51,8 @@ class PriceAdvicesMinPrice(db.Model):
 
 
 class UserSaleOrderDetail(db.Model):
+    """Read-only view enriching user sale orders with item name and price delta."""
+
     __tablename__ = 'user_sale_order_details'
     __table_args__ = {'info': {'is_view': True}}
 
@@ -67,6 +73,8 @@ class UserSaleOrderDetail(db.Model):
 
 
 class PriceAdviceMarginComp(db.Model):
+    """Read-only view computing margin comparison for price advice display."""
+
     __tablename__ = 'price_advice_margin_comps'
     __table_args__ = {'info': {'is_view': True}}
 
@@ -92,6 +100,8 @@ class PriceAdviceMarginComp(db.Model):
 
 
 class ComponentToBuy(db.Model):
+    """Read-only view listing components the user needs to purchase."""
+
     __tablename__ = 'components_to_buys'
     __table_args__ = {'info': {'is_view': True}}
 

@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class BlueprintMaterial(db.Model):
+    """Material required by a blueprint, with the quantity needed per run."""
+
     __tablename__ = 'blueprint_materials'
 
     id = db.Column(db.Integer, primary_key=True)

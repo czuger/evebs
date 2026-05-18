@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class Blueprint(db.Model):
+    """Manufacturing blueprint: links a produced item to its required materials and run parameters."""
+
     __tablename__ = 'blueprints'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -20,4 +22,5 @@ class Blueprint(db.Model):
 
     @property
     def batch_elements_count(self):
+        """Total units produced across all runs (prod_qtt × nb_runs)."""
         return self.prod_qtt * self.nb_runs

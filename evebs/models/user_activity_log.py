@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class UserActivityLog(db.Model):
+    """Audit log entry recording IP, action, and user name for admin review."""
+
     __tablename__ = 'user_activity_logs'
 
     id = db.Column(db.Integer, primary_key=True)

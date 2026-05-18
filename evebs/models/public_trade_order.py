@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class PublicTradeOrder(db.Model):
+    """Cached public trade order from a hub, refreshed each hourly download."""
+
     __tablename__ = 'public_trade_orders'
 
     id = db.Column(db.BigInteger, primary_key=True)

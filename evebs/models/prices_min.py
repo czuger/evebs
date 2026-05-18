@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class PricesMin(db.Model):
+    """Minimum sell price across active public orders for an item at a hub."""
+
     __tablename__ = 'prices_mins'
     __table_args__ = (UniqueConstraint('trade_hub_id', 'eve_item_id'),)
 

@@ -19,6 +19,7 @@ EVE_CHAR_INFO_URL = 'https://esi.evetech.net/latest/characters/{}/'
 
 
 def _decode_jwt_payload(token):
+    """Decode the base64-url JWT payload section without signature verification."""
     payload_b64 = token.split('.')[1]
     padding = 4 - len(payload_b64) % 4
     if padding != 4:
@@ -34,6 +35,7 @@ DEFAULT_SCOPES = ' '.join([
 
 @bp.route('/auth/eve_online_sso', methods=['POST'])
 def login():
+    """Initiate the Eve SSO OAuth flow."""
     client_id = current_app.config['ESI_CLIENT_ID']
     scopes = current_app.config.get('EVE_SSO_SCOPES', DEFAULT_SCOPES)
     callback = url_for('auth.callback', _external=True)
@@ -50,6 +52,7 @@ def login():
 
 @bp.route('/auth/eve_online_sso/callback')
 def callback():
+    """Handle the OAuth callback, exchange code for token, and upsert the user."""
     code = request.args.get('code')
     if not code:
         flash('Authentication failed.')
@@ -98,17 +101,20 @@ def callback():
 
 @bp.route('/signout', methods=['GET', 'POST'])
 def signout():
+    """Log out the current user."""
     logout_user()
     return redirect(url_for('main.index'))
 
 
 @bp.route('/auth/failure')
 def failure():
+    """Flash an auth failure message and redirect to home."""
     flash('Authentication failed, please try again.')
     return redirect(url_for('main.index'))
 
 
 def _set_default_package(user):
+    """Assign Jita/Amarr hubs and starter market groups to a new user."""
     if user.initialization_finalized:
         return
     for th_system_id in [30000142, 30002187]:
@@ -127,6 +133,7 @@ def _set_default_package(user):
 
 
 def renew_token(user):
+    """Refresh the user's OAuth access token using their stored refresh token."""
     client_id = current_app.config['ESI_CLIENT_ID']
     secret_key = current_app.config['ESI_SECRET_KEY']
     auth = base64.b64encode(f'{client_id}:{secret_key}'.encode()).decode()

@@ -11,10 +11,13 @@ PROCESSES_COUNT = 4
 
 
 class DownloadHistory:
+    """Download 30-day market history for all regions in parallel worker processes."""
+
     def __init__(self, verbose=False):
         self.verbose = verbose
 
     def download(self):
+        """Launch one worker process per CPU chunk to fetch regional history."""
         from evebs.models import UniverseRegion
         os.makedirs('data', exist_ok=True)
 
@@ -36,6 +39,7 @@ class DownloadHistory:
 
 
 def _download_chunk(region_ids, process_number, verbose):
+    """Fetch and aggregate 30-day history for a set of regions, writing JSON-stream output."""
     from run import app
     with app.app_context():
         from evebs.models import UniverseRegion

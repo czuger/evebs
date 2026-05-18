@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class BpcAsset(db.Model):
+    """A single item in the user's in-game asset inventory, optionally located at a station."""
+
     __tablename__ = 'bpc_assets'
 
     id = db.Column(db.BigInteger, primary_key=True)

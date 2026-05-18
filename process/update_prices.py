@@ -5,6 +5,7 @@ from evebs.extensions import db
 
 
 def update_prices_min():
+    """Upsert minimum sell prices per hub/item from active public orders."""
     print('Updating min prices...')
     now = datetime.utcnow()
 
@@ -34,6 +35,7 @@ def update_prices_min():
 
 
 def update_buy_orders_analytics():
+    """Upsert buy-order margin analytics per hub/item."""
     print('Updating buy orders analytics...')
     now = datetime.utcnow()
 
@@ -90,6 +92,7 @@ def update_buy_orders_analytics():
 
 
 def update_prices_advices_immediate():
+    """Update prices_advices with monthly/weekly volume and margin stats."""
     print('Updating prices advices (immediate)...')
     now = datetime.utcnow()
 
@@ -187,6 +190,7 @@ def update_prices_advices_immediate():
 
 
 def update_weekly_price_details():
+    """Upsert daily volume-weighted prices for the last 7 days, delete older rows."""
     print('Updating weekly price details...')
     now = datetime.utcnow()
     yesterday = (now.date() - timedelta(days=1)).isoformat()
@@ -228,6 +232,7 @@ def update_weekly_price_details():
 
 
 def update_market_histories():
+    """Load regional JSON-stream files and upsert into eve_market_histories_groups."""
     print('Updating market history groups...')
     import glob
     import json

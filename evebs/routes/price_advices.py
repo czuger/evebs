@@ -8,6 +8,7 @@ PER_PAGE = 12
 
 
 def _advice_prices_margins(margin_type):
+    """Build a paginated, filtered price advice query for the given margin type."""
     page = request.args.get('page', 1, type=int)
     user = current_user
 
@@ -33,6 +34,7 @@ def _advice_prices_margins(margin_type):
 @bp.route('/price_advices/advice_prices_weekly')
 @login_required
 def advice_prices_weekly():
+    """Render advice sorted by weekly margin."""
     pagination, user, margin_type = _advice_prices_margins('weekly')
     return render_template('price_advices/advice_prices_weekly.html',
                            title='Show rentability with sell orders - weekly average',
@@ -45,6 +47,7 @@ def advice_prices_weekly():
 @bp.route('/price_advices/advice_prices')
 @login_required
 def advice_prices():
+    """Render advice sorted by immediate (daily) margin."""
     pagination, user, margin_type = _advice_prices_margins('daily')
     return render_template('price_advices/advice_prices.html',
                            title='Show rentability with sell orders - immediate price',
@@ -57,6 +60,7 @@ def advice_prices():
 @bp.route('/price_advices/empty_places')
 @login_required
 def empty_places():
+    """Render items with monthly volume data but no current sell price."""
     from evebs.models import PriceAdvicesMinPrice
     page = request.args.get('page', 1, type=int)
     q = PriceAdvicesMinPrice.query.filter(

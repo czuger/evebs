@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class Crontab(db.Model):
+    """Mutex guard for cron jobs; prevents concurrent runs of the same named process."""
+
     __tablename__ = 'crontabs'
 
     id = db.Column(db.BigInteger, primary_key=True)
@@ -13,6 +15,7 @@ class Crontab(db.Model):
 
     @classmethod
     def start(cls, cron_name):
+        """Acquire the lock; exits the process if the same cron is already running."""
         import os
         if os.environ.get('FLASK_ENV') == 'development':
             return
@@ -30,6 +33,7 @@ class Crontab(db.Model):
 
     @classmethod
     def stop(cls, cron_name):
+        """Release the lock after the cron job finishes."""
         cls.query.filter_by(cron_name=str(cron_name)).update(
             {'status': False, 'updated_at': datetime.utcnow()}
         )

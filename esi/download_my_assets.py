@@ -6,6 +6,7 @@ from evebs.models import BpcAsset, UniverseStation, User, UniverseType
 
 
 def download_my_assets(user):
+    """Sync the user's in-game assets from ESI into BpcAsset records."""
     if user.locked:
         print(f'{user.name} is locked. Skipping.')
         return

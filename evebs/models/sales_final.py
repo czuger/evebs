@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class SalesFinal(db.Model):
+    """Completed sale event recorded when a sell order's volume decreases or expires."""
+
     __tablename__ = 'sales_finals'
 
     id = db.Column(db.BigInteger, primary_key=True)

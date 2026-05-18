@@ -4,6 +4,8 @@ from evebs.extensions import db
 
 
 class PricesAdvice(db.Model):
+    """Computed sell-order advice stats for an item at a trade hub."""
+
     __tablename__ = 'prices_advices'
     __table_args__ = (UniqueConstraint('eve_item_id', 'trade_hub_id'),)
 

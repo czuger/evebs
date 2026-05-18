@@ -9,6 +9,7 @@ PER_PAGE = 20
 
 @bp.route('/production_costs/<slug>')
 def show(slug):
+    """Render the production cost breakdown for a crafted item."""
     item = UniverseType.find_by_slug(slug)
     if item is None:
         abort(404)
@@ -24,6 +25,7 @@ def show(slug):
 
 @bp.route('/production_costs/<item_slug>/dailies_avg_prices/<int:trade_hub_id>')
 def dailies_avg_prices(item_slug, trade_hub_id):
+    """Render the weekly average price history for a base material."""
     item = UniverseType.find_by_slug(item_slug)
     if item is None:
         abort(404)
@@ -44,6 +46,7 @@ def dailies_avg_prices(item_slug, trade_hub_id):
 
 @bp.route('/production_costs/<slug>/market_histories')
 def market_histories(slug):
+    """Render regional market history stats for an item."""
     from evebs.models import EveMarketHistoriesGroup  # noqa: F401
     from sqlalchemy.orm import joinedload
     item = UniverseType.find_by_slug(slug)

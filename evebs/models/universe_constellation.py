@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class UniverseConstellation(db.Model):
+    """A constellation grouping several solar systems within a region."""
+
     __tablename__ = 'universe_constellations'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)

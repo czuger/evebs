@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class LastUpdate(db.Model):
+    """Timestamp record for when a background process last completed."""
+
     __tablename__ = 'last_updates'
 
     id = db.Column(db.BigInteger, primary_key=True)
@@ -11,6 +13,7 @@ class LastUpdate(db.Model):
 
     @classmethod
     def set(cls, update_type):
+        """Upsert the last-updated timestamp for the given process type."""
         record = cls.query.filter_by(update_type=str(update_type)).first()
         if record:
             record.updated_at = datetime.utcnow()

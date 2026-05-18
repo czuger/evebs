@@ -5,6 +5,7 @@ from evebs.models import UniverseRegion, UniverseConstellation, UniverseSystem, 
 
 
 def download_universe():
+    """Download all regions and their constellations, systems, and stations from ESI."""
     client = EsiClient('universe/regions/')
     region_ids = client.get_all_pages()
     print(f'Found {len(region_ids)} regions')
@@ -40,6 +41,7 @@ def download_universe():
 
 
 def _download_constellations(region, constellation_ids):
+    """Fetch and upsert all constellations for a region, then recurse to systems."""
     total = len(constellation_ids)
     for i, constellation_id in enumerate(constellation_ids, 1):
         detail = EsiClient(f'universe/constellations/{constellation_id}/').get_page()
@@ -68,6 +70,7 @@ def _download_constellations(region, constellation_ids):
 
 
 def _download_systems(constellation, system_ids):
+    """Fetch and upsert all systems in a constellation, then recurse to stations."""
     total = len(system_ids)
     for i, system_id in enumerate(system_ids, 1):
         detail = EsiClient(f'universe/systems/{system_id}/').get_page()
@@ -106,6 +109,7 @@ def _download_systems(constellation, system_ids):
 
 
 def _download_stations(system, station_ids):
+    """Fetch and upsert all stations in a solar system."""
     total = len(station_ids)
     for i, station_id in enumerate(station_ids, 1):
         detail = EsiClient(f'universe/stations/{station_id}/').get_page()

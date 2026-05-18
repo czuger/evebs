@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class ProductionList(db.Model):
+    """An item the user wants to craft, with a target run count at a specific hub."""
+
     __tablename__ = 'production_lists'
 
     id = db.Column(db.Integer, primary_key=True)

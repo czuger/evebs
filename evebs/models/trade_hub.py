@@ -3,6 +3,8 @@ from evebs.models.associations import trade_hubs_users
 
 
 class TradeHub(db.Model):
+    """A market trade hub (e.g. Jita) identified by its solar system ID."""
+
     __tablename__ = 'trade_hubs'
 
     id = db.Column(db.Integer, primary_key=True)

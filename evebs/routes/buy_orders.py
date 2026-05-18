@@ -10,6 +10,7 @@ PER_PAGE = 12
 @bp.route('/buy_orders')
 @login_required
 def show():
+    """Render buy order margin results for the current user, paginated."""
     page = request.args.get('page', 1, type=int)
     user = current_user
 

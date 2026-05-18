@@ -2,6 +2,8 @@ from evebs.extensions import db
 
 
 class MarketOrder(db.Model):
+    """Live public market order fetched from ESI, linked to a system and item type."""
+
     __tablename__ = 'market_orders'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)  # called order_id in the fetch request

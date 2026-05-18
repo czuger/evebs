@@ -7,6 +7,7 @@ bp = Blueprint('admin', __name__)
 
 
 def require_admin():
+    """Redirect non-admin users to the denied page."""
     if not current_user.is_authenticated or not current_user.admin:
         return redirect(url_for('admin.denied'))
     return None
@@ -15,6 +16,7 @@ def require_admin():
 @bp.route('/admin_tools')
 @login_required
 def show():
+    """Render the admin dashboard with last process timestamps and cron status."""
     guard = require_admin()
     if guard:
         return guard
@@ -33,12 +35,14 @@ def show():
 @bp.route('/admin_tools/denied')
 @login_required
 def denied():
+    """Render the access denied page."""
     return render_template('admin/denied.html', title='Access denied')
 
 
 @bp.route('/admin_tools/activity')
 @login_required
 def activity():
+    """Render the last 200 user activity log entries."""
     guard = require_admin()
     if guard:
         return guard

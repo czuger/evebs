@@ -2,6 +2,8 @@ from evebs.extensions import db
 
 
 class UniverseType(db.Model):
+    """An in-game item type from the Eve universe hierarchy."""
+
     __tablename__ = 'universe_types'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)  # called type_id in the fetch request
@@ -25,6 +27,7 @@ class UniverseType(db.Model):
 
     @classmethod
     def find_by_slug(cls, slug):
+        """Look up a type by numeric slug string; returns None on invalid input."""
         try:
             return cls.query.get(int(slug))
         except (ValueError, TypeError):

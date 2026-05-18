@@ -52,6 +52,7 @@ def update_crafted_item_costs(production_level):
 
 
 def update_all_costs():
+    """Run base item costs then each crafted production level in dependency order."""
     update_base_item_costs()
     # Update crafted items level by level (base first, then higher)
     max_levels = db.session.execute(

@@ -6,10 +6,13 @@ from esi.errors import NotFound
 
 
 class DownloadPublicTradesOrders:
+    """Legacy downloader: fetches all region orders and writes a JSON-stream file."""
+
     def __init__(self, verbose=False):
         self.verbose = verbose
 
     def download(self):
+        """Download all public orders across regions and write matching ones to disk."""
         from evebs.models import TradeHub, UniverseType, UniverseRegion, UniverseSystem
 
         trade_hub_ids = set(row[0] for row in TradeHub.query.with_entities(TradeHub.eve_system_id).all())

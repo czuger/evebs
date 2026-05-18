@@ -2,7 +2,10 @@ from esi.client import EsiClient
 
 
 class DownloadMyOrders:
+    """Download a character's open sell orders from ESI and sync UserSaleOrder records."""
+
     def update(self, user):
+        """Sync sell orders for the given user, removing stale entries."""
         if user.locked:
             print(f'{user.name} is locked. Skipping.')
             return

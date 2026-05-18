@@ -9,6 +9,7 @@ bp = Blueprint('users', __name__)
 @bp.route('/users/edit')
 @login_required
 def edit():
+    """Render the user settings form."""
     return render_template('users/edit.html',
                            title='Editing user',
                            user=current_user)
@@ -17,6 +18,7 @@ def edit():
 @bp.route('/users', methods=['POST'])
 @login_required
 def update():
+    """Persist user preference changes."""
     user = current_user
 
     raw_amount = request.form.get('min_amount_for_advice', '')

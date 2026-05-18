@@ -2,6 +2,8 @@ import time
 
 
 class EsiError(Exception):
+    """Base class for all ESI response errors."""
+
     def should_retry(self):
         return False
 
@@ -10,6 +12,8 @@ class EsiError(Exception):
 
 
 class GatewayTimeout(EsiError):
+    """HTTP 500/504: gateway timeout; retried after 10s."""
+
     def should_retry(self):
         return True
 
@@ -18,6 +22,8 @@ class GatewayTimeout(EsiError):
 
 
 class BadGateway(EsiError):
+    """HTTP 502: bad gateway; retried after 5s."""
+
     def should_retry(self):
         return True
 
@@ -26,6 +32,8 @@ class BadGateway(EsiError):
 
 
 class ServiceUnavailable(EsiError):
+    """HTTP 503: service unavailable; retried after 30s."""
+
     def should_retry(self):
         return True
 
@@ -43,7 +51,7 @@ class ErrorLimited(EsiError):
 
 
 class RateLimited(EsiError):
-    """429: new-style token-bucket rate limit exhausted."""
+    """HTTP 429: token-bucket rate limit; waits for the Retry-After interval."""
     def __init__(self, message='', retry_after=60):
         super().__init__(message)
         self._retry_after = int(retry_after)
@@ -56,6 +64,8 @@ class RateLimited(EsiError):
 
 
 class OpenTimeout(EsiError):
+    """Network-level request timeout; retried after 5s."""
+
     def should_retry(self):
         return True
 
@@ -64,6 +74,8 @@ class OpenTimeout(EsiError):
 
 
 class SocketError(EsiError):
+    """Network-level connection error; retried after 5s."""
+
     def should_retry(self):
         return True
 
@@ -72,14 +84,16 @@ class SocketError(EsiError):
 
 
 class Forbidden(EsiError):
-    pass
+    """HTTP 403: access denied; not retried."""
 
 
 class NotFound(EsiError):
-    pass
+    """HTTP 404: resource not found; not retried."""
 
 
 class UnknownError(EsiError):
+    """HTTP 520: unknown/unhandled ESI error; retried after 30s."""
+
     def should_retry(self):
         return True
 
@@ -88,6 +102,7 @@ class UnknownError(EsiError):
 
 
 def dispatch(status_code, message=''):
+    """Map an HTTP status code to the appropriate EsiError subclass."""
     mapping = {
         500: GatewayTimeout,
         504: GatewayTimeout,

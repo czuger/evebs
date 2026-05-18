@@ -10,6 +10,7 @@ bp = Blueprint('choose_trade_hubs', __name__)
 @bp.route('/choose_trade_hubs/edit')
 @login_required
 def edit():
+    """Render the trade hub selection form."""
     user = current_user
     inner = TradeHub.query.filter_by(inner=True).join(TradeHub.universe_region).order_by(TradeHub.name).all()
     inner = [th for th in inner if th.universe_region is not None]
@@ -27,6 +28,7 @@ def edit():
 @bp.route('/choose_trade_hubs/update', methods=['POST'])
 @login_required
 def update():
+    """Toggle a trade hub in the user's watchlist via AJAX."""
     user = current_user
     trade_hub_id = request.form.get('id', type=int)
     check_state = request.form.get('check_state') == 'true'

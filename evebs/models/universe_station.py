@@ -4,6 +4,8 @@ from evebs.extensions import db
 
 
 class UniverseStation(db.Model):
+    """An NPC station with services, reprocessing rates, and optional market data."""
+
     __tablename__ = 'universe_stations'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)

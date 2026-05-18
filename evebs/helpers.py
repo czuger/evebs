@@ -4,6 +4,7 @@ from markupsafe import Markup
 
 
 def register(app):
+    """Register Jinja2 globals and filters for the app."""
     app.jinja_env.globals.update(
         current_page=_current_page,
         print_isk=print_isk,
@@ -19,6 +20,7 @@ def register(app):
 
 
 def _current_page(path):
+    """Return True if the current request path matches the given path."""
     return request.path == path
 
 
@@ -30,6 +32,7 @@ AMOUNTS = [
 
 
 def _to_small_number(amount):
+    """Format a number as a compact string (e.g. 1.23B, 45.6M, 789K)."""
     if amount is None:
         return 'N/A'
     if amount == float('inf'):
@@ -51,12 +54,14 @@ def _to_small_number(amount):
 
 
 def print_isk(amount):
+    """Format an ISK amount as a compact string."""
     if amount is None or amount == float('inf'):
         return 'N/A'
     return _to_small_number(amount)
 
 
 def print_pcent(amount, multiply=True):
+    """Format a fraction as a percentage string, multiplying by 100 by default."""
     if amount is None:
         return 'N/A'
     val = amount * 100.0 if multiply else amount
@@ -64,18 +69,21 @@ def print_pcent(amount, multiply=True):
 
 
 def print_volume(amount):
+    """Format a volume as a compact string."""
     if amount is None:
         return 'N/A'
     return _to_small_number(amount)
 
 
 def safe_multiply(a, b):
+    """Multiply two values, returning infinity if either is None."""
     if a is None or b is None:
         return float('inf')
     return a * b
 
 
 def show_last_update(update_type):
+    """Return a human-readable 'Last update: ...' string for the given process type."""
     from evebs.models import LastUpdate
     record = LastUpdate.query.filter_by(update_type=str(update_type)).first()
     if not record:
@@ -94,5 +102,6 @@ def show_last_update(update_type):
 
 
 def meta_title(title=None):
+    """Build the full page title string with the EVE branding suffix."""
     base = title or 'EveBusinessServer (Beta)'
     return f'{base} - EVE Online market information'

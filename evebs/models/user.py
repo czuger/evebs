@@ -5,6 +5,8 @@ from evebs.models.associations import eve_items_users, trade_hubs_users
 
 
 class User(UserMixin, db.Model):
+    """Eve character logged in via SSO, with personal watchlist and settings."""
+
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -54,13 +56,16 @@ class User(UserMixin, db.Model):
 
     @property
     def eve_item_ids(self):
+        """IDs of all items the user is currently tracking."""
         return [item.id for item in self.eve_items]
 
     @property
     def trade_hub_ids(self):
+        """IDs of all trade hubs the user is monitoring."""
         return [th.id for th in self.trade_hubs]
 
 
 @login_manager.user_loader
 def load_user(user_id):
+    """Flask-Login callback to reload a user from the session."""
     return db.session.get(User, int(user_id))

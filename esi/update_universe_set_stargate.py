@@ -7,6 +7,7 @@ from evebs.models import UniverseSystem
 
 
 def update_universe_set_stargate():
+    """Fetch full stargate details for each system and persist them to the stargates JSON field."""
     systems = UniverseSystem.query.all()
     total = len(systems)
     print(f'Fetching stargates for {total} systems...')
@@ -41,6 +42,7 @@ def update_universe_set_stargate():
 
 
 def _build_graph(systems):
+    """Build and write a JSON adjacency list of system neighbors with security status."""
     id_to_name = {s.id: s.name for s in systems}
     graph = {}
     for system in systems:

@@ -2,6 +2,8 @@ from evebs.extensions import db
 
 
 class UniverseGroup(db.Model):
+    """Item group under a universe category, one level above UniverseType."""
+
     __tablename__ = 'universe_groups'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)  # called group_id in the fetch request

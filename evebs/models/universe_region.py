@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class UniverseRegion(db.Model):
+    """An Eve universe region, containing constellations and trade hubs."""
+
     __tablename__ = 'universe_regions'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)

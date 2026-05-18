@@ -13,6 +13,8 @@ EVE_TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'
 
 
 class EsiClient:
+    """HTTP client for the EVE ESI API with pagination, retries, and rate-limit handling."""
+
     def __init__(self, rest_url=None, params=None, debug=False, verbose=False):
         self.rest_url = rest_url
         self.params = dict(params or {})
@@ -22,6 +24,7 @@ class EsiClient:
         self._pages_count = 0
 
     def get_page(self, page_number=None):
+        """Fetch a single page from the ESI endpoint, retrying on transient errors."""
         if page_number is not None:
             self.params['page'] = page_number
 
@@ -66,6 +69,7 @@ class EsiClient:
                 continue
 
     def get_all_pages(self):
+        """Fetch all pages and return their combined results as a list."""
         result = []
         self.params['page'] = 1
 
@@ -88,6 +92,7 @@ class EsiClient:
         return result
 
     def set_auth_token(self, user):
+        """Attach the user's bearer token to subsequent requests, refreshing if expired."""
         if not (user.expires_on and user.token and user.renew_token):
             return False
 
@@ -98,6 +103,7 @@ class EsiClient:
         return True
 
     def _renew_token(self, user):
+        """Exchange the user's refresh token for a new access token."""
         from config import Config
         client_id = Config.ESI_CLIENT_ID
         secret_key = Config.ESI_SECRET_KEY
@@ -115,6 +121,7 @@ class EsiClient:
             db.session.commit()
 
     def _backoff_if_needed(self, headers):
+        """Slow down requests when the ESI rate-limit budget is nearly exhausted."""
         remaining = headers.get('X-Ratelimit-Remaining')
         if remaining is None:
             return
@@ -125,7 +132,9 @@ class EsiClient:
             time.sleep(0.5)
 
     def _build_url(self):
+        """Construct the full ESI URL by joining the base with the relative path."""
         return ESI_BASE + self.rest_url.lstrip('/')
 
     def _print_error(self, error, url):
+        """Log the error with a timestamp and the failing URL."""
         print(f'{datetime.utcnow()} - {url} got {error}', flush=True)

@@ -7,6 +7,7 @@ from evebs.models import PublicTradeOrder, TradeHub, UniverseType, SalesFinal
 
 
 def run(verbose=False):
+    """Process the public trades JSON-stream into PublicTradeOrder and SalesFinal records."""
     print('Updating public trade orders...')
 
     trade_hub_map = {r[0]: r[1] for r in TradeHub.query.with_entities(

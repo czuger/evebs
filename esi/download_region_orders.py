@@ -12,6 +12,7 @@ from evebs.models import (
 
 
 def download_region_orders():
+    """Fetch and upsert market orders for every region, creating missing types on the fly."""
     regions = UniverseRegion.query.all()
     known_system_ids = {r[0] for r in UniverseSystem.query.with_entities(UniverseSystem.id).all()}
 
@@ -78,6 +79,7 @@ def _upsert_order(order):
 
 
 def _ensure_type(type_id):
+    """Fetch and upsert a universe type, creating its group/category/market-group as needed."""
     detail = EsiClient(f'universe/types/{type_id}/').get_page()
     if not detail:
         return
@@ -117,6 +119,7 @@ def _ensure_type(type_id):
 
 
 def _ensure_group(group_id):
+    """Fetch and upsert a universe group if it doesn't already exist."""
     if UniverseGroup.query.filter_by(id=group_id).first():
         return
 
@@ -137,6 +140,7 @@ def _ensure_group(group_id):
 
 
 def _ensure_category(category_id):
+    """Fetch and upsert a universe category if it doesn't already exist."""
     if UniverseCategory.query.filter_by(id=category_id).first():
         return
 
@@ -154,6 +158,7 @@ def _ensure_category(category_id):
 
 
 def _ensure_market_group(market_group_id):
+    """Fetch and upsert a market group tree node, recursing to create parent first."""
     if MarketGroup.query.filter_by(id=market_group_id).first():
         return
 

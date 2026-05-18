@@ -8,6 +8,7 @@ bp = Blueprint('items', __name__)
 
 @bp.route('/items/<id>')
 def show(id):
+    """Render the item detail page with ESI prices and market price."""
     item = UniverseType.query.get(id)
     if item is None:
         abort(404)

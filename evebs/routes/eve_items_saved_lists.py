@@ -11,6 +11,7 @@ bp = Blueprint('eve_items_saved_lists', __name__)
 @bp.route('/eve_items_saved_lists')
 @login_required
 def index():
+    """List the user's saved item snapshots."""
     lists = EveItemsSavedList.query.filter_by(user_id=current_user.id).all()
     return render_template('eve_items_saved_lists/index.html',
                            title='My saved lists',
@@ -20,12 +21,14 @@ def index():
 @bp.route('/eve_items_saved_lists/new')
 @login_required
 def new():
+    """Render the form to save the current item list."""
     return render_template('eve_items_saved_lists/new.html', title='Save current list')
 
 
 @bp.route('/eve_items_saved_lists', methods=['POST'])
 @login_required
 def create():
+    """Save the user's current item list as a named snapshot."""
     user = current_user
     description = request.form.get('description', '').strip()
     if not description:
@@ -44,6 +47,7 @@ def create():
 @bp.route('/eve_items_saved_lists/<int:list_id>/load')
 @login_required
 def load(list_id):
+    """Replace the user's current item list with a saved snapshot."""
     user = current_user
     saved = EveItemsSavedList.query.filter_by(id=list_id, user_id=user.id).first_or_404()
     ids = saved.get_ids()
@@ -59,6 +63,7 @@ def load(list_id):
 @bp.route('/eve_items_saved_lists/clear')
 @login_required
 def clear():
+    """Remove all items from the user's tracking list."""
     current_user.eve_items.clear()
     db.session.commit()
     return redirect(url_for('list_items.show'))
@@ -67,6 +72,7 @@ def clear():
 @bp.route('/eve_items_saved_lists/<int:list_id>/delete', methods=['POST'])
 @login_required
 def delete(list_id):
+    """Delete a saved list snapshot."""
     saved = EveItemsSavedList.query.filter_by(id=list_id, user_id=current_user.id).first_or_404()
     db.session.delete(saved)
     db.session.commit()

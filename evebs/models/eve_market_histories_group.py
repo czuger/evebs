@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class EveMarketHistoriesGroup(db.Model):
+    """Aggregated 30-day market history stats for an item in a region."""
+
     __tablename__ = 'eve_market_histories_groups'
 
     id = db.Column(db.BigInteger, primary_key=True)

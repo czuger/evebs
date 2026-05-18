@@ -9,6 +9,7 @@ bp = Blueprint('list_items', __name__)
 
 @bp.route('/list_items')
 def show():
+    """Render the market group browser and item toggle list."""
     group_id = request.args.get('group_id', type=int)
     user = current_user if current_user.is_authenticated else None
 
@@ -44,6 +45,7 @@ def show():
 @bp.route('/list_items/selection_change', methods=['POST'])
 @login_required
 def selection_change():
+    """Add or remove an item from the user's watchlist via AJAX."""
     item_id = request.form.get('id', type=int)
     check_state = request.form.get('check_state') == 'true'
     item = UniverseType.query.get_or_404(item_id)

@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class UniverseSystem(db.Model):
+    """A solar system with security status, stargate connections, and trade hub flag."""
+
     __tablename__ = 'universe_systems'
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)

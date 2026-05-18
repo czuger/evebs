@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class Structure(db.Model):
+    """An in-game player structure (citadel/refinery), optionally linked to a system."""
+
     __tablename__ = 'structures'
 
     id = db.Column(db.BigInteger, primary_key=True)

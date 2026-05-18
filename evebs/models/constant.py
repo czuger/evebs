@@ -3,6 +3,8 @@ from evebs.extensions import db
 
 
 class Constant(db.Model):
+    """Named numeric constant (e.g. tax rate) used throughout price calculations."""
+
     __tablename__ = 'constants'
 
     id = db.Column(db.BigInteger, primary_key=True)

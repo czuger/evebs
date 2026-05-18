@@ -1,3 +1,4 @@
+"""BFS routing engine for finding reachable Eve systems within a jump count."""
 import json
 import os
 from collections import deque
@@ -15,7 +16,20 @@ def find_systems_within_jumps(
     avoid_nullsec=False,
     graph=GRAPH
 ):
+    """Return all systems reachable from origin within max_jumps gate jumps.
+
+    Args:
+        origin: Name of the starting system.
+        max_jumps: Maximum number of jumps to traverse.
+        avoid_lowsec: Skip lowsec systems (0.0 < security < 0.5).
+        avoid_nullsec: Skip nullsec systems (security <= 0.0).
+        graph: Adjacency list dict; defaults to the module-level GRAPH.
+
+    Returns:
+        Dict mapping system name to {'jumps': int, 'security': float}.
+    """
     def is_allowed(system):
+        """True if the system passes the security filter."""
         sec = graph[system]["security"]
         if avoid_lowsec and 0.0 < sec < 0.5:
             return False

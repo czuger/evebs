@@ -5,6 +5,7 @@ from evebs.models import MarketPrice, UniverseType
 
 
 def download_market_prices():
+    """Fetch global market adjusted/average prices from ESI and upsert into market_prices."""
     print('Fetching market prices from ESI...')
     rows = EsiClient('markets/prices/').get_all_pages()
     print(f'  {len(rows)} entries received. Upserting...')

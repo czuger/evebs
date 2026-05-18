@@ -4,7 +4,10 @@ from esi.client import EsiClient
 
 
 class DownloadMarketsPrices:
+    """Download global market prices from ESI and save them to a YAML file."""
+
     def download(self):
+        """Fetch all market prices and write them to data/cpp_market_prices.yaml."""
         client = EsiClient('markets/prices/')
         prices = client.get_all_pages()
 
