@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="my-4">My blueprints</h2>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-striped align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Blueprint</th>
+          <th class="text-end">Qty</th>
+          <th class="text-end">Fab cost / run</th>
+          <th class="text-end">Result value / run</th>
+          <th class="text-end">Benefit / run</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        {% set bp = row.blueprint %}
+        {% set benefit = row.benefit %}
+        <tr>
+          <td>
+            <img src="https://images.evetech.net/types/{{ bp.id }}/bp"
+                 width="32" height="32" alt="" class="me-2">
+            <a href="/production_costs/{{ bp.produced_type_id }}" class="text-decoration-none">{{ bp.name }}</a>
+          </td>
+          <td class="text-end">{{ row.asset.quantity }}</td>
+          <td class="text-end text-muted">{{ row.fab_cost | isk }}</td>
+          <td class="text-end text-muted">
+            {% if row.result_price is not none %}
+              {{ (row.result_price * bp.prod_qtt) | isk }}
+            {% else %}—{% endif %}
+          </td>
+          <td class="text-end fw-semibold
+            {% if benefit is not none and benefit > 0 %}text-success
+            {% elif benefit is not none and benefit < 0 %}text-danger{% endif %}">
+            {% if benefit is not none %}{{ benefit | isk }}{% else %}—{% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center text-muted py-4">No blueprints found in your assets.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

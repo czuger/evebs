@@ -1,48 +1,130 @@
 {% extends 'base.html' %}
 {% block content %}
-{% set total_for_batch = namespace(value=0) %}
-<table class="table my-3">
-  <tr>
-    <th>Item</th>
-    <th class="text-end">Unit cost</th>
-    <th class="text-end">Required quantity</th>
-    <th class="text-end">Total cost</th>
-  </tr>
-  {% for material in item.blueprint.blueprint_materials if item.blueprint %}
-    {% set component = material.universe_type %}
-    {% if component %}
-      {% set total = (component.cost or 0) * material.required_qtt %}
-      {% set _ = total_for_batch.__setattr__('value', total_for_batch.value + total) %}
-      <tr>
-        <td><a href="/items/{{ component.id }}">{{ component.name }}</a></td>
-        <td class="text-end">{{ component.cost | isk }}</td>
-        <td class="text-end">{{ material.required_qtt | vol }}</td>
-        <td class="text-end">{{ total | isk }}</td>
-      </tr>
-    {% endif %}
-  {% endfor %}
-  <tr>
-    <td colspan="3">Total for batch</td>
-    <td class="text-end">{{ total_for_batch.value | isk }}</td>
-  </tr>
-  {% if item.blueprint %}
-  <tr>
-    <td colspan="3">Batch size</td>
-    <td class="text-end">{{ item.blueprint.prod_qtt | vol }}</td>
-  </tr>
-  {% set total_per_item = total_for_batch.value / item.blueprint.prod_qtt if item.blueprint.prod_qtt else 0 %}
-  <tr>
-    <td colspan="3">Total for one item</td>
-    <td class="text-end">{{ total_per_item | isk }}</td>
-  </tr>
-  <tr>
-    <td colspan="3">Taxes and setup costs estimation</td>
-    <td class="text-end">{{ ((taxes - 1) * 100) | round(2) }} %</td>
-  </tr>
-  <tr>
-    <td colspan="3">Final cost</td>
-    <td class="text-end">{{ (total_per_item * taxes) | isk }}</td>
-  </tr>
+
+{# ── Header ── #}
+<div class="my-4 d-flex align-items-center gap-3">
+  <img src="https://images.evetech.net/types/{{ item.id }}/icon" alt="{{ item.name }}" width="64" height="64">
+  <div>
+    <h1 class="mb-0"><a href="/items/{{ item.id }}" class="text-decoration-none text-body">{{ item.name }}</a></h1>
+    <small class="text-muted">Production cost breakdown</small>
+  </div>
+</div>
+
+{% if not blueprint %}
+<div class="alert alert-warning">No blueprint found for this item.</div>
+{% else %}
+
+{# ── Summary cards ── #}
+{% set ns = namespace(fab_cost=0) %}
+{# Pre-compute fab_cost so summary cards can reference it #}
+{% for material in blueprint.blueprint_materials %}
+  {% set mp = market_prices.get(material.universe_type_id) %}
+  {% if mp and mp.adjusted_price %}
+    {% set ns.fab_cost = ns.fab_cost + mp.adjusted_price * material.required_qtt %}
   {% endif %}
-</table>
+{% endfor %}
+{% set cost_per_item = ns.fab_cost / blueprint.prod_qtt if blueprint.prod_qtt else 0 %}
+{% set final_cost = cost_per_item * taxes %}
+{% set result_mp = market_prices.get(item.id) %}
+{% set result_price = result_mp.adjusted_price if result_mp and result_mp.adjusted_price else none %}
+{% set margin = result_price - final_cost if result_price is not none else none %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card h-100 shadow-sm text-center">
+      <div class="card-body">
+        <div class="text-muted small mb-1">Batch size</div>
+        <div class="fs-5 fw-semibold">{{ blueprint.prod_qtt | vol }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card h-100 shadow-sm text-center">
+      <div class="card-body">
+        <div class="text-muted small mb-1">Cost per item</div>
+        <div class="fs-5 fw-semibold">{{ final_cost | isk }}</div>
+        <div class="text-muted small">incl. {{ ((taxes - 1) * 100) | round(1) }}% taxes</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card h-100 shadow-sm text-center">
+      <div class="card-body">
+        <div class="text-muted small mb-1">Result price</div>
+        <div class="fs-5 fw-semibold">{{ result_price | isk if result_price is not none else '—' }}</div>
+        <div class="text-muted small">adjusted</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card h-100 shadow-sm text-center {{ 'border-success' if margin is not none and margin > 0 else ('border-danger' if margin is not none else '') }}">
+      <div class="card-body">
+        <div class="text-muted small mb-1">Margin / item</div>
+        {% if margin is not none %}
+        <div class="fs-5 fw-semibold {{ 'text-success' if margin > 0 else 'text-danger' }}">{{ margin | isk }}</div>
+        {% else %}
+        <div class="fs-5 fw-semibold text-muted">—</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# ── Materials table ── #}
+<div class="card shadow-sm">
+  <div class="card-header fw-semibold">Materials</div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Material</th>
+          <th class="text-end">Adjusted price</th>
+          <th class="text-end">Required qty</th>
+          <th class="text-end">In stock</th>
+          <th class="text-end">Runs</th>
+          <th class="text-end">Line total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for material in blueprint.blueprint_materials %}
+          {% set mp = market_prices.get(material.universe_type_id) %}
+          {% set unit_price = mp.adjusted_price if mp and mp.adjusted_price else none %}
+          {% set line_total = unit_price * material.required_qtt if unit_price is not none else none %}
+          {% set owned = owned_quantities.get(material.universe_type_id, 0) %}
+          {% set runs = (owned // material.required_qtt) if material.required_qtt else 0 %}
+          <tr>
+            <td>
+              {% if material.universe_type %}
+                <img src="https://images.evetech.net/types/{{ material.universe_type_id }}/icon"
+                     width="24" height="24" alt="" class="me-2 rounded">
+                <a href="/items/{{ material.universe_type_id }}" class="text-decoration-none">
+                  {{ material.universe_type.name }}
+                </a>
+              {% else %}
+                {{ material.universe_type_id }}
+              {% endif %}
+            </td>
+            <td class="text-end text-muted">{{ unit_price | isk if unit_price is not none else '—' }}</td>
+            <td class="text-end">{{ material.required_qtt | vol }}</td>
+            <td class="text-end {{ 'text-success' if owned >= material.required_qtt else ('text-warning' if owned > 0 else 'text-muted') }}">
+              {{ owned | vol if owned > 0 else '—' }}
+            </td>
+            <td class="text-end fw-semibold {{ 'text-success' if runs > 0 else 'text-muted' }}">
+              {{ runs if owned > 0 else '—' }}
+            </td>
+            <td class="text-end fw-semibold">{{ line_total | isk if line_total is not none else '—' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot class="table-secondary">
+        <tr>
+          <td colspan="5" class="fw-semibold">Total (batch of {{ blueprint.prod_qtt | vol }})</td>
+          <td class="text-end fw-semibold">{{ ns.fab_cost | isk }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+{% endif %}
 {% endblock %}

@@ -24,6 +24,7 @@ class UniverseType(db.Model):
     universe_group = db.relationship('UniverseGroup', back_populates='universe_types')
     market_group = db.relationship('MarketGroup', back_populates='universe_types')
     market_orders = db.relationship('MarketOrder', back_populates='universe_type')
+    blueprint = db.relationship('Blueprint', primaryjoin='UniverseType.id == Blueprint.produced_type_id', foreign_keys='[Blueprint.produced_type_id]', uselist=False, viewonly=True)
 
     @classmethod
     def find_by_slug(cls, slug):

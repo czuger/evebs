@@ -32,7 +32,10 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if '/my_assets' in request.path %} active{% endif %}" href="/my_assets">Assets</a>
+          <a class="nav-link{% if request.path == '/my_assets' %} active{% endif %}" href="/my_assets">Assets</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if '/my_blueprints' in request.path %} active{% endif %}" href="/my_blueprints">Blueprints</a>
         </li>
         <li class="nav-item">
           <a class="nav-link{% if '/users' in request.path %} active{% endif %}" href="/users/edit">User</a>
