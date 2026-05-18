@@ -14,13 +14,12 @@
   {% endif %}
 </div>
 
-{# Pre-compute popover strings once (same for every row) #}
+{# Rate vars (same for every row) #}
 {% if tax_rate > 0 %}
-{% set _ci   = (cheapest_facility.cost_index * 100) | round(2) %}
-{% set _ft   = current_user.facility_tax %}
-{% set _scc  = current_user.scc_surcharge %}
-{% set _tot  = (tax_rate * 100) | round(2) %}
-{% set _pop_content = 'System index: ' ~ _ci ~ '%<br>Facility tax: ' ~ _ft ~ '%<br>SCC surcharge: ' ~ _scc ~ '%<hr class="my-1 border-secondary">Total: <strong>' ~ _tot ~ '%</strong>' %}
+{% set _ci  = (cheapest_facility.cost_index * 100) | round(2) %}
+{% set _ft  = current_user.facility_tax %}
+{% set _scc = current_user.scc_surcharge %}
+{% set _tot = (tax_rate * 100) | round(2) %}
 {% endif %}
 <div class="card shadow-sm">
   <div class="table-responsive">
@@ -49,6 +48,13 @@
           <td class="text-end text-muted">{{ row.fab_cost | isk }}</td>
           <td class="text-end text-muted">
             {% if tax_rate > 0 %}
+            {% set _sys_amt = (row.fab_cost * cheapest_facility.cost_index) | isk %}
+            {% set _ft_amt  = (row.fab_cost * current_user.facility_tax / 100) | isk %}
+            {% set _scc_amt = (row.fab_cost * current_user.scc_surcharge / 100) | isk %}
+            {% set _pop_content = 'System index: ' ~ _ci ~ '% — ' ~ _sys_amt
+              ~ '<br>Facility tax: ' ~ _ft ~ '% — ' ~ _ft_amt
+              ~ '<br>SCC surcharge: ' ~ _scc ~ '% — ' ~ _scc_amt
+              ~ '<hr class="my-1 border-secondary">Total: <strong>' ~ _tot ~ '% — ' ~ (row.tax_amount | isk) ~ '</strong>' %}
             <span data-bs-toggle="popover"
                   data-bs-trigger="hover focus"
                   data-bs-placement="left"

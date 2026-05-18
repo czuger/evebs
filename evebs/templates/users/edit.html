@@ -79,6 +79,29 @@
     </div>
   </div>
 
+  {# Manufacturing taxes #}
+  <div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold">Manufacturing taxes</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label for="facility_tax" class="form-label">Facility tax</label>
+          <input type="number" name="facility_tax" id="facility_tax"
+                 step="0.001" min="0" max="1"
+                 value="{{ user.facility_tax }}" class="form-control">
+          <div class="form-text">Decimal fraction (e.g. 0.25 = 25%)</div>
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="scc_surcharge" class="form-label">SCC surcharge</label>
+          <input type="number" name="scc_surcharge" id="scc_surcharge"
+                 step="0.1" min="0" max="100"
+                 value="{{ user.scc_surcharge }}" class="form-control">
+          <div class="form-text">Percent (e.g. 4 = 4%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {# Buy orders #}
   <div class="card shadow-sm mb-4">
     <div class="card-header fw-semibold">Buy orders</div>

@@ -99,9 +99,9 @@ def show(type_id):
                 if facilities:
                     cheapest_facility = facilities[0]
                     cost_index = cheapest_facility['cost_index']
-                    tax_rate = cost_index * (
-                        1 + current_user.facility_tax / 100 + current_user.scc_surcharge / 100
-                    )
+                    tax_rate = (cost_index
+                               + current_user.facility_tax / 100
+                               + current_user.scc_surcharge / 100)
 
                 nearby_info = find_systems_within_jumps(
                     current_station.universe_system.name,

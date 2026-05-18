@@ -58,9 +58,9 @@ def show():
         if facilities:
             cheapest_facility = facilities[0]
             cost_index = cheapest_facility['cost_index']
-            tax_rate = cost_index * (
-                1 + current_user.facility_tax / 100 + current_user.scc_surcharge / 100
-            )
+            tax_rate = (cost_index
+                        + current_user.facility_tax / 100
+                        + current_user.scc_surcharge / 100)
 
     rows_raw = (
         db.session.query(BpcAsset, BpModel)

@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
+{% block scripts %}
+<script>
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+    new bootstrap.Popover(el);
+  });
+</script>
+{% endblock %}
 {% block content %}
 
 {# ── Header ── #}
@@ -52,12 +59,28 @@
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
         <div class="text-muted small mb-1">Tax</div>
-        {% if tax_rate > 0 %}
-        <div class="fs-5 fw-semibold">{{ (tax_rate * 100) | round(2) }}%</div>
+        {% if tax_rate > 0 and cheapest_facility %}
+        {% set _ci      = (cheapest_facility.cost_index * 100) | round(2) %}
+        {% set _ft      = current_user.facility_tax %}
+        {% set _scc     = current_user.scc_surcharge %}
+        {% set _tot     = (tax_rate * 100) | round(2) %}
+        {% set _sys_amt = (ns.fab_cost * cheapest_facility.cost_index) | isk %}
+        {% set _ft_amt  = (ns.fab_cost * current_user.facility_tax / 100) | isk %}
+        {% set _scc_amt = (ns.fab_cost * current_user.scc_surcharge / 100) | isk %}
+        {% set _pop_content = 'System index: ' ~ _ci ~ '% — ' ~ _sys_amt
+          ~ '<br>Facility tax: ' ~ _ft ~ '% — ' ~ _ft_amt
+          ~ '<br>SCC surcharge: ' ~ _scc ~ '% — ' ~ _scc_amt
+          ~ '<hr class="my-1 border-secondary">Total: <strong>' ~ _tot ~ '% — ' ~ (tax_amount | isk) ~ '</strong>' %}
+        <span data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="bottom"
+              data-bs-html="true"
+              data-bs-title="{{ cheapest_facility.name }}"
+              data-bs-content="{{ _pop_content }}"
+              style="cursor:help; border-bottom:1px dashed currentColor">
+          <div class="fs-5 fw-semibold">{{ _tot }}%</div>
+        </span>
         <div class="text-muted small">{{ tax_amount | isk }} batch total</div>
-        {% if cheapest_facility %}
-        <div class="text-muted small text-truncate" title="{{ cheapest_facility.name }}">{{ cheapest_facility.name }}</div>
-        {% endif %}
         {% else %}
         <div class="fs-5 fw-semibold text-muted">—</div>
         <div class="text-muted small">no facility in range</div>
@@ -69,8 +92,24 @@
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
         <div class="text-muted small mb-1">Result price</div>
-        <div class="fs-5 fw-semibold">{{ result_price | isk if result_price is not none else '—' }}</div>
+        {% if result_price is not none %}
+        {% set _avg = result_mp.average_price %}
+        {% set _buyers_rows %}{% for o in output_buyers[:3] %}{{ o.universe_system.name if o.universe_system else '—' }} — <strong>{{ o.price | isk }}</strong> ({{ o.range }})<br>{% endfor %}{% endset %}
+        {% set _rp_content = 'Adjusted: <strong>' ~ (result_price | isk) ~ '</strong><br>Average: ' ~ (_avg | isk if _avg else '—') ~ ('<hr class="my-1 border-secondary">Top buyers:<br>' ~ _buyers_rows if output_buyers else '') %}
+        <span data-bs-toggle="popover"
+              data-bs-trigger="hover focus"
+              data-bs-placement="bottom"
+              data-bs-html="true"
+              data-bs-title="{{ item.name }}"
+              data-bs-content="{{ _rp_content }}"
+              style="cursor:help; border-bottom:1px dashed currentColor">
+          <div class="fs-5 fw-semibold">{{ result_price | isk }}</div>
+        </span>
         <div class="text-muted small">adjusted</div>
+        {% else %}
+        <div class="fs-5 fw-semibold text-muted">—</div>
+        <div class="text-muted small">adjusted</div>
+        {% endif %}
       </div>
     </div>
   </div>

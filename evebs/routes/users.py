@@ -33,6 +33,8 @@ def update():
         user.avoid_low_sec = request.form.get('avoid_low_sec') == 'on'
         user.avoid_null_sec = request.form.get('avoid_null_sec') == 'on'
         user.max_jumps = int(request.form.get('max_jumps', user.max_jumps))
+        user.facility_tax = float(request.form.get('facility_tax', user.facility_tax))
+        user.scc_surcharge = float(request.form.get('scc_surcharge', user.scc_surcharge))
     except (ValueError, TypeError):
         flash('Invalid input.')
         return redirect(url_for('users.edit'))
