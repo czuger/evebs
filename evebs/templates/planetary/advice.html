@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Planetary Advice{% endblock %}
+{% block content %}
+<h1 class="my-4">Planetary advice (P2)</h1>
+
+{% if not system_name %}
+<div class="alert alert-warning">
+  No location set. Go to <a href="/users/edit">User settings</a> to set your current station.
+</div>
+{% else %}
+
+<form method="GET" class="d-flex align-items-center gap-2 mb-3">
+  <label class="text-muted small mb-0" for="max_jumps_sel">Search range from {{ system_name }}:</label>
+  <select id="max_jumps_sel" name="max_jumps" class="form-select form-select-sm w-auto"
+          onchange="this.form.submit()">
+    {% for j in [1, 2, 3, 5, 10, 15, 20, 30] %}
+    <option value="{{ j }}" {{ 'selected' if j == max_jumps }}>
+      {{ j }} jump{{ 's' if j != 1 }}{% if j == current_user.max_jumps %} (default){% endif %}
+    </option>
+    {% endfor %}
+  </select>
+</form>
+
+{% if results %}
+<table class="table table-sm table-hover">
+  <thead class="thead-light">
+    <tr>
+      <th>Product</th>
+      <th class="text-end">ISK / hour</th>
+      <th class="text-end">Avg price</th>
+      <th>Viable planet types</th>
+      <th class="text-end">Nearby planets</th>
+      <th class="text-end">Nearest</th>
+      <th>Inputs (P1)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in results %}
+    <tr class="{{ 'text-muted' if r.nearby_planet_count == 0 }}">
+      <td>
+        {% if r.nearby_systems %}
+          <a href="{{ url_for('planetary.systems', type_id=r.output_type_id, max_jumps=max_jumps) }}">{{ r.output_name }}</a>
+        {% else %}
+          {{ r.output_name }}
+        {% endif %}
+      </td>
+      <td class="text-end">
+        {% if r.isk_per_hour > 0 %}
+          {{ r.isk_per_hour | isk }}
+        {% else %}
+          <span class="text-muted">—</span>
+        {% endif %}
+      </td>
+      <td class="text-end">
+        {% if r.avg_price > 0 %}
+          {{ r.avg_price | isk }}
+        {% else %}
+          <span class="text-muted">—</span>
+        {% endif %}
+      </td>
+      <td><small>{{ r.viable_planet_type_names | join(', ') if r.viable_planet_type_names else '—' }}</small></td>
+      <td class="text-end">{{ r.nearby_planet_count or '—' }}</td>
+      <td class="text-end">
+        {% if r.nearest_planet_jumps is not none %}
+          {{ r.nearest_planet_jumps }} j
+        {% else %}
+          <span class="text-muted">—</span>
+        {% endif %}
+      </td>
+      <td><small class="text-muted">{{ r.p1_names | join(' + ') }}</small></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="text-muted">No results.</p>
+{% endif %}
+
+{% endif %}
+{% endblock %}
