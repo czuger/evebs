@@ -151,6 +151,7 @@
       </thead>
       <tbody>
         {% for material in blueprint.blueprint_materials %}
+          {% set is_craftable = material.universe_type_id in craftable_ids %}
           {% set mp = market_prices.get(material.universe_type_id) %}
           {% set unit_price = mp.p10_price if mp and mp.p10_price else none %}
           {% set line_total = unit_price * material.required_qtt if unit_price is not none else none %}
@@ -164,11 +165,20 @@
                 <a href="/items/{{ material.universe_type_id }}" class="text-decoration-none">
                   {{ material.universe_type.name }}
                 </a>
+                {% if is_craftable %}
+                  <a href="/production_costs/{{ material.universe_type_id }}" class="text-muted small ms-1" title="View production cost">[craft]</a>
+                {% endif %}
               {% else %}
                 {{ material.universe_type_id }}
               {% endif %}
             </td>
-            <td class="text-end text-muted">{{ unit_price | isk if unit_price is not none else '—' }}</td>
+            <td class="text-end text-muted">
+              {% if is_craftable %}
+                <span class="text-muted fst-italic small">craftable</span>
+              {% else %}
+                {{ unit_price | isk if unit_price is not none else '—' }}
+              {% endif %}
+            </td>
             <td class="text-end">{{ material.required_qtt | vol }}</td>
             <td class="text-end {{ 'text-success' if owned >= material.required_qtt else ('text-warning' if owned > 0 else 'text-muted') }}">
               {{ owned | vol if owned > 0 else '—' }}

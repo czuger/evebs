@@ -28,6 +28,7 @@ def show(type_id):
                  .first())
 
     market_prices = {}
+    craftable_ids = set()
     result_mp = None
     owned_quantities = {}
     current_station = None
@@ -40,10 +41,16 @@ def show(type_id):
 
     if blueprint:
         mat_type_ids = [m.universe_type_id for m in blueprint.blueprint_materials]
+        craftable_ids = {
+            row[0] for row in db.session.query(Blueprint.produced_type_id)
+            .filter(Blueprint.produced_type_id.in_(mat_type_ids))
+            .all()
+        }
+        raw_type_ids = [tid for tid in mat_type_ids if tid not in craftable_ids]
         market_prices = {
             sp.type_id: sp
             for sp in MarketSellerPrice.query.filter(
-                MarketSellerPrice.type_id.in_(mat_type_ids),
+                MarketSellerPrice.type_id.in_(raw_type_ids),
                 MarketSellerPrice.system_id == 30000142,
             ).all()
         }
@@ -180,6 +187,7 @@ def show(type_id):
                            item=item,
                            blueprint=blueprint,
                            market_prices=market_prices,
+                           craftable_ids=craftable_ids,
                            result_mp=result_mp,
                            owned_quantities=owned_quantities,
                            tax_rate=tax_rate,

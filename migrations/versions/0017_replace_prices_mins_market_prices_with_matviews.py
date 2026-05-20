@@ -30,13 +30,23 @@ def upgrade():
 
     op.execute("""
         CREATE MATERIALIZED VIEW market_seller_prices AS
-        SELECT
-            type_id,
-            system_id,
-            PERCENTILE_CONT(0.10) WITHIN GROUP (ORDER BY price)        AS p10_price,
-            SUM(volume_remain)                                          AS volume
-        FROM market_orders
-        WHERE is_buy_order = FALSE
+        WITH ranked AS (
+            SELECT system_id, type_id, price, volume_remain,
+                SUM(volume_remain) OVER (
+                    PARTITION BY system_id, type_id
+                    ORDER BY price ASC
+                    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                ) AS cum_vol,
+                SUM(volume_remain) OVER (
+                    PARTITION BY system_id, type_id
+                ) AS total_vol
+            FROM market_orders
+            WHERE is_buy_order = FALSE
+        )
+        SELECT system_id, type_id,
+            MIN(price) FILTER (WHERE cum_vol >= total_vol * 0.05) AS p10_price,
+            MAX(total_vol)                                         AS volume
+        FROM ranked
         GROUP BY system_id, type_id
     """)
     op.execute("""
@@ -46,13 +56,23 @@ def upgrade():
 
     op.execute("""
         CREATE MATERIALIZED VIEW market_buyer_prices AS
-        SELECT
-            type_id,
-            system_id,
-            PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY price)        AS p90_price,
-            SUM(volume_remain)                                          AS volume
-        FROM market_orders
-        WHERE is_buy_order = TRUE
+        WITH ranked AS (
+            SELECT system_id, type_id, price, volume_remain,
+                SUM(volume_remain) OVER (
+                    PARTITION BY system_id, type_id
+                    ORDER BY price DESC
+                    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                ) AS cum_vol,
+                SUM(volume_remain) OVER (
+                    PARTITION BY system_id, type_id
+                ) AS total_vol
+            FROM market_orders
+            WHERE is_buy_order = TRUE
+        )
+        SELECT system_id, type_id,
+            MAX(price) FILTER (WHERE cum_vol >= total_vol * 0.10) AS p90_price,
+            MAX(total_vol)                                         AS volume
+        FROM ranked
         GROUP BY system_id, type_id
     """)
     op.execute("""
