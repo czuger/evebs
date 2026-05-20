@@ -61,6 +61,10 @@ def download_region_orders(interesting_only=False):
             db.session.commit()
 
     print('Region orders download complete.')
+    from evebs.engine.market_refresh import refresh_market_prices
+    print('Refreshing market price views...')
+    refresh_market_prices()
+    print('Market price views refreshed.')
 
 
 def _upsert_order(order):

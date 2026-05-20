@@ -100,7 +100,7 @@ def _create_views():
               (tu.name || ' (' || re.name || ')') AS trade_hub_name,
               ei.name AS item_name,
               ei.cost,
-              pm.min_price,
+              pm.p10_price AS min_price,
               pa.avg_price_week,
               pa.avg_price_month,
               pa.vol_month,
@@ -116,8 +116,8 @@ def _create_views():
             JOIN blueprints bp ON ei.blueprint_id = bp.id
             JOIN trade_hubs tu ON pa.trade_hub_id = tu.id
             JOIN universe_regions re ON re.id = tu.region_id
-            LEFT JOIN prices_mins pm ON pm.trade_hub_id = pa.trade_hub_id
-              AND pa.eve_item_id = pm.eve_item_id
+            LEFT JOIN market_seller_prices pm ON pm.type_id = ei.id
+              AND pm.system_id = tu.eve_system_id
         """),
         ("user_sale_order_details", """
             SELECT uso.id,
@@ -125,11 +125,11 @@ def _create_views():
               (tu.name || ' (' || r.name || ')') AS trade_hub_name,
               ei.name AS eve_item_name,
               uso.price AS my_price,
-              pm.min_price,
+              pm.p10_price AS min_price,
               ei.cost,
               b.prod_qtt,
-              (pm.min_price / ei.cost - 1.0) AS min_price_margin_pcent,
-              (pm.min_price - uso.price) AS price_delta,
+              (pm.p10_price / ei.cost - 1.0) AS min_price_margin_pcent,
+              (pm.p10_price - uso.price) AS price_delta,
               uso.eve_item_id,
               uso.trade_hub_id,
               ei.cpp_eve_item_id,
@@ -139,8 +139,8 @@ def _create_views():
             JOIN blueprints b ON ei.blueprint_id = b.id
             JOIN trade_hubs tu ON uso.trade_hub_id = tu.id
             JOIN universe_regions r ON tu.region_id = r.id
-            LEFT JOIN prices_mins pm ON pm.eve_item_id = uso.eve_item_id
-              AND pm.trade_hub_id = uso.trade_hub_id
+            LEFT JOIN market_seller_prices pm ON pm.type_id = uso.eve_item_id
+              AND pm.system_id = tu.eve_system_id
         """),
         ("price_advice_margin_comps", """
             SELECT pa.id,
@@ -151,7 +151,7 @@ def _create_views():
               tu.name AS trade_hub_name,
               ei.name AS item_name,
               ei.cost AS single_unit_cost,
-              pm.min_price,
+              pm.p10_price AS min_price,
               ei.weekly_avg_price AS price_avg_week,
               pa.vol_month,
               (bp.nb_runs * bp.prod_qtt) AS full_batch_size,
@@ -165,7 +165,7 @@ def _create_views():
               END AS batch_size_formula,
               ur.min_amount_for_advice,
               ur.min_pcent_for_advice,
-              (pm.min_price * CASE
+              (pm.p10_price * CASE
                 WHEN ur.batch_cap THEN LEAST(
                   CAST(bp.nb_runs * bp.prod_qtt * ur.batch_cap_multiplier AS REAL),
                   CAST(floor(pa.vol_month * ur.vol_month_pcent * 0.01) AS REAL))
@@ -197,8 +197,8 @@ def _create_views():
             JOIN trade_hubs_users thu ON thu.trade_hub_id = pa.trade_hub_id
             JOIN eve_items_users eiu ON eiu.eve_item_id = pa.eve_item_id
             JOIN users ur ON thu.user_id = ur.id AND eiu.user_id = ur.id
-            JOIN prices_mins pm ON pm.trade_hub_id = pa.trade_hub_id
-              AND pa.eve_item_id = pm.eve_item_id
+            JOIN market_seller_prices pm ON pm.type_id = ei.id
+              AND pm.system_id = tu.eve_system_id
             WHERE pa.vol_month IS NOT NULL
         """),
         ("components_to_buys", """

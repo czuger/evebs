@@ -93,7 +93,7 @@ P2_SCHEMATICS = _build_p2_schematics()
 
 def get_planetary_advice(origin_system_name, max_jumps, avoid_lowsec, avoid_nullsec):
     """Return P2 schematics with nearby planet counts and market prices, sorted by ISK/hour desc."""
-    from evebs.models import MarketPrice, UniverseSystem
+    from evebs.models import MarketSellerPrice, UniverseSystem
 
     nearby = find_systems_within_jumps(
         origin_system_name, max_jumps,
@@ -107,10 +107,11 @@ def get_planetary_advice(origin_system_name, max_jumps, avoid_lowsec, avoid_null
     p2_output_ids = [s['output']['type_id'] for s in P2_SCHEMATICS]
 
     prices = {
-        m.type_id: m.adjusted_price
-        for m in MarketPrice.query.filter(
-            MarketPrice.type_id.in_(p2_output_ids),
-            MarketPrice.adjusted_price.isnot(None),
+        sp.type_id: sp.p10_price
+        for sp in MarketSellerPrice.query.filter(
+            MarketSellerPrice.type_id.in_(p2_output_ids),
+            MarketSellerPrice.system_id == 30000142,
+            MarketSellerPrice.p10_price.isnot(None),
         ).all()
     }
 
@@ -138,16 +139,16 @@ def get_planetary_advice(origin_system_name, max_jumps, avoid_lowsec, avoid_null
 
         total_planets = sum(s['planet_count'] for s in nearby_systems)
 
-        avg_price = prices.get(output_type_id, 0.0)
+        p10_price = prices.get(output_type_id, 0.0)
         cycles_per_hour = 3600.0 / sch['cycle_time']
-        isk_per_hour = cycles_per_hour * sch['output']['qty'] * avg_price
+        isk_per_hour = cycles_per_hour * sch['output']['qty'] * p10_price
 
         results.append({
             'output_name': sch['name'],
             'output_type_id': output_type_id,
             'cycle_time': sch['cycle_time'],
             'output_qty': sch['output']['qty'],
-            'avg_price': avg_price,
+            'p10_price': p10_price,
             'isk_per_hour': isk_per_hour,
             'viable_planet_type_names': [
                 PLANET_TYPE_NAMES.get(t, str(t)) for t in sorted(sch['viable_planet_types'])

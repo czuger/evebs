@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort
 from flask_login import current_user
 
-from evebs.models import UniverseType, TradeHub, PricesMin, PriceAdvicesMinPrice, PublicTradeOrder
+from evebs.models import UniverseType, TradeHub, MarketSellerPrice, PriceAdvicesMinPrice, PublicTradeOrder
 
 bp = Blueprint('market_data', __name__)
 
@@ -11,10 +11,10 @@ def market_overview(item_id):
     """Render price comparison across trade hubs for an item."""
     item = UniverseType.query.get_or_404(item_id)
     if item.base_item:
-        item_prices = (PricesMin.query
-                       .filter_by(eve_item_id=item.id)
-                       .join(PricesMin.trade_hub)
-                       .order_by(PricesMin.min_price)
+        item_prices = (MarketSellerPrice.query
+                       .filter_by(type_id=item.id)
+                       .join(MarketSellerPrice.trade_hub)
+                       .order_by(MarketSellerPrice.p10_price)
                        .all())
         advice_prices = None
     else:

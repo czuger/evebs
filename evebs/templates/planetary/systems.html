@@ -11,8 +11,8 @@
 <dl class="row mb-4">
   <dt class="col-sm-3">ISK / hour</dt>
   <dd class="col-sm-9">{{ result.isk_per_hour | isk if result.isk_per_hour > 0 else '—' }}</dd>
-  <dt class="col-sm-3">Avg price</dt>
-  <dd class="col-sm-9">{{ result.avg_price | isk if result.avg_price > 0 else '—' }}</dd>
+  <dt class="col-sm-3">P10 price</dt>
+  <dd class="col-sm-9">{{ result.p10_price | isk if result.p10_price > 0 else '—' }}</dd>
   <dt class="col-sm-3">Viable planet types</dt>
   <dd class="col-sm-9">{{ result.viable_planet_type_names | join(', ') or '—' }}</dd>
   <dt class="col-sm-3">Inputs (P1)</dt>

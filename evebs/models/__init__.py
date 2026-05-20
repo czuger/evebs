@@ -5,7 +5,8 @@ from evebs.models.market_group import MarketGroup
 from evebs.models.blueprint import Blueprint
 from evebs.models.blueprint_material import BlueprintMaterial
 from evebs.models.blueprint_modification import BlueprintModification
-from evebs.models.prices_min import PricesMin
+from evebs.models.market_seller_price import MarketSellerPrice
+from evebs.models.market_buyer_price import MarketBuyerPrice
 from evebs.models.prices_advice import PricesAdvice
 from evebs.models.public_trade_order import PublicTradeOrder
 from evebs.models.buy_orders_analytic import BuyOrdersAnalytic
@@ -22,7 +23,6 @@ from evebs.models.universe_category import UniverseCategory
 from evebs.models.universe_group import UniverseGroup
 from evebs.models.universe_type import UniverseType
 from evebs.models.market_order import MarketOrder
-from evebs.models.market_price import MarketPrice
 from evebs.models.structure import Structure
 from evebs.models.constant import Constant
 from evebs.models.last_update import LastUpdate

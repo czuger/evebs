@@ -14,7 +14,7 @@ def show(type_id):
     from itertools import groupby
     from sqlalchemy.orm import joinedload
     from sqlalchemy import func
-    from evebs.models import Blueprint, BlueprintMaterial, MarketPrice, BpcAsset, UniverseStation, UniverseSystem, MarketOrder
+    from evebs.models import Blueprint, BlueprintMaterial, MarketSellerPrice, MarketBuyerPrice, BpcAsset, UniverseStation, UniverseSystem, MarketOrder
     from evebs.engine.routing import find_systems_within_jumps
 
     item = UniverseType.query.get(type_id)
@@ -28,6 +28,7 @@ def show(type_id):
                  .first())
 
     market_prices = {}
+    result_mp = None
     owned_quantities = {}
     current_station = None
     output_buyers = []
@@ -40,11 +41,15 @@ def show(type_id):
     if blueprint:
         mat_type_ids = [m.universe_type_id for m in blueprint.blueprint_materials]
         market_prices = {
-            mp.type_id: mp
-            for mp in MarketPrice.query.filter(
-                MarketPrice.type_id.in_(mat_type_ids + [type_id])
+            sp.type_id: sp
+            for sp in MarketSellerPrice.query.filter(
+                MarketSellerPrice.type_id.in_(mat_type_ids),
+                MarketSellerPrice.system_id == 30000142,
             ).all()
         }
+        result_mp = MarketBuyerPrice.query.filter_by(
+            type_id=type_id, system_id=30000142
+        ).first()
         if current_user.is_authenticated:
             rows = (
                 db.session.query(BpcAsset.eve_item_id, func.sum(BpcAsset.quantity))
@@ -175,6 +180,7 @@ def show(type_id):
                            item=item,
                            blueprint=blueprint,
                            market_prices=market_prices,
+                           result_mp=result_mp,
                            owned_quantities=owned_quantities,
                            tax_rate=tax_rate,
                            cheapest_facility=cheapest_facility,

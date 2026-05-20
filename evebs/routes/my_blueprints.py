@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
 
 from evebs.extensions import db
-from evebs.models import BpcAsset, Blueprint as BpModel, MarketPrice
+from evebs.models import BpcAsset, Blueprint as BpModel, MarketSellerPrice, MarketBuyerPrice
 
 bp = Blueprint('my_blueprints', __name__)
 PER_PAGE = 20
@@ -76,22 +76,32 @@ def show():
         for mat in blueprint.blueprint_materials:
             type_ids.add(mat.universe_type_id)
 
-    market_prices = {
-        mp.type_id: mp
-        for mp in MarketPrice.query.filter(MarketPrice.type_id.in_(type_ids)).all()
+    seller_prices = {
+        sp.type_id: sp
+        for sp in MarketSellerPrice.query.filter(
+            MarketSellerPrice.type_id.in_(type_ids),
+            MarketSellerPrice.system_id == 30000142,
+        ).all()
+    }
+    buyer_prices = {
+        bp.type_id: bp
+        for bp in MarketBuyerPrice.query.filter(
+            MarketBuyerPrice.type_id.in_(type_ids),
+            MarketBuyerPrice.system_id == 30000142,
+        ).all()
     }
 
     rows = []
     for asset, blueprint in rows_raw:
         fab_cost = sum(
-            mat.required_qtt * market_prices[mat.universe_type_id].adjusted_price
+            mat.required_qtt * seller_prices[mat.universe_type_id].p10_price
             for mat in blueprint.blueprint_materials
-            if mat.universe_type_id in market_prices
-            and market_prices[mat.universe_type_id].adjusted_price is not None
+            if mat.universe_type_id in seller_prices
+            and seller_prices[mat.universe_type_id].p10_price is not None
         )
         tax_amount = fab_cost * tax_rate
-        result_mp = market_prices.get(blueprint.produced_type_id)
-        result_price = result_mp.adjusted_price if result_mp and result_mp.adjusted_price else None
+        result_bp = buyer_prices.get(blueprint.produced_type_id)
+        result_price = result_bp.p90_price if result_bp and result_bp.p90_price else None
         benefit = (result_price * blueprint.prod_qtt - fab_cost - tax_amount
                    if result_price is not None else None)
         rows.append({

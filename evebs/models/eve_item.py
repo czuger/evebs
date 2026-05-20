@@ -32,7 +32,6 @@ class EveItem(db.Model):
     market_group = db.relationship('MarketGroup', back_populates='eve_items')
     blueprint = db.relationship('Blueprint', back_populates='eve_item')
     blueprint_materials = db.relationship('BlueprintMaterial', foreign_keys='BlueprintMaterial.eve_item_id', back_populates='eve_item')
-    prices_mins = db.relationship('PricesMin', back_populates='eve_item', cascade='all, delete-orphan')
     sales_finals = db.relationship('SalesFinal', back_populates='eve_item', cascade='all, delete-orphan')
     prices_advices = db.relationship('PricesAdvice', back_populates='eve_item', cascade='all, delete-orphan')
     buy_orders_analytics = db.relationship('BuyOrdersAnalytic', back_populates='eve_item', cascade='all, delete-orphan')

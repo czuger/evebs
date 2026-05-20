@@ -46,8 +46,8 @@
           </td>
           <td class="text-end qty" data-value="{{ asset.quantity }}">{{ asset.quantity }}</td>
           {% set _mp = market_prices.get(asset.eve_item_id) %}
-          <td class="text-end text-muted">{{ _mp.average_price | isk if _mp else '—' }}</td>
-          <td class="text-end fw-semibold">{{ (_mp.average_price * asset.quantity) | isk if _mp and _mp.average_price else '—' }}</td>
+          <td class="text-end text-muted">{{ _mp.p10_price | isk if _mp else '—' }}</td>
+          <td class="text-end fw-semibold">{{ (_mp.p10_price * asset.quantity) | isk if _mp and _mp.p10_price else '—' }}</td>
           <td class="text-muted small">{{ asset.universe_station.name if asset.universe_station else 'N/A' }}</td>
         </tr>
         {% else %}

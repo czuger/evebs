@@ -8,7 +8,7 @@ from evebs.models import (
     UniverseCategory, UniverseGroup, UniverseType,
     Blueprint as BpModel, BlueprintMaterial,
     UniverseRegion, UniverseConstellation, UniverseSystem, UniverseStation,
-    User, BpcAsset, MarketOrder, MarketPrice, Constant,
+    User, BpcAsset, MarketOrder, Constant,
 )
 
 # ---------------------------------------------------------------------------
@@ -107,7 +107,6 @@ def clean_local_tables(app):
     yield
     with app.app_context():
         db.session.query(MarketOrder).delete()
-        db.session.query(MarketPrice).delete()
         db.session.query(BpcAsset).delete()
         db.session.query(User).delete()
         db.session.query(BlueprintMaterial).delete()

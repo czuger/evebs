@@ -34,15 +34,14 @@
 {# Pre-compute fab_cost so summary cards can reference it #}
 {% for material in blueprint.blueprint_materials %}
   {% set mp = market_prices.get(material.universe_type_id) %}
-  {% if mp and mp.adjusted_price %}
-    {% set ns.fab_cost = ns.fab_cost + mp.adjusted_price * material.required_qtt %}
+  {% if mp and mp.p10_price %}
+    {% set ns.fab_cost = ns.fab_cost + mp.p10_price * material.required_qtt %}
   {% endif %}
 {% endfor %}
 {% set cost_per_item = ns.fab_cost / blueprint.prod_qtt if blueprint.prod_qtt else 0 %}
 {% set tax_amount = ns.fab_cost * tax_rate %}
 {% set final_cost = cost_per_item * (1 + tax_rate) %}
-{% set result_mp = market_prices.get(item.id) %}
-{% set result_price = result_mp.adjusted_price if result_mp and result_mp.adjusted_price else none %}
+{% set result_price = result_mp.p90_price if result_mp and result_mp.p90_price else none %}
 {% set margin = result_price - final_cost if result_price is not none else none %}
 
 <div class="row g-3 mb-4">
@@ -101,9 +100,9 @@
       <div class="card-body">
         <div class="text-muted small mb-1">Result price</div>
         {% if result_price is not none %}
-        {% set _avg = result_mp.average_price %}
+        {% set _p90 = result_mp.p90_price %}
         {% set _buyers_rows %}{% for o in output_buyers[:3] %}{{ o.universe_system.name if o.universe_system else '—' }} — <strong>{{ o.price | isk }}</strong> ({{ o.range }})<br>{% endfor %}{% endset %}
-        {% set _rp_content = 'Adjusted: <strong>' ~ (result_price | isk) ~ '</strong><br>Average: ' ~ (_avg | isk if _avg else '—') ~ ('<hr class="my-1 border-secondary">Top buyers:<br>' ~ _buyers_rows if output_buyers else '') %}
+        {% set _rp_content = 'Best bid: <strong>' ~ (result_price | isk) ~ '</strong><br>P90: ' ~ (_p90 | isk if _p90 else '—') ~ ('<hr class="my-1 border-secondary">Top buyers:<br>' ~ _buyers_rows if output_buyers else '') %}
         <span data-bs-toggle="popover"
               data-bs-trigger="hover focus"
               data-bs-placement="bottom"
@@ -153,7 +152,7 @@
       <tbody>
         {% for material in blueprint.blueprint_materials %}
           {% set mp = market_prices.get(material.universe_type_id) %}
-          {% set unit_price = mp.adjusted_price if mp and mp.adjusted_price else none %}
+          {% set unit_price = mp.p10_price if mp and mp.p10_price else none %}
           {% set line_total = unit_price * material.required_qtt if unit_price is not none else none %}
           {% set owned = owned_quantities.get(material.universe_type_id, 0) %}
           {% set runs = (owned // material.required_qtt) if material.required_qtt else 0 %}

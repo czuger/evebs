@@ -30,13 +30,9 @@
   <div class="col-12 col-md-4">
     <div class="card h-100 shadow-sm">
       <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">ESI Average price</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Jita P10 sell price</h6>
         <p class="card-text fs-5 fw-semibold">
-          {{ market_price.average_price | isk if market_price and market_price.average_price else '—' }}
-        </p>
-        <h6 class="card-subtitle mb-2 text-muted">ESI Adjusted price</h6>
-        <p class="card-text">
-          {{ market_price.adjusted_price | isk if market_price and market_price.adjusted_price else '—' }}
+          {{ market_price.p10_price | isk if market_price and market_price.p10_price else '—' }}
         </p>
       </div>
     </div>

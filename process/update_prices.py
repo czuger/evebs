@@ -1,37 +1,7 @@
-"""Update prices_mins, buy_orders_analytics, prices_advices from trade order data."""
+"""Update buy_orders_analytics, prices_advices from trade order data."""
 from datetime import datetime, timedelta, date
 from sqlalchemy import text
 from evebs.extensions import db
-
-
-def update_prices_min():
-    """Upsert minimum sell prices per hub/item from active public orders."""
-    print('Updating min prices...')
-    now = datetime.utcnow()
-
-    # Remove entries with no sell orders
-    db.session.execute(text("""
-        DELETE FROM prices_mins WHERE NOT EXISTS (
-            SELECT 1 FROM public_trade_orders pto
-            WHERE prices_mins.trade_hub_id = pto.trade_hub_id
-            AND prices_mins.eve_item_id = pto.eve_item_id
-            AND pto.is_buy_order = 0
-        )
-    """))
-
-    # Insert / update min prices
-    db.session.execute(text("""
-        INSERT INTO prices_mins (trade_hub_id, eve_item_id, min_price, created_at, updated_at)
-        SELECT trade_hub_id, eve_item_id, MIN(price), :now, :now
-        FROM public_trade_orders
-        WHERE is_buy_order = 0
-        GROUP BY trade_hub_id, eve_item_id
-        ON CONFLICT (trade_hub_id, eve_item_id)
-        DO UPDATE SET min_price = excluded.min_price, updated_at = :now
-    """), {'now': now})
-
-    db.session.commit()
-    print('Min prices updated.')
 
 
 def update_buy_orders_analytics():
@@ -165,19 +135,21 @@ def update_prices_advices_immediate():
     db.session.execute(text("""
         UPDATE prices_advices SET
             margin_percent = (
-                SELECT (pm.min_price / ei.cost - 1.0)
-                FROM prices_mins pm, eve_items ei
-                WHERE pm.eve_item_id = prices_advices.eve_item_id
-                AND pm.trade_hub_id = prices_advices.trade_hub_id
+                SELECT (msp.p10_price / ei.cost - 1.0)
+                FROM market_seller_prices msp, eve_items ei, trade_hubs tu
+                WHERE msp.type_id = prices_advices.eve_item_id
+                AND tu.id = prices_advices.trade_hub_id
+                AND msp.system_id = tu.eve_system_id
                 AND ei.id = prices_advices.eve_item_id
                 AND ei.cost IS NOT NULL
                 AND ei.cost > 0
             ),
             immediate_montly_pcent = (
-                SELECT pm.min_price / prices_advices.avg_price_month
-                FROM prices_mins pm
-                WHERE pm.eve_item_id = prices_advices.eve_item_id
-                AND pm.trade_hub_id = prices_advices.trade_hub_id
+                SELECT msp.p10_price / prices_advices.avg_price_month
+                FROM market_seller_prices msp, trade_hubs tu
+                WHERE msp.type_id = prices_advices.eve_item_id
+                AND tu.id = prices_advices.trade_hub_id
+                AND msp.system_id = tu.eve_system_id
                 AND prices_advices.avg_price_month IS NOT NULL
                 AND prices_advices.avg_price_month > 0
             ),
