@@ -536,16 +536,23 @@ Request to copy one user's settings or watchlist to another (admin feature).
 
 ## 7. Materialized-view models
 
-These models map to PostgreSQL **materialized views** created in migration `0017`. Refreshed concurrently by the hourly process. Marked with `__table_args__ = {'info': {'is_view': True}}` — never migrate them directly.
+These models map to PostgreSQL **materialized views** created in migration `0017` and expanded in `0021`. Refreshed concurrently by the hourly process. Marked with `__table_args__ = {'info': {'is_view': True}}` — never migrate them directly.
+
+All percentiles are **volume-weighted**: the CTE ranks orders by price, accumulates `volume_remain`, and the threshold is applied against the total volume for that `(system_id, type_id)` pair.
 
 ### `MarketSellerPrice` — `market_seller_prices`
-Volume-weighted p10 sell price per `(type_id, system_id)`. Built from `market_orders WHERE is_buy_order = FALSE`.
+Sell price percentiles per `(type_id, system_id)`. Built from `market_orders WHERE is_buy_order = FALSE`, ordered price ASC.
 
 | Column | Type | Notes |
 |---|---|---|
 | `type_id` | BigInt PK | → `universe_types.id` |
 | `system_id` | BigInt PK | → `universe_systems.id` |
-| `p10_price` | Float | Price at which cumulative volume ≥ 5% of total |
+| `p5_price` | Float | Lowest 5% of cumulative sell volume |
+| `p10_price` | Float | Lowest 10% — primary "cheap seller" reference |
+| `p20_price` | Float | |
+| `p80_price` | Float | |
+| `p90_price` | Float | |
+| `p95_price` | Float | Top 95% — expensive tail |
 | `volume` | BigInt | Total sell volume in that system |
 
 **Relationships:** `universe_type`, `universe_system`
@@ -553,13 +560,18 @@ Volume-weighted p10 sell price per `(type_id, system_id)`. Built from `market_or
 ---
 
 ### `MarketBuyerPrice` — `market_buyer_prices`
-Volume-weighted p90 buy price per `(type_id, system_id)`. Built from `market_orders WHERE is_buy_order = TRUE`.
+Buy price percentiles per `(type_id, system_id)`. Built from `market_orders WHERE is_buy_order = TRUE`, ordered price DESC.
 
 | Column | Type | Notes |
 |---|---|---|
 | `type_id` | BigInt PK | → `universe_types.id` |
 | `system_id` | BigInt PK | → `universe_systems.id` |
-| `p90_price` | Float | Price at which cumulative volume ≥ 10% of total (desc) |
+| `p95_price` | Float | Top 5% of cumulative buy volume (highest bids) |
+| `p90_price` | Float | Top 10% — primary "strong buyer" reference |
+| `p80_price` | Float | |
+| `p20_price` | Float | |
+| `p10_price` | Float | |
+| `p5_price` | Float | Bottom 5% (lowest bids) |
 | `volume` | BigInt | Total buy volume |
 
 **Relationships:** `universe_type`, `universe_system`
