@@ -1,8 +1,8 @@
 """Update item costs: base items from weekly avg, crafted items from components."""
 import math
+from sqlalchemy import text
 from evebs.extensions import db
 from evebs.models import UniverseType, Blueprint, BlueprintMaterial, Constant
-from datetime import datetime
 
 
 def update_base_item_costs():
@@ -10,25 +10,25 @@ def update_base_item_costs():
     print('Updating base item costs...')
     from sqlalchemy import text
     db.session.execute(text(
-        "UPDATE eve_items SET cost = weekly_avg_price, updated_at = :now "
-        "WHERE base_item = TRUE"
-    ), {'now': datetime.utcnow()})
+        "UPDATE universe_types SET cost = weekly_avg_price WHERE base_item = TRUE"
+    ))
     db.session.commit()
     print('Base item costs updated.')
 
 
-def update_crafted_item_costs(production_level):
+def update_crafted_item_costs(production_level=None):
     """Crafted items: cost = sum(component_cost * qty) * taxes / prod_qtt."""
-    print(f'Updating crafted item costs (level {production_level})...')
+    print('Updating crafted item costs...')
     taxes_const = Constant.query.filter_by(libe='taxes').first()
     if not taxes_const:
         print('Taxes constant not set. Skipping.')
         return
     taxes = taxes_const.f_value
 
-    items = UniverseType.query.filter_by(
-        base_item=False, production_level=production_level
-    ).filter(UniverseType.blueprint_id.isnot(None)).all()
+    items = (UniverseType.query
+             .filter_by(base_item=False)
+             .join(Blueprint, Blueprint.produced_type_id == UniverseType.id)
+             .all())
 
     for item in items:
         bp = item.blueprint
@@ -48,17 +48,10 @@ def update_crafted_item_costs(production_level):
             item.cost = (total * taxes) / bp.prod_qtt if bp.prod_qtt else float('inf')
 
     db.session.commit()
-    print(f'Crafted item costs (level {production_level}) updated.')
+    print('Crafted item costs updated.')
 
 
 def update_all_costs():
-    """Run base item costs then each crafted production level in dependency order."""
+    """Run base item costs then crafted item costs."""
     update_base_item_costs()
-    # Update crafted items level by level (base first, then higher)
-    max_levels = db.session.execute(
-        db.select(db.func.max(UniverseType.production_level)).filter(
-            UniverseType.base_item.is_(False), UniverseType.blueprint_id.isnot(None)
-        )
-    ).scalar() or 5
-    for level in range(1, max_levels + 1):
-        update_crafted_item_costs(level)
+    update_crafted_item_costs(production_level=None)

@@ -14,8 +14,3 @@ class MarketSellerPrice(db.Model):
 
     universe_type = db.relationship('UniverseType')
     universe_system = db.relationship('UniverseSystem')
-    trade_hub = db.relationship(
-        'TradeHub',
-        primaryjoin='foreign(MarketSellerPrice.system_id) == TradeHub.eve_system_id',
-        viewonly=True,
-    )

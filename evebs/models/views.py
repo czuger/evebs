@@ -68,7 +68,7 @@ class UserSaleOrderDetail(db.Model):
     price_delta = db.Column(db.Float)
     eve_item_id = db.Column(db.Integer)
     trade_hub_id = db.Column(db.Integer)
-    cpp_eve_item_id = db.Column(db.Integer)
+    cpp_eve_item_id = db.Column(db.Integer)  # alias for eve_item_id (universe_types.id)
     eve_system_id = db.Column(db.Integer)
 
 

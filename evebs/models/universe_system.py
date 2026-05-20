@@ -34,3 +34,9 @@ class UniverseSystem(db.Model):
     structures = db.relationship('Structure', back_populates='universe_system')
     universe_stations = db.relationship('UniverseStation', back_populates='universe_system')
     market_orders = db.relationship('MarketOrder', back_populates='universe_system')
+
+    @property
+    def universe_region(self):
+        if self.universe_constellation:
+            return self.universe_constellation.universe_region
+        return None

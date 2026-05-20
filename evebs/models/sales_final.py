@@ -9,7 +9,7 @@ class SalesFinal(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     day = db.Column(db.Date, nullable=False)
-    trade_hub_id = db.Column(db.BigInteger, db.ForeignKey('trade_hubs.id'), nullable=False)
+    system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'), nullable=False)
     eve_item_id = db.Column(db.BigInteger, db.ForeignKey('universe_types.id'), nullable=False)
     volume = db.Column(db.BigInteger, nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -17,5 +17,5 @@ class SalesFinal(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    trade_hub = db.relationship('TradeHub', back_populates='sales_finals')
+    universe_system = db.relationship('UniverseSystem')
     eve_item = db.relationship('UniverseType', primaryjoin='SalesFinal.eve_item_id == UniverseType.id', foreign_keys='[SalesFinal.eve_item_id]', viewonly=True)

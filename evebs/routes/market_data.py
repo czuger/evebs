@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort
 from flask_login import current_user
 
-from evebs.models import UniverseType, TradeHub, MarketSellerPrice, PriceAdvicesMinPrice, PublicTradeOrder
+from evebs.models import UniverseType, UniverseSystem, MarketSellerPrice, PriceAdvicesMinPrice, MarketOrder
 
 bp = Blueprint('market_data', __name__)
 
@@ -10,10 +10,11 @@ bp = Blueprint('market_data', __name__)
 def market_overview(item_id):
     """Render price comparison across trade hubs for an item."""
     item = UniverseType.query.get_or_404(item_id)
-    if item.base_item:
+    if item.blueprint is None:
         item_prices = (MarketSellerPrice.query
                        .filter_by(type_id=item.id)
-                       .join(MarketSellerPrice.trade_hub)
+                       .join(MarketSellerPrice.universe_system)
+                       .filter(UniverseSystem.trade_hub == True)  # noqa: E712
                        .order_by(MarketSellerPrice.p10_price)
                        .all())
         advice_prices = None
@@ -36,10 +37,10 @@ def market_overview(item_id):
 def trade_hub_detail(item_id, trade_hub_id):
     """Render current sell orders for an item at a specific hub."""
     item = UniverseType.query.get_or_404(item_id)
-    trade_hub = TradeHub.query.get_or_404(trade_hub_id)
-    orders = (PublicTradeOrder.query
-              .filter_by(trade_hub_id=trade_hub_id, eve_item_id=item.id, is_buy_order=False)
-              .order_by(PublicTradeOrder.price)
+    trade_hub = UniverseSystem.query.get_or_404(trade_hub_id)
+    orders = (MarketOrder.query
+              .filter_by(system_id=trade_hub.id, type_id=item.id, is_buy_order=False)
+              .order_by(MarketOrder.price)
               .limit(20)
               .all())
     return render_template('market_data/trade_hub_detail.html',

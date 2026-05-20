@@ -17,4 +17,3 @@ class UniverseRegion(db.Model):
 
     eve_market_histories_groups = db.relationship('EveMarketHistoriesGroup', back_populates='universe_region')
     universe_constellations = db.relationship('UniverseConstellation', back_populates='universe_region')
-    trade_hubs = db.relationship('TradeHub', back_populates='universe_region')

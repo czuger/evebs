@@ -9,7 +9,7 @@ from flask import Blueprint, redirect, url_for, session, request, current_app, f
 from flask_login import login_user, logout_user
 
 from evebs.extensions import db
-from evebs.models import User, TradeHub, MarketGroup
+from evebs.models import User, UniverseSystem, MarketGroup
 
 bp = Blueprint('auth', __name__)
 
@@ -117,10 +117,10 @@ def _set_default_package(user):
     """Assign Jita/Amarr hubs and starter market groups to a new user."""
     if user.initialization_finalized:
         return
-    for th_system_id in [30000142, 30002187]:
-        th = TradeHub.query.filter_by(eve_system_id=th_system_id).first()
-        if th and th not in user.trade_hubs:
-            user.trade_hubs.append(th)
+    for system_id in [30000142, 30002187]:
+        system = UniverseSystem.query.get(system_id)
+        if system and system not in user.universe_systems:
+            user.universe_systems.append(system)
 
     for group_cpp_id in [973, 972, 927, 917]:
         mg = MarketGroup.query.filter_by(id=group_cpp_id).first()

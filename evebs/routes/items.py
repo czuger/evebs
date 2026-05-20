@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from sqlalchemy.orm import joinedload
 
 from evebs.extensions import db
-from evebs.models import TradeHub, Constant, UniverseType, MarketSellerPrice, MarketOrder, UniverseSystem, UniverseStation
+from evebs.models import Constant, UniverseType, MarketSellerPrice, MarketOrder, UniverseSystem, UniverseStation
 
 bp = Blueprint('items', __name__)
 
@@ -14,7 +14,7 @@ def show(id):
     item = UniverseType.query.get(id)
     if item is None:
         abort(404)
-    jita = TradeHub.query.filter_by(eve_system_id=30000142).first()
+    jita = UniverseSystem.query.get(30000142)
     taxes = Constant.query.filter_by(libe='taxes').first()
     taxes_value = taxes.f_value if taxes else 1.13
     market_price = MarketSellerPrice.query.filter_by(type_id=item.id, system_id=30000142).first()

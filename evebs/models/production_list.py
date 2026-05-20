@@ -9,12 +9,12 @@ class ProductionList(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    trade_hub_id = db.Column(db.Integer, db.ForeignKey('trade_hubs.id'), nullable=False)
+    system_id = db.Column(db.Integer, db.ForeignKey('universe_systems.id'), nullable=False)
     eve_item_id = db.Column(db.Integer, db.ForeignKey('universe_types.id'), nullable=False)
     runs_count = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = db.relationship('User', back_populates='production_lists')
-    trade_hub = db.relationship('TradeHub', back_populates='production_lists')
+    universe_system = db.relationship('UniverseSystem')
     eve_item = db.relationship('UniverseType', primaryjoin='ProductionList.eve_item_id == UniverseType.id', foreign_keys='[ProductionList.eve_item_id]', viewonly=True)

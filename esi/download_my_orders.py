@@ -21,7 +21,7 @@ class DownloadMyOrders:
             db.session.commit()
             return
 
-        from evebs.models import UniverseStation, TradeHub, UserSaleOrder, ProductionList
+        from evebs.models import UniverseStation, UniverseSystem, UserSaleOrder, ProductionList
         from evebs.extensions import db
         from datetime import datetime
 
@@ -30,21 +30,17 @@ class DownloadMyOrders:
         for page in pages:
             eve_item_id = page['type_id']
             us = UniverseStation.query.filter_by(id=page['location_id']).first()
-            if us and us.universe_system:
-                hub = TradeHub.query.filter_by(eve_system_id=us.universe_system.id).first()
-                trade_hub_id = hub.id if hub else None
-            else:
-                trade_hub_id = None
+            system_id = us.universe_system_id if us else None
 
-            if not trade_hub_id:
+            if not system_id:
                 continue
 
             order = UserSaleOrder.query.filter_by(
-                user_id=user.id, eve_item_id=eve_item_id, trade_hub_id=trade_hub_id
+                user_id=user.id, eve_item_id=eve_item_id, system_id=system_id
             ).first()
             if not order:
                 order = UserSaleOrder(user_id=user.id, eve_item_id=eve_item_id,
-                                      trade_hub_id=trade_hub_id, price=page['price'])
+                                      system_id=system_id, price=page['price'])
                 db.session.add(order)
                 db.session.flush()
             else:
@@ -54,7 +50,7 @@ class DownloadMyOrders:
 
             if user.remove_occuped_places:
                 ProductionList.query.filter_by(
-                    user_id=user.id, eve_item_id=eve_item_id, trade_hub_id=trade_hub_id
+                    user_id=user.id, eve_item_id=eve_item_id, system_id=system_id
                 ).delete()
 
         UserSaleOrder.query.filter(UserSaleOrder.id.in_(current_order_ids)).delete(

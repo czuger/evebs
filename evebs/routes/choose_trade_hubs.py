@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
-from evebs.models import TradeHub
+from evebs.models import UniverseSystem
 
 bp = Blueprint('choose_trade_hubs', __name__)
 
@@ -12,15 +12,11 @@ bp = Blueprint('choose_trade_hubs', __name__)
 def edit():
     """Render the trade hub selection form."""
     user = current_user
-    inner = TradeHub.query.filter_by(inner=True).join(TradeHub.universe_region).order_by(TradeHub.name).all()
-    inner = [th for th in inner if th.universe_region is not None]
-    outer = TradeHub.query.filter_by(inner=False).join(TradeHub.universe_region).order_by(TradeHub.name).all()
-    outer = [th for th in outer if th.universe_region is not None]
+    hubs = UniverseSystem.query.filter_by(trade_hub=True).order_by(UniverseSystem.name).all()
     user_hub_ids = set(user.trade_hub_ids)
     return render_template('choose_trade_hubs/edit.html',
                            title='Choose trade hubs to monitor',
-                           inner_trade_hubs=inner,
-                           outer_trade_hubs=outer,
+                           trade_hubs=hubs,
                            user_trade_hubs_ids=user_hub_ids,
                            user=user)
 
@@ -30,14 +26,14 @@ def edit():
 def update():
     """Toggle a trade hub in the user's watchlist via AJAX."""
     user = current_user
-    trade_hub_id = request.form.get('id', type=int)
+    system_id = request.form.get('id', type=int)
     check_state = request.form.get('check_state') == 'true'
-    hub = TradeHub.query.get_or_404(trade_hub_id)
+    system = UniverseSystem.query.get_or_404(system_id)
     if check_state:
-        if hub not in user.trade_hubs:
-            user.trade_hubs.append(hub)
+        if system not in user.universe_systems:
+            user.universe_systems.append(system)
     else:
-        if hub in user.trade_hubs:
-            user.trade_hubs.remove(hub)
+        if system in user.universe_systems:
+            user.universe_systems.remove(system)
     db.session.commit()
     return ('', 200)

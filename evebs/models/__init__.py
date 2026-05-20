@@ -1,6 +1,5 @@
-from evebs.models.associations import eve_items_users, trade_hubs_users
+from evebs.models.associations import eve_items_users, universe_systems_users
 from evebs.models.user import User, load_user
-from evebs.models.trade_hub import TradeHub
 from evebs.models.market_group import MarketGroup
 from evebs.models.blueprint import Blueprint
 from evebs.models.blueprint_material import BlueprintMaterial
@@ -8,7 +7,6 @@ from evebs.models.blueprint_modification import BlueprintModification
 from evebs.models.market_seller_price import MarketSellerPrice
 from evebs.models.market_buyer_price import MarketBuyerPrice
 from evebs.models.prices_advice import PricesAdvice
-from evebs.models.public_trade_order import PublicTradeOrder
 from evebs.models.buy_orders_analytic import BuyOrdersAnalytic
 from evebs.models.sales_final import SalesFinal
 from evebs.models.production_list import ProductionList

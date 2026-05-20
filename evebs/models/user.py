@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_login import UserMixin
 from evebs.extensions import db, login_manager
-from evebs.models.associations import eve_items_users, trade_hubs_users
+from evebs.models.associations import eve_items_users, universe_systems_users
 
 
 class User(UserMixin, db.Model):
@@ -52,7 +52,12 @@ class User(UserMixin, db.Model):
         secondaryjoin='foreign(eve_items_users.c.eve_item_id) == UniverseType.id',
         viewonly=True,
     )
-    trade_hubs = db.relationship('TradeHub', secondary=trade_hubs_users, back_populates='users')
+    universe_systems = db.relationship(
+        'UniverseSystem',
+        secondary=universe_systems_users,
+        primaryjoin='User.id == foreign(universe_systems_users.c.user_id)',
+        secondaryjoin='foreign(universe_systems_users.c.universe_system_id) == UniverseSystem.id',
+    )
     production_lists = db.relationship('ProductionList', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')
     user_sale_orders = db.relationship('UserSaleOrder', back_populates='user', cascade='all, delete-orphan')
@@ -70,8 +75,8 @@ class User(UserMixin, db.Model):
 
     @property
     def trade_hub_ids(self):
-        """IDs of all trade hubs the user is monitoring."""
-        return [th.id for th in self.trade_hubs]
+        """IDs of all systems the user is monitoring."""
+        return [s.id for s in self.universe_systems]
 
 
 @login_manager.user_loader
