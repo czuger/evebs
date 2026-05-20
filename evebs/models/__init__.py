@@ -39,3 +39,4 @@ from evebs.models.views import (
     PriceAdviceMarginComp,
     ComponentToBuy,
 )
+from evebs.models.views.blueprint_cost import BlueprintCost
