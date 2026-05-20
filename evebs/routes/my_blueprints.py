@@ -1,10 +1,8 @@
 import math
 from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
-from sqlalchemy.orm import joinedload
-
 from evebs.extensions import db
-from evebs.models import BpcAsset, Blueprint as BpModel, MarketSellerPrice, MarketBuyerPrice
+from evebs.models import BpcAsset, Blueprint as BpModel, BlueprintCost
 
 bp = Blueprint('my_blueprints', __name__)
 PER_PAGE = 20
@@ -66,54 +64,51 @@ def show():
         db.session.query(BpcAsset, BpModel)
         .join(BpModel, BpcAsset.eve_item_id == BpModel.id)
         .filter(BpcAsset.user_id == current_user.id)
-        .options(joinedload(BpModel.blueprint_materials))
         .all()
     )
 
-    type_ids = set()
-    for _asset, blueprint in rows_raw:
-        type_ids.add(blueprint.produced_type_id)
-        for mat in blueprint.blueprint_materials:
-            type_ids.add(mat.universe_type_id)
-
-    seller_prices = {
-        sp.type_id: sp
-        for sp in MarketSellerPrice.query.filter(
-            MarketSellerPrice.type_id.in_(type_ids),
-            MarketSellerPrice.system_id == 30000142,
-        ).all()
-    }
-    buyer_prices = {
-        bp.type_id: bp
-        for bp in MarketBuyerPrice.query.filter(
-            MarketBuyerPrice.type_id.in_(type_ids),
-            MarketBuyerPrice.system_id == 30000142,
+    produced_type_ids = [bp.produced_type_id for _, bp in rows_raw]
+    bc_by_produced = {
+        bc.produced_type_id: bc
+        for bc in BlueprintCost.query.filter(
+            BlueprintCost.produced_type_id.in_(produced_type_ids),
+            BlueprintCost.system_id == 30000142,
         ).all()
     }
 
     rows = []
     for asset, blueprint in rows_raw:
-        fab_cost = sum(
-            mat.required_qtt * seller_prices[mat.universe_type_id].p10_price
-            for mat in blueprint.blueprint_materials
-            if mat.universe_type_id in seller_prices
-            and seller_prices[mat.universe_type_id].p10_price is not None
-        )
-        tax_amount = fab_cost * tax_rate
-        result_bp = buyer_prices.get(blueprint.produced_type_id)
-        result_price = result_bp.p90_price if result_bp and result_bp.p90_price else None
-        benefit = (result_price * blueprint.prod_qtt - fab_cost - tax_amount
-                   if result_price is not None else None)
+        bc = bc_by_produced.get(blueprint.produced_type_id)
+        batch_cost = bc.material_cost_sell if bc and bc.material_cost_sell is not None else None
+        tax_amount = (batch_cost * tax_rate) if batch_cost is not None else None
+        batch_revenue = bc.batch_revenue_buy if bc and bc.batch_revenue_buy is not None else None
+        benefit = (batch_revenue - batch_cost - (tax_amount or 0)
+                   if batch_revenue is not None and batch_cost is not None else None)
         rows.append({
             'asset': asset,
             'blueprint': blueprint,
-            'fab_cost': fab_cost,
+            'bc': bc,
             'tax_amount': tax_amount,
-            'result_price': result_price,
             'benefit': benefit,
         })
 
-    rows.sort(key=lambda r: r['benefit'] if r['benefit'] is not None else float('-inf'), reverse=True)
+    _SORT_KEYS = {
+        'name':          lambda r: r['blueprint'].name or '',
+        'qty':           lambda r: r['asset'].quantity or 0,
+        'cost':          lambda r: (r['bc'].material_cost_sell  if r['bc'] else None),
+        'tax':           lambda r: r['tax_amount'],
+        'revenue':       lambda r: (r['bc'].batch_revenue_buy   if r['bc'] else None),
+        'benefit':       lambda r: r['benefit'],
+        'craft_vs_sell': lambda r: (r['bc'].craft_vs_sell_margin if r['bc'] else None),
+    }
+    sort_col = request.args.get('sort', 'benefit')
+    sort_dir = request.args.get('dir', 'desc')
+    if sort_col not in _SORT_KEYS:
+        sort_col = 'benefit'
+    key_fn = _SORT_KEYS[sort_col]
+    reverse = sort_dir != 'asc'
+    rows.sort(key=lambda r: (key_fn(r) is None, key_fn(r) if key_fn(r) is not None else 0),
+              reverse=reverse)
 
     page = request.args.get('page', 1, type=int)
     pagination = _Pagination(rows, page, PER_PAGE)
@@ -123,4 +118,6 @@ def show():
                            pagination=pagination,
                            tax_rate=tax_rate,
                            cheapest_facility=cheapest_facility,
+                           sort_col=sort_col,
+                           sort_dir=sort_dir,
                            title='My blueprints')

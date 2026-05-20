@@ -34,6 +34,7 @@ def create_app(config_class=Config):
     from evebs.routes.market_groups import bp as market_groups_bp
     from evebs.routes.eve_items_saved_lists import bp as eve_items_saved_lists_bp
     from evebs.routes.my_assets import bp as my_assets_bp
+    from evebs.routes.blueprints import bp as blueprints_bp
     from evebs.routes.my_blueprints import bp as my_blueprints_bp
     from evebs.routes.admin import bp as admin_bp
     from evebs.routes.industry import bp as industry_bp
@@ -55,6 +56,7 @@ def create_app(config_class=Config):
     app.register_blueprint(market_groups_bp)
     app.register_blueprint(eve_items_saved_lists_bp)
     app.register_blueprint(my_assets_bp)
+    app.register_blueprint(blueprints_bp)
     app.register_blueprint(my_blueprints_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(industry_bp)

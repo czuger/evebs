@@ -1,33 +1,51 @@
 {% extends 'base.html' %}
 {% block scripts %}
 <script>
-  document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
-    new bootstrap.Popover(el);
+  document.getElementById('category_id').addEventListener('change', function () {
+    // Clear group when category changes, then submit
+    document.getElementById('group_id').value = '';
+    this.form.submit();
+  });
+  document.getElementById('group_id').addEventListener('change', function () {
+    this.form.submit();
   });
 </script>
 {% endblock %}
 {% block content %}
-<div class="d-flex align-items-baseline gap-3 my-4">
-  <h2 class="mb-0">My blueprints</h2>
-  {% if cheapest_facility %}
-  <small class="text-muted">tax via {{ cheapest_facility.name }} — {{ (tax_rate * 100) | round(2) }}%</small>
-  {% endif %}
+<div class="my-4">
+  <h2 class="mb-0">All blueprints</h2>
+  <small class="text-muted">Prices at Jita — benefit is pre-tax</small>
 </div>
 
-{# Rate vars (same for every row) #}
-{% if tax_rate > 0 %}
-{% set _ci  = (cheapest_facility.cost_index * 100) | round(2) %}
-{% set _ft  = current_user.facility_tax %}
-{% set _scc = current_user.scc_surcharge %}
-{% set _tot = (tax_rate * 100) | round(2) %}
-{% endif %}
+{# ── Filters ── #}
+<form method="get" action="/blueprints" class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+  <input type="hidden" name="sort" value="{{ sort_col }}">
+  <input type="hidden" name="dir" value="{{ sort_dir }}">
+  <select id="category_id" name="category_id" class="form-select form-select-sm" style="max-width:220px">
+    <option value="">All categories</option>
+    {% for cat_id, cat_name in categories %}
+    <option value="{{ cat_id }}" {% if cat_id == category_id %}selected{% endif %}>{{ cat_name }}</option>
+    {% endfor %}
+  </select>
+  <select id="group_id" name="group_id" class="form-select form-select-sm" style="max-width:260px"
+          {% if not groups %}disabled{% endif %}>
+    <option value="">All groups</option>
+    {% for grp_id, grp_name in groups %}
+    <option value="{{ grp_id }}" {% if grp_id == group_id %}selected{% endif %}>{{ grp_name }}</option>
+    {% endfor %}
+  </select>
+  {% if category_id or group_id %}
+  <a href="/blueprints?sort={{ sort_col }}&dir={{ sort_dir }}" class="btn btn-sm btn-outline-secondary">✕ Clear</a>
+  {% endif %}
+</form>
+
 <div class="card shadow-sm">
   <div class="table-responsive">
     <table class="table table-hover table-striped align-middle mb-0">
       {% macro sort_th(col, label, align='text-end') %}
         {% set next_dir = 'asc' if (sort_col == col and sort_dir == 'desc') else 'desc' %}
         <th class="{{ align }}">
-          <a href="?sort={{ col }}&dir={{ next_dir }}" class="text-white text-decoration-none">
+          <a href="?sort={{ col }}&dir={{ next_dir }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if group_id %}&group_id={{ group_id }}{% endif %}" class="text-white text-decoration-none">
             {{ label }}{% if sort_col == col %} {{ '▲' if sort_dir == 'asc' else '▼' }}{% endif %}
           </a>
         </th>
@@ -35,19 +53,17 @@
       <thead class="table-dark">
         <tr>
           {{ sort_th('name', 'Blueprint', align='') }}
-          {{ sort_th('qty', 'Qty') }}
           <th class="text-end">
-            <a href="?sort=cost&dir={{ 'asc' if (sort_col == 'cost' and sort_dir == 'desc') else 'desc' }}" class="text-white text-decoration-none">
+            <a href="?sort=cost&dir={{ 'asc' if (sort_col == 'cost' and sort_dir == 'desc') else 'desc' }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if group_id %}&group_id={{ group_id }}{% endif %}" class="text-white text-decoration-none">
               Cost / batch <span class="text-danger small">(sell)</span>{% if sort_col == 'cost' %} {{ '▲' if sort_dir == 'asc' else '▼' }}{% endif %}
             </a>
           </th>
-          {{ sort_th('tax', 'Tax / batch') }}
           <th class="text-end">
-            <a href="?sort=revenue&dir={{ 'asc' if (sort_col == 'revenue' and sort_dir == 'desc') else 'desc' }}" class="text-white text-decoration-none">
+            <a href="?sort=revenue&dir={{ 'asc' if (sort_col == 'revenue' and sort_dir == 'desc') else 'desc' }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if group_id %}&group_id={{ group_id }}{% endif %}" class="text-white text-decoration-none">
               Revenue / batch <span class="text-success small">(buy)</span>{% if sort_col == 'revenue' %} {{ '▲' if sort_dir == 'asc' else '▼' }}{% endif %}
             </a>
           </th>
-          {{ sort_th('benefit', 'Benefit / batch') }}
+          {{ sort_th('benefit', 'Benefit / batch (pre-tax)') }}
           {{ sort_th('craft_vs_sell', 'Craft vs sell raw') }}
         </tr>
       </thead>
@@ -63,26 +79,7 @@
             <a href="/production_costs/{{ bp.produced_type_id }}" class="text-decoration-none">{{ bp.name }}</a>
             {% if bc and bc.has_missing_prices %}<span class="text-warning small ms-1" title="Some material prices missing">⚠</span>{% endif %}
           </td>
-          <td class="text-end">{{ row.asset.quantity }}</td>
           <td class="text-end text-muted">{{ bc.material_cost_sell | isk if bc and bc.material_cost_sell else '—' }}</td>
-          <td class="text-end text-muted">
-            {% if tax_rate > 0 and bc and bc.material_cost_sell %}
-            {% set _sys_amt = (bc.material_cost_sell * cheapest_facility.cost_index) | isk %}
-            {% set _ft_amt  = (bc.material_cost_sell * current_user.facility_tax / 100) | isk %}
-            {% set _scc_amt = (bc.material_cost_sell * current_user.scc_surcharge / 100) | isk %}
-            {% set _pop_content = 'System index: ' ~ _ci ~ '% — ' ~ _sys_amt
-              ~ '<br>Facility tax: ' ~ _ft ~ '% — ' ~ _ft_amt
-              ~ '<br>SCC surcharge: ' ~ _scc ~ '% — ' ~ _scc_amt
-              ~ '<hr class="my-1 border-secondary">Total: <strong>' ~ _tot ~ '% — ' ~ (row.tax_amount | isk) ~ '</strong>' %}
-            <span data-bs-toggle="popover"
-                  data-bs-trigger="hover focus"
-                  data-bs-placement="left"
-                  data-bs-html="true"
-                  data-bs-title="{{ cheapest_facility.name }}"
-                  data-bs-content="{{ _pop_content }}"
-                  style="cursor:help; border-bottom:1px dashed currentColor">{{ row.tax_amount | isk }}</span>
-            {% else %}—{% endif %}
-          </td>
           <td class="text-end text-muted">{{ bc.batch_revenue_buy | isk if bc and bc.batch_revenue_buy else '—' }}</td>
           <td class="text-end fw-semibold
             {% if benefit is not none and benefit > 0 %}text-success
@@ -96,7 +93,7 @@
           </td>
         </tr>
         {% else %}
-        <tr><td colspan="7" class="text-center text-muted py-4">No blueprints found in your assets.</td></tr>
+        <tr><td colspan="5" class="text-center text-muted py-4">No blueprint data found.</td></tr>
         {% endfor %}
       </tbody>
     </table>

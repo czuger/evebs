@@ -30,35 +30,25 @@
 {% else %}
 
 {# ── Summary cards ── #}
-{% set ns = namespace(fab_cost=0) %}
-{# Pre-compute fab_cost so summary cards can reference it #}
-{% for material in blueprint.blueprint_materials %}
-  {% set mp = market_prices.get(material.universe_type_id) %}
-  {% if mp and mp.p10_price %}
-    {% set ns.fab_cost = ns.fab_cost + mp.p10_price * material.required_qtt %}
-  {% endif %}
-{% endfor %}
-{% set cost_per_item = ns.fab_cost / blueprint.prod_qtt if blueprint.prod_qtt else 0 %}
-{% set tax_amount = ns.fab_cost * tax_rate %}
-{% set final_cost = cost_per_item * (1 + tax_rate) %}
-{% set result_price = result_mp.p90_price if result_mp and result_mp.p90_price else none %}
-{% set margin = result_price - final_cost if result_price is not none else none %}
+{% set batch_cost_sell = bc.material_cost_sell if bc and bc.material_cost_sell else none %}
+{% set tax_amount      = batch_cost_sell * tax_rate if batch_cost_sell else none %}
 
 <div class="row g-3 mb-4">
   <div class="col-6 col-md">
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
         <div class="text-muted small mb-1">Batch size</div>
-        <div class="fs-5 fw-semibold">{{ blueprint.prod_qtt | vol }}</div>
+        <div class="fs-5 fw-semibold">{{ blueprint.batch_elements_count | vol }}</div>
+        <div class="text-muted small">{{ blueprint.nb_runs }} run{{ 's' if blueprint.nb_runs != 1 }} × {{ blueprint.prod_qtt | vol }}</div>
       </div>
     </div>
   </div>
   <div class="col-6 col-md">
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
-        <div class="text-muted small mb-1">Materials cost</div>
-        <div class="fs-5 fw-semibold">{{ cost_per_item | isk }}</div>
-        <div class="text-muted small">per item, pre-tax</div>
+        <div class="text-muted small mb-1">Cost / item <span class="text-danger">(sell)</span></div>
+        <div class="fs-5 fw-semibold">{{ bc.cost_per_unit_sell | isk if bc and bc.cost_per_unit_sell else '—' }}</div>
+        <div class="text-muted small">buy materials from sell orders</div>
       </div>
     </div>
   </div>
@@ -66,14 +56,14 @@
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
         <div class="text-muted small mb-1">Tax</div>
-        {% if tax_rate > 0 and cheapest_facility %}
+        {% if tax_rate > 0 and cheapest_facility and batch_cost_sell %}
         {% set _ci      = (cheapest_facility.cost_index * 100) | round(2) %}
         {% set _ft      = current_user.facility_tax %}
         {% set _scc     = current_user.scc_surcharge %}
         {% set _tot     = (tax_rate * 100) | round(2) %}
-        {% set _sys_amt = (ns.fab_cost * cheapest_facility.cost_index) | isk %}
-        {% set _ft_amt  = (ns.fab_cost * current_user.facility_tax / 100) | isk %}
-        {% set _scc_amt = (ns.fab_cost * current_user.scc_surcharge / 100) | isk %}
+        {% set _sys_amt = (batch_cost_sell * cheapest_facility.cost_index) | isk %}
+        {% set _ft_amt  = (batch_cost_sell * current_user.facility_tax / 100) | isk %}
+        {% set _scc_amt = (batch_cost_sell * current_user.scc_surcharge / 100) | isk %}
         {% set _pop_content = 'System index: ' ~ _ci ~ '% — ' ~ _sys_amt
           ~ '<br>Facility tax: ' ~ _ft ~ '% — ' ~ _ft_amt
           ~ '<br>SCC surcharge: ' ~ _scc ~ '% — ' ~ _scc_amt
@@ -98,34 +88,49 @@
   <div class="col-6 col-md">
     <div class="card h-100 shadow-sm text-center">
       <div class="card-body">
-        <div class="text-muted small mb-1">Result price</div>
-        {% if result_price is not none %}
-        {% set _p90 = result_mp.p90_price %}
+        <div class="text-muted small mb-1">Output price <span class="text-success">(buy)</span></div>
+        {% if bc and bc.output_price_buy %}
         {% set _buyers_rows %}{% for o in output_buyers[:3] %}{{ o.universe_system.name if o.universe_system else '—' }} — <strong>{{ o.price | isk }}</strong> ({{ o.range }})<br>{% endfor %}{% endset %}
-        {% set _rp_content = 'Best bid: <strong>' ~ (result_price | isk) ~ '</strong><br>P90: ' ~ (_p90 | isk if _p90 else '—') ~ ('<hr class="my-1 border-secondary">Top buyers:<br>' ~ _buyers_rows if output_buyers else '') %}
+        {% set _pop_content = 'P90 buy: <strong>' ~ (bc.output_price_buy | isk) ~ '</strong>' ~ ('<hr class="my-1 border-secondary">Top buyers:<br>' ~ _buyers_rows if output_buyers else '') %}
         <span data-bs-toggle="popover"
               data-bs-trigger="hover focus"
               data-bs-placement="bottom"
               data-bs-html="true"
               data-bs-title="{{ item.name }}"
-              data-bs-content="{{ _rp_content }}"
+              data-bs-content="{{ _pop_content }}"
               style="cursor:help; border-bottom:1px dashed currentColor">
-          <div class="fs-5 fw-semibold">{{ result_price | isk }}</div>
+          <div class="fs-5 fw-semibold">{{ bc.output_price_buy | isk }}</div>
         </span>
-        <div class="text-muted small">adjusted</div>
+        <div class="text-muted small">sell to buy orders</div>
         {% else %}
         <div class="fs-5 fw-semibold text-muted">—</div>
-        <div class="text-muted small">adjusted</div>
+        <div class="text-muted small">no buy orders at Jita</div>
         {% endif %}
       </div>
     </div>
   </div>
   <div class="col-6 col-md">
+    {% set margin = bc.margin_per_unit if bc else none %}
     <div class="card h-100 shadow-sm text-center {{ 'border-success' if margin is not none and margin > 0 else ('border-danger' if margin is not none else '') }}">
       <div class="card-body">
         <div class="text-muted small mb-1">Margin / item</div>
         {% if margin is not none %}
         <div class="fs-5 fw-semibold {{ 'text-success' if margin > 0 else 'text-danger' }}">{{ margin | isk }}</div>
+        <div class="text-muted small">{{ bc.roi_percent | round(1) }}% ROI</div>
+        {% else %}
+        <div class="fs-5 fw-semibold text-muted">—</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    {% set cvs = bc.craft_vs_sell_margin if bc else none %}
+    <div class="card h-100 shadow-sm text-center {{ 'border-success' if cvs is not none and cvs > 0 else ('border-danger' if cvs is not none else '') }}">
+      <div class="card-body">
+        <div class="text-muted small mb-1">Craft vs sell raw</div>
+        {% if cvs is not none %}
+        <div class="fs-5 fw-semibold {{ 'text-success' if cvs > 0 else 'text-danger' }}">{{ cvs | isk }}</div>
+        <div class="text-muted small">{{ 'worth crafting' if cvs > 0 else 'better to sell raw' }}</div>
         {% else %}
         <div class="fs-5 fw-semibold text-muted">—</div>
         {% endif %}
@@ -192,8 +197,8 @@
       </tbody>
       <tfoot class="table-secondary">
         <tr>
-          <td colspan="5" class="fw-semibold">Total (batch of {{ blueprint.prod_qtt | vol }})</td>
-          <td class="text-end fw-semibold">{{ ns.fab_cost | isk }}</td>
+          <td colspan="5" class="fw-semibold">Total (batch of {{ blueprint.batch_elements_count | vol }})</td>
+          <td class="text-end fw-semibold">{{ bc.material_cost_sell | isk if bc and bc.material_cost_sell else '—' }}</td>
         </tr>
       </tfoot>
     </table>

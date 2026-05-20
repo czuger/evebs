@@ -34,8 +34,13 @@
         <li class="nav-item">
           <a class="nav-link{% if request.path == '/my_assets' %} active{% endif %}" href="/my_assets">Assets</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link{% if '/my_blueprints' in request.path %} active{% endif %}" href="/my_blueprints">Blueprints</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle{% if '/blueprints' in request.path %} active{% endif %}"
+             href="#" role="button" data-bs-toggle="dropdown">Blueprints</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/blueprints">All blueprints</a>
+            <a class="dropdown-item" href="/my_blueprints">My blueprints</a>
+          </div>
         </li>
         <li class="nav-item">
           <a class="nav-link{% if '/industry' in request.path %} active{% endif %}" href="/industry/facilities/near/">Facilities</a>
