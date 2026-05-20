@@ -1,10 +1,15 @@
+import json
+
 from flask import Blueprint, render_template, request, jsonify, abort
 from flask_login import current_user, login_required
 
-from evebs.extensions import db
+from evebs.extensions import db, redis_client
 from evebs.models import MarketGroup, UniverseType
 
 bp = Blueprint('list_items', __name__)
+
+_SEARCH_CACHE_KEY = 'list_items:search_data'
+_SEARCH_CACHE_TTL = 48 * 3600
 
 
 @bp.route('/list_items')
@@ -16,6 +21,18 @@ def show():
     item_ids = set()
     if user:
         item_ids = set(user.eve_item_ids)
+
+    cached = redis_client.get(_SEARCH_CACHE_KEY)
+    if cached:
+        search_data = json.loads(cached)
+    else:
+        all_items = (UniverseType.query
+                     .filter(UniverseType.market_group_id.isnot(None))
+                     .with_entities(UniverseType.id, UniverseType.name)
+                     .order_by(UniverseType.name)
+                     .all())
+        search_data = {r.name: r.id for r in all_items}
+        redis_client.setex(_SEARCH_CACHE_KEY, _SEARCH_CACHE_TTL, json.dumps(search_data))
 
     if group_id:
         current_group = MarketGroup.query.get_or_404(group_id)
@@ -39,6 +56,7 @@ def show():
                            groups=groups,
                            items=items,
                            item_ids=item_ids,
+                           search_data=search_data,
                            user=user)
 
 

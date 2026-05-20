@@ -12,6 +12,10 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
+    import redis as _redis
+    import evebs.extensions as _ext
+    _ext.redis_client = _redis.from_url(app.config['REDIS_URL'], decode_responses=True)
+
     helpers.register(app)
 
     from evebs.routes.auth import bp as auth_bp

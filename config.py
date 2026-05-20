@@ -34,6 +34,8 @@ class Config:
         "publicData","esi-universe.read_structures.v1","esi-assets.read_assets.v1","esi-markets.structure_markets.v1",
         "esi-markets.read_character_orders.v1","esi-characters.read_blueprints.v1"])
 
+    REDIS_URL = _cfg.get('redis_url', 'redis://localhost:6379/0')
+
     PER_PAGE = 12
     VERBOSE_OUTPUT = False
 

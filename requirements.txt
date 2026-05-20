@@ -11,3 +11,4 @@ psycopg[binary]>=3.0
 
 PyYAML~=6.0.3
 MarkupSafe~=3.0.3
+redis>=5.0

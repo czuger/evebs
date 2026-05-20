@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<div class="position-relative mb-3">
+  <input id="item-search" type="text" class="form-control"
+         placeholder="Search items…" autocomplete="off">
+  <div id="item-search-results"
+       class="list-group position-absolute w-100 shadow-sm"
+       style="z-index:1000; display:none; max-height:300px; overflow-y:auto">
+  </div>
+</div>
+
 {% if current_group %}
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -49,14 +59,47 @@
 
 {% block scripts %}
 <script>
-$(function() {
-  $('.item_checkbox').change(function() {
-    var state = $(this).is(':checked');
-    var id = $(this).attr('item_id');
-    $.post('/list_items/selection_change', { id: id, check_state: state })
-      .fail(function(jqXHR, textStatus, errorThrown) {
-        $('#error_area').html(errorThrown).show().delay(3000).fadeOut(3000);
-      });
+var SEARCH_DATA = {{ search_data | tojson }};
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.item_checkbox').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var id = cb.getAttribute('item_id');
+      var state = cb.checked;
+      var body = new URLSearchParams({ id: id, check_state: state });
+      fetch('/list_items/selection_change', { method: 'POST', body: body })
+        .then(function(r) { if (!r.ok) throw new Error(r.statusText); })
+        .catch(function(err) {
+          var el = document.getElementById('error_area');
+          if (el) { el.textContent = err.message; el.style.display = ''; }
+        });
+    });
+  });
+
+  var input = document.getElementById('item-search');
+  var results = document.getElementById('item-search-results');
+
+  input.addEventListener('input', function() {
+    var q = input.value.toLowerCase().trim();
+    results.innerHTML = '';
+    if (q.length < 2) { results.style.display = 'none'; return; }
+    var matches = Object.entries(SEARCH_DATA)
+      .filter(function(e) { return e[0].toLowerCase().includes(q); })
+      .slice(0, 20);
+    if (!matches.length) { results.style.display = 'none'; return; }
+    matches.forEach(function(e) {
+      var a = document.createElement('a');
+      a.href = '/items/' + e[1];
+      a.textContent = e[0];
+      a.className = 'list-group-item list-group-item-action py-1';
+      results.appendChild(a);
+    });
+    results.style.display = '';
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !results.contains(e.target))
+      results.style.display = 'none';
   });
 });
 </script>
