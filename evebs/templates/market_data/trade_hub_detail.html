@@ -1,22 +1,96 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{{ element.name }} at {{ trade_hub.name }}</h2>
-<div class="table-responsive-md">
-  <table class="table">
-    <tr>
-      <th class="text-end">Price</th>
-      <th class="text-end">Volume remain</th>
-      <th>Range</th>
-    </tr>
-    {% for order in orders %}
-    <tr>
-      <td class="text-end">{{ order.price | isk }}</td>
-      <td class="text-end">{{ order.volume_remain | vol }}</td>
-      <td>{{ order.range }}</td>
-    </tr>
-    {% else %}
-    <tr><td colspan="3" class="text-center text-muted">No sell orders.</td></tr>
-    {% endfor %}
-  </table>
+<h2>{{ element.name }} <small class="text-muted">at {{ trade_hub.name }}</small></h2>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card border-danger">
+      <div class="card-header bg-danger text-white">
+        <strong>Selling price</strong>
+        <small class="d-block">What sellers ask — you pay this to buy</small>
+      </div>
+      <div class="card-body text-center">
+        {% if seller_price and seller_price.p10_price %}
+          <span class="h4">{{ seller_price.p10_price | isk }}</span>
+          <div class="text-muted small">P10 — volume {{ seller_price.volume | vol }}</div>
+        {% else %}
+          <span class="text-muted">No data</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card border-success">
+      <div class="card-header bg-success text-white">
+        <strong>Buying price</strong>
+        <small class="d-block">What buyers offer — you get this when selling</small>
+      </div>
+      <div class="card-body text-center">
+        {% if buyer_price and buyer_price.p90_price %}
+          <span class="h4">{{ buyer_price.p90_price | isk }}</span>
+          <div class="text-muted small">P90 — volume {{ buyer_price.volume | vol }}</div>
+        {% else %}
+          <span class="text-muted">No data</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h5 class="text-danger">Sell orders <small class="text-muted">(lowest first)</small></h5>
+    <div class="table-responsive">
+      <table class="table table-sm table-hover">
+        <thead class="thead-light">
+          <tr>
+            <th class="text-end">Price</th>
+            <th class="text-end">Volume remain</th>
+            <th>Range</th>
+            <th>Station</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in sell_orders %}
+          <tr>
+            <td class="text-end">{{ order.price | isk }}</td>
+            <td class="text-end">{{ order.volume_remain | vol }}</td>
+            <td>{{ order.range }}</td>
+            <td class="text-muted small">{{ station_names.get(order.location_id, '') }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-muted">No sell orders.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <h5 class="text-success">Buy orders <small class="text-muted">(highest first)</small></h5>
+    <div class="table-responsive">
+      <table class="table table-sm table-hover">
+        <thead class="thead-light">
+          <tr>
+            <th class="text-end">Price</th>
+            <th class="text-end">Volume remain</th>
+            <th>Range</th>
+            <th>Station</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in buy_orders %}
+          <tr>
+            <td class="text-end">{{ order.price | isk }}</td>
+            <td class="text-end">{{ order.volume_remain | vol }}</td>
+            <td>{{ order.range }}</td>
+            <td class="text-muted small">{{ station_names.get(order.location_id, '') }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-muted">No buy orders.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

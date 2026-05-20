@@ -35,6 +35,7 @@ def _to_small_number(amount):
     """Format a number as a compact string (e.g. 1.23B, 45.6M, 789K)."""
     if amount is None:
         return 'N/A'
+    amount = float(amount)
     if amount == float('inf'):
         return 'N/A'
     for threshold, unit in AMOUNTS:

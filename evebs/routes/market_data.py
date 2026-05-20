@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort
 from flask_login import current_user
 
-from evebs.models import UniverseType, UniverseSystem, MarketSellerPrice, PriceAdvicesMinPrice, MarketOrder
+from evebs.models import UniverseType, UniverseSystem, MarketSellerPrice, MarketBuyerPrice, PriceAdvicesMinPrice, MarketOrder, UniverseStation
 
 bp = Blueprint('market_data', __name__)
 
@@ -35,16 +35,30 @@ def market_overview(item_id):
 
 @bp.route('/market_data/<int:item_id>/trade_hub_detail/<int:trade_hub_id>')
 def trade_hub_detail(item_id, trade_hub_id):
-    """Render current sell orders for an item at a specific hub."""
+    """Render current sell and buy orders for an item at a specific hub."""
     item = UniverseType.query.get_or_404(item_id)
     trade_hub = UniverseSystem.query.get_or_404(trade_hub_id)
-    orders = (MarketOrder.query
-              .filter_by(system_id=trade_hub.id, type_id=item.id, is_buy_order=False)
-              .order_by(MarketOrder.price)
-              .limit(20)
-              .all())
+    sell_orders = (MarketOrder.query
+                   .filter_by(system_id=trade_hub.id, type_id=item.id, is_buy_order=False)
+                   .order_by(MarketOrder.price)
+                   .limit(20)
+                   .all())
+    buy_orders = (MarketOrder.query
+                  .filter_by(system_id=trade_hub.id, type_id=item.id, is_buy_order=True)
+                  .order_by(MarketOrder.price.desc())
+                  .limit(20)
+                  .all())
+    seller_price = MarketSellerPrice.query.filter_by(type_id=item.id, system_id=trade_hub.id).first()
+    buyer_price = MarketBuyerPrice.query.filter_by(type_id=item.id, system_id=trade_hub.id).first()
+    all_location_ids = {o.location_id for o in sell_orders + buy_orders}
+    stations = UniverseStation.query.filter(UniverseStation.id.in_(all_location_ids)).all()
+    station_names = {s.id: s.name for s in stations}
     return render_template('market_data/trade_hub_detail.html',
                            element=item,
                            trade_hub=trade_hub,
-                           orders=orders,
-                           title=f'{item.name} current sell orders at {trade_hub.name}')
+                           sell_orders=sell_orders,
+                           buy_orders=buy_orders,
+                           seller_price=seller_price,
+                           buyer_price=buyer_price,
+                           station_names=station_names,
+                           title=f'{item.name} at {trade_hub.name}')

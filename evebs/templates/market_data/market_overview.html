@@ -1,41 +1,89 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{{ item.name }} - Market overview</h2>
+<h2>{{ item.name }} <small class="text-muted fs-5">market overview</small></h2>
+
 {% if item.blueprint is none %}
-<div class="table-responsive-md">
-  <table class="table">
-    <tr>
-      <th>Trade hub</th>
-      <th class="text-end">Min price</th>
-      <th class="text-end">Volume</th>
-    </tr>
-    {% for pm in item_prices %}
-    <tr>
-      <td>{{ pm.universe_system.name }}{% if pm.universe_system.universe_region %} ({{ pm.universe_system.universe_region.name }}){% endif %}</td>
-      <td class="text-end">{{ pm.min_price | isk }}</td>
-      <td class="text-end">{{ pm.volume | vol }}</td>
-    </tr>
-    {% endfor %}
+
+{# ── Raw material / non-craftable item ─────────────────────────────────────── #}
+{% if item_prices %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-1">
+  {% for pm in item_prices %}
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h6 class="card-title mb-0">
+          <a href="{{ url_for('market_data.trade_hub_detail', item_id=item.id, trade_hub_id=pm.universe_system.id) }}"
+             class="text-decoration-none">{{ pm.universe_system.name }}</a>
+        </h6>
+        {% if pm.universe_system.universe_region %}
+        <div class="text-muted small mb-2">{{ pm.universe_system.universe_region.name }}</div>
+        {% else %}
+        <div class="mb-2"></div>
+        {% endif %}
+        <div class="d-flex justify-content-between align-items-end">
+          <div>
+            <div class="text-muted small">Sell price (P10)</div>
+            <span class="fs-5 fw-bold text-danger">{{ pm.p10_price | isk }}</span>
+          </div>
+          <div class="text-end">
+            <div class="text-muted small">Volume</div>
+            <span class="text-secondary">{{ pm.volume | vol }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted mt-3">No market data available for this item.</p>
+{% endif %}
+
+{% else %}
+
+{# ── Blueprint item ─────────────────────────────────────────────────────────── #}
+{% if advice_prices %}
+<div class="table-responsive mt-2">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Trade hub</th>
+        <th class="text-end">Sell price</th>
+        <th class="text-end">Cost</th>
+        <th class="text-end">Margin</th>
+        <th class="text-end">Avg margin/month</th>
+        <th class="text-end">Vol/month</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ap in advice_prices %}
+      {% if ap.margin_percent is not none and ap.margin_percent >= 0.10 %}
+        {% set row_class = 'table-success' %}
+      {% elif ap.margin_percent is not none and ap.margin_percent >= 0.05 %}
+        {% set row_class = 'table-warning' %}
+      {% else %}
+        {% set row_class = '' %}
+      {% endif %}
+      <tr class="{{ row_class }}">
+        <td>
+          <a href="{{ url_for('market_data.trade_hub_detail', item_id=item.id, trade_hub_id=ap.trade_hub_id) }}"
+             class="text-decoration-none fw-semibold">{{ ap.trade_hub_name }}</a>
+        </td>
+        <td class="text-end">{{ ap.min_price | isk }}</td>
+        <td class="text-end text-muted">{{ ap.cost | isk }}</td>
+        <td class="text-end fw-bold">{{ ap.margin_percent | pcent }}</td>
+        <td class="text-end">{{ ap.avg_monthly_margin_percent | pcent }}</td>
+        <td class="text-end text-muted">{{ ap.vol_month | vol }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted">No price advice available.</td></tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
 {% else %}
-<div class="table-responsive-md">
-  <table class="table">
-    <tr>
-      <th>Trade hub</th>
-      <th class="text-end">Min price</th>
-      <th class="text-end">Avg monthly margin %</th>
-      <th class="text-end">Volume/month</th>
-    </tr>
-    {% for ap in advice_prices %}
-    <tr>
-      <td>{{ ap.trade_hub_name }}</td>
-      <td class="text-end">{{ ap.min_price | isk }}</td>
-      <td class="text-end">{{ ap.avg_monthly_margin_percent | pcent }}</td>
-      <td class="text-end">{{ ap.vol_month | vol }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-</div>
+<p class="text-muted mt-3">No price advice available for this item.</p>
+{% endif %}
+
 {% endif %}
 {% endblock %}
