@@ -4,8 +4,6 @@ from evebs.models.market_group import MarketGroup
 from evebs.models.blueprint import Blueprint
 from evebs.models.blueprint_material import BlueprintMaterial
 from evebs.models.blueprint_modification import BlueprintModification
-from evebs.models.market_seller_price import MarketSellerPrice
-from evebs.models.market_buyer_price import MarketBuyerPrice
 from evebs.models.prices_advice import PricesAdvice
 from evebs.models.buy_orders_analytic import BuyOrdersAnalytic
 from evebs.models.sales_final import SalesFinal
@@ -38,5 +36,8 @@ from evebs.models.views import (
     UserSaleOrderDetail,
     PriceAdviceMarginComp,
     ComponentToBuy,
+    MarketSellerPrice,
+    MarketBuyerPrice,
+    BlueprintCost,
+    BlueprintCostRegional,
 )
-from evebs.models.views.blueprint_cost import BlueprintCost

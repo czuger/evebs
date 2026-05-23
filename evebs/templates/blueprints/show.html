@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% block scripts %}
 <script>
+  document.getElementById('region_id').addEventListener('change', function () {
+    this.form.submit();
+  });
   document.getElementById('category_id').addEventListener('change', function () {
-    // Clear group when category changes, then submit
     document.getElementById('group_id').value = '';
     this.form.submit();
   });
@@ -14,13 +16,18 @@
 {% block content %}
 <div class="my-4">
   <h2 class="mb-0">All blueprints</h2>
-  <small class="text-muted">Prices at Jita — benefit is pre-tax</small>
+  <small class="text-muted">{{ selected_region_name }} — benefit after {{ (tax_rate * 100) | round(0) | int }}% tax</small>
 </div>
 
 {# ── Filters ── #}
 <form method="get" action="/blueprints" class="mb-3 d-flex flex-wrap gap-2 align-items-center">
   <input type="hidden" name="sort" value="{{ sort_col }}">
   <input type="hidden" name="dir" value="{{ sort_dir }}">
+  <select id="region_id" name="region_id" class="form-select form-select-sm" style="max-width:200px">
+    {% for rid, rname in regions %}
+    <option value="{{ rid }}" {% if rid == region_id %}selected{% endif %}>{{ rname }}</option>
+    {% endfor %}
+  </select>
   <select id="category_id" name="category_id" class="form-select form-select-sm" style="max-width:220px">
     <option value="">All categories</option>
     {% for cat_id, cat_name in categories %}
@@ -35,17 +42,18 @@
     {% endfor %}
   </select>
   {% if category_id or group_id %}
-  <a href="/blueprints?sort={{ sort_col }}&dir={{ sort_dir }}" class="btn btn-sm btn-outline-secondary">✕ Clear</a>
+  <a href="/blueprints?sort={{ sort_col }}&dir={{ sort_dir }}&region_id={{ region_id }}" class="btn btn-sm btn-outline-secondary">✕ Clear</a>
   {% endif %}
 </form>
 
 <div class="card shadow-sm">
   <div class="table-responsive">
     <table class="table table-hover table-striped align-middle mb-0">
+      {% set _fp = '&region_id=' ~ region_id ~ ('&category_id=' ~ category_id if category_id else '') ~ ('&group_id=' ~ group_id if group_id else '') %}
       {% macro sort_th(col, label, align='text-end') %}
         {% set next_dir = 'asc' if (sort_col == col and sort_dir == 'desc') else 'desc' %}
         <th class="{{ align }}">
-          <a href="?sort={{ col }}&dir={{ next_dir }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if group_id %}&group_id={{ group_id }}{% endif %}" class="text-white text-decoration-none">
+          <a href="?sort={{ col }}&dir={{ next_dir }}{{ _fp }}" class="text-white text-decoration-none">
             {{ label }}{% if sort_col == col %} {{ '▲' if sort_dir == 'asc' else '▼' }}{% endif %}
           </a>
         </th>
@@ -54,16 +62,16 @@
         <tr>
           {{ sort_th('name', 'Blueprint', align='') }}
           <th class="text-end">
-            <a href="?sort=cost&dir={{ 'asc' if (sort_col == 'cost' and sort_dir == 'desc') else 'desc' }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if group_id %}&group_id={{ group_id }}{% endif %}" class="text-white text-decoration-none">
+            <a href="?sort=cost&dir={{ 'asc' if (sort_col == 'cost' and sort_dir == 'desc') else 'desc' }}{{ _fp }}" class="text-white text-decoration-none">
               Cost / batch <span class="text-danger small">(sell)</span>{% if sort_col == 'cost' %} {{ '▲' if sort_dir == 'asc' else '▼' }}{% endif %}
             </a>
           </th>
           <th class="text-end">
-            <a href="?sort=revenue&dir={{ 'asc' if (sort_col == 'revenue' and sort_dir == 'desc') else 'desc' }}{% if category_id %}&category_id={{ category_id }}{% endif %}{% if group_id %}&group_id={{ group_id }}{% endif %}" class="text-white text-decoration-none">
+            <a href="?sort=revenue&dir={{ 'asc' if (sort_col == 'revenue' and sort_dir == 'desc') else 'desc' }}{{ _fp }}" class="text-white text-decoration-none">
               Revenue / batch <span class="text-success small">(buy)</span>{% if sort_col == 'revenue' %} {{ '▲' if sort_dir == 'asc' else '▼' }}{% endif %}
             </a>
           </th>
-          {{ sort_th('benefit', 'Benefit / batch (pre-tax)') }}
+          {{ sort_th('benefit', 'Benefit / batch') }}
           {{ sort_th('craft_vs_sell', 'Craft vs sell raw') }}
         </tr>
       </thead>

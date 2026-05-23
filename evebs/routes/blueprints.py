@@ -1,18 +1,28 @@
 from flask import Blueprint, render_template, request
-from evebs.models import Blueprint as BpModel, BlueprintCost, UniverseType, UniverseGroup, UniverseCategory
+from evebs.models import Blueprint as BpModel, BlueprintCostRegional, UniverseType, UniverseGroup, UniverseCategory
 from evebs.routes.my_blueprints import _Pagination
 from evebs.extensions import db
 
 bp = Blueprint('blueprints', __name__)
 PER_PAGE = 20
+DEFAULT_REGION_ID = 10000002  # The Forge (contains Jita)
+DEFAULT_TAX_RATE = 0.07
 
 
 @bp.route('/blueprints')
 def show():
+    region_id   = request.args.get('region_id',   DEFAULT_REGION_ID, type=int)
     category_id = request.args.get('category_id', type=int)
-    group_id = request.args.get('group_id', type=int)
+    group_id    = request.args.get('group_id',    type=int)
 
-    # Categories that have at least one blueprint with cost data
+    regions = (
+        db.session.query(BlueprintCostRegional.region_id, BlueprintCostRegional.region_name)
+        .distinct()
+        .order_by(BlueprintCostRegional.region_name)
+        .all()
+    )
+    selected_region_name = next((name for rid, name in regions if rid == region_id), 'Unknown region')
+
     categories = (
         db.session.query(UniverseCategory.id, UniverseCategory.name)
         .join(UniverseGroup, UniverseGroup.category_id == UniverseCategory.id)
@@ -23,7 +33,6 @@ def show():
         .all()
     )
 
-    # Groups for the selected category
     groups = []
     if category_id:
         groups = (
@@ -38,10 +47,10 @@ def show():
 
     query = (
         BpModel.query
-        .join(BlueprintCost,
-              (BpModel.produced_type_id == BlueprintCost.produced_type_id) &
-              (BlueprintCost.system_id == 30000142))
-        .add_entity(BlueprintCost)
+        .join(BlueprintCostRegional,
+              (BpModel.produced_type_id == BlueprintCostRegional.produced_type_id) &
+              (BlueprintCostRegional.region_id == region_id))
+        .add_entity(BlueprintCostRegional)
     )
     if group_id:
         query = (query
@@ -57,11 +66,9 @@ def show():
 
     rows = []
     for blueprint, bc in rows_raw:
-        benefit = (
-            (bc.batch_revenue_buy - bc.material_cost_sell)
-            if bc.batch_revenue_buy is not None and bc.material_cost_sell is not None
-            else None
-        )
+        if bc.batch_revenue_buy is None or bc.material_cost_sell is None:
+            continue
+        benefit = bc.batch_revenue_buy - bc.material_cost_sell * (1 + DEFAULT_TAX_RATE)
         rows.append({'blueprint': blueprint, 'bc': bc, 'benefit': benefit})
 
     _SORT_KEYS = {
@@ -90,6 +97,10 @@ def show():
                            pagination=pagination,
                            sort_col=sort_col,
                            sort_dir=sort_dir,
+                           regions=regions,
+                           region_id=region_id,
+                           selected_region_name=selected_region_name,
+                           tax_rate=DEFAULT_TAX_RATE,
                            categories=categories,
                            groups=groups,
                            category_id=category_id,

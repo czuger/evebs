@@ -99,6 +99,12 @@ class PriceAdviceMarginComp(db.Model):
     margin_comp_weekly = db.Column(db.Float)
 
 
+from evebs.models.views.market_seller_price import MarketSellerPrice
+from evebs.models.views.market_buyer_price import MarketBuyerPrice
+from evebs.models.views.blueprint_cost import BlueprintCost
+from evebs.models.views.blueprint_cost_regional import BlueprintCostRegional
+
+
 class ComponentToBuy(db.Model):
     """Read-only view listing components the user needs to purchase."""
 
