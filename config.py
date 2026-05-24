@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -18,6 +19,9 @@ def _load_config():
 _cfg = _load_config()
 
 
+_test_mode = '-t' in sys.argv
+
+
 def _build_database_uri():
     db = _cfg.get('database', {})
     host = db.get('host')
@@ -26,8 +30,11 @@ def _build_database_uri():
         password = db.get('password', '')
         port = db.get('port', 5432)
         name = db.get('name', '')
+        if _test_mode:
+            name = f'{name}_test'
         return f"postgresql+psycopg://{user}:{password}@{host}:{port}/{name}"
-    return f"sqlite:///{os.path.join(BASE_DIR, 'evebs.db')}"
+    base = os.path.join(BASE_DIR, 'evebs_test.db' if _test_mode else 'evebs.db')
+    return f"sqlite:///{base}"
 
 
 class Config:
