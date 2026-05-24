@@ -49,14 +49,35 @@ def create_app(config_class=Config):
     app.register_blueprint(my_assets_bp)
     app.register_blueprint(admin_bp)
 
-    with app.app_context():
-        db.create_all()
-        _create_views()
-
     return app
 
 
-def _create_views():
+def init_db(app, recreate=False):
+    with app.app_context():
+        if recreate:
+            _drop_views()
+            db.drop_all()
+        db.create_all()
+        create_views()
+
+
+def _drop_views():
+    from sqlalchemy import text
+    view_names = [
+        "buy_orders_analytics_results",
+        "price_advices_min_prices",
+        "user_sale_order_details",
+        "price_advice_margin_comps",
+        "components_to_buys",
+    ]
+    conn = db.engine.connect()
+    for name in view_names:
+        conn.execute(text(f"DROP VIEW IF EXISTS {name}"))
+    conn.commit()
+    conn.close()
+
+
+def create_views():
     from sqlalchemy import text
     conn = db.engine.connect()
 

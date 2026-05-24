@@ -50,3 +50,7 @@ data/regional_sales_volumes.json_stream
 data/regional_sales_volumes_*.json_stream
 
 log/
+/data/eve_static_data/
+/oldies/
+/evebs.egg-info/
+/next_steps.txt

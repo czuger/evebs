@@ -1,31 +1,42 @@
+import json
 import os
-import yaml
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def _load_omniauth():
-    path = os.path.join(BASE_DIR, 'config', 'omniauth.yaml')
-    if os.path.exists(path):
-        with open(path) as f:
-            data = yaml.safe_load(f)
-        if data and 'esi' in data:
-            return data['esi']
-    return [None, None]
+def _load_config():
+    path = os.path.join(BASE_DIR, 'config', 'config.json')
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            f"config/config.json not found at {path}. "
+            "Copy config/config.json.example and fill in your credentials."
+        )
+    with open(path) as f:
+        return json.load(f)
 
 
-_esi_creds = _load_omniauth()
+_cfg = _load_config()
+
+
+def _build_database_uri():
+    db = _cfg.get('database', {})
+    host = db.get('host')
+    if host:
+        user = db.get('user', '')
+        password = db.get('password', '')
+        port = db.get('port', 5432)
+        name = db.get('name', '')
+        return f"postgresql://{user}:{password}@{host}:{port}/{name}"
+    return f"sqlite:///{os.path.join(BASE_DIR, 'evebs.db')}"
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-change-in-production')
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DATABASE_URL', f'sqlite:///{os.path.join(BASE_DIR, "evebs.db")}'
-    )
+    SECRET_KEY = _cfg.get('secret_key', 'dev-secret-change-in-production')
+    SQLALCHEMY_DATABASE_URI = _build_database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    ESI_CLIENT_ID = os.environ.get('ESI_CLIENT_ID', _esi_creds[0])
-    ESI_SECRET_KEY = os.environ.get('ESI_SECRET_KEY', _esi_creds[1])
+    ESI_CLIENT_ID = _cfg['esi']['client_id']
+    ESI_SECRET_KEY = _cfg['esi']['secret_key']
 
     EVE_SSO_AUTH_URL = 'https://login.eveonline.com/v2/oauth/authorize'
     EVE_SSO_TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'
@@ -38,4 +49,4 @@ class Config:
     ])
 
     PER_PAGE = 12
-    VERBOSE_OUTPUT = os.environ.get('EBS_VERBOSE_OUTPUT', 'false').lower() == 'true'
+    VERBOSE_OUTPUT = _cfg.get('verbose_output', False)
