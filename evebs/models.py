@@ -188,14 +188,20 @@ class EveItem(db.Model):
     users = db.relationship('User', secondary=eve_items_users, back_populates='eve_items')
     market_group = db.relationship('MarketGroup', back_populates='eve_items')
     blueprint = db.relationship('Blueprint', back_populates='eve_item')
-    blueprint_materials = db.relationship('BlueprintMaterial', foreign_keys='BlueprintMaterial.eve_item_id')
+    blueprint_materials = db.relationship('BlueprintMaterial', foreign_keys='BlueprintMaterial.eve_item_id', back_populates='eve_item')
     prices_mins = db.relationship('PricesMin', back_populates='eve_item', cascade='all, delete-orphan')
     sales_finals = db.relationship('SalesFinal', back_populates='eve_item', cascade='all, delete-orphan')
     prices_advices = db.relationship('PricesAdvice', back_populates='eve_item', cascade='all, delete-orphan')
     buy_orders_analytics = db.relationship('BuyOrdersAnalytic', back_populates='eve_item', cascade='all, delete-orphan')
     public_trade_orders = db.relationship('PublicTradeOrder', back_populates='eve_item', cascade='all, delete-orphan')
     eve_market_histories_groups = db.relationship('EveMarketHistoriesGroup', back_populates='eve_item', cascade='all, delete-orphan')
-    price_advices_min_prices = db.relationship('PriceAdvicesMinPrice', back_populates='eve_item')
+    price_advices_min_prices = db.relationship(
+        'PriceAdvicesMinPrice',
+        foreign_keys='PriceAdvicesMinPrice.eve_item_id',
+        primaryjoin='EveItem.id == PriceAdvicesMinPrice.eve_item_id',
+        back_populates='eve_item',
+        viewonly=True,
+    )
     weekly_price_details = db.relationship('WeeklyPriceDetail', back_populates='eve_item', cascade='all, delete-orphan')
 
     @property
@@ -226,14 +232,14 @@ class BlueprintMaterial(db.Model):
     __tablename__ = 'blueprint_materials'
 
     id = db.Column(db.Integer, primary_key=True)
-    blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
+    blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False, index=True)
     required_qtt = db.Column(db.Integer, nullable=False)
-    eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False)
+    eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     blueprint = db.relationship('Blueprint', back_populates='blueprint_materials')
-    eve_item = db.relationship('EveItem', foreign_keys=[eve_item_id])
+    eve_item = db.relationship('EveItem', foreign_keys=[eve_item_id], back_populates='blueprint_materials')
 
 
 class BlueprintModification(db.Model):

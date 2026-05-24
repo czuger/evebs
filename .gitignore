@@ -54,3 +54,7 @@ log/
 /oldies/
 /evebs.egg-info/
 /next_steps.txt
+/data/market_orders.csv
+
+*.pyc
+.DS_Store
