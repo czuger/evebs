@@ -26,7 +26,7 @@ def _build_database_uri():
         password = db.get('password', '')
         port = db.get('port', 5432)
         name = db.get('name', '')
-        return f"postgresql://{user}:{password}@{host}:{port}/{name}"
+        return f"postgresql+psycopg://{user}:{password}@{host}:{port}/{name}"
     return f"sqlite:///{os.path.join(BASE_DIR, 'evebs.db')}"
 
 
