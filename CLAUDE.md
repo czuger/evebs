@@ -22,10 +22,10 @@ Eve Industrial Tool — a Flask web app for Eve Online players to track market m
 pip install -r requirements.txt
 
 # Run the development server
-python run.py
+python app.py
 
 # Or via Flask
-FLASK_APP=run.py flask run --debug
+FLASK_APP=app.py flask run --debug
 
 # Background data processes (run via cron in production)
 python process/hourly.py

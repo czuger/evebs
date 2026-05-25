@@ -49,10 +49,10 @@ class Config:
     EVE_SSO_TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'
     EVE_SSO_VERIFY_URL = 'https://esi.evetech.net/verify/'
     EVE_SSO_SCOPES = ' '.join([
-        'esi-characters.read_orders.v1',
-        'esi-assets.read_assets.v1',
-        'esi-characters.read_blueprints.v1',
-        'esi-industry.read_character_jobs.v1',
+        "esi-location.read_location.v1", "esi-industry.read_character_jobs.v1",
+        "esi-assets.read_corporation_assets.v1", "publicData", "esi-universe.read_structures.v1",
+        "esi-assets.read_assets.v1", "esi-markets.structure_markets.v1", "esi-markets.read_character_orders.v1",
+        "esi-characters.read_blueprints.v1"
     ])
 
     PER_PAGE = 12

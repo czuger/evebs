@@ -36,7 +36,7 @@ class DownloadHistory:
 
 
 def _download_chunk(region_ids, process_number, verbose):
-    from run import app
+    from app import app
     with app.app_context():
         from evebs.models import UniverseRegion
         regions = UniverseRegion.query.filter(UniverseRegion.id.in_(region_ids)).all()
