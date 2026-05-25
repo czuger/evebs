@@ -1,6 +1,8 @@
 import csv
 import json
 import os
+import sys
+import time
 from datetime import datetime, timedelta
 from esi.client import EsiClient
 from esi.errors import NotFound
@@ -71,19 +73,29 @@ class DownloadPublicTradesOrders:
         from evebs.extensions import db
         from evebs.models import TradeHub, EveItem, PublicTradeOrder
 
+        t0 = time.perf_counter()
+        print(f'Loading orders from: {filepath}')
+        sys.stdout.flush()
+
+        print('  loading reference data…', end=' ', flush=True)
         hub_map  = {th.eve_system_id: th.id for th in TradeHub.query.all()}
         item_map = {ei.cpp_eve_item_id: ei.id for ei in EveItem.query.all()}
         existing = {o.order_id: o for o in PublicTradeOrder.query.all()}
+        print(f'{len(hub_map):,} hubs  |  {len(item_map):,} items  |  {len(existing):,} existing orders')
+        sys.stdout.flush()
 
-        created = updated = skipped = 0
+        created = updated = 0
+        skipped_zero   = 0
+        skipped_no_hub = 0
+        skipped_no_item = 0
+        batch = 0
 
         with open(filepath, newline='', encoding='utf-8') as fh:
             reader = csv.DictReader(fh)
-            batch = 0
             for row in reader:
                 volume_remain = int(row['volume_remain'])
                 if volume_remain == 0:
-                    skipped += 1
+                    skipped_zero += 1
                     continue
 
                 system_id = int(row['system_id'])
@@ -91,8 +103,11 @@ class DownloadPublicTradesOrders:
                 hub_id    = hub_map.get(system_id)
                 item_id   = item_map.get(type_id)
 
-                if hub_id is None or item_id is None:
-                    skipped += 1
+                if hub_id is None:
+                    skipped_no_hub += 1
+                    continue
+                if item_id is None:
+                    skipped_no_item += 1
                     continue
 
                 order_id = int(row['id'])
@@ -130,7 +145,19 @@ class DownloadPublicTradesOrders:
                 if batch % BATCH_SIZE == 0:
                     db.session.commit()
                     if self.verbose:
-                        print(f'  … {batch} rows processed')
+                        elapsed = time.perf_counter() - t0
+                        total_skipped = skipped_zero + skipped_no_hub + skipped_no_item
+                        print(f'  … {batch:,} rows  |  +{created:,} new  ~{updated:,} updated'
+                              f'  |  {total_skipped:,} skipped  |  {elapsed:.1f}s')
+                        sys.stdout.flush()
 
         db.session.commit()
-        print(f'  PublicTradeOrder: {created} created  |  {updated} updated  |  {skipped} skipped')
+        elapsed = time.perf_counter() - t0
+        total_read = batch + skipped_zero + skipped_no_hub + skipped_no_item
+        print(
+            f'  done in {elapsed:.1f}s  —  {total_read:,} rows read\n'
+            f'  PublicTradeOrder: {created:,} created  |  {updated:,} updated\n'
+            f'  skipped: {skipped_zero:,} zero-volume  |  '
+            f'{skipped_no_hub:,} unknown hub  |  {skipped_no_item:,} unknown item'
+        )
+        sys.stdout.flush()
