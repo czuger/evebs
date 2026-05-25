@@ -36,9 +36,17 @@ class EsiClient:
                     error = esi_errors.dispatch(resp.status_code, resp.text)
                     self._print_error(error, url)
                     if error.should_retry():
-                        error.pause()
+                        retry_after = resp.headers.get('Retry-After')
+                        if retry_after is not None:
+                            time.sleep(float(retry_after))
+                        else:
+                            error.pause()
                         continue
                     raise error
+
+                remaining = resp.headers.get('X-Ratelimit-Remaining')
+                if remaining is not None and int(remaining) < 20:
+                    time.sleep(1)
 
                 self._pages_count = int(resp.headers.get('x-pages', 0))
                 try:

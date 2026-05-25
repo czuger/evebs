@@ -80,6 +80,7 @@ def dispatch(status_code, message=''):
         502: BadGateway,
         403: Forbidden,
         420: ErrorLimited,
+        429: ErrorLimited,
         404: NotFound,
         503: ServiceUnavailable,
         520: UnknownError,
