@@ -5,6 +5,9 @@ from evebs.extensions import db
 
 class PricesAdvice(db.Model):
     __tablename__ = 'prices_advices'
+    __table_args__ = (
+        db.UniqueConstraint('eve_item_id', 'trade_hub_id', name='uq_prices_advices_item_hub'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     eve_item_id = db.Column(db.Integer, db.ForeignKey('eve_items.id'), nullable=False)

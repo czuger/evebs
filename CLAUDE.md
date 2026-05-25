@@ -8,6 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Avoid local import. Basically follow PEP 8 – Style Guide for Python Code
 - NO MONKEYPATCHING EVER
 - when using argparse allways use shortcuts for switches (if you add --tests also add -t for instance)
+- avoid system variable, use script switches instead
+
 ## Overview
 
 Eve Industrial Tool — a Flask web app for Eve Online players to track market margins, manage production lists, and monitor sales orders.

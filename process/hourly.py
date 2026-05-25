@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Hourly process: download public orders + market prices, update analytics."""
+import argparse
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+parser = argparse.ArgumentParser(description='Hourly ESI download and price update.')
+parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output.')
+args = parser.parse_args()
 
 from app import app
 
@@ -20,12 +25,10 @@ with app.app_context():
         update_prices_min, update_buy_orders_analytics, update_prices_advices_immediate
     )
 
-    verbose = os.environ.get('EBS_VERBOSE_OUTPUT', 'false').lower() == 'true'
-
-    DownloadPublicTradesOrders(verbose=verbose).download()
+    DownloadPublicTradesOrders(verbose=args.verbose).download()
     DownloadMarketsPrices().download()
 
-    update_orders(verbose=verbose)
+    update_orders(verbose=args.verbose)
     update_prices_min()
     update_prices_advices_immediate()
     update_buy_orders_analytics()

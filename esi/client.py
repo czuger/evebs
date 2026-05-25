@@ -18,7 +18,7 @@ class EsiClient:
         self.params = dict(params or {})
         self.params['datasource'] = 'tranquility'
         self.debug = debug
-        self.verbose = verbose or (os.environ.get('EBS_VERBOSE_OUTPUT', '').lower() == 'true')
+        self.verbose = verbose
         self._pages_count = 0
 
     def get_page(self, page_number=None):

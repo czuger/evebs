@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """Daily process: download market history, update costs and price advices."""
+import argparse
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+parser = argparse.ArgumentParser(description='Daily ESI download and price update.')
+parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output.')
+parser.add_argument('-e', '--essentials', action='store_true',
+                    help='Only download TradeHub regions and ammunition/charges items.')
+args = parser.parse_args()
 
 from app import app
 
@@ -17,9 +24,7 @@ with app.app_context():
     )
     from process.update_costs import update_all_costs
 
-    verbose = os.environ.get('EBS_VERBOSE_OUTPUT', 'false').lower() == 'true'
-
-    DownloadHistory(verbose=verbose).download()
+    DownloadHistory(verbose=args.verbose, essentials=args.essentials).download()
     update_market_histories()
     update_weekly_price_details()
     update_all_costs()

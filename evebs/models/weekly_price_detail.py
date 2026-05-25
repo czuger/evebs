@@ -6,6 +6,10 @@ from evebs.extensions import db
 class WeeklyPriceDetail(db.Model):
     __tablename__ = 'weekly_price_details'
 
+    __table_args__ = (
+        db.UniqueConstraint('eve_item_id', 'trade_hub_id', 'day', name='uq_weekly_price_details_item_hub_day'),
+    )
+
     id = db.Column(db.BigInteger, primary_key=True)
     eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False)
     trade_hub_id = db.Column(db.BigInteger, db.ForeignKey('trade_hubs.id'), nullable=False)

@@ -14,7 +14,7 @@ def update_prices_min():
             SELECT 1 FROM public_trade_orders pto
             WHERE prices_mins.trade_hub_id = pto.trade_hub_id
             AND prices_mins.eve_item_id = pto.eve_item_id
-            AND pto.is_buy_order = 0
+            AND pto.is_buy_order = FALSE
         )
     """))
 
@@ -23,7 +23,7 @@ def update_prices_min():
         INSERT INTO prices_mins (trade_hub_id, eve_item_id, min_price, created_at, updated_at)
         SELECT trade_hub_id, eve_item_id, MIN(price), :now, :now
         FROM public_trade_orders
-        WHERE is_buy_order = 0
+        WHERE is_buy_order = FALSE
         GROUP BY trade_hub_id, eve_item_id
         ON CONFLICT (trade_hub_id, eve_item_id)
         DO UPDATE SET min_price = excluded.min_price, updated_at = :now
@@ -41,7 +41,7 @@ def update_buy_orders_analytics():
         INSERT INTO buy_orders_analytics (trade_hub_id, eve_item_id, approx_max_price, created_at, updated_at)
         SELECT trade_hub_id, eve_item_id, MAX(price) * 0.9, :now, :now
         FROM public_trade_orders
-        WHERE is_buy_order = 1
+        WHERE is_buy_order = TRUE
         GROUP BY trade_hub_id, eve_item_id
         ON CONFLICT (trade_hub_id, eve_item_id)
         DO UPDATE SET approx_max_price = excluded.approx_max_price, updated_at = :now
@@ -54,7 +54,7 @@ def update_buy_orders_analytics():
             WHERE bo.price >= buy_orders_analytics.approx_max_price
             AND bo.trade_hub_id = buy_orders_analytics.trade_hub_id
             AND bo.eve_item_id = buy_orders_analytics.eve_item_id
-            AND bo.is_buy_order = 1
+            AND bo.is_buy_order = TRUE
         )
     """))
 
@@ -74,7 +74,7 @@ def update_buy_orders_analytics():
     db.session.execute(text("""
         UPDATE buy_orders_analytics SET
             estimated_volume_margin = single_unit_margin * over_approx_max_price_volume,
-            final_margin = MIN(
+            final_margin = LEAST(
                 single_unit_margin * over_approx_max_price_volume,
                 single_unit_margin * (
                     SELECT nb_runs * prod_qtt FROM blueprints
@@ -102,11 +102,12 @@ def update_prices_advices_immediate():
 
     # Insert missing combinations from sales_finals
     db.session.execute(text("""
-        INSERT OR IGNORE INTO prices_advices (eve_item_id, trade_hub_id, created_at, updated_at)
+        INSERT INTO prices_advices (eve_item_id, trade_hub_id, created_at, updated_at)
         SELECT DISTINCT sf.eve_item_id, sf.trade_hub_id, :now, :now
         FROM sales_finals sf
         JOIN eve_items ei ON sf.eve_item_id = ei.id
         WHERE ei.blueprint_id IS NOT NULL
+        ON CONFLICT (eve_item_id, trade_hub_id) DO NOTHING
     """), {'now': now})
 
     # Clear where no sales data
@@ -228,48 +229,52 @@ def update_weekly_price_details():
 
 def update_market_histories():
     print('Updating market history groups...')
-    import glob
     import json
+    import os
     from evebs.models import EveMarketHistoriesGroup, UniverseRegion
 
     region_map = {str(r.cpp_region_id): r.id for r in UniverseRegion.query.all()}
     from evebs.models import EveItem
     item_map = {str(i.cpp_eve_item_id): i.id for i in EveItem.query.all()}
 
-    for filepath in glob.glob('data/regional_sales_volumes_*.json_stream'):
-        with open(filepath) as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    rec = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
+    filepath = 'data/regional_sales_volumes.json_stream'
+    if not os.path.exists(filepath):
+        print('No history file found, skipping.')
+        return
 
-                region_id = region_map.get(str(rec.get('cpp_region_id')))
-                item_id = item_map.get(str(rec.get('cpp_type_id')))
-                if not region_id or not item_id:
-                    continue
+    with open(filepath) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
 
-                entry = EveMarketHistoriesGroup.query.filter_by(
-                    eve_item_id=item_id, universe_region_id=region_id
-                ).first()
-                if entry:
-                    entry.volume = rec.get('volume', 0)
-                    entry.average = rec.get('avg')
-                    entry.highest = rec.get('max')
-                    entry.lowest = rec.get('min')
-                else:
-                    entry = EveMarketHistoriesGroup(
-                        eve_item_id=item_id,
-                        universe_region_id=region_id,
-                        volume=rec.get('volume', 0),
-                        average=rec.get('avg'),
-                        highest=rec.get('max'),
-                        lowest=rec.get('min'),
-                    )
-                    db.session.add(entry)
+            region_id = region_map.get(str(rec.get('cpp_region_id')))
+            item_id = item_map.get(str(rec.get('cpp_type_id')))
+            if not region_id or not item_id:
+                continue
+
+            entry = EveMarketHistoriesGroup.query.filter_by(
+                eve_item_id=item_id, universe_region_id=region_id
+            ).first()
+            if entry:
+                entry.volume = rec.get('volume', 0)
+                entry.average = rec.get('avg')
+                entry.highest = rec.get('max')
+                entry.lowest = rec.get('min')
+            else:
+                entry = EveMarketHistoriesGroup(
+                    eve_item_id=item_id,
+                    universe_region_id=region_id,
+                    volume=rec.get('volume', 0),
+                    average=rec.get('avg'),
+                    highest=rec.get('max'),
+                    lowest=rec.get('min'),
+                )
+                db.session.add(entry)
 
     db.session.commit()
     print('Market history groups updated.')

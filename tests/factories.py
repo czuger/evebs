@@ -85,7 +85,8 @@ def make_market_group(db, cpp_market_group_id=1, name='Minerals', parent=None):
 
 
 def make_item(db, cpp_eve_item_id=34, name='Tritanium', slug='tritanium',
-              market_group=None, base_item=False):
+              market_group=None, base_item=False, cost=None,
+              weekly_avg_price=None, production_level=None):
     from evebs.models import EveItem
     item = EveItem(
         cpp_eve_item_id=cpp_eve_item_id,
@@ -93,10 +94,50 @@ def make_item(db, cpp_eve_item_id=34, name='Tritanium', slug='tritanium',
         slug=slug,
         base_item=base_item,
         market_group_id=market_group.id if market_group else None,
+        cost=cost,
+        weekly_avg_price=weekly_avg_price,
+        production_level=production_level,
     )
     db.session.add(item)
     db.session.flush()
     return item
+
+
+def make_blueprint_material(db, blueprint, item, required_qtt=1):
+    from evebs.models import BlueprintMaterial
+    mat = BlueprintMaterial(
+        blueprint_id=blueprint.id,
+        eve_item_id=item.id,
+        required_qtt=required_qtt,
+    )
+    db.session.add(mat)
+    db.session.flush()
+    return mat
+
+
+def make_constant(db, libe, f_value, description=''):
+    from evebs.models import Constant
+    c = Constant(libe=libe, f_value=f_value, description=description)
+    db.session.add(c)
+    db.session.flush()
+    return c
+
+
+def make_sales_final(db, item, trade_hub, volume=100, price=1000.0,
+                     day=None, order_id=9001):
+    from datetime import date
+    from evebs.models import SalesFinal
+    sf = SalesFinal(
+        day=day or date.today(),
+        trade_hub_id=trade_hub.id,
+        eve_item_id=item.id,
+        volume=volume,
+        price=price,
+        order_id=order_id,
+    )
+    db.session.add(sf)
+    db.session.flush()
+    return sf
 
 
 def make_blueprint(db, item, cpp_blueprint_id=None, nb_runs=1, prod_qtt=1):

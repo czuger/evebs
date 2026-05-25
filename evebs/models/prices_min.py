@@ -3,6 +3,9 @@ from evebs.extensions import db
 
 class PricesMin(db.Model):
     __tablename__ = 'prices_mins'
+    __table_args__ = (
+        db.UniqueConstraint('trade_hub_id', 'eve_item_id', name='uq_prices_mins_hub_item'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     eve_item_id = db.Column(db.Integer, db.ForeignKey('eve_items.id'))
