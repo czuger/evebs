@@ -12,7 +12,7 @@
     {% set component = material.eve_item %}
     {% if component %}
       {% set total = (component.cost or 0) * material.required_qtt %}
-      {% set _ = total_for_batch.__setattr__('value', total_for_batch.value + total) %}
+      {% set total_for_batch.value = total_for_batch.value + total %}
       <tr>
         <td><a href="/items/{{ component.slug or component.id }}">{{ component.name }}</a></td>
         <td class="text-right">{{ component.cost | isk }}</td>
