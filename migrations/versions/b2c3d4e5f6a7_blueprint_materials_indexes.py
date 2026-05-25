@@ -20,5 +20,5 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_index('ix_blueprint_materials_blueprint_id', table_name='blueprint_materials')
-    op.drop_index('ix_blueprint_materials_eve_item_id',  table_name='blueprint_materials')
+    op.drop_index('ix_blueprint_materials_blueprint_id', table_name='blueprint_materials', if_exists=True)
+    op.drop_index('ix_blueprint_materials_eve_item_id',  table_name='blueprint_materials', if_exists=True)

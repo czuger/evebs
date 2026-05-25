@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="table-responsive-md">
+  <table class="table">
+    <tr>
+      <th>Trade hub</th>
+      <th>Item</th>
+      <th class="text-right">Cost</th>
+      <th class="text-right">Vol/month</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td class="trade_hub_name">{{ item.trade_hub_name }}</td>
+      <td class="item_name">
+        <a href="/items/{{ item.eve_item_id }}" target="_blank">{{ item.item_name }}</a>
+      </td>
+      <td class="text-right">{{ item.cost | isk }}</td>
+      <td class="text-right">{{ item.vol_month | vol }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center text-muted">No items found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% include 'shared/pagination.html' %}
+{% endblock %}

@@ -17,6 +17,7 @@ if alembic_config.config_file_name is not None:
     fileConfig(alembic_config.config_file_name)
 
 db_url = os.environ.get('ALEMBIC_DB_URL', Config.SQLALCHEMY_DATABASE_URI)
+print("db_url =", db_url)
 alembic_config.set_main_option('sqlalchemy.url', db_url)
 
 target_metadata = db.metadata

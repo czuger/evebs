@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,7 +18,7 @@ def _load_config():
 _cfg = _load_config()
 
 
-_test_mode = '-t' in sys.argv
+_test_mode = os.getenv('EVEBS_TEST_DB', '').lower() in ('1', 'true', 'yes')
 
 
 def _build_database_uri():

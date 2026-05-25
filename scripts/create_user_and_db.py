@@ -8,7 +8,7 @@ database.admin_password (defaults: postgres / '').
 Usage:
   python scripts/create_user_and_db.py
   python scripts/create_user_and_db.py --recreate   # drop + recreate schema
-  python scripts/create_user_and_db.py -t            # use test database (*_test)
+  python scripts/create_user_and_db.py --test        # use test database (*_test)
 """
 import argparse
 import os
@@ -21,11 +21,19 @@ from psycopg import sql
 
 parser = argparse.ArgumentParser(description="Create DB user/database and initialise schema.")
 parser.add_argument(
-    "--recreate",
+    "-r", "--recreate",
     action="store_true",
     help="Drop all tables and views, then recreate from scratch.",
 )
+parser.add_argument(
+    "-t", "--test",
+    action="store_true",
+    help="Use the test database (*_test suffix).",
+)
 args = parser.parse_args()
+
+if args.test:
+    os.environ['EVEBS_TEST_DB'] = '1'
 
 from config import Config, _cfg, _test_mode
 
@@ -85,6 +93,8 @@ from alembic.config import Config as AlembicConfig
 from alembic import command
 
 _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ['ALEMBIC_DB_URL'] = Config.SQLALCHEMY_DATABASE_URI
+
 alembic_cfg = AlembicConfig(os.path.join(_project_root, 'alembic.ini'))
 alembic_cfg.set_main_option('script_location', os.path.join(_project_root, 'migrations'))
 
