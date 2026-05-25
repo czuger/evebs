@@ -4,6 +4,13 @@ import json
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
 
+
+def _jwt_payload(token):
+    """Decode the payload of an Eve SSO v2 JWT without signature verification."""
+    part = token.split('.')[1]
+    part += '=' * (-len(part) % 4)
+    return json.loads(base64.urlsafe_b64decode(part))
+
 import requests
 from flask import Blueprint, redirect, url_for, session, request, current_app, flash
 from flask_login import login_user, logout_user
@@ -15,7 +22,6 @@ bp = Blueprint('auth', __name__)
 
 EVE_AUTH_URL = 'https://login.eveonline.com/v2/oauth/authorize'
 EVE_TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'
-EVE_VERIFY_URL = 'https://esi.evetech.net/verify/'
 EVE_CHAR_INFO_URL = 'https://esi.evetech.net/latest/characters/{}/'
 
 DEFAULT_SCOPES = ' '.join([
@@ -67,10 +73,10 @@ def callback():
     refresh_token = token_data.get('refresh_token')
     expires_in = token_data.get('expires_in', 1200)
 
-    verify = requests.get(EVE_VERIFY_URL, headers={'Authorization': f'Bearer {access_token}'})
-    char_data = verify.json()
-    uid = str(char_data.get('CharacterID'))
-    name = char_data.get('CharacterName')
+    claims = _jwt_payload(access_token)
+    # sub is "CHARACTER:EVE:<character_id>"
+    uid = claims['sub'].split(':')[-1]
+    name = claims.get('name')
 
     user = User.query.filter_by(uid=uid).first()
     if not user:
