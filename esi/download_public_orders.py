@@ -1,7 +1,11 @@
+import csv
 import json
 import os
+from datetime import datetime, timedelta
 from esi.client import EsiClient
 from esi.errors import NotFound
+
+BATCH_SIZE = 500
 
 
 class DownloadPublicTradesOrders:
@@ -62,3 +66,71 @@ class DownloadPublicTradesOrders:
 
         if self.verbose:
             print(f'Download complete. Rejected by hub: {len(rejected_by_hub)}, by type: {len(rejected_by_type)}')
+
+    def load_from_csv(self, filepath):
+        from evebs.extensions import db
+        from evebs.models import TradeHub, EveItem, PublicTradeOrder
+
+        hub_map  = {th.eve_system_id: th.id for th in TradeHub.query.all()}
+        item_map = {ei.cpp_eve_item_id: ei.id for ei in EveItem.query.all()}
+        existing = {o.order_id: o for o in PublicTradeOrder.query.all()}
+
+        created = updated = skipped = 0
+
+        with open(filepath, newline='', encoding='utf-8') as fh:
+            reader = csv.DictReader(fh)
+            batch = 0
+            for row in reader:
+                volume_remain = int(row['volume_remain'])
+                if volume_remain == 0:
+                    skipped += 1
+                    continue
+
+                system_id = int(row['system_id'])
+                type_id   = int(row['type_id'])
+                hub_id    = hub_map.get(system_id)
+                item_id   = item_map.get(type_id)
+
+                if hub_id is None or item_id is None:
+                    skipped += 1
+                    continue
+
+                order_id = int(row['id'])
+                end_time = datetime.fromisoformat(row['issued']) + timedelta(days=int(row['duration']))
+                is_buy   = row['is_buy_order'].strip().lower() in ('t', 'true', '1')
+
+                o = existing.get(order_id)
+                if o:
+                    o.trade_hub_id  = hub_id
+                    o.eve_item_id   = item_id
+                    o.is_buy_order  = is_buy
+                    o.end_time      = end_time
+                    o.price         = float(row['price'])
+                    o.range         = row['range']
+                    o.volume_remain = volume_remain
+                    o.volume_total  = int(row['volume_total'])
+                    o.min_volume    = int(row['min_volume'])
+                    updated += 1
+                else:
+                    db.session.add(PublicTradeOrder(
+                        order_id      = order_id,
+                        trade_hub_id  = hub_id,
+                        eve_item_id   = item_id,
+                        is_buy_order  = is_buy,
+                        end_time      = end_time,
+                        price         = float(row['price']),
+                        range         = row['range'],
+                        volume_remain = volume_remain,
+                        volume_total  = int(row['volume_total']),
+                        min_volume    = int(row['min_volume']),
+                    ))
+                    created += 1
+
+                batch += 1
+                if batch % BATCH_SIZE == 0:
+                    db.session.commit()
+                    if self.verbose:
+                        print(f'  … {batch} rows processed')
+
+        db.session.commit()
+        print(f'  PublicTradeOrder: {created} created  |  {updated} updated  |  {skipped} skipped')
