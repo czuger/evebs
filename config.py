@@ -1,4 +1,6 @@
 import json
+import logging
+import logging.handlers
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -56,3 +58,34 @@ class Config:
 
     PER_PAGE = 12
     VERBOSE_OUTPUT = _cfg.get('verbose_output', False)
+
+
+def setup_logging(level=logging.DEBUG):
+    from pythonjsonlogger import jsonlogger
+
+    log_dir = os.path.join(BASE_DIR, 'logs')
+    os.makedirs(log_dir, exist_ok=True)
+
+    root = logging.getLogger()
+    root.setLevel(level)
+
+    file_handler = logging.handlers.TimedRotatingFileHandler(
+        filename=os.path.join(log_dir, 'evebs.log'),
+        when='midnight',
+        backupCount=30,
+        encoding='utf-8',
+    )
+    file_handler.suffix = '%Y-%m-%d'
+    file_handler.setFormatter(jsonlogger.JsonFormatter(
+        '%(asctime)s %(name)s %(levelname)s %(message)s',
+        datefmt='%Y-%m-%dT%H:%M:%SZ',
+    ))
+
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter(
+        '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+    ))
+
+    root.addHandler(file_handler)
+    root.addHandler(console_handler)

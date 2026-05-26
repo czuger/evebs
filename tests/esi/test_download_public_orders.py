@@ -52,7 +52,7 @@ def seeded(db):
 class TestLoadFromCsv:
     def test_creates_new_order(self, db, seeded, tmp_path):
         path = _write_csv([_order_row()], str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         from evebs.models import PublicTradeOrder
         orders = PublicTradeOrder.query.all()
@@ -83,42 +83,42 @@ class TestLoadFromCsv:
         db.session.commit()
 
         path = _write_csv([_order_row(price=9999.0)], str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         db.session.expire(existing)
         assert existing.price == 9999.0
 
     def test_skips_zero_volume_rows(self, db, seeded, tmp_path):
         path = _write_csv([_order_row(volume_remain=0)], str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         from evebs.models import PublicTradeOrder
         assert PublicTradeOrder.query.count() == 0
 
     def test_skips_unknown_trade_hub(self, db, seeded, tmp_path):
         path = _write_csv([_order_row(system_id=99999999)], str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         from evebs.models import PublicTradeOrder
         assert PublicTradeOrder.query.count() == 0
 
     def test_skips_unknown_item(self, db, seeded, tmp_path):
         path = _write_csv([_order_row(type_id=99999999)], str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         from evebs.models import PublicTradeOrder
         assert PublicTradeOrder.query.count() == 0
 
     def test_buy_order_flag_parsed(self, db, seeded, tmp_path):
         path = _write_csv([_order_row(is_buy_order='true')], str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         from evebs.models import PublicTradeOrder
         assert PublicTradeOrder.query.first().is_buy_order is True
 
     def test_end_time_computed_from_issued_plus_duration(self, db, seeded, tmp_path):
         path = _write_csv([_order_row(issued='2026-03-01T00:00:00', duration=30)], str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         from evebs.models import PublicTradeOrder
         o = PublicTradeOrder.query.first()
@@ -134,7 +134,7 @@ class TestLoadFromCsv:
         rows[2]['type_id'] = 35
 
         path = _write_csv(rows, str(tmp_path))
-        DownloadPublicTradesOrders(verbose=False).load_from_csv(path)
+        DownloadPublicTradesOrders().load_from_csv(path)
 
         from evebs.models import PublicTradeOrder
         assert PublicTradeOrder.query.count() == 5

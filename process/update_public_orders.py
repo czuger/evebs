@@ -1,31 +1,37 @@
 """Process downloaded public_trades_orders.json_stream into the database."""
 import json
+import logging
 from datetime import datetime, timedelta
 
 from evebs.extensions import db
 from evebs.models import PublicTradeOrder, TradeHub, EveItem, SalesFinal
 
+logger = logging.getLogger(__name__)
 
-def run(verbose=False):
-    print('Updating public trade orders...')
 
+def run():
+    logger.debug('Loading reference data...')
     trade_hub_map = {r[0]: r[1] for r in TradeHub.query.with_entities(
         TradeHub.eve_system_id, TradeHub.id).all()}
     item_map = {r[0]: r[1] for r in EveItem.query.with_entities(
         EveItem.cpp_eve_item_id, EveItem.id).all()}
+    logger.debug('%s trade hubs  |  %s items', len(trade_hub_map), len(item_map))
 
+    logger.debug('Marking all existing orders as untouched...')
     PublicTradeOrder.query.update({'touched': False})
     db.session.flush()
 
     created = updated = touched = deleted = 0
     sales_created = 0
+    skipped = 0
 
     try:
         f = open('data/public_trades_orders.json_stream', 'r')
     except FileNotFoundError:
-        print('No orders file found, skipping.')
+        logger.debug('No orders file found, skipping.')
         return
 
+    logger.debug('Processing orders file...')
     with f:
         for line in f:
             line = line.strip()
@@ -42,9 +48,11 @@ def run(verbose=False):
             eve_item_id = item_map.get(type_id)
 
             if not trade_hub_id or not eve_item_id:
+                skipped += 1
                 continue
 
             if order_data.get('volume_remain', 0) == 0:
+                skipped += 1
                 continue
 
             issued = datetime.strptime(order_data['issued'][:19], '%Y-%m-%dT%H:%M:%S')
@@ -98,7 +106,11 @@ def run(verbose=False):
                 db.session.add(new_order)
                 created += 1
 
+    logger.debug('File processed — +%s created  ~%s updated  =%s unchanged  x%s skipped  |  %s sales recorded',
+                 created, updated, touched, skipped, sales_created)
+
     # Mark expired untouched sell orders as sold
+    logger.debug('Processing expired untouched sell orders...')
     now = datetime.utcnow()
     expired = PublicTradeOrder.query.filter(
         PublicTradeOrder.touched.is_(False),
@@ -116,14 +128,15 @@ def run(verbose=False):
         )
         db.session.add(sf)
         sales_created += 1
+    logger.debug('%s expired orders → sales_finals', len(expired))
 
     deleted_q = PublicTradeOrder.query.filter(PublicTradeOrder.touched.is_(False))
     deleted = deleted_q.count()
     deleted_q.delete()
+    logger.debug('%s untouched orders deleted', deleted)
 
+    logger.debug('Committing...')
     db.session.commit()
 
-    if verbose:
-        print(f'Created: {created}, Updated: {updated}, Touched: {touched}, '
-              f'Deleted: {deleted}, Sales: {sales_created}')
-    print('Public trade orders update complete.')
+    logger.info('Done — +%s created  ~%s updated  =%s unchanged  -%s deleted  |  %s sales recorded',
+                created, updated, touched, deleted, sales_created)

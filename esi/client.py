@@ -1,3 +1,4 @@
+import logging
 import os
 import json
 import time
@@ -8,17 +9,17 @@ import requests
 
 from esi import errors as esi_errors
 
+logger = logging.getLogger(__name__)
+
 ESI_BASE = 'https://esi.evetech.net/latest/'
 EVE_TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'
 
 
 class EsiClient:
-    def __init__(self, rest_url=None, params=None, debug=False, verbose=False):
+    def __init__(self, rest_url=None, params=None):
         self.rest_url = rest_url
         self.params = dict(params or {})
         self.params['datasource'] = 'tranquility'
-        self.debug = debug
-        self.verbose = verbose
         self._pages_count = 0
 
     def get_page(self, page_number=None):
@@ -26,8 +27,7 @@ class EsiClient:
             self.params['page'] = page_number
 
         url = self._build_url()
-        if self.debug:
-            print(f'Fetching: {url}')
+        logger.debug('Fetching: %s', url)
 
         while True:
             try:
@@ -52,7 +52,7 @@ class EsiClient:
                 try:
                     return resp.json()
                 except json.JSONDecodeError:
-                    print('JSON parse error, retrying...')
+                    logger.warning('JSON parse error, retrying...')
                     continue
 
             except requests.exceptions.Timeout:
@@ -69,8 +69,7 @@ class EsiClient:
         self.params['page'] = 1
 
         while True:
-            if self.debug:
-                print(f'Requesting page {self.params["page"]}/{self._pages_count}')
+            logger.debug('Requesting page %s/%s', self.params['page'], self._pages_count)
             page_data = self.get_page()
             if isinstance(page_data, list):
                 result.extend(page_data)
@@ -117,4 +116,4 @@ class EsiClient:
         return ESI_BASE + self.rest_url.lstrip('/')
 
     def _print_error(self, error, url):
-        print(f'{datetime.utcnow()} - {url} got {error}', flush=True)
+        logger.warning('%s - %s got %s', datetime.utcnow(), url, error)

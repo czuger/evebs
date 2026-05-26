@@ -1,9 +1,12 @@
 import json
+import logging
 import os
 from datetime import datetime, timedelta
 
 from esi.client import EsiClient
 from esi.errors import NotFound
+
+logger = logging.getLogger(__name__)
 
 
 def _ammo_market_group_ids():
@@ -27,8 +30,7 @@ def _ammo_market_group_ids():
 
 
 class DownloadHistory:
-    def __init__(self, verbose=False, essentials=False):
-        self.verbose = verbose
+    def __init__(self, essentials=False):
         self.essentials = essentials
 
     def download(self):
@@ -52,7 +54,8 @@ class DownloadHistory:
                     EveItem.market_group_id.in_(ammo_group_ids)
                 ).all()
             }
-            print(f'[history] essentials mode: {len(regions)} hub regions, {len(ammo_ids)} ammo/charges types')
+            logger.info('[history] essentials mode: %s hub regions, %s ammo/charges types',
+                        len(regions), len(ammo_ids))
         else:
             ammo_ids = None
 
@@ -63,18 +66,19 @@ class DownloadHistory:
         total_types = 0
         total_records = 0
 
-        print(f'[history] {total_regions} regions to process, cutoff {cutoff.date()}')
+        logger.info('[history] %s regions to process, cutoff %s', total_regions, cutoff.date())
 
         with open(outfile, 'w') as f:
             for region_idx, region in enumerate(regions, 1):
-                if self.verbose:
-                    print(f'[history] [{region_idx}/{total_regions}] {region.name} — fetching type list')
+                logger.debug('[history] [%s/%s] %s — fetching type list',
+                             region_idx, total_regions, region.name)
 
                 client = EsiClient(f'markets/{region.cpp_region_id}/types/')
                 try:
                     type_ids = client.get_all_pages()
                 except Exception as e:
-                    print(f'[history] [{region_idx}/{total_regions}] {region.name} — ERROR fetching types: {e}')
+                    logger.warning('[history] [%s/%s] %s — ERROR fetching types: %s',
+                                   region_idx, total_regions, region.name, e)
                     continue
 
                 if ammo_ids is not None:
@@ -83,15 +87,16 @@ class DownloadHistory:
                 region_type_count = len(type_ids)
                 region_written = 0
 
-                if self.verbose:
-                    print(f'[history] [{region_idx}/{total_regions}] {region.name} — {region_type_count} types')
+                logger.debug('[history] [%s/%s] %s — %s types',
+                             region_idx, total_regions, region.name, region_type_count)
 
                 if not type_ids:
                     continue
 
                 for type_idx, type_id in enumerate(type_ids, 1):
-                    if self.verbose and type_idx % 100 == 0:
-                        print(f'[history]   {region.name} {type_idx}/{region_type_count} types processed')
+                    if type_idx % 100 == 0:
+                        logger.debug('[history]   %s %s/%s types processed',
+                                     region.name, type_idx, region_type_count)
 
                     hist_client = EsiClient(f'markets/{region.cpp_region_id}/history/',
                                             params={'type_id': type_id})
@@ -140,8 +145,9 @@ class DownloadHistory:
 
                 total_types += region_type_count
                 total_records += region_written
-                print(f'[history] [{region_idx}/{total_regions}] {region.name} done — '
-                      f'{region_written}/{region_type_count} types written')
+                logger.debug('[history] [%s/%s] %s done — %s/%s types written',
+                             region_idx, total_regions, region.name,
+                             region_written, region_type_count)
 
-        print(f'[history] finished — {total_regions} regions, {total_types} types scanned, '
-              f'{total_records} records written to {outfile}')
+        logger.info('[history] finished — %s regions, %s types scanned, %s records written to %s',
+                    total_regions, total_types, total_records, outfile)

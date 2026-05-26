@@ -1,11 +1,14 @@
 """Update prices_mins, buy_orders_analytics, prices_advices from trade order data."""
+import logging
 from datetime import datetime, timedelta, date
 from sqlalchemy import text
 from evebs.extensions import db
 
+logger = logging.getLogger(__name__)
+
 
 def update_prices_min():
-    print('Updating min prices...')
+    logger.debug('Updating min prices...')
     now = datetime.utcnow()
 
     # Remove entries with no sell orders
@@ -30,11 +33,11 @@ def update_prices_min():
     """), {'now': now})
 
     db.session.commit()
-    print('Min prices updated.')
+    logger.debug('Min prices updated.')
 
 
 def update_buy_orders_analytics():
-    print('Updating buy orders analytics...')
+    logger.debug('Updating buy orders analytics...')
     now = datetime.utcnow()
 
     db.session.execute(text("""
@@ -86,11 +89,11 @@ def update_buy_orders_analytics():
     """))
 
     db.session.commit()
-    print('Buy orders analytics updated.')
+    logger.debug('Buy orders analytics updated.')
 
 
 def update_prices_advices_immediate():
-    print('Updating prices advices (immediate)...')
+    logger.debug('Updating prices advices (immediate)...')
     now = datetime.utcnow()
 
     # Clear advices for items with no blueprint
@@ -183,11 +186,11 @@ def update_prices_advices_immediate():
     """), {'now': now})
 
     db.session.commit()
-    print('Prices advices updated.')
+    logger.debug('Prices advices updated.')
 
 
 def update_weekly_price_details():
-    print('Updating weekly price details...')
+    logger.debug('Updating weekly price details...')
     now = datetime.utcnow()
     yesterday = (now.date() - timedelta(days=1)).isoformat()
     week_ago = (now.date() - timedelta(days=7)).isoformat()
@@ -224,11 +227,11 @@ def update_weekly_price_details():
     """), {'now': now})
 
     db.session.commit()
-    print('Weekly price details updated.')
+    logger.debug('Weekly price details updated.')
 
 
 def update_market_histories():
-    print('Updating market history groups...')
+    logger.debug('Updating market history groups...')
     import json
     import os
     from evebs.models import EveMarketHistoriesGroup, UniverseRegion
@@ -239,7 +242,7 @@ def update_market_histories():
 
     filepath = 'data/regional_sales_volumes.json_stream'
     if not os.path.exists(filepath):
-        print('No history file found, skipping.')
+        logger.debug('No history file found, skipping.')
         return
 
     with open(filepath) as f:
@@ -277,4 +280,4 @@ def update_market_histories():
                 db.session.add(entry)
 
     db.session.commit()
-    print('Market history groups updated.')
+    logger.debug('Market history groups updated.')

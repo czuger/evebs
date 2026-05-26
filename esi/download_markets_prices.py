@@ -1,6 +1,9 @@
+import logging
 import yaml
 import os
 from esi.client import EsiClient
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadMarketsPrices:
@@ -19,4 +22,4 @@ class DownloadMarketsPrices:
         with open('data/cpp_market_prices.yaml', 'w') as f:
             yaml.dump(price_map, f)
 
-        print(f'Downloaded {len(price_map)} market prices')
+        logger.debug('Downloaded %s market prices', len(price_map))

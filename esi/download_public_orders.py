@@ -1,18 +1,20 @@
 import csv
 import json
+import logging
 import os
-import sys
 import time
 from datetime import datetime, timedelta
 from esi.client import EsiClient
 from esi.errors import NotFound
 
+logger = logging.getLogger(__name__)
+
 BATCH_SIZE = 500
 
 
 class DownloadPublicTradesOrders:
-    def __init__(self, verbose=False):
-        self.verbose = verbose
+    def __init__(self, essentials=False):
+        self.essentials = essentials
 
     def download(self):
         from evebs.models import TradeHub, EveItem, UniverseRegion, UniverseSystem
@@ -22,20 +24,32 @@ class DownloadPublicTradesOrders:
         systems_to_name = {r[0]: r[1] for r in UniverseSystem.query.with_entities(
             UniverseSystem.cpp_system_id, UniverseSystem.name).all()}
 
-        if self.verbose:
-            print(f'Trade hub count = {len(trade_hub_ids)}, items count = {len(eve_item_ids)}')
+        regions = UniverseRegion.query.all()
+
+        if self.essentials:
+            from esi.download_history import _ammo_market_group_ids
+            hub_cpp_ids = {int(th.region.cpp_region_id) for th in TradeHub.query.all() if th.region}
+            regions = [r for r in regions if r.cpp_region_id in hub_cpp_ids]
+            ammo_group_ids = _ammo_market_group_ids()
+            ammo_cpp_ids = {
+                item.cpp_eve_item_id
+                for item in EveItem.query.filter(EveItem.market_group_id.in_(ammo_group_ids)).all()
+            }
+            eve_item_ids = eve_item_ids & ammo_cpp_ids
+            logger.info('[orders] essentials mode: %s hub regions, %s ammo/charges types',
+                        len(regions), len(eve_item_ids))
+
+        logger.debug('Trade hub count = %s, items count = %s', len(trade_hub_ids), len(eve_item_ids))
 
         os.makedirs('data', exist_ok=True)
         rejected_by_hub = {}
         rejected_by_type = {}
 
         with open('data/public_trades_orders.json_stream', 'w') as f:
-            for region in UniverseRegion.query.all():
-                if self.verbose:
-                    print(f'Downloading orders for {region.name}')
+            for region in regions:
+                logger.debug('Downloading orders for %s', region.name)
 
-                client = EsiClient(f'markets/{region.cpp_region_id}/orders/',
-                                   verbose=self.verbose)
+                client = EsiClient(f'markets/{region.cpp_region_id}/orders/')
                 try:
                     orders_data = client.get_all_pages()
                 except NotFound:
@@ -66,23 +80,22 @@ class DownloadPublicTradesOrders:
 
                     f.write(json.dumps(order) + '\n')
 
-        if self.verbose:
-            print(f'Download complete. Rejected by hub: {len(rejected_by_hub)}, by type: {len(rejected_by_type)}')
+        logger.info('Download complete. Rejected by hub: %s, by type: %s',
+                    len(rejected_by_hub), len(rejected_by_type))
 
     def load_from_csv(self, filepath):
         from evebs.extensions import db
         from evebs.models import TradeHub, EveItem, PublicTradeOrder
 
         t0 = time.perf_counter()
-        print(f'Loading orders from: {filepath}')
-        sys.stdout.flush()
+        logger.info('Loading orders from: %s', filepath)
 
-        print('  loading reference data…', end=' ', flush=True)
+        logger.debug('loading reference data')
         hub_map  = {th.eve_system_id: th.id for th in TradeHub.query.all()}
         item_map = {ei.cpp_eve_item_id: ei.id for ei in EveItem.query.all()}
         existing = {o.order_id: o for o in PublicTradeOrder.query.all()}
-        print(f'{len(hub_map):,} hubs  |  {len(item_map):,} items  |  {len(existing):,} existing orders')
-        sys.stdout.flush()
+        logger.debug('%s hubs  |  %s items  |  %s existing orders',
+                     len(hub_map), len(item_map), len(existing))
 
         created = updated = 0
         skipped_zero   = 0
@@ -144,20 +157,16 @@ class DownloadPublicTradesOrders:
                 batch += 1
                 if batch % BATCH_SIZE == 0:
                     db.session.commit()
-                    if self.verbose:
-                        elapsed = time.perf_counter() - t0
-                        total_skipped = skipped_zero + skipped_no_hub + skipped_no_item
-                        print(f'  … {batch:,} rows  |  +{created:,} new  ~{updated:,} updated'
-                              f'  |  {total_skipped:,} skipped  |  {elapsed:.1f}s')
-                        sys.stdout.flush()
+                    elapsed = time.perf_counter() - t0
+                    total_skipped = skipped_zero + skipped_no_hub + skipped_no_item
+                    logger.debug('  … %s rows  |  +%s new  ~%s updated  |  %s skipped  |  %.1fs',
+                                 batch, created, updated, total_skipped, elapsed)
 
         db.session.commit()
         elapsed = time.perf_counter() - t0
         total_read = batch + skipped_zero + skipped_no_hub + skipped_no_item
-        print(
-            f'  done in {elapsed:.1f}s  —  {total_read:,} rows read\n'
-            f'  PublicTradeOrder: {created:,} created  |  {updated:,} updated\n'
-            f'  skipped: {skipped_zero:,} zero-volume  |  '
-            f'{skipped_no_hub:,} unknown hub  |  {skipped_no_item:,} unknown item'
+        logger.info(
+            '  done in %.1fs  —  %s rows read; PublicTradeOrder: %s created  |  %s updated; '
+            'skipped: %s zero-volume  |  %s unknown hub  |  %s unknown item',
+            elapsed, total_read, created, updated, skipped_zero, skipped_no_hub, skipped_no_item
         )
-        sys.stdout.flush()

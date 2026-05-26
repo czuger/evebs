@@ -1,10 +1,13 @@
+import logging
 from esi.client import EsiClient
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadMyOrders:
     def update(self, user):
         if user.locked:
-            print(f'{user.name} is locked. Skipping.')
+            logger.debug('%s is locked. Skipping.', user.name)
             return
 
         client = EsiClient(f'characters/{user.uid}/orders/')

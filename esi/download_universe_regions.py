@@ -1,4 +1,7 @@
+import logging
 from esi.client import EsiClient
+
+logger = logging.getLogger(__name__)
 
 
 class DownloadUniverseRegions:
@@ -23,4 +26,4 @@ class DownloadUniverseRegions:
                 region.name = data.get('name', region.name)
 
         db.session.commit()
-        print('Universe regions download complete')
+        logger.debug('Universe regions download complete')

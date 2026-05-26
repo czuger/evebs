@@ -1,28 +1,31 @@
 """Update item costs: base items from weekly avg, crafted items from components."""
+import logging
 import math
 from evebs.extensions import db
 from evebs.models import EveItem, Blueprint, BlueprintMaterial, Constant
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
+
 
 def update_base_item_costs():
     """Base items: cost = weekly_avg_price (Jita)."""
-    print('Updating base item costs...')
+    logger.debug('Updating base item costs...')
     from sqlalchemy import text
     db.session.execute(text(
         "UPDATE eve_items SET cost = weekly_avg_price, updated_at = :now "
         "WHERE base_item = TRUE"
     ), {'now': datetime.utcnow()})
     db.session.commit()
-    print('Base item costs updated.')
+    logger.debug('Base item costs updated.')
 
 
 def update_crafted_item_costs(production_level):
     """Crafted items: cost = sum(component_cost * qty) * taxes / prod_qtt."""
-    print(f'Updating crafted item costs (level {production_level})...')
+    logger.debug('Updating crafted item costs (level %s)...', production_level)
     taxes_const = Constant.query.filter_by(libe='taxes').first()
     if not taxes_const:
-        print('Taxes constant not set. Skipping.')
+        logger.warning('Taxes constant not set. Skipping.')
         return
     taxes = taxes_const.f_value
 
@@ -48,7 +51,7 @@ def update_crafted_item_costs(production_level):
             item.cost = (total * taxes) / bp.prod_qtt if bp.prod_qtt else float('inf')
 
     db.session.commit()
-    print(f'Crafted item costs (level {production_level}) updated.')
+    logger.debug('Crafted item costs (level %s) updated.', production_level)
 
 
 def update_all_costs():
