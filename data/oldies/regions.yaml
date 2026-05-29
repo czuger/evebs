@@ -1,0 +1,18 @@
+---
+- :id: 10000001
+  :name: 
+  :constellations:
+  - :id: 20000001
+    :name: San Matar
+    :systems:
+    - :id: 30000001
+      :name: Tanoo
+      :constellation_id: 
+      :star_id: 
+      :security_class: 
+      :security_status: 
+      :stations:
+      - :id: 60012526
+        :name: Tanoo V - Moon 1 - Ammatar Consulate Bureau
+        :office_rental_cost: 
+        :services: 

@@ -1,0 +1,16 @@
+---
+2621:
+  :cpp_eve_item_id: 2621
+  :name: Inferno Fury Cruise Missile
+  :market_group_id: 925
+  :volume: 0.05
+  :mass: 1250
+  :icon_id: 184
+  :desc: "An Amarr creation with powerful capabilities, the Inferno cruise missile
+    was for a long time confined solely to the Amarr armed forces, but exports began
+    some years ago and the missile is now found throughout the universe.\r\n\r\nA
+    modified version of the Inferno cruise. Does more damage than its predecessor,
+    but the volatile nature of the warhead, and its powerful containment system, reduce
+    both flight time and precision."
+  :packaged_volume: 0.05
+  :meta_level: 5

@@ -20,6 +20,7 @@ def upgrade() -> None:
         'idx_public_trade_orders_analytics_lookup',
         'public_trade_orders',
         ['trade_hub_id', 'eve_item_id', 'is_buy_order', 'price', 'volume_remain'],
+        if_not_exists=True,
     )
 
 
