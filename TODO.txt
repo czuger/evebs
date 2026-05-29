@@ -1,6 +1,0 @@
-We don't need eve_item_cost item, so remove it. Remove migration too, i already downgraded the db
-
-In addition, remove corresponding functions in update_eve_item_costs.py,
-replace them by functions update_eve_item_cost to update the EveItem.cost line
-
-use manufacturing_tree.json for that. First update lowes layer item, then update upper layer.
