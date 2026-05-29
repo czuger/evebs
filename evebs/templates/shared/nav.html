@@ -1,16 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu"
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu"
     aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="mainMenu">
     {% if current_user.is_authenticated %}
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link{% if request.path == '/' %} active{% endif %}" href="/">Home</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">Items</a>
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Items</a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="/list_items">Items</a>
             <div class="dropdown-divider"></div>
@@ -23,7 +23,7 @@
              href="/choose_trade_hubs/edit">Trade hubs</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">Earnings</a>
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Earnings</a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="/buy_orders">Buy orders</a>
             <div class="dropdown-divider"></div>
@@ -40,15 +40,15 @@
       </ul>
       <span class="navbar-text">Logged as {{ current_user.name }}</span>
     {% else %}
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="/list_items">Items</a></li>
       </ul>
-      <form action="/auth/eve_online_sso" method="post" class="form-inline">
+      <form action="/auth/eve_online_sso" method="post" class="d-flex align-items-center gap-2">
         <input type="hidden" name="csrf_token" value="">
         <button type="submit" class="btn btn-warning">Sign in with Eve Online</button>
       </form>
-      <span class="navbar-text ml-2">Millions may be waiting for you ...</span>
+      <span class="navbar-text ms-2">Millions may be waiting for you ...</span>
     {% endif %}
   </div>
 </nav>

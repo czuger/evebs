@@ -2,33 +2,33 @@
 {% block content %}
 <div class="my-4 d-flex align-items-center">
   <img src="https://imageserver.eveonline.com/Type/{{ item.cpp_eve_item_id }}_64.png"
-       alt="{{ item.name }}" class="mr-3">
+       alt="{{ item.name }}" class="me-3">
   <h1>{{ item.name }}</h1>
 </div>
 
 <div class="row my-4">
   {% if item.base_item or not item.blueprint %}
-    <div class="col-12 col-lg mt-1">
+    <div class="col-12 col-lg mt-1 d-grid">
       <a href="/production_costs/{{ item.slug or item.id }}/dailies_avg_prices/{{ jita.id }}"
-         class="btn btn-primary btn-block active">Average cost</a>
+         class="btn btn-primary active">Average cost</a>
     </div>
   {% else %}
-    <div class="col-12 col-lg mt-1">
+    <div class="col-12 col-lg mt-1 d-grid">
       <a href="/production_costs/{{ item.slug or item.id }}"
-         class="btn btn-primary btn-block active">Production cost</a>
+         class="btn btn-primary active">Production cost</a>
     </div>
   {% endif %}
   <div class="col-12 col-lg mt-1">
     <a href="/market_data/{{ item.id }}/trade_hub_detail/{{ jita.id }}"
-       class="btn btn-primary btn-block active">Jita min price</a>
+       class="btn btn-primary active">Jita min price</a>
   </div>
   <div class="col-12 col-lg mt-1">
     <a href="/market_data/{{ item.id }}/market_overview/"
-       class="btn btn-primary btn-block active">Markets details</a>
+       class="btn btn-primary active">Markets details</a>
   </div>
   <div class="col-12 col-lg mt-1">
     <a href="/production_costs/{{ item.slug or item.id }}/market_histories"
-       class="btn btn-primary btn-block active">Last month aggregations</a>
+       class="btn btn-primary active">Last month aggregations</a>
   </div>
 </div>
 

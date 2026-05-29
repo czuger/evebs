@@ -3,8 +3,8 @@
 <h2>My assets</h2>
 {% if stations %}
 <form action="/my_assets/set_assets_station" method="post" class="mb-3">
-  <div class="form-inline">
-    <select name="station_id" class="form-control mr-2">
+  <div class="d-flex align-items-center gap-2">
+    <select name="station_id" class="form-control">
       <option value="">-- All stations --</option>
       {% for st in stations %}
       <option value="{{ st.id }}"
@@ -20,13 +20,13 @@
 <table class="table">
   <tr>
     <th>Item</th>
-    <th class="text-right">Quantity</th>
+    <th class="text-end">Quantity</th>
     <th>Station</th>
   </tr>
   {% for asset in assets %}
   <tr>
     <td>{{ asset.eve_item_id }}</td>
-    <td class="text-right">{{ asset.quantity }}</td>
+    <td class="text-end">{{ asset.quantity }}</td>
     <td>{{ asset.universe_station_id or 'N/A' }}</td>
   </tr>
   {% else %}

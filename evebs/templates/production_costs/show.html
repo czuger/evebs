@@ -4,9 +4,9 @@
 <table class="table my-3">
   <tr>
     <th>Item</th>
-    <th class="text-right">Unit cost</th>
-    <th class="text-right">Required quantity</th>
-    <th class="text-right">Total cost</th>
+    <th class="text-end">Unit cost</th>
+    <th class="text-end">Required quantity</th>
+    <th class="text-end">Total cost</th>
   </tr>
   {% for material in item.blueprint.blueprint_materials if item.blueprint %}
     {% set component = material.eve_item %}
@@ -15,33 +15,33 @@
       {% set total_for_batch.value = total_for_batch.value + total %}
       <tr>
         <td><a href="/items/{{ component.slug or component.id }}">{{ component.name }}</a></td>
-        <td class="text-right">{{ component.cost | isk }}</td>
-        <td class="text-right">{{ material.required_qtt | vol }}</td>
-        <td class="text-right">{{ total | isk }}</td>
+        <td class="text-end">{{ component.cost | isk }}</td>
+        <td class="text-end">{{ material.required_qtt | vol }}</td>
+        <td class="text-end">{{ total | isk }}</td>
       </tr>
     {% endif %}
   {% endfor %}
   <tr>
     <td colspan="3">Total for batch</td>
-    <td class="text-right">{{ total_for_batch.value | isk }}</td>
+    <td class="text-end">{{ total_for_batch.value | isk }}</td>
   </tr>
   {% if item.blueprint %}
   <tr>
     <td colspan="3">Batch size</td>
-    <td class="text-right">{{ item.blueprint.prod_qtt | vol }}</td>
+    <td class="text-end">{{ item.blueprint.prod_qtt | vol }}</td>
   </tr>
   {% set total_per_item = total_for_batch.value / item.blueprint.prod_qtt if item.blueprint.prod_qtt else 0 %}
   <tr>
     <td colspan="3">Total for one item</td>
-    <td class="text-right">{{ total_per_item | isk }}</td>
+    <td class="text-end">{{ total_per_item | isk }}</td>
   </tr>
   <tr>
     <td colspan="3">Taxes and setup costs estimation</td>
-    <td class="text-right">{{ ((taxes - 1) * 100) | round(2) }} %</td>
+    <td class="text-end">{{ ((taxes - 1) * 100) | round(2) }} %</td>
   </tr>
   <tr>
     <td colspan="3">Final cost</td>
-    <td class="text-right">{{ (total_per_item * taxes) | isk }}</td>
+    <td class="text-end">{{ (total_per_item * taxes) | isk }}</td>
   </tr>
   {% endif %}
 </table>

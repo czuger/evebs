@@ -5,8 +5,8 @@
     <tr>
       <th>Trade hub</th>
       <th>Item</th>
-      <th class="text-right">Cost</th>
-      <th class="text-right">Vol/month</th>
+      <th class="text-end">Cost</th>
+      <th class="text-end">Vol/month</th>
     </tr>
     {% for item in items %}
     <tr>
@@ -14,8 +14,8 @@
       <td class="item_name">
         <a href="/items/{{ item.eve_item_id }}" target="_blank">{{ item.item_name }}</a>
       </td>
-      <td class="text-right">{{ item.cost | isk }}</td>
-      <td class="text-right">{{ item.vol_month | vol }}</td>
+      <td class="text-end">{{ item.cost | isk }}</td>
+      <td class="text-end">{{ item.vol_month | vol }}</td>
     </tr>
     {% else %}
     <tr><td colspan="4" class="text-center text-muted">No items found.</td></tr>
