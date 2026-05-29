@@ -27,7 +27,6 @@ with app.app_context():
 
     from esi.download_public_orders import DownloadPublicTradesOrders
     from esi.download_markets_prices import DownloadMarketsPrices
-    from process.update_public_orders import run as update_orders
     from process.update_prices import (
         update_prices_min, update_buy_orders_analytics, update_prices_advices_immediate
     )
@@ -48,7 +47,6 @@ with app.app_context():
               lambda: DownloadPublicTradesOrders(essentials=args.essentials).download())
         _step('Downloading market prices', DownloadMarketsPrices().download)
 
-    _step('Updating public orders', update_orders)
     _step('Updating min prices', update_prices_min)
     _step('Updating price advices', update_prices_advices_immediate)
     _step('Updating buy orders analytics', update_buy_orders_analytics)
