@@ -61,6 +61,10 @@ class Forbidden(EsiError):
     pass
 
 
+class BadRequest(EsiError):
+    pass
+
+
 class NotFound(EsiError):
     pass
 
@@ -75,6 +79,7 @@ class UnknownError(EsiError):
 
 def dispatch(status_code, message=''):
     mapping = {
+        400: BadRequest,
         500: GatewayTimeout,
         504: GatewayTimeout,
         502: BadGateway,

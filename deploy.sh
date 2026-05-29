@@ -14,13 +14,4 @@ rsync -avz --progress \
   --exclude='databases' \
   --exclude='config.json' \
   --exclude='old' \
-  ./ nuc150:/home/ced/python/twit/
-
-ssh nuc150 "cd /home/ced/python/twit/docker// && bash set_secret_key.bash"
-ssh nuc150 "cd /home/ced/python/twit/docker// && bash create_network.sh"
-
-scp requirements.txt nuc150:/home/ced/python/twit/docker/
-
-ssh nuc150 "cd /home/ced/python/twit/docker/ && docker compose down"
-ssh nuc150 "cd /home/ced/python/twit/docker/ && docker compose up app-twitter -d"
-ssh nuc150 "cd /home/ced/python/twit/docker/ && docker compose up app-twitter-post-daemon -d"
+  ./ nuc150:/home/ced/python/evebs/

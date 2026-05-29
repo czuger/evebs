@@ -87,5 +87,8 @@ def setup_logging(level=logging.DEBUG):
         datefmt='%Y-%m-%d %H:%M:%S',
     ))
 
+    logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
+    logging.getLogger('esi.client').setLevel(logging.WARNING)
+
     root.addHandler(file_handler)
     root.addHandler(console_handler)

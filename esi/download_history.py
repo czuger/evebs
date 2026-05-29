@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timedelta
 
 from esi.client import EsiClient
-from esi.errors import NotFound
+from esi.errors import BadRequest, NotFound
 
 logger = logging.getLogger(__name__)
 
@@ -102,7 +102,7 @@ class DownloadHistory:
                                             params={'type_id': type_id})
                     try:
                         records = hist_client.get_all_pages()
-                    except NotFound:
+                    except (NotFound, BadRequest):
                         continue
 
                     total_volume = 0
