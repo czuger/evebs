@@ -3,7 +3,7 @@ from datetime import datetime
 from flask_login import UserMixin
 
 from evebs.extensions import db, login_manager
-from evebs.models.tables.associations import eve_items_users, trade_hubs_users
+from evebs.models.tables.associations import eve_items_users, trade_hubs_users, user_blueprints
 
 
 class User(UserMixin, db.Model):
@@ -41,6 +41,7 @@ class User(UserMixin, db.Model):
 
     eve_items = db.relationship('EveItem', secondary=eve_items_users, back_populates='users')
     trade_hubs = db.relationship('TradeHub', secondary=trade_hubs_users, back_populates='users')
+    blueprints = db.relationship('Blueprint', secondary=user_blueprints, back_populates='users')
     production_lists = db.relationship('ProductionList', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')
     user_sale_orders = db.relationship('UserSaleOrder', back_populates='user', cascade='all, delete-orphan')

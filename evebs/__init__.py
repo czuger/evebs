@@ -31,6 +31,8 @@ def create_app(config_class=Config):
     from evebs.routes.my_assets import bp as my_assets_bp
     from evebs.routes.admin import bp as admin_bp
     from evebs.routes.jita_benefits import bp as jita_benefits_bp
+    from evebs.routes.user_blueprints import bp as user_blueprints_bp
+    from evebs.routes.jita_manufacturing import bp as jita_manufacturing_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
@@ -50,6 +52,8 @@ def create_app(config_class=Config):
     app.register_blueprint(my_assets_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(jita_benefits_bp)
+    app.register_blueprint(user_blueprints_bp)
+    app.register_blueprint(jita_manufacturing_bp)
 
     return app
 

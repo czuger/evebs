@@ -18,6 +18,7 @@ class Blueprint(db.Model):
     eve_item = db.relationship('EveItem', back_populates='blueprint', uselist=False)
     blueprint_materials = db.relationship('BlueprintMaterial', back_populates='blueprint', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='blueprint')
+    users = db.relationship('User', secondary='user_blueprints', back_populates='blueprints')
 
     @property
     def batch_elements_count(self):
