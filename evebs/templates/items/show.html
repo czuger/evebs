@@ -30,6 +30,22 @@
       <div class="card-body">
         <div class="row row-cols-2 row-cols-md-3 g-3">
           <div class="col">
+            <div class="text-muted small">Type ID</div>
+            <div class="font-monospace">{{ item.cpp_eve_item_id }}</div>
+          </div>
+          {% if item.market_group %}
+          <div class="col">
+            <div class="text-muted small">Market group ID</div>
+            <div class="font-monospace">{{ item.market_group.cpp_market_group_id }}</div>
+          </div>
+          {% if item.market_group.cpp_parent_market_group_id %}
+          <div class="col">
+            <div class="text-muted small">Parent group ID</div>
+            <div class="font-monospace">{{ item.market_group.cpp_parent_market_group_id }}</div>
+          </div>
+          {% endif %}
+          {% endif %}
+          <div class="col">
             <div class="text-muted small">Volume</div>
             <div>{{ item.volume }} m³</div>
           </div>

@@ -181,9 +181,13 @@ class DownloadPublicTradesOrders:
                 o.volume_remain = volume_remain
                 o.price         = price
                 o.end_time      = end_time
+                if o.location_id is None:
+                    o.location_id = order_data.get('location_id')
                 o.touched       = True
                 return 'updated', sales_created
             else:
+                if o.location_id is None:
+                    o.location_id = order_data.get('location_id')
                 o.touched = True
                 return 'unchanged', 0
         else:
