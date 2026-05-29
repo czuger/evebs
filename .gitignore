@@ -28,7 +28,7 @@ coverage
 .idea
 
 config/omniauth.yaml
-items_tree.json
+data/oldies/items_tree.json
 
 omniauth.yml
 character_id.txt
@@ -46,7 +46,7 @@ sitemap.xml.gz
 data/regions_data.yaml
 data/trade_volume_estimation.json_stream
 
-data/regional_sales_volumes.json_stream
+data/oldies/regional_sales_volumes.json_stream
 data/regional_sales_volumes_*.json_stream
 
 log/
@@ -55,7 +55,7 @@ logs/
 /oldies/
 /evebs.egg-info/
 /next_steps.txt
-/data/market_orders.csv
+/data/oldies/market_orders.csv
 
 *.pyc
 __pycache__/
