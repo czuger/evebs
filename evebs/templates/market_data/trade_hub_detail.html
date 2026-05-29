@@ -1,22 +1,124 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{{ element.name }} at {{ trade_hub.name }}</h2>
-<div class="table-responsive-md">
-  <table class="table">
-    <tr>
-      <th class="text-end">Price</th>
-      <th class="text-end">Volume remain</th>
-      <th>Range</th>
-    </tr>
-    {% for order in orders %}
-    <tr>
-      <td class="text-end">{{ order.price | isk }}</td>
-      <td class="text-end">{{ order.volume_remain | vol }}</td>
-      <td>{{ order.range }}</td>
-    </tr>
-    {% else %}
-    <tr><td colspan="3" class="text-center text-muted">No sell orders.</td></tr>
-    {% endfor %}
-  </table>
+
+<div class="d-flex align-items-center gap-3 my-4">
+  <img src="https://imageserver.eveonline.com/Type/{{ item.cpp_eve_item_id }}_64.png"
+       alt="{{ item.name }}" class="rounded">
+  <div>
+    <h1 class="mb-0">{{ item.name }}</h1>
+    <span class="text-muted">{{ trade_hub.name }}</span>
+  </div>
+</div>
+
+{% if sell_orders and buy_orders %}
+{% set best_sell = sell_orders[0].price %}
+{% set best_buy  = buy_orders[0].price %}
+{% set spread    = best_sell - best_buy %}
+{% set spread_pct = (spread / best_buy * 100) if best_buy > 0 else 0 %}
+<div class="row g-3 mb-4">
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <div class="card-body py-2">
+        <div class="text-muted small">Best sell</div>
+        <div class="fw-semibold text-danger font-monospace">{{ best_sell | isk }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <div class="card-body py-2">
+        <div class="text-muted small">Spread</div>
+        <div class="fw-semibold font-monospace">{{ spread | isk }}</div>
+        <div class="text-muted small">{{ spread_pct | round(1) }} %</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <div class="card-body py-2">
+        <div class="text-muted small">Best buy</div>
+        <div class="fw-semibold text-success font-monospace">{{ best_buy | isk }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-4">
+
+  <div class="col-lg-6">
+    <div class="card border-danger">
+      <div class="card-header fw-semibold text-danger">
+        <i class="fas fa-arrow-up me-1"></i>Sell orders
+        <span class="badge bg-secondary ms-1">{{ sell_orders | length }}</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="text-end">Price</th>
+              <th class="text-end">Volume</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in sell_orders %}
+            {% set station = station_map.get(order.location_id, '') %}
+            <tr{% if loop.first %} class="table-danger"{% endif %}>
+              <td class="text-end font-monospace">{{ order.price | isk }}</td>
+              <td class="text-end font-monospace">{{ order.volume_remain | vol }}</td>
+              <td class="text-muted small"
+                  {% if station %}data-bs-toggle="tooltip" title="{{ station }}"{% endif %}>
+                {{ station | truncate(32, True) if station else '—' }}
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="text-center text-muted py-3">No sell orders.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card border-success">
+      <div class="card-header fw-semibold text-success">
+        <i class="fas fa-arrow-down me-1"></i>Buy orders
+        <span class="badge bg-secondary ms-1">{{ buy_orders | length }}</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="text-end">Price</th>
+              <th class="text-end">Volume</th>
+              <th class="text-end">Min vol</th>
+              <th>Range</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in buy_orders %}
+            {% set station = station_map.get(order.location_id, '') %}
+            <tr{% if loop.first %} class="table-success"{% endif %}>
+              <td class="text-end font-monospace">{{ order.price | isk }}</td>
+              <td class="text-end font-monospace">{{ order.volume_remain | vol }}</td>
+              <td class="text-end font-monospace text-muted">{{ order.min_volume | vol }}</td>
+              <td><span class="badge bg-light text-dark border">{{ order.range }}</span></td>
+              <td class="text-muted small"
+                  {% if station %}data-bs-toggle="tooltip" title="{{ station }}"{% endif %}>
+                {{ station | truncate(32, True) if station else '—' }}
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-center text-muted py-3">No buy orders.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}

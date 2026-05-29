@@ -17,6 +17,7 @@ class PublicTradeOrder(db.Model):
     volume_remain = db.Column(db.BigInteger, nullable=False)
     volume_total = db.Column(db.BigInteger, nullable=False)
     min_volume = db.Column(db.BigInteger, nullable=False)
+    location_id = db.Column(db.BigInteger)
     touched = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

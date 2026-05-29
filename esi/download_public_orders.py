@@ -198,6 +198,7 @@ class DownloadPublicTradesOrders:
                 volume_remain = volume_remain,
                 volume_total  = order_data.get('volume_total', volume_remain),
                 min_volume    = order_data.get('min_volume', 1),
+                location_id   = order_data.get('location_id'),
                 touched       = True,
             )
             db.session.add(new_order)
