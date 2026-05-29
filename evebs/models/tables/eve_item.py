@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 from evebs.extensions import db
-from evebs.models.associations import eve_items_users
+from evebs.models.tables.associations import eve_items_users
 
 
 class EveItem(db.Model):

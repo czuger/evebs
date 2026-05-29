@@ -3,7 +3,7 @@ from datetime import datetime
 from flask_login import UserMixin
 
 from evebs.extensions import db, login_manager
-from evebs.models.associations import eve_items_users, trade_hubs_users
+from evebs.models.tables.associations import eve_items_users, trade_hubs_users
 
 
 class User(UserMixin, db.Model):

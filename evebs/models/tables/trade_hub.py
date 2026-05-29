@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from evebs.extensions import db
-from evebs.models.associations import trade_hubs_users
+from evebs.models.tables.associations import trade_hubs_users
 
 
 class TradeHub(db.Model):

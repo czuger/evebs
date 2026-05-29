@@ -62,4 +62,7 @@ __pycache__/
 .DS_Store
 .coverage
 
-process/data
+process/datadata/manufacturing_tree.json
+/process/data/regional_sales_volumes.json_stream
+/data/manufacturing_tree.json
+/process/data/cpp_market_prices.yaml
