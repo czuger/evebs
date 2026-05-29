@@ -29,16 +29,18 @@
     {% endfor %}
   </div>
 </div>
+{% endblock %}
+
 {% block scripts %}
 <script>
-$(function() {
-  $('.trade-hub-checkbox').change(function() {
-    var state = $(this).is(':checked');
-    var id = $(this).val();
-    $.post('/choose_trade_hubs/update', { id: id, check_state: state })
-      .fail(function() { alert('Update failed.'); });
+document.querySelectorAll('.trade-hub-checkbox').forEach(function(cb) {
+  cb.addEventListener('change', function() {
+    fetch('/choose_trade_hubs/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'id=' + encodeURIComponent(cb.value) + '&check_state=' + encodeURIComponent(cb.checked)
+    }).catch(function() { alert('Update failed.'); });
   });
 });
 </script>
-{% endblock %}
 {% endblock %}

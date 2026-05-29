@@ -1,64 +1,152 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<div class="d-flex align-items-center justify-content-between my-4">
+  <h1 class="mb-0">Items</h1>
+  {% if items %}
+  <span class="badge bg-secondary fs-6" id="selected_count">
+    {{ item_ids | length }} selected
+  </span>
+  {% endif %}
+</div>
+
 {% if current_group %}
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/list_items">Items</a></li>
-      {% for anc in current_group.ancestors() %}
-        <li class="breadcrumb-item">
-          <a href="/list_items?group_id={{ anc.id }}">{{ anc.name }}</a>
-        </li>
-      {% endfor %}
-      <li class="breadcrumb-item active">{{ current_group.name }}</li>
-    </ol>
-  </nav>
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/list_items">All categories</a></li>
+    {% for anc in current_group.ancestors() %}
+    <li class="breadcrumb-item">
+      <a href="/list_items?group_id={{ anc.id }}">{{ anc.name }}</a>
+    </li>
+    {% endfor %}
+    <li class="breadcrumb-item active">{{ current_group.name }}</li>
+  </ol>
+</nav>
 {% endif %}
 
 {% if groups %}
-  <div class="list-group">
-    {% for group in groups %}
-      <a href="/list_items?group_id={{ group.id }}" class="list-group-item list-group-item-action">
-        {{ group.name }}
-      </a>
-    {% endfor %}
+<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-4">
+  {% for group in groups %}
+  <div class="col">
+    <a href="/list_items?group_id={{ group.id }}"
+       class="list-group-item list-group-item-action rounded border d-flex align-items-center gap-2 h-100">
+      <i class="fas fa-folder text-muted"></i>
+      <span>{{ group.name }}</span>
+    </a>
   </div>
+  {% endfor %}
+</div>
 {% endif %}
 
 {% if items %}
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>Select</th>
-        <th>Item</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in items %}
-      <tr>
-        <td>
-          <input type="checkbox" class="item_checkbox"
-                 item_id="{{ item.id }}"
-                 {% if item.id in item_ids %}checked{% endif %}>
-        </td>
-        <td><a href="/items/{{ item.slug or item.id }}">{{ item.name }}</a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <span class="fw-semibold">{{ current_group.name if current_group }}</span>
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-muted small">{{ items | length }} items</span>
+      <button class="btn btn-sm btn-outline-secondary" id="select_all_btn" type="button">Select all</button>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <tbody>
+        {% for item in items %}
+        {% set checked = item.id in item_ids %}
+        <tr class="{% if checked %}table-primary{% endif %}" id="row_{{ item.id }}">
+          <td class="ps-3" style="width:1%">
+            <div class="form-check mb-0">
+              <input class="form-check-input item_checkbox" type="checkbox"
+                     item_id="{{ item.id }}"
+                     id="cb_{{ item.id }}"
+                     {% if checked %}checked{% endif %}>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <img src="https://imageserver.eveonline.com/Type/{{ item.cpp_eve_item_id }}_32.png"
+                   alt="" width="32" height="32">
+              <label class="form-check-label mb-0" for="cb_{{ item.id }}">
+                <a href="/items/{{ item.slug or item.id }}" class="text-decoration-none stretched-link-sibling">
+                  {{ item.name }}
+                </a>
+                {% if item.faction %}
+                <span class="badge bg-warning text-dark ms-1">Faction</span>
+                {% endif %}
+              </label>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endif %}
+
+{% endblock %}
 
 {% block scripts %}
 <script>
-$(function() {
-  $('.item_checkbox').change(function() {
-    var state = $(this).is(':checked');
-    var id = $(this).attr('item_id');
-    $.post('/list_items/selection_change', { id: id, check_state: state })
-      .fail(function(jqXHR, textStatus, errorThrown) {
-        $('#error_area').html(errorThrown).show().delay(3000).fadeOut(3000);
-      });
+(function() {
+  var countEl = document.getElementById('selected_count');
+  var selectAllBtn = document.getElementById('select_all_btn');
+  var checkboxes = Array.from(document.querySelectorAll('.item_checkbox'));
+
+  function updateCount() {
+    if (countEl) {
+      countEl.textContent = checkboxes.filter(function(cb) { return cb.checked; }).length + ' selected';
+    }
+  }
+
+  function syncBtnLabel() {
+    if (!selectAllBtn) return;
+    selectAllBtn.textContent = (checkboxes.length > 0 && checkboxes.every(function(cb) { return cb.checked; }))
+      ? 'Deselect all' : 'Select all';
+  }
+
+  function syncToServer(id, state) {
+    fetch('/list_items/selection_change', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'id=' + encodeURIComponent(id) + '&check_state=' + encodeURIComponent(state)
+    }).catch(function(err) {
+      var el = document.getElementById('error_area');
+      el.textContent = err;
+      el.style.display = 'block';
+      setTimeout(function() { el.style.display = 'none'; }, 3000);
+    });
+  }
+
+  // Individual checkbox — browser has already updated .checked before change fires
+  checkboxes.forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var row = document.getElementById('row_' + this.getAttribute('item_id'));
+      if (row) row.classList.toggle('table-primary', this.checked);
+      syncToServer(this.getAttribute('item_id'), this.checked);
+      updateCount();
+      syncBtnLabel();
+    });
   });
-});
+
+  // Select all / Deselect all
+  if (selectAllBtn) {
+    syncBtnLabel();
+    selectAllBtn.addEventListener('click', function() {
+      var allChecked = checkboxes.length > 0 && checkboxes.every(function(cb) { return cb.checked; });
+      var target = !allChecked;
+      checkboxes.forEach(function(cb) {
+        if (cb.checked !== target) {
+          cb.checked = target;
+          var row = document.getElementById('row_' + cb.getAttribute('item_id'));
+          if (row) row.classList.toggle('table-primary', target);
+          syncToServer(cb.getAttribute('item_id'), target);
+        }
+      });
+      updateCount();
+      syncBtnLabel();
+    });
+  }
+})();
 </script>
 {% endblock %}
-{% endblock %}
+

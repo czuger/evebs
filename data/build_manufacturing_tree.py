@@ -33,8 +33,9 @@ Chain   = dict[int, dict]          # mat_type_id → {quantity, chain}
 def _load_bp_index(path: str) -> BpIndex:
     """Parse blueprints.jsonl and index blueprints by the typeID they produce.
 
-    Only blueprints that have a manufacturing activity with at least one product
-    are included. Invention, copying, and research activities are ignored.
+    Both manufacturing and reaction activities are included. Invention, copying,
+    and research activities are ignored. When a blueprint has both activities,
+    manufacturing takes precedence.
 
     Args:
         path: Absolute path to blueprints.jsonl.
@@ -51,21 +52,21 @@ def _load_bp_index(path: str) -> BpIndex:
                 continue
 
             bp = json.loads(line)
-            # Only care about the manufacturing activity
-            mfg = bp.get('activities', {}).get('manufacturing')
-            if not mfg:
+            activities = bp.get('activities', {})
+            # Prefer manufacturing; fall back to reaction
+            activity = activities.get('manufacturing') or activities.get('reaction')
+            if not activity:
                 continue
 
-            products = mfg.get('products', [])
+            products = activity.get('products', [])
             if not products:
                 continue
 
-            # Each manufacturing activity produces exactly one product type
             produced_id: int = products[0]['typeID']
             prod_qty: int = products[0].get('quantity', 1)
 
             bp_index[produced_id] = {
-                'materials': mfg.get('materials', []),
+                'materials': activity.get('materials', []),
                 'prod_qty': prod_qty,
             }
 
@@ -130,7 +131,7 @@ def build_manufacturing_tree() -> None:
     """
     print(f'Reading {BLUEPRINTS_FILE}...')
     bp_index = _load_bp_index(BLUEPRINTS_FILE)
-    print(f'Loaded {len(bp_index)} manufacturing blueprints.')
+    print(f'Loaded {len(bp_index)} manufacturing/reaction blueprints.')
 
     tree: dict[int, dict] = {}
     for type_id, bp in bp_index.items():
