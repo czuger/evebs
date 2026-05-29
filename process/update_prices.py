@@ -127,39 +127,43 @@ def update_prices_advices_immediate():
 
     # Update vol_month and avg_price_month
     db.session.execute(text("""
-        UPDATE prices_advices SET
-            vol_month = (
-                SELECT SUM(sf.volume) FROM sales_finals sf
-                WHERE sf.trade_hub_id = prices_advices.trade_hub_id
-                AND sf.eve_item_id = prices_advices.eve_item_id
-            ),
-            avg_price_month = (
-                SELECT AVG(sf.price) FROM sales_finals sf
-                WHERE sf.trade_hub_id = prices_advices.trade_hub_id
-                AND sf.eve_item_id = prices_advices.eve_item_id
-            ),
-            updated_at = :now
-    """), {'now': now})
+        UPDATE prices_advices pa
+        SET 
+            vol_month = agg.total_vol,
+            avg_price_month = agg.avg_price,
+            updated_at = NOW()
+        FROM (
+            SELECT 
+                trade_hub_id,
+                eve_item_id,
+                SUM(volume) AS total_vol,
+                AVG(price)  AS avg_price
+            FROM sales_finals
+            GROUP BY trade_hub_id, eve_item_id
+        ) agg
+        WHERE agg.trade_hub_id = pa.trade_hub_id
+        AND agg.eve_item_id = pa.eve_item_id;
+    """))
 
     # Update avg_price_week (last 7 days)
-    cutoff = (datetime.utcnow() - timedelta(days=7)).date().isoformat()
     db.session.execute(text("""
-        UPDATE prices_advices SET
-            avg_price_week = (
-                SELECT SUM(sf.volume * sf.price) / SUM(sf.volume)
-                FROM sales_finals sf
-                WHERE sf.trade_hub_id = prices_advices.trade_hub_id
-                AND sf.eve_item_id = prices_advices.eve_item_id
-                AND sf.day >= :cutoff
-                AND sf.volume > 0
-            ),
-            updated_at = :now
-        WHERE EXISTS (
-            SELECT 1 FROM sales_finals sf
-            WHERE sf.trade_hub_id = prices_advices.trade_hub_id
-            AND sf.eve_item_id = prices_advices.eve_item_id
-        )
-    """), {'now': now, 'cutoff': cutoff})
+        UPDATE prices_advices pa
+        SET
+            avg_price_week = agg.vwap,
+            updated_at = NOW()
+        FROM (
+            SELECT
+                trade_hub_id,
+                eve_item_id,
+                SUM(volume * price) / NULLIF(SUM(volume), 0) AS vwap
+            FROM sales_finals
+            WHERE day >= (CURRENT_DATE - INTERVAL '7 days')
+            AND volume > 0
+            GROUP BY trade_hub_id, eve_item_id
+        ) agg
+        WHERE pa.trade_hub_id = agg.trade_hub_id
+        AND pa.eve_item_id = agg.eve_item_id;
+    """))
 
     # Update margin_percent
     db.session.execute(text("""
