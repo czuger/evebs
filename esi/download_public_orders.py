@@ -258,6 +258,7 @@ class DownloadPublicTradesOrders:
 
         Counters tracked: created, updated, unchanged, deleted, sales_created,
         skipped_no_hub, skipped_zero_volume.
+        Batch progress logs include per-region types/s rate and wall-clock ETA.
         """
         t0 = time.perf_counter()
 
@@ -275,9 +276,6 @@ class DownloadPublicTradesOrders:
         PublicTradeOrder.query.update({'touched': False})
         db.session.flush()
 
-        # Use last run's order count as a rough estimate of total orders to process
-        estimated_total = len(existing)
-
         created = updated = touched = 0
         skipped_no_hub = skipped_zero = 0
         sales_created = 0
@@ -291,6 +289,7 @@ class DownloadPublicTradesOrders:
                          region.name, len(relevant_types), len(region_type_ids))
 
             total_relevant = len(relevant_types)
+            region_start   = time.perf_counter()
             for types_processed, type_id in enumerate(relevant_types, 1):
                 item_id = item_map[type_id]
 
@@ -316,14 +315,15 @@ class DownloadPublicTradesOrders:
                     batch += 1
                     if batch % BATCH_SIZE == 0:
                         db.session.commit()
-                        elapsed   = time.perf_counter() - t0
-                        rate      = batch / elapsed if elapsed > 0 else 0
-                        eta_s     = (estimated_total - batch) / rate if rate > 0 else 0
+                        region_elapsed = time.perf_counter() - region_start
+                        type_rate = types_processed / region_elapsed if region_elapsed > 0 else 0
+                        eta_s     = (total_relevant - types_processed) / type_rate if type_rate > 0 else 0
+                        eta_at    = datetime.now() + timedelta(seconds=eta_s)
                         logger.debug(
-                            '... %d/~%d orders | types %d/%d | +%d created ~%d updated =%d unchanged'
-                            ' | %.0f ord/s  ETA ~%.0fs',
-                            batch, estimated_total, types_processed, total_relevant,
-                            created, updated, touched, rate, eta_s,
+                            '... %d orders | types %d/%d | +%d created ~%d updated =%d unchanged'
+                            ' | %.1f types/s  ETA ~%s',
+                            batch, types_processed, total_relevant,
+                            created, updated, touched, type_rate, eta_at.strftime('%y/%d/%m %H:%M:%S'),
                         )
 
         now = datetime.utcnow()
