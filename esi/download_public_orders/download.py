@@ -10,7 +10,7 @@ from esi.download_public_orders.fetch import (
     fetch_region_types, fetch_type_orders, fetch_region_all_orders,
 )
 from esi.download_public_orders.upsert import (
-    load_snapshot_for, classify_orders, apply_batch, flush_expired_orders,
+    load_snapshot_for, classify_orders, apply_batch, record_sold_out_orders,
 )
 
 logger = logging.getLogger(__name__)
@@ -80,7 +80,7 @@ def download(
                      region.name, n_created, n_updated, n_touched, len(pending))
 
     now = datetime.utcnow()
-    sales_created += flush_expired_orders(now)
+    sales_created += record_sold_out_orders(now)
 
     deleted_q = PublicTradeOrder.query.filter(PublicTradeOrder.touched.is_(False))
     deleted   = deleted_q.count()

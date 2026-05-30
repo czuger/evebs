@@ -1,7 +1,8 @@
 import logging
 from datetime import datetime, timedelta
 
-from sqlalchemy import insert, update, select
+from sqlalchemy import BigInteger, any_, insert, literal, update, select
+from sqlalchemy.dialects.postgresql import ARRAY
 
 from evebs.extensions import db
 from evebs.models import PublicTradeOrder, SalesFinal
@@ -23,7 +24,7 @@ def load_snapshot_for(order_ids: set[int]) -> dict[int, dict]:
             PublicTradeOrder.price,
             PublicTradeOrder.end_time,
             PublicTradeOrder.location_id,
-        ).where(PublicTradeOrder.order_id.in_(order_ids))
+        ).where(PublicTradeOrder.order_id == any_(literal(list(order_ids), ARRAY(BigInteger))))
     ).mappings()
     return {r['order_id']: dict(r) for r in rows}
 
@@ -134,8 +135,12 @@ def apply_batch(
         db.session.execute(insert(SalesFinal), sales_finals)
 
 
-def flush_expired_orders(now: datetime) -> int:
-    """Bulk-insert SalesFinal for expired untouched sell orders; return count."""
+def record_sold_out_orders(now: datetime) -> int:
+    """Bulk-insert SalesFinal for untouched sell orders that vanished before expiry.
+
+    Orders still within their end_time that ESI no longer returns were bought out.
+    Orders past their end_time simply expired — no sale occurred.
+    """
     rows = db.session.execute(
         select(
             PublicTradeOrder.order_id,
@@ -146,7 +151,7 @@ def flush_expired_orders(now: datetime) -> int:
         ).where(
             PublicTradeOrder.touched.is_(False),
             PublicTradeOrder.is_buy_order.is_(False),
-            PublicTradeOrder.end_time < now,
+            PublicTradeOrder.end_time >= now,
         )
     ).mappings().all()
 
@@ -163,5 +168,5 @@ def flush_expired_orders(now: datetime) -> int:
             for r in rows
         ])
 
-    logger.debug('%d expired orders → sales_finals', len(rows))
+    logger.debug('%d sold-out orders → sales_finals', len(rows))
     return len(rows)
