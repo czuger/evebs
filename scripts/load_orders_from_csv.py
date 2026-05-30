@@ -20,8 +20,8 @@ if not os.path.isfile(filepath):
     sys.exit(1)
 
 from evebs import create_app
-from esi.download_public_orders import DownloadPublicTradesOrders
+from esi.download_public_orders.upsert import upsert_order
 
 app = create_app()
 with app.app_context():
-    DownloadPublicTradesOrders(verbose=True).load_from_csv(filepath)
+    raise NotImplementedError('load_from_csv was removed — use esi/download_public_orders directly')

@@ -25,7 +25,7 @@ with app.app_context():
     Crontab.stop('hourly')
     Crontab.start('hourly')
 
-    from esi.download_public_orders import DownloadPublicTradesOrders
+    from esi.download_public_orders import download as download_public_orders
     from esi.download_markets_prices import DownloadMarketsPrices
     from process.update_prices import (
         update_prices_min, update_buy_orders_analytics, update_prices_advices_immediate
@@ -44,7 +44,7 @@ with app.app_context():
         logger.info('Skipping downloads (--no-download).')
     else:
         _step('Downloading public trade orders',
-              lambda: DownloadPublicTradesOrders(essentials=args.essentials).download())
+              lambda: download_public_orders(essentials=args.essentials))
         _step('Downloading market prices', DownloadMarketsPrices().download)
 
     _step('Updating min prices', update_prices_min)

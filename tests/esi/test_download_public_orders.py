@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from esi.download_public_orders import DownloadPublicTradesOrders
+from esi.download_public_orders.upsert import upsert_order
 from tests.factories import make_region, make_trade_hub, make_item
 
 
