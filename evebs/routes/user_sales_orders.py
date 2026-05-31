@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
+from esi.download_my_orders import DownloadMyOrders
 from evebs.extensions import db
 from evebs.models import UserSaleOrderDetail, User
 
@@ -21,6 +22,14 @@ def show():
                            title='My sales orders',
                            orders=orders,
                            user=user)
+
+
+@bp.route('/user_sales_orders/sync', methods=['POST'])
+@login_required
+def sync():
+    DownloadMyOrders().update(current_user)
+    flash('Orders synced.')
+    return redirect(url_for('user_sales_orders.show'))
 
 
 @bp.route('/user_sales_orders/update', methods=['POST'])

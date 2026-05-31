@@ -21,6 +21,8 @@ class DownloadMyOrders:
             db.session.commit()
             return
 
+        print(pages)
+
         from evebs.models import EveItem, UniverseStation, UniverseSystem, UserSaleOrder, ProductionList
         from evebs.extensions import db
         from datetime import datetime
@@ -32,7 +34,7 @@ class DownloadMyOrders:
             station = db.session.get(UniverseStation, page['location_id'])
             if station:
                 system = (UniverseSystem.query
-                          .filter_by(id=station.universe_system_id, trade_hub=True)
+                          .filter_by(id=station.universe_system_id)
                           .first())
                 universe_system_id = system.id if system else None
             else:

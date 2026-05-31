@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>My sales orders</h2>
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">My sales orders</h2>
+  <form action="{{ url_for('user_sales_orders.sync') }}" method="post" class="mb-0">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">
+      Sync orders{% if user.last_orders_download %} · last {{ user.last_orders_download.strftime('%Y-%m-%d %H:%M') }}{% endif %}
+    </button>
+  </form>
+</div>
 <div class="table-responsive-md">
   <table class="table">
     <tr>
