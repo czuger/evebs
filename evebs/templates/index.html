@@ -33,7 +33,7 @@
   </p>
 
   <div class="text-center py-4">
-    <form action="/auth/eve_online_sso" method="post">
+    <form action="{{ url_for('auth.login') }}" method="post">
       <button type="submit" class="btn btn-lg btn-warning">Sign in with Eve Online</button>
     </form>
   </div>

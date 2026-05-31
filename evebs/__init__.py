@@ -1,4 +1,5 @@
 from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 from config import Config
 from evebs.extensions import db, login_manager
 from evebs import helpers
@@ -54,6 +55,19 @@ def create_app(config_class=Config):
     app.register_blueprint(jita_benefits_bp)
     app.register_blueprint(user_blueprints_bp)
     app.register_blueprint(jita_manufacturing_bp)
+
+    root = app.config.get('APPLICATION_ROOT', '/')
+    if root and root != '/':
+        _inner = app.wsgi_app
+        def _inject_script_name(environ, start_response):
+            path = environ.get('PATH_INFO', '/')
+            if path == root or path.startswith(root + '/'):
+                environ['PATH_INFO'] = path[len(root):] or '/'
+            environ['SCRIPT_NAME'] = root
+            return _inner(environ, start_response)
+        app.wsgi_app = _inject_script_name
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     return app
 

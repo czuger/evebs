@@ -13,6 +13,8 @@ rsync -avz --progress \
   --exclude='.git/' \
   --exclude='databases' \
   --exclude='config.json' \
+  --exclude='*.json' \
+  --exclude='*.yaml' \
   --exclude='old' \
   ./ nuc150:/home/ced/python/evebs/
   
