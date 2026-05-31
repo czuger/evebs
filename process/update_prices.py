@@ -242,7 +242,7 @@ def update_market_histories():
 
     region_map = {str(r.cpp_region_id): r.id for r in UniverseRegion.query.all()}
     from evebs.models import EveItem
-    item_map = {str(i.cpp_eve_item_id): i.id for i in EveItem.query.all()}
+    item_map = {str(i.id): i.id for i in EveItem.query.all()}
 
     filepath = 'data/regional_sales_volumes.json_stream'
     if not os.path.exists(filepath):

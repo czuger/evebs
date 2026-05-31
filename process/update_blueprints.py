@@ -33,7 +33,7 @@ with app.app_context():
         sys.exit(0)
 
     logger.debug('Loading item map...')
-    item_map = {ei.cpp_eve_item_id: ei for ei in EveItem.query.all()}
+    item_map = {ei.id: ei for ei in EveItem.query.all()}
     logger.debug('Item map: %d items loaded.', len(item_map))
 
     logger.debug('Loading blueprint map...')

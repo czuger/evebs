@@ -49,7 +49,7 @@ class DownloadHistory:
             regions = [r for r in regions if r.cpp_region_id in hub_region_cpp_ids]
             ammo_group_ids = _ammo_market_group_ids()
             ammo_ids = {
-                item.cpp_eve_item_id
+                item.id
                 for item in EveItem.query.filter(
                     EveItem.market_group_id.in_(ammo_group_ids)
                 ).all()

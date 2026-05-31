@@ -125,7 +125,7 @@ def update_eve_item_cost() -> None:
 
     # Build a lookup keyed by EVE Online typeID for O(1) access during cost propagation
     t = time.time()
-    item_map: dict[int, EveItem] = {item.cpp_eve_item_id: item for item in EveItem.query.all()}
+    item_map: dict[int, EveItem] = {item.id: item for item in EveItem.query.all()}
     logger.debug('Item map built: %d items in %.2fs.', len(item_map), time.time() - t)
 
     # Pre-load all Jita sell prices in one query instead of per-item queries
@@ -139,9 +139,8 @@ def update_eve_item_cost() -> None:
     t = time.time()
     t_checkpoint = time.time()
     tree_ids: set[int] = {int(k) for k in tree}
-    base_items = [item for item in item_map.values() if item.cpp_eve_item_id not in tree_ids]
+    base_items = [item for item in item_map.values() if item.id not in tree_ids]
     for i, item in enumerate(base_items, 1):
-        # jita_prices is keyed by eve_item.id (DB PK), not cpp_eve_item_id
         item.cost = _compute_vwap(jita_prices.get(item.id, []))
         if i % LOG_EVERY == 0:
             logger.info('Level 0: %d items updated in %.2fs.', i, time.time() - t_checkpoint)

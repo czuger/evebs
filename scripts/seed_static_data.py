@@ -294,7 +294,7 @@ def seed_stations(db, UniverseStation, UniverseSystem):
 def seed_items(db, EveItem, MarketGroup):
     done = _step('Eve items  (types.jsonl → EveItem)')
     mg_map   = {mg.cpp_market_group_id: mg.id for mg in MarketGroup.query.all()}
-    existing = {ei.cpp_eve_item_id: ei for ei in EveItem.query.all()}
+    existing = {ei.id: ei for ei in EveItem.query.all()}
     used_slugs = {ei.slug for ei in existing.values() if ei.slug}
     print(f'    existing: {_fmt(len(existing))} EveItem  |  '
           f'market group map size: {_fmt(len(mg_map))}')
@@ -333,7 +333,7 @@ def seed_items(db, EveItem, MarketGroup):
             used_slugs.add(slug)
 
             item = EveItem(
-                cpp_eve_item_id=cpp_id,
+                id=cpp_id,
                 name=name,
                 slug=slug,
                 volume=obj.get('volume'),
@@ -360,7 +360,7 @@ def seed_items(db, EveItem, MarketGroup):
 
 def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
     done = _step('Blueprints  (blueprints.jsonl → Blueprint + BlueprintMaterial)')
-    item_map    = {ei.cpp_eve_item_id: ei for ei in EveItem.query.all()}
+    item_map    = {ei.id: ei for ei in EveItem.query.all()}
     existing_bp = {bp.cpp_blueprint_id: bp for bp in Blueprint.query.all()}
     existing_bp_by_product = {bp.produced_cpp_type_id: bp for bp in existing_bp.values()}
     print(f'    existing: {_fmt(len(existing_bp))} Blueprint  |  '

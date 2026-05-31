@@ -8,7 +8,7 @@ class PricesMin(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    eve_item_id = db.Column(db.Integer, db.ForeignKey('eve_items.id'))
+    eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'))
     universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'))
     min_price = db.Column(db.Float)
     volume = db.Column(db.BigInteger)

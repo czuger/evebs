@@ -23,7 +23,7 @@ def run() -> None:
         us.cpp_system_id: us.id
         for us in UniverseSystem.query.filter_by(trade_hub=True).all()
     }
-    item_map = {ei.cpp_eve_item_id: ei.id for ei in EveItem.query.all()}
+    item_map = {ei.id: ei.id for ei in EveItem.query.all()}
 
     PublicTradeOrder.query.update({'touched': False})
     db.session.flush()

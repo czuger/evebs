@@ -8,8 +8,7 @@ from evebs.models.tables.associations import eve_items_users
 class EveItem(db.Model):
     __tablename__ = 'eve_items'
 
-    id = db.Column(db.Integer, primary_key=True)
-    cpp_eve_item_id = db.Column(db.Integer, nullable=False)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
     name = db.Column(db.String, nullable=False)
     cost = db.Column(db.Float)
     market_group_id = db.Column(db.Integer, db.ForeignKey('market_groups.id'))
@@ -68,5 +67,5 @@ class EveItem(db.Model):
 
     @classmethod
     def to_eve_item_id(cls, cpp_eve_item_id):
-        item = cls.query.filter_by(cpp_eve_item_id=cpp_eve_item_id).first()
+        item = cls.query.get(cpp_eve_item_id)
         return item.id if item else None

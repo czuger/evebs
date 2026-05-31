@@ -14,7 +14,7 @@ def load_reference_data(
 ) -> tuple[dict[int, int], dict[int, int], list]:
     trade_hubs = UniverseSystem.query.filter_by(trade_hub=True).all()
     hub_map = {us.cpp_system_id: us.id for us in trade_hubs}
-    item_map = {ei.cpp_eve_item_id: ei.id for ei in EveItem.query.all()}
+    item_map = {ei.id: ei.id for ei in EveItem.query.all()}
 
     hub_region_ids = {
         int(us.universe_constellation.universe_region.cpp_region_id)
@@ -30,7 +30,7 @@ def load_reference_data(
     elif essentials:
         ammo_group_ids = _ammo_market_group_ids()
         ammo_cpp_ids = {
-            item.cpp_eve_item_id
+            item.id
             for item in EveItem.query.filter(EveItem.market_group_id.in_(ammo_group_ids)).all()
         }
         item_map = {k: v for k, v in item_map.items() if k in ammo_cpp_ids}

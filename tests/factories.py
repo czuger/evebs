@@ -82,7 +82,7 @@ def make_item(db, cpp_eve_item_id=34, name='Tritanium', slug='tritanium',
               weekly_avg_price=None, production_level=None):
     from evebs.models import EveItem
     item = EveItem(
-        cpp_eve_item_id=cpp_eve_item_id,
+        id=cpp_eve_item_id,
         name=name,
         slug=slug,
         base_item=base_item,
@@ -135,10 +135,10 @@ def make_sales_final(db, item, trade_hub, volume=100, price=1000.0,
 
 def make_blueprint(db, item, cpp_blueprint_id=None, nb_runs=1, prod_qtt=1):
     from evebs.models import Blueprint
-    cpp_blueprint_id = cpp_blueprint_id or (item.cpp_eve_item_id + 100000)
+    cpp_blueprint_id = cpp_blueprint_id or (item.id + 100000)
     bp = Blueprint(
         cpp_blueprint_id=cpp_blueprint_id,
-        produced_cpp_type_id=item.cpp_eve_item_id,
+        produced_cpp_type_id=item.id,
         nb_runs=nb_runs,
         prod_qtt=prod_qtt,
         name=f'{item.name} Blueprint',
