@@ -4,15 +4,16 @@ from datetime import datetime, timedelta
 from unittest.mock import patch
 
 from esi.download_my_orders import DownloadMyOrders
-from tests.factories import make_region, make_trade_hub, make_item, make_station, make_user_sale_order
+from tests.factories import make_region, make_trade_hub, make_item, make_universe_system, make_universe_station, make_user_sale_order
 
 
 @pytest.fixture
 def seeded(db, user):
     region = make_region(db)
-    hub = make_trade_hub(db, region)
+    hub = make_trade_hub(db, region)  # eve_system_id=30000142 (Jita)
     item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
-    station = make_station(db, hub, cpp_station_id=60003760)
+    us = make_universe_system(db)  # cpp_system_id=30000142 (Jita)
+    station = make_universe_station(db, us)  # id=60003760
     db.session.commit()
     return {'hub': hub, 'item': item, 'station': station}
 

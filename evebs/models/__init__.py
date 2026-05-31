@@ -20,7 +20,6 @@ from evebs.models.tables.universe_region import UniverseRegion
 from evebs.models.tables.universe_constellation import UniverseConstellation
 from evebs.models.tables.universe_system import UniverseSystem
 from evebs.models.tables.universe_station import UniverseStation
-from evebs.models.tables.station import Station
 from evebs.models.tables.structure import Structure
 from evebs.models.tables.constant import Constant
 from evebs.models.tables.last_update import LastUpdate
@@ -62,7 +61,6 @@ __all__ = [
     'UniverseConstellation',
     'UniverseSystem',
     'UniverseStation',
-    'Station',
     'Structure',
     'Constant',
     'LastUpdate',

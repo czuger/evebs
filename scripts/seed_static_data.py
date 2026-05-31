@@ -259,7 +259,7 @@ def seed_universe(db, UniverseConstellation, UniverseSystem, UniverseRegion):
 def seed_stations(db, UniverseStation, UniverseSystem):
     done = _step('NPC stations  (npcStations.jsonl → UniverseStation)')
     system_map = {us.cpp_system_id: us.id for us in UniverseSystem.query.all()}
-    existing   = {st.cpp_station_id: st for st in UniverseStation.query.all()}
+    existing   = {st.id: st for st in UniverseStation.query.all()}
     print(f'    existing: {_fmt(len(existing))} UniverseStation  |  '
           f'system map size: {_fmt(len(system_map))}')
     new = updated = skipped = 0
@@ -277,7 +277,7 @@ def seed_stations(db, UniverseStation, UniverseSystem):
             updated += 1
         else:
             st = UniverseStation(
-                cpp_station_id=cpp_id,
+                id=cpp_id,
                 name='',
                 office_rental_cost=0.0,
                 universe_system_id=system_id,

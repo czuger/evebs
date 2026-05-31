@@ -48,8 +48,8 @@ def trade_hub_detail(item_id, trade_hub_id):
     all_orders = sell_orders + buy_orders
     location_ids = {o.location_id for o in all_orders if o.location_id}
     station_map = {
-        s.cpp_station_id: s.name
-        for s in UniverseStation.query.filter(UniverseStation.cpp_station_id.in_(location_ids)).all()
+        s.id: s.name
+        for s in UniverseStation.query.filter(UniverseStation.id.in_(location_ids)).all()
     } if location_ids else {}
     return render_template('market_data/trade_hub_detail.html',
                            item=item,

@@ -16,7 +16,7 @@
       <option value="">-- All stations --</option>
       {% for st in stations %}
       <option value="{{ st.id }}" {% if user.selected_assets_station_id == st.id %}selected{% endif %}>
-        {{ st.name or st.cpp_station_id }}
+        {{ st.name or st.id }}
       </option>
       {% endfor %}
     </select>

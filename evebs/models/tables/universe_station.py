@@ -7,8 +7,7 @@ from evebs.extensions import db
 class UniverseStation(db.Model):
     __tablename__ = 'universe_stations'
 
-    id = db.Column(db.BigInteger, primary_key=True)
-    cpp_station_id = db.Column(db.Integer, nullable=False, unique=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
     name = db.Column(db.String, nullable=False)
     _services = db.Column('services', db.Text, nullable=False, default='[]')
     office_rental_cost = db.Column(db.Float, nullable=False)
@@ -16,7 +15,6 @@ class UniverseStation(db.Model):
     jita_distance = db.Column(db.Integer)
     _industry_costs_indices = db.Column('industry_costs_indices', db.Text)
     universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'), nullable=False)
-    station_id = db.Column(db.BigInteger, db.ForeignKey('stations.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

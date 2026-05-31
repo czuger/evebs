@@ -61,7 +61,7 @@ def sync_location():
         flash('Not docked at a station (in space or at a player structure).')
         return redirect(url_for('users.edit'))
 
-    station = UniverseStation.query.filter_by(cpp_station_id=station_id).first()
+    station = db.session.get(UniverseStation, station_id)
     if not station:
         flash('Station not found in local database.')
         return redirect(url_for('users.edit'))
@@ -73,5 +73,5 @@ def sync_location():
 
     current_user.current_location_station_id = station.id
     db.session.commit()
-    flash(f'Location synced to {station.name or station.cpp_station_id}.')
+    flash(f'Location synced to {station.name or station.id}.')
     return redirect(url_for('users.edit'))

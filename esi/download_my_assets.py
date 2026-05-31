@@ -1,6 +1,9 @@
 import logging
 from datetime import datetime
+
 from esi.client import EsiClient
+from evebs.extensions import db
+from evebs.models import BpcAsset, EveItem, UniverseStation
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +19,6 @@ class DownloadMyAssets:
             return
 
         pages = client.get_all_pages()
-        from evebs.models import BpcAsset, EveItem, UniverseStation
-        from evebs.extensions import db
 
         BpcAsset.query.filter_by(user_id=user.id).update({'touched': False})
         db.session.flush()
@@ -33,8 +34,8 @@ class DownloadMyAssets:
 
             # Player structure IDs exceed 32-bit int range; only look up NPC stations
             if location_id and location_id <= 2_147_483_647:
-                station = UniverseStation.query.filter_by(cpp_station_id=location_id).first()
-                station_id = station.id if station else None
+                station = db.session.get(UniverseStation, location_id)
+                station_id = location_id if station else None
             else:
                 station_id = None
 

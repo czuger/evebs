@@ -46,7 +46,7 @@ def make_universe_system(db, constellation=None, cpp_system_id=30000142, name='J
 def make_universe_station(db, system, cpp_station_id=60003760):
     from evebs.models import UniverseStation
     st = UniverseStation(
-        cpp_station_id=cpp_station_id,
+        id=cpp_station_id,
         name='Jita IV - Moon 4 - Caldari Navy Assembly Plant',
         office_rental_cost=0.0,
         universe_system_id=system.id,
@@ -63,13 +63,6 @@ def make_trade_hub(db, region, system_id=30000142, name='Jita', inner=False):
     db.session.flush()
     return th
 
-
-def make_station(db, trade_hub, cpp_station_id=60003760, name='Jita IV - Moon 4'):
-    from evebs.models import Station
-    st = Station(trade_hub_id=trade_hub.id, cpp_station_id=cpp_station_id, name=name)
-    db.session.add(st)
-    db.session.flush()
-    return st
 
 
 def make_market_group(db, cpp_market_group_id=1, name='Minerals', parent=None):
