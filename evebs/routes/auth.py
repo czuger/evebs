@@ -9,7 +9,7 @@ from flask import Blueprint, current_app, flash, redirect, request, session, url
 from flask_login import login_user, logout_user
 
 from evebs.extensions import db
-from evebs.models import MarketGroup, TradeHub, User
+from evebs.models import MarketGroup, UniverseSystem, User
 
 bp = Blueprint('auth', __name__)
 
@@ -110,7 +110,7 @@ def _set_defaults(user):
     if user.initialization_finalized:
         return
     for system_id in [30000142, 30002187]:
-        th = TradeHub.query.filter_by(eve_system_id=system_id).first()
+        th = UniverseSystem.query.filter_by(cpp_system_id=system_id, trade_hub=True).first()
         if th and th not in user.trade_hubs:
             user.trade_hubs.append(th)
     for group_id in [973, 972, 927, 917]:

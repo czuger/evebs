@@ -41,7 +41,7 @@ class User(UserMixin, db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     eve_items = db.relationship('EveItem', secondary=eve_items_users, back_populates='users')
-    trade_hubs = db.relationship('TradeHub', secondary=trade_hubs_users, back_populates='users')
+    trade_hubs = db.relationship('UniverseSystem', secondary=trade_hubs_users, back_populates='users')
     blueprints = db.relationship('Blueprint', secondary=user_blueprints, back_populates='users')
     production_lists = db.relationship('ProductionList', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')

@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
-from evebs.models import ProductionList, EveItem, TradeHub
+from evebs.models import ProductionList, EveItem
 
 bp = Blueprint('production_lists', __name__)
 
@@ -23,17 +23,17 @@ def edit():
 def create():
     user = current_user
     eve_item_id = request.form.get('eve_item_id', type=int)
-    trade_hub_id = request.form.get('trade_hub_id', type=int)
+    universe_system_id = request.form.get('universe_system_id', type=int)
     runs_count = request.form.get('runs_count', 1, type=int)
 
     existing = ProductionList.query.filter_by(
-        user_id=user.id, eve_item_id=eve_item_id, trade_hub_id=trade_hub_id
+        user_id=user.id, eve_item_id=eve_item_id, universe_system_id=universe_system_id
     ).first()
     if not existing:
         pl = ProductionList(
             user_id=user.id,
             eve_item_id=eve_item_id,
-            trade_hub_id=trade_hub_id,
+            universe_system_id=universe_system_id,
             runs_count=runs_count,
         )
         db.session.add(pl)
@@ -62,10 +62,10 @@ def update():
 @login_required
 def remove_check():
     user = current_user
-    trade_hub_id = request.form.get('trade_hub_id', type=int)
+    universe_system_id = request.form.get('universe_system_id', type=int)
     eve_item_id = request.form.get('eve_item_id', type=int)
     ProductionList.query.filter_by(
-        user_id=user.id, trade_hub_id=trade_hub_id, eve_item_id=eve_item_id
+        user_id=user.id, universe_system_id=universe_system_id, eve_item_id=eve_item_id
     ).delete()
     db.session.commit()
     return ('', 204)

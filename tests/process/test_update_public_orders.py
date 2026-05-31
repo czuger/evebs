@@ -2,7 +2,7 @@ import json
 import pytest
 from datetime import datetime, timedelta
 
-from tests.factories import make_region, make_trade_hub, make_item
+from tests.factories import make_universe_system, make_trade_hub, make_item
 
 
 def write_orders_file(tmp_path, orders):
@@ -31,8 +31,8 @@ def _base_order(**kwargs):
 
 @pytest.fixture
 def setup(db):
-    region = make_region(db)
-    hub = make_trade_hub(db, region, system_id=30000142)
+    system = make_universe_system(db, cpp_system_id=30000142)
+    hub = make_trade_hub(db, system)
     item = make_item(db, cpp_eve_item_id=34)
     db.session.commit()
     return hub, item
@@ -109,33 +109,33 @@ class TestUpdatePublicOrdersVolumeChange:
 
 
 class TestUpdatePublicOrdersExpiry:
-    def test_expired_untouched_sell_order_creates_sale(self, db, setup, tmp_path, monkeypatch):
+    def test_expired_untouched_sell_order_is_deleted_no_sale(self, db, setup, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
         hub, item = setup
         write_orders_file(tmp_path, [_base_order(volume_remain=50)])
         from process.update_public_orders import run
         run()
-        # Force end_time to the past so the order is considered expired
+        # Force end_time to the past — order expired, no sale should be recorded
         from evebs.models import PublicTradeOrder
         order = PublicTradeOrder.query.one()
         order.end_time = datetime.utcnow() - timedelta(days=1)
         db.session.commit()
-        # Run with an empty file — order is not touched and is expired
         write_orders_file(tmp_path, [])
         run()
         from evebs.models import SalesFinal
-        sf = SalesFinal.query.one()
-        assert sf.volume == 50
+        assert PublicTradeOrder.query.count() == 0
+        assert SalesFinal.query.count() == 0
 
-    def test_untouched_non_expired_order_is_deleted(self, db, setup, tmp_path, monkeypatch):
+    def test_boughtout_untouched_sell_order_creates_sale(self, db, setup, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
         hub, item = setup
         write_orders_file(tmp_path, [_base_order(volume_remain=50)])
         from process.update_public_orders import run
         run()
-        # Run with empty file — untouched order not expired → just deleted
+        # Run with empty file — order within end_time but not returned by ESI = bought out
         write_orders_file(tmp_path, [])
         run()
         from evebs.models import PublicTradeOrder, SalesFinal
         assert PublicTradeOrder.query.count() == 0
-        assert SalesFinal.query.count() == 0
+        sf = SalesFinal.query.one()
+        assert sf.volume == 50

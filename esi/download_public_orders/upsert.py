@@ -66,7 +66,7 @@ def classify_orders(
         if ex is None:
             to_insert.append({
                 'order_id':      order_id,
-                'trade_hub_id':  hub_id,
+                'universe_system_id': hub_id,
                 'eve_item_id':   item_id,
                 'is_buy_order':  od.get('is_buy_order', False),
                 'end_time':      end_time,
@@ -88,7 +88,7 @@ def classify_orders(
                 if not od.get('is_buy_order') and ex['volume_remain'] > vol:
                     sales_finals.append({
                         'day':          now_date,
-                        'trade_hub_id': hub_id,
+                        'universe_system_id': hub_id,
                         'eve_item_id':  item_id,
                         'volume':       ex['volume_remain'] - vol,
                         'price':        price,
@@ -144,7 +144,7 @@ def record_sold_out_orders(now: datetime) -> int:
     rows = db.session.execute(
         select(
             PublicTradeOrder.order_id,
-            PublicTradeOrder.trade_hub_id,
+            PublicTradeOrder.universe_system_id,
             PublicTradeOrder.eve_item_id,
             PublicTradeOrder.volume_remain,
             PublicTradeOrder.price,
@@ -159,7 +159,7 @@ def record_sold_out_orders(now: datetime) -> int:
         db.session.execute(insert(SalesFinal), [
             {
                 'day':          now.date(),
-                'trade_hub_id': r['trade_hub_id'],
+                'universe_system_id': r['universe_system_id'],
                 'eve_item_id':  r['eve_item_id'],
                 'volume':       r['volume_remain'],
                 'price':        r['price'],

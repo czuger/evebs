@@ -10,15 +10,15 @@ from process.update_prices import (
     update_market_histories,
 )
 from tests.factories import (
-    make_region, make_trade_hub, make_item, make_blueprint,
+    make_universe_system, make_trade_hub, make_item, make_blueprint,
     make_public_trade_order, make_sales_final, make_universe_region,
 )
 
 
 @pytest.fixture
 def hub_and_item(db):
-    region = make_region(db)
-    hub = make_trade_hub(db, region)
+    system = make_universe_system(db)
+    hub = make_trade_hub(db, system)
     item = make_item(db)
     db.session.commit()
     return hub, item
@@ -32,7 +32,7 @@ class TestUpdatePricesMin:
         db.session.commit()
         update_prices_min()
         from evebs.models import PricesMin
-        pm = PricesMin.query.filter_by(trade_hub_id=hub.id, eve_item_id=item.id).one()
+        pm = PricesMin.query.filter_by(universe_system_id=hub.id, eve_item_id=item.id).one()
         assert pm.min_price == pytest.approx(300.0)
 
     def test_ignores_buy_orders(self, db, hub_and_item):
@@ -67,7 +67,7 @@ class TestUpdatePricesMin:
         make_public_trade_order(db, item, hub, order_id=2, price=200.0, is_buy=False)
         db.session.commit()
         update_prices_min()
-        pm = PricesMin.query.filter_by(trade_hub_id=hub.id, eve_item_id=item.id).one()
+        pm = PricesMin.query.filter_by(universe_system_id=hub.id, eve_item_id=item.id).one()
         assert pm.min_price == pytest.approx(200.0)
 
 
@@ -79,7 +79,7 @@ class TestUpdateBuyOrdersAnalytics:
         db.session.commit()
         update_buy_orders_analytics()
         from evebs.models import BuyOrdersAnalytic
-        boa = BuyOrdersAnalytic.query.filter_by(trade_hub_id=hub.id, eve_item_id=item.id).one()
+        boa = BuyOrdersAnalytic.query.filter_by(universe_system_id=hub.id, eve_item_id=item.id).one()
         assert boa.approx_max_price == pytest.approx(900.0)
 
     def test_noop_when_no_buy_orders(self, db, hub_and_item):
@@ -98,7 +98,7 @@ class TestUpdateBuyOrdersAnalytics:
         db.session.commit()
         update_buy_orders_analytics()
         from evebs.models import BuyOrdersAnalytic
-        boa = BuyOrdersAnalytic.query.filter_by(trade_hub_id=hub.id, eve_item_id=item.id).one()
+        boa = BuyOrdersAnalytic.query.filter_by(universe_system_id=hub.id, eve_item_id=item.id).one()
         assert boa.single_unit_cost == pytest.approx(500.0)
         assert boa.single_unit_margin == pytest.approx(400.0)  # 900 - 500
 
@@ -113,7 +113,7 @@ class TestUpdateWeeklyPriceDetails:
         update_weekly_price_details()
         from evebs.models import WeeklyPriceDetail
         wpd = WeeklyPriceDetail.query.filter_by(
-            trade_hub_id=hub.id, eve_item_id=item.id, day=today
+            universe_system_id=hub.id, eve_item_id=item.id, day=today
         ).one()
         assert wpd.volume == 300
         expected_avg = (100 * 500.0 + 200 * 600.0) / 300
@@ -129,8 +129,8 @@ class TestUpdateWeeklyPriceDetails:
         assert WeeklyPriceDetail.query.count() == 0
 
     def test_updates_weekly_avg_price_on_item_from_jita(self, db):
-        region = make_region(db)
-        hub = make_trade_hub(db, region, system_id=30000142, name='Jita')
+        system = make_universe_system(db, cpp_system_id=30000142, name='Jita')
+        hub = make_trade_hub(db, system)
         item = make_item(db, cpp_eve_item_id=35, slug='rounds')
         today = date.today()
         make_sales_final(db, item, hub, volume=100, price=800.0, day=today, order_id=1)

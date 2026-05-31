@@ -21,7 +21,7 @@ class DownloadMyOrders:
             db.session.commit()
             return
 
-        from evebs.models import EveItem, TradeHub, UniverseStation, UniverseSystem, UserSaleOrder, ProductionList
+        from evebs.models import EveItem, UniverseStation, UniverseSystem, UserSaleOrder, ProductionList
         from evebs.extensions import db
         from datetime import datetime
 
@@ -31,23 +31,22 @@ class DownloadMyOrders:
             eve_item_id = EveItem.to_eve_item_id(page['type_id'])
             station = db.session.get(UniverseStation, page['location_id'])
             if station:
-                hub = (db.session.query(TradeHub)
-                       .join(UniverseSystem, TradeHub.eve_system_id == UniverseSystem.cpp_system_id)
-                       .filter(UniverseSystem.id == station.universe_system_id)
-                       .first())
-                trade_hub_id = hub.id if hub else None
+                system = (UniverseSystem.query
+                          .filter_by(id=station.universe_system_id, trade_hub=True)
+                          .first())
+                universe_system_id = system.id if system else None
             else:
-                trade_hub_id = None
+                universe_system_id = None
 
-            if not trade_hub_id:
+            if not universe_system_id:
                 continue
 
             order = UserSaleOrder.query.filter_by(
-                user_id=user.id, eve_item_id=eve_item_id, trade_hub_id=trade_hub_id
+                user_id=user.id, eve_item_id=eve_item_id, universe_system_id=universe_system_id
             ).first()
             if not order:
                 order = UserSaleOrder(user_id=user.id, eve_item_id=eve_item_id,
-                                      trade_hub_id=trade_hub_id, price=page['price'])
+                                      universe_system_id=universe_system_id, price=page['price'])
                 db.session.add(order)
                 db.session.flush()
             else:
@@ -57,7 +56,7 @@ class DownloadMyOrders:
 
             if user.remove_occuped_places:
                 ProductionList.query.filter_by(
-                    user_id=user.id, eve_item_id=eve_item_id, trade_hub_id=trade_hub_id
+                    user_id=user.id, eve_item_id=eve_item_id, universe_system_id=universe_system_id
                 ).delete()
 
         UserSaleOrder.query.filter(UserSaleOrder.id.in_(current_order_ids)).delete(

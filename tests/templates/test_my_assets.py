@@ -14,9 +14,10 @@ class TestMyAssetsTemplate:
         assert 'No assets.' in html
 
     def test_renders_asset_rows(self, app, user):
-        asset = SimpleNamespace(eve_item_id=34, quantity=5, universe_station_id=None)
-        html = _render(app, user=user, assets=[asset], stations=[])
-        assert '34' in html
+        asset = SimpleNamespace(quantity=5, universe_station_id=None)
+        item = SimpleNamespace(name='Tritanium', slug='tritanium')
+        html = _render(app, user=user, assets=[(asset, item, None)], stations=[])
+        assert 'Tritanium' in html
         assert '5' in html
 
     def test_renders_station_selector_when_stations_present(self, app, db, user):

@@ -56,12 +56,12 @@ def make_universe_station(db, system, cpp_station_id=60003760):
     return st
 
 
-def make_trade_hub(db, region, system_id=30000142, name='Jita', inner=False):
-    from evebs.models import TradeHub
-    th = TradeHub(eve_system_id=system_id, name=name, region_id=region.id, inner=inner)
-    db.session.add(th)
+def make_trade_hub(db, system, inner=False):
+    from evebs.models import UniverseSystem
+    system.trade_hub = True
+    system.is_inner = inner
     db.session.flush()
-    return th
+    return system
 
 
 
@@ -122,7 +122,7 @@ def make_sales_final(db, item, trade_hub, volume=100, price=1000.0,
     from evebs.models import SalesFinal
     sf = SalesFinal(
         day=day or date.today(),
-        trade_hub_id=trade_hub.id,
+        universe_system_id=trade_hub.id,
         eve_item_id=item.id,
         volume=volume,
         price=price,
@@ -154,7 +154,7 @@ def make_production_list(db, user, item, trade_hub, runs_count=1):
     pl = ProductionList(
         user_id=user.id,
         eve_item_id=item.id,
-        trade_hub_id=trade_hub.id,
+        universe_system_id=trade_hub.id,
         runs_count=runs_count,
     )
     db.session.add(pl)
@@ -167,7 +167,7 @@ def make_public_trade_order(db, item, trade_hub, order_id=1001, price=5000.0,
     from evebs.models import PublicTradeOrder
     o = PublicTradeOrder(
         order_id=order_id,
-        trade_hub_id=trade_hub.id,
+        universe_system_id=trade_hub.id,
         eve_item_id=item.id,
         is_buy_order=is_buy,
         end_time=datetime(2026, 12, 31),
@@ -187,7 +187,7 @@ def make_user_sale_order(db, user, item, trade_hub, price=10000.0):
     o = UserSaleOrder(
         user_id=user.id,
         eve_item_id=item.id,
-        trade_hub_id=trade_hub.id,
+        universe_system_id=trade_hub.id,
         price=price,
     )
     db.session.add(o)

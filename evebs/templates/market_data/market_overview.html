@@ -11,7 +11,7 @@
     </tr>
     {% for pm in item_prices %}
     <tr>
-      <td>{{ pm.trade_hub.name }}{% if pm.trade_hub.region %} ({{ pm.trade_hub.region.name }}){% endif %}</td>
+      <td>{{ pm.universe_system.name }}{% if pm.universe_system.universe_constellation and pm.universe_system.universe_constellation.universe_region %} ({{ pm.universe_system.universe_constellation.universe_region.name }}){% endif %}</td>
       <td class="text-end">{{ pm.min_price | isk }}</td>
       <td class="text-end">{{ pm.volume | vol }}</td>
     </tr>

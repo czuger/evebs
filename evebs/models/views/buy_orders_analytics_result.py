@@ -7,7 +7,7 @@ class BuyOrdersAnalyticsResult(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.BigInteger)
-    trade_hub_id = db.Column(db.BigInteger)
+    universe_system_id = db.Column(db.BigInteger)
     eve_item_id = db.Column(db.BigInteger)
     trade_hub_name = db.Column(db.String)
     eve_item_name = db.Column(db.String)

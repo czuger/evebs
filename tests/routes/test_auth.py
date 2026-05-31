@@ -56,9 +56,14 @@ class TestCallback:
         assert resp.status_code == 302
         assert '/' in resp.location
 
+    def _set_oauth_state(self, client, state='teststate'):
+        with client.session_transaction() as sess:
+            sess['oauth_state'] = state
+
     def test_creates_new_user_on_first_login(self, db, client):
+        self._set_oauth_state(client)
         with patch('evebs.routes.auth.requests.post', return_value=self._token_resp(char_id=55555)):
-            resp = client.get('/auth/eve_online_sso/callback?code=testcode')
+            resp = client.get('/auth/eve_online_sso/callback?code=testcode&state=teststate')
 
         from evebs.models import User
         u = User.query.filter_by(uid='55555').first()
@@ -67,9 +72,10 @@ class TestCallback:
         assert resp.status_code == 302
 
     def test_updates_existing_user_token(self, db, user, client):
+        self._set_oauth_state(client)
         with patch('evebs.routes.auth.requests.post',
                    return_value=self._token_resp(char_id=123456789, char_name='Renamed')):
-            client.get('/auth/eve_online_sso/callback?code=testcode')
+            client.get('/auth/eve_online_sso/callback?code=testcode&state=teststate')
 
         db.session.expire(user)
         assert user.name == 'Renamed'

@@ -12,14 +12,14 @@
     {% for pl in production_lists %}
     <tr>
       <td><a href="/items/{{ pl.eve_item.slug or pl.eve_item.id }}">{{ pl.eve_item.name }}</a></td>
-      <td>{{ pl.trade_hub.name }}</td>
+      <td>{{ pl.universe_system.name }}</td>
       <td>
         <input type="number" name="runs_count_{{ pl.id }}" value="{{ pl.runs_count or 0 }}"
                min="0" class="form-control form-control-sm" style="width:80px">
       </td>
       <td>
         <form action="/remove_production_list_check" method="post" style="display:inline">
-          <input type="hidden" name="trade_hub_id" value="{{ pl.trade_hub_id }}">
+          <input type="hidden" name="universe_system_id" value="{{ pl.universe_system_id }}">
           <input type="hidden" name="eve_item_id" value="{{ pl.eve_item_id }}">
           <button type="submit" class="btn btn-sm btn-danger">×</button>
         </form>

@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, abort
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
-from evebs.models import TradeHub
+from evebs.models import UniverseSystem
 
 bp = Blueprint('choose_trade_hubs', __name__)
 
@@ -11,10 +11,14 @@ bp = Blueprint('choose_trade_hubs', __name__)
 @login_required
 def edit():
     user = current_user
-    inner = TradeHub.query.filter_by(inner=True).join(TradeHub.region).order_by(TradeHub.name).all()
-    inner = [th for th in inner if th.region is not None]
-    outer = TradeHub.query.filter_by(inner=False).join(TradeHub.region).order_by(TradeHub.name).all()
-    outer = [th for th in outer if th.region is not None]
+    inner = (UniverseSystem.query
+             .filter_by(trade_hub=True, is_inner=True)
+             .order_by(UniverseSystem.name)
+             .all())
+    outer = (UniverseSystem.query
+             .filter_by(trade_hub=True, is_inner=False)
+             .order_by(UniverseSystem.name)
+             .all())
     user_hub_ids = set(user.trade_hub_ids)
     return render_template('choose_trade_hubs/edit.html',
                            title='Choose trade hubs to monitor',
@@ -30,7 +34,9 @@ def update():
     user = current_user
     trade_hub_id = request.form.get('id', type=int)
     check_state = request.form.get('check_state') == 'true'
-    hub = TradeHub.query.get_or_404(trade_hub_id)
+    hub = db.session.get(UniverseSystem, trade_hub_id)
+    if hub is None or not hub.trade_hub:
+        abort(404)
     if check_state:
         if hub not in user.trade_hubs:
             user.trade_hubs.append(hub)

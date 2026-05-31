@@ -40,13 +40,13 @@ class DownloadHistory:
         regions = UniverseRegion.query.all()
 
         if self.essentials:
-            from evebs.models import TradeHub, EveItem
-            hub_cpp_ids = {
-                int(th.region.cpp_region_id)
-                for th in TradeHub.query.all()
-                if th.region
+            from evebs.models import UniverseSystem, EveItem
+            hub_region_cpp_ids = {
+                int(us.universe_constellation.universe_region.cpp_region_id)
+                for us in UniverseSystem.query.filter_by(trade_hub=True).all()
+                if us.universe_constellation and us.universe_constellation.universe_region
             }
-            regions = [r for r in regions if r.cpp_region_id in hub_cpp_ids]
+            regions = [r for r in regions if r.cpp_region_id in hub_region_cpp_ids]
             ammo_group_ids = _ammo_market_group_ids()
             ammo_ids = {
                 item.cpp_eve_item_id

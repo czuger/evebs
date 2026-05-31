@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort, request
 from flask_login import current_user
 
-from evebs.models import EveItem, Constant, TradeHub, WeeklyPriceDetail
+from evebs.models import EveItem, Constant, WeeklyPriceDetail
 
 bp = Blueprint('production_costs', __name__)
 PER_PAGE = 20
@@ -32,7 +32,7 @@ def dailies_avg_prices(item_slug, trade_hub_id):
     page = request.args.get('page', 1, type=int)
     q = WeeklyPriceDetail.query.filter_by(
         eve_item_id=item.id,
-        trade_hub_id=trade_hub_id,
+        universe_system_id=trade_hub_id,
     ).order_by(WeeklyPriceDetail.day.desc())
     pagination = q.paginate(page=page, per_page=PER_PAGE)
     return render_template('production_costs/dailies_avg_prices.html',

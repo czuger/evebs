@@ -1,15 +1,15 @@
 """Tests for evebs/routes/production_lists.py."""
 import pytest
-from tests.factories import make_region, make_trade_hub, make_item, make_production_list
+from tests.factories import make_universe_system, make_trade_hub, make_item, make_production_list
 
 
 @pytest.fixture
 def seeded(db, user):
-    region = make_region(db)
-    hub = make_trade_hub(db, region)
+    system = make_universe_system(db)
+    hub = make_trade_hub(db, system)
     item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
     db.session.commit()
-    return {'hub': hub, 'item': item, 'region': region}
+    return {'hub': hub, 'item': item}
 
 
 class TestProductionListEdit:
@@ -37,7 +37,7 @@ class TestProductionListCreate:
         client, user = auth_client
         resp = client.post('/production_lists', data={
             'eve_item_id': seeded['item'].id,
-            'trade_hub_id': seeded['hub'].id,
+            'universe_system_id': seeded['hub'].id,
             'runs_count': 5,
         })
         assert resp.status_code == 302
@@ -53,7 +53,7 @@ class TestProductionListCreate:
         for _ in range(2):
             client.post('/production_lists', data={
                 'eve_item_id': seeded['item'].id,
-                'trade_hub_id': seeded['hub'].id,
+                'universe_system_id': seeded['hub'].id,
             })
 
         from evebs.models import ProductionList
@@ -63,7 +63,7 @@ class TestProductionListCreate:
     def test_redirects_unauthenticated(self, client, seeded):
         resp = client.post('/production_lists', data={
             'eve_item_id': seeded['item'].id,
-            'trade_hub_id': seeded['hub'].id,
+            'universe_system_id': seeded['hub'].id,
         })
         assert resp.status_code == 302
 
@@ -103,7 +103,7 @@ class TestProductionListRemove:
         db.session.commit()
 
         resp = client.post('/remove_production_list_check', data={
-            'trade_hub_id': seeded['hub'].id,
+            'universe_system_id': seeded['hub'].id,
             'eve_item_id': seeded['item'].id,
         })
         assert resp.status_code == 204
@@ -113,5 +113,5 @@ class TestProductionListRemove:
 
     def test_redirects_unauthenticated(self, client, db):
         resp = client.post('/remove_production_list_check',
-                           data={'trade_hub_id': 1, 'eve_item_id': 1})
+                           data={'universe_system_id': 1, 'eve_item_id': 1})
         assert resp.status_code == 302

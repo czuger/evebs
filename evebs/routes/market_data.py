@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort
-from flask_login import current_user
 
-from evebs.models import EveItem, TradeHub, PricesMin, PriceAdvicesMinPrice, PublicTradeOrder, UniverseStation
+from evebs.extensions import db
+from evebs.models import EveItem, UniverseSystem, UniverseStation, PricesMin, PriceAdvicesMinPrice, PublicTradeOrder
 
 bp = Blueprint('market_data', __name__)
 
@@ -12,7 +12,7 @@ def market_overview(item_id):
     if item.base_item:
         item_prices = (PricesMin.query
                        .filter_by(eve_item_id=item.id)
-                       .join(PricesMin.trade_hub)
+                       .join(PricesMin.universe_system)
                        .order_by(PricesMin.min_price)
                        .all())
         advice_prices = None
@@ -34,14 +34,16 @@ def market_overview(item_id):
 @bp.route('/market_data/<int:item_id>/trade_hub_detail/<int:trade_hub_id>')
 def trade_hub_detail(item_id, trade_hub_id):
     item = EveItem.query.get_or_404(item_id)
-    trade_hub = TradeHub.query.get_or_404(trade_hub_id)
+    trade_hub = db.session.get(UniverseSystem, trade_hub_id)
+    if trade_hub is None:
+        abort(404)
     sell_orders = (PublicTradeOrder.query
-                   .filter_by(trade_hub_id=trade_hub_id, eve_item_id=item.id, is_buy_order=False)
+                   .filter_by(universe_system_id=trade_hub_id, eve_item_id=item.id, is_buy_order=False)
                    .order_by(PublicTradeOrder.price)
                    .limit(10)
                    .all())
     buy_orders = (PublicTradeOrder.query
-                  .filter_by(trade_hub_id=trade_hub_id, eve_item_id=item.id, is_buy_order=True)
+                  .filter_by(universe_system_id=trade_hub_id, eve_item_id=item.id, is_buy_order=True)
                   .order_by(PublicTradeOrder.price.desc())
                   .limit(10)
                   .all())

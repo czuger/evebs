@@ -12,4 +12,4 @@ class Region(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    trade_hubs = db.relationship('TradeHub', back_populates='region')
+

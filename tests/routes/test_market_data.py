@@ -1,12 +1,12 @@
 """Tests for evebs/routes/market_data.py."""
 import pytest
-from tests.factories import make_region, make_trade_hub, make_item, make_public_trade_order
+from tests.factories import make_universe_system, make_trade_hub, make_item, make_public_trade_order
 
 
 @pytest.fixture
 def seeded(db):
-    region = make_region(db)
-    hub = make_trade_hub(db, region, system_id=30000142, name='Jita')
+    system = make_universe_system(db, cpp_system_id=30000142, name='Jita')
+    hub = make_trade_hub(db, system)
     item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
     db.session.commit()
     return {'hub': hub, 'item': item}
@@ -22,8 +22,8 @@ class TestMarketOverview:
         assert resp.status_code == 200
 
     def test_base_item_uses_prices_min(self, db, client):
-        region = make_region(db)
-        hub = make_trade_hub(db, region)
+        system = make_universe_system(db)
+        hub = make_trade_hub(db, system)
         item = make_item(db, cpp_eve_item_id=34, slug='tritanium-base', base_item=True)
         db.session.commit()
 

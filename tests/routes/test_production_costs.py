@@ -45,9 +45,9 @@ class TestDailiesAvgPrices:
         assert resp.status_code == 400
 
     def test_200_for_base_item(self, client, db):
-        from tests.factories import make_region, make_trade_hub
-        region = make_region(db)
-        hub = make_trade_hub(db, region)
+        from tests.factories import make_universe_system, make_trade_hub
+        system = make_universe_system(db)
+        hub = make_trade_hub(db, system)
         item = make_item(db, cpp_eve_item_id=36, slug='base-item', base_item=True)
         db.session.commit()
         resp = client.get(f'/production_costs/base-item/dailies_avg_prices/{hub.id}')

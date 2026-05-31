@@ -1,6 +1,6 @@
 """Tests for evebs/routes/items.py."""
 import pytest
-from tests.factories import make_region, make_trade_hub, make_item, make_market_group
+from tests.factories import make_universe_system, make_trade_hub, make_item, make_market_group
 
 
 class TestItemShow:
@@ -9,8 +9,8 @@ class TestItemShow:
         assert resp.status_code == 404
 
     def test_200_for_existing_slug(self, db, client):
-        region = make_region(db)
-        make_trade_hub(db, region, system_id=30000142)
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
         item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
         db.session.commit()
 
@@ -19,8 +19,8 @@ class TestItemShow:
         assert b'Tritanium' in resp.data
 
     def test_item_found_by_numeric_id(self, db, client):
-        region = make_region(db)
-        make_trade_hub(db, region, system_id=30000142)
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
         item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
         db.session.commit()
 
@@ -28,8 +28,8 @@ class TestItemShow:
         assert resp.status_code == 200
 
     def test_taxes_default_when_constant_missing(self, db, client):
-        region = make_region(db)
-        make_trade_hub(db, region, system_id=30000142)
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
         make_item(db, cpp_eve_item_id=34, slug='tritanium')
         db.session.commit()
 
@@ -39,8 +39,8 @@ class TestItemShow:
 
     def test_with_seeded_constant(self, db, client):
         from evebs.models import Constant
-        region = make_region(db)
-        make_trade_hub(db, region, system_id=30000142)
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
         make_item(db, cpp_eve_item_id=34, slug='tritanium')
         c = Constant(libe='taxes', f_value=1.10, description='Tax rate')
         db.session.add(c)

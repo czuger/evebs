@@ -10,7 +10,7 @@
              id="th_{{ th.id }}" value="{{ th.id }}"
              {% if th.id in user_trade_hubs_ids %}checked{% endif %}>
       <label class="form-check-label" for="th_{{ th.id }}">
-        {{ th.name }}{% if th.region %} ({{ th.region.name }}){% endif %}
+        {{ th.name }}{% if th.universe_constellation and th.universe_constellation.universe_region %} ({{ th.universe_constellation.universe_region.name }}){% endif %}
       </label>
     </div>
     {% endfor %}
@@ -23,7 +23,7 @@
              id="th_{{ th.id }}" value="{{ th.id }}"
              {% if th.id in user_trade_hubs_ids %}checked{% endif %}>
       <label class="form-check-label" for="th_{{ th.id }}">
-        {{ th.name }}{% if th.region %} ({{ th.region.name }}){% endif %}
+        {{ th.name }}{% if th.universe_constellation and th.universe_constellation.universe_region %} ({{ th.universe_constellation.universe_region.name }}){% endif %}
       </label>
     </div>
     {% endfor %}

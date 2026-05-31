@@ -1,6 +1,6 @@
 import logging
 
-from evebs.models import TradeHub, EveItem, UniverseRegion
+from evebs.models import UniverseSystem, EveItem, UniverseRegion
 from esi.download_history import _ammo_market_group_ids
 
 logger = logging.getLogger(__name__)
@@ -12,11 +12,15 @@ def load_reference_data(
     essentials: bool = False,
     forge_only: bool = False,
 ) -> tuple[dict[int, int], dict[int, int], list]:
-    trade_hubs = TradeHub.query.all()
-    hub_map    = {th.eve_system_id: th.id for th in trade_hubs}
-    item_map   = {ei.cpp_eve_item_id: ei.id for ei in EveItem.query.all()}
+    trade_hubs = UniverseSystem.query.filter_by(trade_hub=True).all()
+    hub_map = {us.cpp_system_id: us.id for us in trade_hubs}
+    item_map = {ei.cpp_eve_item_id: ei.id for ei in EveItem.query.all()}
 
-    hub_region_ids = {int(th.region.cpp_region_id) for th in trade_hubs if th.region}
+    hub_region_ids = {
+        int(us.universe_constellation.universe_region.cpp_region_id)
+        for us in trade_hubs
+        if us.universe_constellation and us.universe_constellation.universe_region
+    }
     regions = [r for r in UniverseRegion.query.all() if r.cpp_region_id in hub_region_ids]
 
     if forge_only:
@@ -25,7 +29,7 @@ def load_reference_data(
 
     elif essentials:
         ammo_group_ids = _ammo_market_group_ids()
-        ammo_cpp_ids   = {
+        ammo_cpp_ids = {
             item.cpp_eve_item_id
             for item in EveItem.query.filter(EveItem.market_group_id.in_(ammo_group_ids)).all()
         }

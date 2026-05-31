@@ -4,15 +4,14 @@ from datetime import datetime, timedelta
 from unittest.mock import patch
 
 from esi.download_my_orders import DownloadMyOrders
-from tests.factories import make_region, make_trade_hub, make_item, make_universe_system, make_universe_station, make_user_sale_order
+from tests.factories import make_trade_hub, make_item, make_universe_system, make_universe_station, make_user_sale_order
 
 
 @pytest.fixture
 def seeded(db, user):
-    region = make_region(db)
-    hub = make_trade_hub(db, region)  # eve_system_id=30000142 (Jita)
-    item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
     us = make_universe_system(db)  # cpp_system_id=30000142 (Jita)
+    hub = make_trade_hub(db, us)  # marks us as trade_hub=True
+    item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
     station = make_universe_station(db, us)  # id=60003760
     db.session.commit()
     return {'hub': hub, 'item': item, 'station': station}
@@ -43,7 +42,7 @@ class TestDownloadMyOrders:
         assert len(orders) == 1
         assert orders[0].price == 5000.0
         assert orders[0].eve_item_id == seeded['item'].id
-        assert orders[0].trade_hub_id == seeded['hub'].id
+        assert orders[0].universe_system_id == seeded['hub'].id
 
     def test_updates_price_on_existing_order(self, db, user, seeded):
         existing = make_user_sale_order(db, user, seeded['item'], seeded['hub'], price=1000.0)

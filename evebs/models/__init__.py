@@ -1,7 +1,6 @@
 from evebs.models.tables.associations import eve_items_users, trade_hubs_users
 from evebs.models.tables.user import User, load_user
 from evebs.models.tables.region import Region
-from evebs.models.tables.trade_hub import TradeHub
 from evebs.models.tables.market_group import MarketGroup
 from evebs.models.tables.blueprint import Blueprint
 from evebs.models.tables.eve_item import EveItem
@@ -42,7 +41,6 @@ __all__ = [
     'eve_items_users', 'trade_hubs_users',
     'User', 'load_user',
     'Region',
-    'TradeHub',
     'MarketGroup',
     'Blueprint',
     'EveItem',

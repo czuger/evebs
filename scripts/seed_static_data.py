@@ -441,32 +441,24 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
          f'|  {_fmt(unknown_products)} unknown product items')
 
 
-def seed_trade_hubs(db, Region, TradeHub):
-    done = _step('Trade hubs  (hardcoded list → TradeHub)')
-    regions  = {r.cpp_region_id: r for r in Region.query.all()}
-    existing = {th.eve_system_id: th for th in TradeHub.query.all()}
-    print(f'    existing: {_fmt(len(existing))} TradeHub  |  seeding {len(TRADE_HUBS)} entries')
-    created = updated = skipped = 0
+def seed_trade_hubs(db, UniverseSystem):
+    done = _step('Trade hubs  (hardcoded list → UniverseSystem.trade_hub)')
+    existing = {us.cpp_system_id: us for us in UniverseSystem.query.all()}
+    print(f'    existing: {_fmt(len(existing))} UniverseSystem rows  |  seeding {len(TRADE_HUBS)} trade hubs')
+    updated = skipped = 0
 
     for name, system_id, cpp_region_id, inner in TRADE_HUBS:
-        region = regions.get(cpp_region_id)
-        if region is None:
-            print(f'    WARNING: region {cpp_region_id} not found for {name} — run --regions first')
+        us = existing.get(system_id)
+        if us is None:
+            print(f'    WARNING: UniverseSystem cpp_system_id={system_id} ({name}) not found — run --universe first')
             skipped += 1
             continue
-        th = existing.get(system_id)
-        if th:
-            th.name = name
-            th.region_id = region.id
-            th.inner = inner
-            updated += 1
-        else:
-            db.session.add(TradeHub(eve_system_id=system_id, name=name,
-                                    region_id=region.id, inner=inner))
-            created += 1
+        us.trade_hub = True
+        us.is_inner = inner
+        updated += 1
 
     db.session.commit()
-    done(f'TradeHub: {_fmt(created)} created, {_fmt(updated)} updated, {_fmt(skipped)} skipped')
+    done(f'UniverseSystem trade_hub: {_fmt(updated)} updated, {_fmt(skipped)} skipped')
 
 
 # ---------------------------------------------------------------------------
@@ -509,7 +501,6 @@ def main():
         Region, UniverseRegion, MarketGroup,
         UniverseConstellation, UniverseSystem,
         UniverseStation, EveItem, Blueprint, BlueprintMaterial,
-        TradeHub,
     )
 
     app = create_app()
@@ -537,7 +528,7 @@ def main():
         if do_blueprints:
             seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem)
         if do_trade_hubs:
-            seed_trade_hubs(db, Region, TradeHub)
+            seed_trade_hubs(db, UniverseSystem)
 
     _print_summary(time.perf_counter() - wall_t0)
 

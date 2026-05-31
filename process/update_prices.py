@@ -15,7 +15,7 @@ def update_prices_min():
     db.session.execute(text("""
         DELETE FROM prices_mins WHERE NOT EXISTS (
             SELECT 1 FROM public_trade_orders pto
-            WHERE prices_mins.trade_hub_id = pto.trade_hub_id
+            WHERE prices_mins.universe_system_id = pto.universe_system_id
             AND prices_mins.eve_item_id = pto.eve_item_id
             AND pto.is_buy_order = FALSE
         )
@@ -23,12 +23,12 @@ def update_prices_min():
 
     # Insert / update min prices
     db.session.execute(text("""
-        INSERT INTO prices_mins (trade_hub_id, eve_item_id, min_price, created_at, updated_at)
-        SELECT trade_hub_id, eve_item_id, MIN(price), :now, :now
+        INSERT INTO prices_mins (universe_system_id, eve_item_id, min_price, created_at, updated_at)
+        SELECT universe_system_id, eve_item_id, MIN(price), :now, :now
         FROM public_trade_orders
         WHERE is_buy_order = FALSE
-        GROUP BY trade_hub_id, eve_item_id
-        ON CONFLICT (trade_hub_id, eve_item_id)
+        GROUP BY universe_system_id, eve_item_id
+        ON CONFLICT (universe_system_id, eve_item_id)
         DO UPDATE SET min_price = excluded.min_price, updated_at = :now
     """), {'now': now})
 
@@ -41,12 +41,12 @@ def update_buy_orders_analytics():
     now = datetime.utcnow()
 
     db.session.execute(text("""
-        INSERT INTO buy_orders_analytics (trade_hub_id, eve_item_id, approx_max_price, created_at, updated_at)
-        SELECT trade_hub_id, eve_item_id, MAX(price) * 0.9, :now, :now
+        INSERT INTO buy_orders_analytics (universe_system_id, eve_item_id, approx_max_price, created_at, updated_at)
+        SELECT universe_system_id, eve_item_id, MAX(price) * 0.9, :now, :now
         FROM public_trade_orders
         WHERE is_buy_order = TRUE
-        GROUP BY trade_hub_id, eve_item_id
-        ON CONFLICT (trade_hub_id, eve_item_id)
+        GROUP BY universe_system_id, eve_item_id
+        ON CONFLICT (universe_system_id, eve_item_id)
         DO UPDATE SET approx_max_price = excluded.approx_max_price, updated_at = :now
     """), {'now': now})
 
@@ -55,7 +55,7 @@ def update_buy_orders_analytics():
             SELECT SUM(volume_remain)
             FROM public_trade_orders bo
             WHERE bo.price >= buy_orders_analytics.approx_max_price
-            AND bo.trade_hub_id = buy_orders_analytics.trade_hub_id
+            AND bo.universe_system_id = buy_orders_analytics.universe_system_id
             AND bo.eve_item_id = buy_orders_analytics.eve_item_id
             AND bo.is_buy_order = TRUE
         )
@@ -105,12 +105,12 @@ def update_prices_advices_immediate():
 
     # Insert missing combinations from sales_finals
     db.session.execute(text("""
-        INSERT INTO prices_advices (eve_item_id, trade_hub_id, created_at, updated_at)
-        SELECT DISTINCT sf.eve_item_id, sf.trade_hub_id, :now, :now
+        INSERT INTO prices_advices (eve_item_id, universe_system_id, created_at, updated_at)
+        SELECT DISTINCT sf.eve_item_id, sf.universe_system_id, :now, :now
         FROM sales_finals sf
         JOIN eve_items ei ON sf.eve_item_id = ei.id
         WHERE ei.blueprint_id IS NOT NULL
-        ON CONFLICT (eve_item_id, trade_hub_id) DO NOTHING
+        ON CONFLICT (eve_item_id, universe_system_id) DO NOTHING
     """), {'now': now})
 
     # Clear where no sales data
@@ -120,7 +120,7 @@ def update_prices_advices_immediate():
             updated_at = :now
         WHERE NOT EXISTS (
             SELECT 1 FROM sales_finals sf
-            WHERE sf.trade_hub_id = prices_advices.trade_hub_id
+            WHERE sf.universe_system_id = prices_advices.universe_system_id
             AND sf.eve_item_id = prices_advices.eve_item_id
         )
     """), {'now': now})
@@ -134,14 +134,14 @@ def update_prices_advices_immediate():
             updated_at = NOW()
         FROM (
             SELECT 
-                trade_hub_id,
+                universe_system_id,
                 eve_item_id,
                 SUM(volume) AS total_vol,
                 AVG(price)  AS avg_price
             FROM sales_finals
-            GROUP BY trade_hub_id, eve_item_id
+            GROUP BY universe_system_id, eve_item_id
         ) agg
-        WHERE agg.trade_hub_id = pa.trade_hub_id
+        WHERE agg.universe_system_id = pa.universe_system_id
         AND agg.eve_item_id = pa.eve_item_id;
     """))
 
@@ -153,15 +153,15 @@ def update_prices_advices_immediate():
             updated_at = NOW()
         FROM (
             SELECT
-                trade_hub_id,
+                universe_system_id,
                 eve_item_id,
                 SUM(volume * price) / NULLIF(SUM(volume), 0) AS vwap
             FROM sales_finals
             WHERE day >= (CURRENT_DATE - INTERVAL '7 days')
             AND volume > 0
-            GROUP BY trade_hub_id, eve_item_id
+            GROUP BY universe_system_id, eve_item_id
         ) agg
-        WHERE pa.trade_hub_id = agg.trade_hub_id
+        WHERE pa.universe_system_id = agg.universe_system_id
         AND pa.eve_item_id = agg.eve_item_id;
     """))
 
@@ -172,7 +172,7 @@ def update_prices_advices_immediate():
                 SELECT (pm.min_price / ei.cost - 1.0)
                 FROM prices_mins pm, eve_items ei
                 WHERE pm.eve_item_id = prices_advices.eve_item_id
-                AND pm.trade_hub_id = prices_advices.trade_hub_id
+                AND pm.universe_system_id = prices_advices.universe_system_id
                 AND ei.id = prices_advices.eve_item_id
                 AND ei.cost IS NOT NULL
                 AND ei.cost > 0
@@ -181,7 +181,7 @@ def update_prices_advices_immediate():
                 SELECT pm.min_price / prices_advices.avg_price_month
                 FROM prices_mins pm
                 WHERE pm.eve_item_id = prices_advices.eve_item_id
-                AND pm.trade_hub_id = prices_advices.trade_hub_id
+                AND pm.universe_system_id = prices_advices.universe_system_id
                 AND prices_advices.avg_price_month IS NOT NULL
                 AND prices_advices.avg_price_month > 0
             ),
@@ -200,15 +200,15 @@ def update_weekly_price_details():
     week_ago = (now.date() - timedelta(days=7)).isoformat()
 
     db.session.execute(text("""
-        INSERT INTO weekly_price_details (eve_item_id, trade_hub_id, day, volume, weighted_avg_price, created_at, updated_at)
-        SELECT sf.eve_item_id, sf.trade_hub_id, sf.day,
+        INSERT INTO weekly_price_details (eve_item_id, universe_system_id, day, volume, weighted_avg_price, created_at, updated_at)
+        SELECT sf.eve_item_id, sf.universe_system_id, sf.day,
                SUM(sf.volume),
                SUM(sf.volume * sf.price) / SUM(sf.volume),
                :now, :now
         FROM sales_finals sf
         WHERE sf.day > :yesterday AND sf.volume > 0
-        GROUP BY sf.eve_item_id, sf.trade_hub_id, sf.day
-        ON CONFLICT (eve_item_id, trade_hub_id, day)
+        GROUP BY sf.eve_item_id, sf.universe_system_id, sf.day
+        ON CONFLICT (eve_item_id, universe_system_id, day)
         DO UPDATE SET
             volume = excluded.volume,
             weighted_avg_price = excluded.weighted_avg_price,
@@ -224,8 +224,8 @@ def update_weekly_price_details():
         UPDATE eve_items SET weekly_avg_price = (
             SELECT SUM(wpd.volume * wpd.weighted_avg_price) / SUM(wpd.volume)
             FROM weekly_price_details wpd
-            JOIN trade_hubs tu ON wpd.trade_hub_id = tu.id
-            WHERE tu.eve_system_id = 30000142
+            JOIN universe_systems us ON wpd.universe_system_id = us.id
+            WHERE us.cpp_system_id = 30000142
             AND wpd.eve_item_id = eve_items.id
         ), updated_at = :now
     """), {'now': now})

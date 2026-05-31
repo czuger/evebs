@@ -1,15 +1,16 @@
 """Tests for evebs/routes/choose_trade_hubs.py."""
 import pytest
-from tests.factories import make_region, make_trade_hub
+from tests.factories import make_universe_system, make_trade_hub
 
 
 @pytest.fixture
 def hubs(db):
-    region = make_region(db)
-    outer = make_trade_hub(db, region, system_id=30000142, name='Jita', inner=False)
-    inner = make_trade_hub(db, region, system_id=30000144, name='Perimeter', inner=True)
+    outer_sys = make_universe_system(db, cpp_system_id=30000142, name='Jita')
+    inner_sys = make_universe_system(db, cpp_system_id=30000144, name='Perimeter')
+    outer = make_trade_hub(db, outer_sys, inner=False)
+    inner = make_trade_hub(db, inner_sys, inner=True)
     db.session.commit()
-    return {'region': region, 'outer': outer, 'inner': inner}
+    return {'outer': outer, 'inner': inner}
 
 
 class TestChooseTradeHubsEdit:
