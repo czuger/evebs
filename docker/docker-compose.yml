@@ -15,6 +15,21 @@ services:
     networks:
       - app-eve-dominion
 
+  app-eve-dominion-public-orders-daemon-downloader:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: app-eve-dominion-public-orders-daemon-downloader
+    command: ["python", "process/orders_daemon.py"]
+    volumes:
+      - /home/ced/python/evebs:/app
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - app-eve-dominion
+
 networks:
   app-eve-dominion:
     external: true

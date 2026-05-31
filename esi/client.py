@@ -38,6 +38,7 @@ class EsiClient:
                     if error.should_retry():
                         retry_after = resp.headers.get('Retry-After')
                         if retry_after is not None:
+                            logger.warning('Retry-After: sleeping %.1fs — %s', float(retry_after), url)
                             time.sleep(float(retry_after))
                         else:
                             error.pause()
@@ -46,6 +47,7 @@ class EsiClient:
 
                 remaining = resp.headers.get('X-Ratelimit-Remaining')
                 if remaining is not None and int(remaining) < 20:
+                    logger.warning('X-Ratelimit-Remaining=%s — sleeping 1s — %s', remaining, url)
                     time.sleep(1)
 
                 self._pages_count = int(resp.headers.get('x-pages', 0))

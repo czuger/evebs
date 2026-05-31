@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime, timedelta
 
-from sqlalchemy import BigInteger, any_, insert, literal, update, select
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import BigInteger, any_, literal, update, select
+from sqlalchemy.dialects.postgresql import ARRAY, insert
 
 from evebs.extensions import db
 from evebs.models import PublicTradeOrder, SalesFinal
@@ -119,7 +119,10 @@ def apply_batch(
 ) -> None:
     """Execute all bulk DB operations for one classified batch."""
     if to_insert:
-        db.session.execute(insert(PublicTradeOrder), to_insert)
+        db.session.execute(
+            insert(PublicTradeOrder).on_conflict_do_nothing(index_elements=['order_id']),
+            to_insert,
+        )
     if full_updates:
         db.session.execute(update(PublicTradeOrder), full_updates)
     if loc_fills:

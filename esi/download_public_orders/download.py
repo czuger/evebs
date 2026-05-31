@@ -19,11 +19,12 @@ logger = logging.getLogger(__name__)
 def download(
     essentials:  bool = False,
     forge_only:  bool = False,
-    all_at_once: bool = False,
+    all_at_once: bool = True,
+    regions:     str  = 'hub',
 ) -> None:
     t0 = time.perf_counter()
 
-    hub_map, item_map, regions = load_reference_data(essentials, forge_only)
+    hub_map, item_map, regions = load_reference_data(essentials, forge_only, regions)
     logger.debug('Reference data loaded: %d hubs | %d items', len(hub_map), len(item_map))
 
     PublicTradeOrder.query.update({'touched': False})
