@@ -1,36 +1,49 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>My assets</h2>
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">My assets</h2>
+  <form action="{{ url_for('my_assets.sync') }}" method="post" class="mb-0">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">
+      Sync assets{% if user.last_assets_download %} · last {{ user.last_assets_download.strftime('%Y-%m-%d %H:%M') }}{% endif %}
+    </button>
+  </form>
+</div>
+
 {% if stations %}
-<form action="/my_assets/set_assets_station" method="post" class="mb-3">
+<form action="{{ url_for('my_assets.set_assets_station') }}" method="post" class="mb-3">
   <div class="d-flex align-items-center gap-2">
-    <select name="station_id" class="form-control">
+    <select name="station_id" class="form-select" style="max-width:400px">
       <option value="">-- All stations --</option>
       {% for st in stations %}
-      <option value="{{ st.id }}"
-        {% if user.selected_assets_station_id == st.id %}selected{% endif %}>
-        {{ st.name }}
+      <option value="{{ st.id }}" {% if user.selected_assets_station_id == st.id %}selected{% endif %}>
+        {{ st.name or st.cpp_station_id }}
       </option>
       {% endfor %}
     </select>
-    <button type="submit" class="btn btn-secondary">Set station</button>
+    <button type="submit" class="btn btn-secondary btn-sm">Set station</button>
   </div>
 </form>
 {% endif %}
-<table class="table">
-  <tr>
-    <th>Item</th>
-    <th class="text-end">Quantity</th>
-    <th>Station</th>
-  </tr>
-  {% for asset in assets %}
-  <tr>
-    <td>{{ asset.eve_item_id }}</td>
-    <td class="text-end">{{ asset.quantity }}</td>
-    <td>{{ asset.universe_station_id or 'N/A' }}</td>
-  </tr>
-  {% else %}
-  <tr><td colspan="3" class="text-center text-muted">No assets.</td></tr>
-  {% endfor %}
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th class="text-end">Qty</th>
+      <th>Station</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for asset, item, station in assets %}
+    <tr>
+      <td>{{ item.name }}</td>
+      <td class="text-end">{{ asset.quantity }}</td>
+      <td>{{ station.name if station else '—' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center text-muted">No assets. Click "Sync assets" to load.</td></tr>
+    {% endfor %}
+  </tbody>
 </table>
+{% include 'shared/pagination.html' %}
 {% endblock %}

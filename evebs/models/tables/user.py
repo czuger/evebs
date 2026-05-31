@@ -33,6 +33,7 @@ class User(UserMixin, db.Model):
     download_blueprints_running = db.Column(db.Boolean, default=False, nullable=False)
     last_blueprints_download = db.Column(db.DateTime)
     selected_assets_station_id = db.Column(db.BigInteger, db.ForeignKey('universe_stations.id'))
+    current_location_station_id = db.Column(db.BigInteger, db.ForeignKey('universe_stations.id'), nullable=True)
     last_duplication_receiver_id = db.Column(db.Integer)
     sales_orders_show_margin_min = db.Column(db.Integer)
     initialization_finalized = db.Column(db.Boolean, default=False, nullable=False)

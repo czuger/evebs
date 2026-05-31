@@ -1,25 +1,50 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 
+from esi.download_my_assets import DownloadMyAssets
 from evebs.extensions import db
-from evebs.models import BpcAsset, UniverseStation
+from evebs.models import BpcAsset, EveItem, UniverseStation
 
 bp = Blueprint('my_assets', __name__)
+
+PER_PAGE = 20
 
 
 @bp.route('/my_assets')
 @login_required
 def show():
     user = current_user
-    assets = BpcAsset.query.filter_by(user_id=user.id).all()
-    stations = UniverseStation.query.join(BpcAsset, BpcAsset.universe_station_id == UniverseStation.id).filter(
-        BpcAsset.user_id == user.id
-    ).distinct().all()
+    page = request.args.get('page', 1, type=int)
+    pagination = (
+        db.session.query(BpcAsset, EveItem, UniverseStation)
+        .join(EveItem, BpcAsset.eve_item_id == EveItem.id)
+        .outerjoin(UniverseStation, BpcAsset.universe_station_id == UniverseStation.id)
+        .filter(BpcAsset.user_id == user.id)
+        .order_by(EveItem.name)
+        .paginate(page=page, per_page=PER_PAGE)
+    )
+    stations = (
+        UniverseStation.query
+        .join(BpcAsset, BpcAsset.universe_station_id == UniverseStation.id)
+        .filter(BpcAsset.user_id == user.id)
+        .distinct().all()
+    )
     return render_template('my_assets/show.html',
                            title='My assets',
-                           assets=assets,
+                           assets=pagination.items,
+                           pagination=pagination,
                            stations=stations,
                            user=user)
+
+
+@bp.route('/my_assets/sync', methods=['POST'])
+@login_required
+def sync():
+    current_user.download_assets_running = True
+    db.session.commit()
+    DownloadMyAssets().update(current_user)
+    flash('Assets synced.')
+    return redirect(url_for('my_assets.show'))
 
 
 @bp.route('/my_assets/set_assets_station', methods=['POST'])

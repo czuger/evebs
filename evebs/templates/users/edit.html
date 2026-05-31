@@ -1,54 +1,109 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="/users" method="post">
-  <b>Weekly or immediate</b>
-  <div class="row">
-    <div class="col-12 col-lg">
-      <div class="mb-3">
-        <label for="min_pcent_for_advice">Min percent for advice</label>
-        <input type="number" name="min_pcent_for_advice" id="min_pcent_for_advice"
-               value="{{ user.min_pcent_for_advice }}" class="form-control" size="5">
-      </div>
-    </div>
-    <div class="col-12 col-lg">
-      <div class="mb-3">
-        <label for="min_amount_for_advice">Min amount for advice</label>
-        <input type="text" name="min_amount_for_advice" id="min_amount_for_advice"
-               value="{{ '{:,}'.format(user.min_amount_for_advice).replace(',', ' ') }}"
-               class="form-control">
-      </div>
-    </div>
-    <div class="col-12 col-lg">
-      <div class="mb-3">
-        <label for="vol_month_pcent">Vol month percent</label>
-        <input type="number" name="vol_month_pcent" id="vol_month_pcent"
-               value="{{ user.vol_month_pcent }}" class="form-control">
+<div class="row mb-3">
+  <div class="col">
+    <h3>Settings — {{ current_user.name }}</h3>
+  </div>
+</div>
+
+<form action="{{ url_for('users.update') }}" method="post">
+
+  <div class="card mb-3">
+    <div class="card-header">Price advice filters</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12 col-md-4 mb-3">
+          <label for="min_pcent_for_advice" class="form-label">Min margin %</label>
+          <input type="number" name="min_pcent_for_advice" id="min_pcent_for_advice"
+                 value="{{ user.min_pcent_for_advice }}" class="form-control">
+          <div class="form-text">Hide items below this margin percentage.</div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <label for="min_amount_for_advice" class="form-label">Min margin (ISK)</label>
+          <input type="text" name="min_amount_for_advice" id="min_amount_for_advice"
+                 value="{{ '{:,}'.format(user.min_amount_for_advice).replace(',', ' ') }}"
+                 class="form-control">
+          <div class="form-text">Hide items below this absolute ISK margin.</div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <label for="vol_month_pcent" class="form-label">Monthly volume %</label>
+          <input type="number" name="vol_month_pcent" id="vol_month_pcent"
+                 value="{{ user.vol_month_pcent }}" class="form-control">
+          <div class="form-text">Target sell percentage of monthly volume.</div>
+        </div>
       </div>
     </div>
   </div>
-  <hr>
-  <b>Buy orders</b>
-  <div class="row">
-    <div class="col-12 col-lg">
-      <div class="mb-3">
-        <label for="batch_cap">Batch cap</label>
-        <input type="checkbox" name="batch_cap" id="batch_cap"
-               {% if user.batch_cap %}checked{% endif %}>
-      </div>
-    </div>
-    <div class="col-12 col-lg">
-      <div class="mb-3">
-        <label for="batch_cap_multiplier">Batch cap multiplier</label>
-        <input type="number" name="batch_cap_multiplier" id="batch_cap_multiplier"
-               value="{{ user.batch_cap_multiplier }}" class="form-control">
+
+  <div class="card mb-3">
+    <div class="card-header">Buy orders</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="batch_cap" id="batch_cap"
+                   class="form-check-input" {% if user.batch_cap %}checked{% endif %}>
+            <label for="batch_cap" class="form-check-label">Batch cap</label>
+          </div>
+          <div class="form-text">Cap the quantity per buy order.</div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <label for="batch_cap_multiplier" class="form-label">Batch cap multiplier</label>
+          <input type="number" name="batch_cap_multiplier" id="batch_cap_multiplier"
+                 value="{{ user.batch_cap_multiplier }}" class="form-control">
+          <div class="form-text">Multiply monthly volume to set the cap.</div>
+        </div>
       </div>
     </div>
   </div>
-  <hr>
-  <div class="row">
-    <div class="col-md-12 text-center">
-      <button type="submit" class="btn btn-secondary">Save</button>
+
+  <div class="card mb-3">
+    <div class="card-header">Display</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="watch_my_prices" id="watch_my_prices"
+                   class="form-check-input" {% if user.watch_my_prices %}checked{% endif %}>
+            <label for="watch_my_prices" class="form-check-label">Watch my prices</label>
+          </div>
+          <div class="form-text">Highlight items where you have active sell orders.</div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="remove_occuped_places" id="remove_occuped_places"
+                   class="form-check-input" {% if user.remove_occuped_places %}checked{% endif %}>
+            <label for="remove_occuped_places" class="form-check-label">Remove occupied slots</label>
+          </div>
+          <div class="form-text">Hide items already occupying a sell slot.</div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <label for="sales_orders_show_margin_min" class="form-label">Sales orders min margin (ISK)</label>
+          <input type="number" name="sales_orders_show_margin_min" id="sales_orders_show_margin_min"
+                 value="{{ user.sales_orders_show_margin_min or '' }}" class="form-control">
+          <div class="form-text">Hide sales orders below this ISK margin.</div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="mb-4">
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+
 </form>
+
+<div class="card mb-3">
+  <div class="card-header">Current location</div>
+  <div class="card-body d-flex align-items-center gap-3">
+    {% if current_station %}
+      <span>{{ current_station.name }}</span>
+    {% else %}
+      <span class="text-muted">No station synced</span>
+    {% endif %}
+    <form action="{{ url_for('users.sync_location') }}" method="post" class="mb-0">
+      <button type="submit" class="btn btn-outline-secondary btn-sm">Sync current location</button>
+    </form>
+  </div>
+</div>
 {% endblock %}

@@ -31,8 +31,12 @@ class DownloadMyAssets:
             if not eve_item_id:
                 continue
 
-            station = UniverseStation.query.filter_by(cpp_station_id=location_id).first()
-            station_id = station.id if station else None
+            # Player structure IDs exceed 32-bit int range; only look up NPC stations
+            if location_id and location_id <= 2_147_483_647:
+                station = UniverseStation.query.filter_by(cpp_station_id=location_id).first()
+                station_id = station.id if station else None
+            else:
+                station_id = None
 
             bpc = BpcAsset.query.filter_by(
                 user_id=user.id, eve_item_id=eve_item_id
