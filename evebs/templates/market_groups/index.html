@@ -4,7 +4,7 @@
 <ul class="list-group">
   {% for group in groups %}
   <li class="list-group-item">
-    <a href="/list_items?group_id={{ group.id }}">{{ group.name }}</a>
+    <a href="{{ url_for('list_items.show', group_id=group.id) }}">{{ group.name }}</a>
   </li>
   {% endfor %}
 </ul>

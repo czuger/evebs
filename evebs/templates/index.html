@@ -15,13 +15,13 @@
   <p>Lots of economic information (click below to see an example):</p>
   <div class="row">
     <div class="col-12 col-lg mt-1 d-grid">
-      <a href="/items/nova-rage-rocket" class="btn btn-primary active">Information about items</a>
+      <a href="{{ url_for('items.show', slug='nova-rage-rocket') }}" class="btn btn-primary active">Information about items</a>
     </div>
     <div class="col-12 col-lg mt-1 d-grid">
-      <a href="/production_costs/nova-rage-rocket" class="btn btn-primary active">Items production cost</a>
+      <a href="{{ url_for('production_costs.show', slug='nova-rage-rocket') }}" class="btn btn-primary active">Items production cost</a>
     </div>
     <div class="col-12 col-lg mt-1 d-grid">
-      <a href="/production_costs/nova-rage-rocket/market_histories" class="btn btn-primary active">Regional prices and volumes</a>
+      <a href="{{ url_for('production_costs.market_histories', slug='nova-rage-rocket') }}" class="btn btn-primary active">Regional prices and volumes</a>
     </div>
   </div>
 

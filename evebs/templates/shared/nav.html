@@ -7,50 +7,50 @@
     {% if current_user.is_authenticated %}
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link{% if request.path == '/' %} active{% endif %}" href="/">Home</a>
+          <a class="nav-link{% if request.path == '/' %} active{% endif %}" href="{{ url_for('main.index') }}">Home</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Items</a>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="/list_items">Items</a>
+            <a class="dropdown-item" href="{{ url_for('list_items.show') }}">Items</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/eve_items_saved_lists/new">Save current list</a>
-            <a class="dropdown-item" href="/eve_items_saved_lists">Show my lists</a>
+            <a class="dropdown-item" href="{{ url_for('eve_items_saved_lists.new') }}">Save current list</a>
+            <a class="dropdown-item" href="{{ url_for('eve_items_saved_lists.index') }}">Show my lists</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/user_blueprints">My blueprints</a>
+            <a class="dropdown-item" href="{{ url_for('user_blueprints.show') }}">My blueprints</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/my_assets">My assets</a>
+            <a class="dropdown-item" href="{{ url_for('my_assets.show') }}">My assets</a>
           </div>
         </li>
         <li class="nav-item">
           <a class="nav-link{% if '/choose_trade_hubs' in request.path %} active{% endif %}"
-             href="/choose_trade_hubs/edit">Trade hubs</a>
+             href="{{ url_for('choose_trade_hubs.edit') }}">Trade hubs</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Earnings</a>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="/buy_orders">Buy orders</a>
-            <a class="dropdown-item" href="/user_sales_orders">My sale orders</a>
+            <a class="dropdown-item" href="{{ url_for('buy_orders.show') }}">Buy orders</a>
+            <a class="dropdown-item" href="{{ url_for('user_sales_orders.show') }}">My sale orders</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/price_advices/advice_prices_weekly">Weekly</a>
-            <a class="dropdown-item" href="/price_advices/advice_prices">Immediate</a>
+            <a class="dropdown-item" href="{{ url_for('price_advices.advice_prices_weekly') }}">Weekly</a>
+            <a class="dropdown-item" href="{{ url_for('price_advices.advice_prices') }}">Immediate</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/jita_benefits">Jita manufacturing (all)</a>
-            <a class="dropdown-item" href="/jita_manufacturing">Jita manufacturing (mine)</a>
+            <a class="dropdown-item" href="{{ url_for('jita_benefits.show') }}">Jita manufacturing (all)</a>
+            <a class="dropdown-item" href="{{ url_for('jita_manufacturing.show') }}">Jita manufacturing (mine)</a>
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if '/users' in request.path %} active{% endif %}" href="/users/edit">User</a>
+          <a class="nav-link{% if '/users' in request.path %} active{% endif %}" href="{{ url_for('users.edit') }}">User</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/signout">Sign out</a>
+          <a class="nav-link" href="{{ url_for('auth.signout') }}">Sign out</a>
         </li>
       </ul>
       <span class="navbar-text">Logged as {{ current_user.name }}</span>
     {% else %}
       <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/list_items">Items</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('list_items.show') }}">Items</a></li>
       </ul>
       <form action="{{ url_for('auth.login') }}" method="post" class="d-flex align-items-center gap-2">
         <input type="hidden" name="csrf_token" value="">

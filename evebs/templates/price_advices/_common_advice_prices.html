@@ -14,7 +14,7 @@
     <tr>
       <td class="trade_hub_name">{{ item.trade_hub_name }} ({{ item.region_name }})</td>
       <td class="item_name">
-        <a href="/items/{{ item.item_id }}" target="_blank">{{ item.item_name }}</a>
+        <a href="{{ url_for('items.show', slug=item.item_id) }}" target="_blank">{{ item.item_name }}</a>
       </td>
       {% if margin_type == 'daily' %}
         {% set margin = item.margin_comp_immediate %}

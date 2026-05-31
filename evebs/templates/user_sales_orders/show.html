@@ -21,7 +21,7 @@
     {% for order in orders %}
     <tr>
       <td>{{ order.trade_hub_name }}</td>
-      <td><a href="/items/{{ order.eve_item_id }}">{{ order.eve_item_name }}</a></td>
+      <td><a href="{{ url_for('items.show', slug=order.eve_item_id) }}">{{ order.eve_item_name }}</a></td>
       <td class="text-end">{{ order.my_price | isk }}</td>
       <td class="text-end">{{ order.min_price | isk }}</td>
       <td class="text-end">{{ order.price_delta | isk }}</td>

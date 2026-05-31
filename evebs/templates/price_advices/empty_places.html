@@ -12,7 +12,7 @@
     <tr>
       <td class="trade_hub_name">{{ item.trade_hub_name }}</td>
       <td class="item_name">
-        <a href="/items/{{ item.eve_item_id }}" target="_blank">{{ item.item_name }}</a>
+        <a href="{{ url_for('items.show', slug=item.eve_item_id) }}" target="_blank">{{ item.item_name }}</a>
       </td>
       <td class="text-end">{{ item.cost | isk }}</td>
       <td class="text-end">{{ item.vol_month | vol }}</td>

@@ -1,9 +1,10 @@
 {% if pagination and pagination.pages > 1 %}
+{% set _args = dict(request.view_args or {}, **request.args.to_dict()) %}
 <nav>
   <ul class="pagination">
     {% if pagination.has_prev %}
       <li class="page-item">
-        <a class="page-link" href="{{ request.path }}?page={{ pagination.prev_num }}">Previous</a>
+        <a class="page-link" href="{{ url_for(request.endpoint, **dict(_args, page=pagination.prev_num)) }}">Previous</a>
       </li>
     {% else %}
       <li class="page-item disabled"><span class="page-link">Previous</span></li>
@@ -11,7 +12,7 @@
     {% for p in pagination.iter_pages() %}
       {% if p %}
         <li class="page-item{% if p == pagination.page %} active{% endif %}">
-          <a class="page-link" href="{{ request.path }}?page={{ p }}">{{ p }}</a>
+          <a class="page-link" href="{{ url_for(request.endpoint, **dict(_args, page=p)) }}">{{ p }}</a>
         </li>
       {% else %}
         <li class="page-item disabled"><span class="page-link">…</span></li>
@@ -19,7 +20,7 @@
     {% endfor %}
     {% if pagination.has_next %}
       <li class="page-item">
-        <a class="page-link" href="{{ request.path }}?page={{ pagination.next_num }}">Next</a>
+        <a class="page-link" href="{{ url_for(request.endpoint, **dict(_args, page=pagination.next_num)) }}">Next</a>
       </li>
     {% else %}
       <li class="page-item disabled"><span class="page-link">Next</span></li>

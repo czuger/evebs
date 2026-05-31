@@ -2,7 +2,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h5 class="mb-0">My blueprints</h5>
-  <form action="/user_blueprints/refresh" method="post">
+  <form action="{{ url_for('user_blueprints.refresh') }}" method="post">
     <button type="submit" class="btn btn-sm btn-primary">Refresh from ESI</button>
   </form>
 </div>
@@ -17,7 +17,7 @@
       <td>{{ bp.name }}</td>
       <td class="item_name">
         {% if bp.eve_item %}
-        <a href="/items/{{ bp.eve_item.slug or bp.eve_item.id }}">{{ bp.eve_item.name }}</a>
+        <a href="{{ url_for('items.show', slug=bp.eve_item.slug or bp.eve_item.id) }}">{{ bp.eve_item.name }}</a>
         {% endif %}
       </td>
     </tr>

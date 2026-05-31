@@ -13,10 +13,10 @@
 {% if current_group %}
 <nav aria-label="breadcrumb" class="mb-3">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/list_items">All categories</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('list_items.show') }}">All categories</a></li>
     {% for anc in current_group.ancestors() %}
     <li class="breadcrumb-item">
-      <a href="/list_items?group_id={{ anc.id }}">{{ anc.name }}</a>
+      <a href="{{ url_for('list_items.show', group_id=anc.id) }}">{{ anc.name }}</a>
     </li>
     {% endfor %}
     <li class="breadcrumb-item active">{{ current_group.name }}</li>
@@ -28,7 +28,7 @@
 <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-4">
   {% for group in groups %}
   <div class="col">
-    <a href="/list_items?group_id={{ group.id }}"
+    <a href="{{ url_for('list_items.show', group_id=group.id) }}"
        class="list-group-item list-group-item-action rounded border d-flex align-items-center gap-2 h-100">
       <i class="fas fa-folder text-muted"></i>
       <span>{{ group.name }}</span>
@@ -66,7 +66,7 @@
               <img src="https://imageserver.eveonline.com/Type/{{ item.id }}_32.png"
                    alt="" width="32" height="32">
               <label class="form-check-label mb-0" for="cb_{{ item.id }}">
-                <a href="/items/{{ item.slug or item.id }}" class="text-decoration-none stretched-link-sibling">
+                <a href="{{ url_for('items.show', slug=item.slug or item.id) }}" class="text-decoration-none stretched-link-sibling">
                   {{ item.name }}
                 </a>
                 {% if item.faction %}

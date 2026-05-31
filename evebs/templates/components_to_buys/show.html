@@ -11,7 +11,7 @@
     </tr>
     {% for c in components %}
     <tr>
-      <td><a href="/items/{{ c.eve_item_id }}">{{ c.eve_item_name }}</a></td>
+      <td><a href="{{ url_for('items.show', slug=c.eve_item_id) }}">{{ c.eve_item_name }}</a></td>
       <td class="text-end">{{ c.qtt_to_buy | vol }}</td>
       <td class="text-end">{{ c.total_cost | isk }}</td>
       <td class="text-end">{{ c.required_volume | vol }}</td>
