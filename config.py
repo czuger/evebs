@@ -45,6 +45,10 @@ class Config:
     SQLALCHEMY_DATABASE_URI = _build_database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SERVER_NAME          = _cfg.get('server_name')        or None
+    APPLICATION_ROOT     = _cfg.get('application_root',   '/')
+    PREFERRED_URL_SCHEME = _cfg.get('preferred_url_scheme', 'http')
+
     ESI_CLIENT_ID = _cfg['esi']['client_id']
     ESI_SECRET_KEY = _cfg['esi']['secret_key']
 

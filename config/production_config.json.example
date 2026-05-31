@@ -11,5 +11,8 @@
     "secret_key": "your_production_secret_key"
   },
   "email": "",
-  "verbose_output": false
+  "verbose_output": false,
+  "server_name": "apps.ieroe.com",
+  "application_root": "/eve",
+  "preferred_url_scheme": "https"
 }

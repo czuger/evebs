@@ -11,5 +11,8 @@
     "secret_key": "your_dev_secret_key"
   },
   "email": "",
-  "verbose_output": true
+  "verbose_output": true,
+  "server_name": null,
+  "application_root": "/",
+  "preferred_url_scheme": "http"
 }
