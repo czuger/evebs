@@ -1,0 +1,20 @@
+name: app-eve-dominion
+
+services:
+  app-eve-dominion:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: app-eve-dominion
+    volumes:
+      - /home/ced/python/evebs:/app
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - app-eve-dominion
+
+networks:
+  app-eve-dominion:
+    external: true

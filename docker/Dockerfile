@@ -1,7 +1,19 @@
-FROM postgres:9.6-alpine
+FROM python:3.13-slim
 
-#EXPOSE 5433 5432
+WORKDIR /app
 
-COPY ./create_users.sh   /docker-entrypoint-initdb.d/10-create_users.sh
-COPY ./create_databases.sh     /docker-entrypoint-initdb.d/20-create_dbs.sh
+# Install git (and optionally SSH, if using git+ssh)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git openssh-client \
+ && rm -rf /var/lib/apt/lists/*
+
+# COPY secret_key.txt .
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Run gunicorn with 1 process and 1 thread
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--threads", "1", "app:app"]
 
