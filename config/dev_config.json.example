@@ -1,0 +1,15 @@
+{
+  "database": {
+    "host": "",
+    "port": 5432,
+    "name": "evebs",
+    "user": "evebs",
+    "password": "evebs"
+  },
+  "esi": {
+    "client_id": "your_dev_client_id",
+    "secret_key": "your_dev_secret_key"
+  },
+  "email": "",
+  "verbose_output": true
+}

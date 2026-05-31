@@ -7,11 +7,13 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def _load_config():
-    path = os.path.join(BASE_DIR, 'config', 'config.json')
+    env      = os.getenv('FLASK_ENV', 'development')
+    filename = 'production_config.json' if env == 'production' else 'dev_config.json'
+    path     = os.path.join(BASE_DIR, 'config', filename)
     if not os.path.exists(path):
         raise FileNotFoundError(
-            f"config/config.json not found at {path}. "
-            "Copy config/config.json.example and fill in your credentials."
+            f"config/{filename} not found. "
+            f"Copy config/{filename}.example and fill in your credentials."
         )
     with open(path) as f:
         return json.load(f)

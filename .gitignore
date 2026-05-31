@@ -28,6 +28,9 @@ coverage
 .idea
 
 config/omniauth.yaml
+config/config.json
+config/dev_config.json
+config/production_config.json
 data/oldies/items_tree.json
 
 omniauth.yml
