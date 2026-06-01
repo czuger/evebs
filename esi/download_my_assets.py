@@ -3,9 +3,11 @@ from datetime import datetime
 
 from esi.client import EsiClient
 from evebs.extensions import db
-from evebs.models import BpcAsset, EveItem, UniverseStation
+from evebs.models import BpcAsset, EveItem, UniverseStation, UniverseStructure
 
 logger = logging.getLogger(__name__)
+
+STRUCTURE_ID_MIN = 1_000_000_000_000  # NPC stations ~60M, player structures 1T+
 
 
 class DownloadMyAssets:
@@ -32,12 +34,14 @@ class DownloadMyAssets:
             if not eve_item_id:
                 continue
 
-            # Player structure IDs exceed 32-bit int range; only look up NPC stations
-            if location_id and location_id <= 2_147_483_647:
-                station = db.session.get(UniverseStation, location_id)
-                station_id = location_id if station else None
-            else:
-                station_id = None
+            station_id = None
+            structure_id = None
+
+            if location_id:
+                if location_id >= STRUCTURE_ID_MIN:
+                    structure_id = self._resolve_structure(location_id, user)
+                else:
+                    station_id = self._resolve_station(location_id)
 
             bpc = BpcAsset.query.filter_by(
                 user_id=user.id, eve_item_id=eve_item_id
@@ -45,11 +49,13 @@ class DownloadMyAssets:
             if bpc:
                 bpc.quantity = qty
                 bpc.universe_station_id = station_id
+                bpc.universe_structure_id = structure_id
                 bpc.touched = True
             else:
                 bpc = BpcAsset(
                     user_id=user.id, eve_item_id=eve_item_id,
-                    quantity=qty, universe_station_id=station_id, touched=True,
+                    quantity=qty, universe_station_id=station_id,
+                    universe_structure_id=structure_id, touched=True,
                 )
                 db.session.add(bpc)
 
@@ -57,3 +63,60 @@ class DownloadMyAssets:
         user.download_assets_running = False
         user.last_assets_download = datetime.utcnow()
         db.session.commit()
+
+    def _resolve_structure(self, location_id, user):
+        structure = db.session.get(UniverseStructure, location_id)
+        if structure:
+            return structure.id
+
+        client = EsiClient(f'universe/structures/{location_id}/')
+        if not client.set_auth_token(user):
+            logger.error('No auth token — cannot fetch structure %s', location_id)
+            return None
+
+        try:
+            data = client.get_page()
+        except Exception as e:
+            logger.error('Failed to fetch structure %s: %s', location_id, e)
+            return None
+
+        if not data:
+            logger.error('Empty response for structure %s', location_id)
+            return None
+
+        structure = UniverseStructure(
+            id=location_id,
+            name=data.get('name', ''),
+            owner_id=data.get('owner_id', 0),
+            type_id=data.get('type_id'),
+            universe_system_id=data.get('solar_system_id'),
+        )
+        db.session.add(structure)
+        db.session.flush()
+        return structure.id
+
+    def _resolve_station(self, location_id):
+        station = db.session.get(UniverseStation, location_id)
+        if station:
+            return station.id
+
+        client = EsiClient(f'universe/stations/{location_id}/')
+        try:
+            data = client.get_page()
+        except Exception as e:
+            logger.error('Failed to fetch station %s: %s', location_id, e)
+            return None
+
+        if not data:
+            logger.error('Station %s not found in ESI', location_id)
+            return None
+
+        station = UniverseStation(
+            id=location_id,
+            name=data.get('name', ''),
+            office_rental_cost=data.get('office_rental_cost', 0.0),
+            universe_system_id=data.get('system_id'),
+        )
+        db.session.add(station)
+        db.session.flush()
+        return station.id

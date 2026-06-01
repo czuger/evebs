@@ -8,6 +8,7 @@ class BpcAsset(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     universe_station_id = db.Column(db.BigInteger, db.ForeignKey('universe_stations.id'))
+    universe_structure_id = db.Column(db.BigInteger, db.ForeignKey('universe_structures.id'))
     quantity = db.Column(db.BigInteger, nullable=False)
     touched = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)

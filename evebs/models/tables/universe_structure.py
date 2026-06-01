@@ -6,8 +6,7 @@ from evebs.extensions import db
 class UniverseStructure(db.Model):
     __tablename__ = 'universe_structures'
 
-    id = db.Column(db.BigInteger, primary_key=True)
-    cpp_structure_id = db.Column(db.BigInteger, nullable=False, unique=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
     name = db.Column(db.String, nullable=False)
     owner_id = db.Column(db.Integer, nullable=False)
     type_id = db.Column(db.Integer)
