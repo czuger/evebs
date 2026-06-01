@@ -22,4 +22,4 @@ ssh nuc150 "cd /home/ced/python/evebs/docker// && bash set_secret_key.bash"
 ssh nuc150 "cd /home/ced/python/evebs/docker// && bash create_network.sh"
 
 ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose down"
-ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up -d --build"
+ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up app-eve-dominion -d --build"

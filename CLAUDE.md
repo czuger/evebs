@@ -9,6 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - NO MONKEYPATCHING EVER
 - when using argparse allways use shortcuts for switches (if you add --tests also add -t for instance)
 - avoid system variable, use script switches instead
+- Always use alembic revision -m "..." to generate a new migration 
+
 
 ## Overview
 
