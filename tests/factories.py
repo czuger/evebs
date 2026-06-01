@@ -2,14 +2,6 @@
 from datetime import datetime
 
 
-def make_region(db, cpp_region_id='10000002', name='The Forge'):
-    from evebs.models import Region
-    r = Region(cpp_region_id=cpp_region_id, name=name)
-    db.session.add(r)
-    db.session.flush()
-    return r
-
-
 def make_universe_region(db, cpp_region_id=10000002, name='The Forge'):
     from evebs.models import UniverseRegion
     ur = UniverseRegion(cpp_region_id=cpp_region_id, name=name)

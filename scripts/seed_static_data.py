@@ -87,27 +87,16 @@ def _progress(i, label='records'):
 
 # ---------------------------------------------------------------------------
 
-def seed_regions(db, Region, UniverseRegion):
-    done = _step('Regions  (mapRegions.jsonl → Region + UniverseRegion)')
+def seed_regions(db, UniverseRegion):
+    done = _step('Regions  (mapRegions.jsonl → UniverseRegion)')
 
-    existing_r  = {r.cpp_region_id: r for r in Region.query.all()}
     existing_ur = {ur.cpp_region_id: ur for ur in UniverseRegion.query.all()}
-    print(f'    existing: {_fmt(len(existing_r))} Region  |  {_fmt(len(existing_ur))} UniverseRegion')
-    new_r = upd_r = new_ur = upd_ur = 0
+    print(f'    existing: {_fmt(len(existing_ur))} UniverseRegion')
+    new_ur = upd_ur = 0
 
     for obj in _jsonl('mapRegions.jsonl'):
         cpp_id = obj['_key']
         name   = _en(obj)
-
-        r = existing_r.get(str(cpp_id))
-        if r:
-            r.name = name
-            upd_r += 1
-        else:
-            r = Region(cpp_region_id=str(cpp_id), name=name)
-            db.session.add(r)
-            existing_r[str(cpp_id)] = r
-            new_r += 1
 
         ur = existing_ur.get(cpp_id)
         if ur:
@@ -120,8 +109,7 @@ def seed_regions(db, Region, UniverseRegion):
             new_ur += 1
 
     db.session.commit()
-    done(f'Region: {_fmt(new_r)} new, {_fmt(upd_r)} updated  '
-         f'|  UniverseRegion: {_fmt(new_ur)} new, {_fmt(upd_ur)} updated')
+    done(f'UniverseRegion: {_fmt(new_ur)} new, {_fmt(upd_ur)} updated')
 
 
 def seed_market_groups(db, MarketGroup):
@@ -482,7 +470,7 @@ def main():
         description='Seed the database from data/eve_static_data JSONL files.'
     )
     parser.add_argument('--all',           action='store_true', help='Seed everything in dependency order')
-    parser.add_argument('--regions',       action='store_true', help='Seed Region + UniverseRegion')
+    parser.add_argument('--regions',       action='store_true', help='Seed UniverseRegion')
     parser.add_argument('--market-groups', action='store_true', help='Seed MarketGroup')
     parser.add_argument('--universe',      action='store_true', help='Seed UniverseConstellation + UniverseSystem (requires --regions first)')
     parser.add_argument('--stations',      action='store_true', help='Seed UniverseStation (requires --universe first)')
@@ -498,7 +486,7 @@ def main():
     from evebs import create_app
     from evebs.extensions import db
     from evebs.models import (
-        Region, UniverseRegion, MarketGroup,
+        UniverseRegion, MarketGroup,
         UniverseConstellation, UniverseSystem,
         UniverseStation, EveItem, Blueprint, BlueprintMaterial,
     )
@@ -516,7 +504,7 @@ def main():
         do_trade_hubs    = args.all or args.trade_hubs
 
         if do_regions:
-            seed_regions(db, Region, UniverseRegion)
+            seed_regions(db, UniverseRegion)
         if do_market_groups:
             seed_market_groups(db, MarketGroup)
         if do_universe:

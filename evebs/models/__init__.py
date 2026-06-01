@@ -1,6 +1,5 @@
 from evebs.models.tables.associations import eve_items_users, trade_hubs_users
 from evebs.models.tables.user import User, load_user
-from evebs.models.tables.region import Region
 from evebs.models.tables.market_group import MarketGroup
 from evebs.models.tables.blueprint import Blueprint
 from evebs.models.tables.eve_item import EveItem
@@ -19,7 +18,7 @@ from evebs.models.tables.universe_region import UniverseRegion
 from evebs.models.tables.universe_constellation import UniverseConstellation
 from evebs.models.tables.universe_system import UniverseSystem
 from evebs.models.tables.universe_station import UniverseStation
-from evebs.models.tables.structure import Structure
+from evebs.models.tables.universe_structure import UniverseStructure
 from evebs.models.tables.constant import Constant
 from evebs.models.tables.last_update import LastUpdate
 from evebs.models.tables.crontab import Crontab
@@ -40,7 +39,6 @@ from evebs.models.materialized_views import JitaPrices, JitaManufacturingMargins
 __all__ = [
     'eve_items_users', 'trade_hubs_users',
     'User', 'load_user',
-    'Region',
     'MarketGroup',
     'Blueprint',
     'EveItem',
@@ -59,7 +57,7 @@ __all__ = [
     'UniverseConstellation',
     'UniverseSystem',
     'UniverseStation',
-    'Structure',
+    'UniverseStructure',
     'Constant',
     'LastUpdate',
     'Crontab',

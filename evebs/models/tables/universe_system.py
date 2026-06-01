@@ -21,7 +21,7 @@ class UniverseSystem(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     universe_constellation = db.relationship('UniverseConstellation', back_populates='universe_systems')
-    structures = db.relationship('Structure', back_populates='universe_system')
+    universe_structures = db.relationship('UniverseStructure', back_populates='universe_system')
     universe_stations = db.relationship('UniverseStation', back_populates='universe_system')
     users = db.relationship('User', secondary='trade_hubs_users', back_populates='trade_hubs')
     prices_mins = db.relationship('PricesMin', back_populates='universe_system')
