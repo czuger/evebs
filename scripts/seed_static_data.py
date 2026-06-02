@@ -245,7 +245,7 @@ def seed_stations(db, UniverseStation, UniverseSystem):
     system_ids = {us.id for us in UniverseSystem.query.all()}
     existing   = {st.id: st for st in UniverseStation.query.all()}
     print(f'    existing: {_fmt(len(existing))} UniverseStation  |  '
-          f'system map size: {_fmt(len(system_map))}')
+          f'system count: {_fmt(len(system_ids))}')
     new = updated = skipped = 0
 
     for obj in _jsonl('npcStations.jsonl'):
