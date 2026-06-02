@@ -20,8 +20,10 @@ with app.app_context():
     logger.info('=== Weekly process started ===')
 
     from esi.download_universe_regions import DownloadUniverseRegions
+    from esi.download_universe_structures import DownloadUniverseStructures
 
     DownloadUniverseRegions().download()
+    DownloadUniverseStructures().download()
 
     # Blueprint and eve item downloads are data-heavy; see esi/ for individual downloaders
     # Run them manually or via scripts/weekly.sh
