@@ -5,9 +5,9 @@ from tests.factories import make_universe_system, make_trade_hub, make_item, mak
 
 @pytest.fixture
 def seeded(db):
-    system = make_universe_system(db, cpp_system_id=30000142, name='Jita')
+    system = make_universe_system(db, system_id=30000142, name='Jita')
     hub = make_trade_hub(db, system)
-    item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
+    item = make_item(db, item_id=34, slug='tritanium')
     db.session.commit()
     return {'hub': hub, 'item': item}
 
@@ -24,7 +24,7 @@ class TestMarketOverview:
     def test_base_item_uses_prices_min(self, db, client):
         system = make_universe_system(db)
         hub = make_trade_hub(db, system)
-        item = make_item(db, cpp_eve_item_id=34, slug='tritanium-base', base_item=True)
+        item = make_item(db, item_id=34, slug='tritanium-base', base_item=True)
         db.session.commit()
 
         resp = client.get(f'/market_data/{item.id}/market_overview/')

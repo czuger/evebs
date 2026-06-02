@@ -14,15 +14,15 @@ class TestMarketGroupsTemplate:
         assert 'Market groups' in html
 
     def test_renders_group_links(self, app, db):
-        mg = make_market_group(db, cpp_market_group_id=1, name='Ammunition & Charges')
+        mg = make_market_group(db, group_id=1, name='Ammunition & Charges')
         db.session.commit()
         html = _render(app, groups=[mg])
         assert 'Ammunition &amp; Charges' in html
         assert f'/list_items?group_id={mg.id}' in html
 
     def test_renders_multiple_groups(self, app, db):
-        mg1 = make_market_group(db, cpp_market_group_id=2, name='Ships')
-        mg2 = make_market_group(db, cpp_market_group_id=3, name='Modules')
+        mg1 = make_market_group(db, group_id=2, name='Ships')
+        mg2 = make_market_group(db, group_id=3, name='Modules')
         db.session.commit()
         html = _render(app, groups=[mg1, mg2])
         assert 'Ships' in html

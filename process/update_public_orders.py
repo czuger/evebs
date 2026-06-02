@@ -20,7 +20,7 @@ def run() -> None:
         return
 
     hub_map = {
-        us.cpp_system_id: us.id
+        us.id: us.id
         for us in UniverseSystem.query.filter_by(trade_hub=True).all()
     }
     item_map = {ei.id: ei.id for ei in EveItem.query.all()}

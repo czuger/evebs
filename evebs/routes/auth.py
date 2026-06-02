@@ -110,11 +110,11 @@ def _set_defaults(user):
     if user.initialization_finalized:
         return
     for system_id in [30000142, 30002187]:
-        th = UniverseSystem.query.filter_by(cpp_system_id=system_id, trade_hub=True).first()
+        th = UniverseSystem.query.filter_by(id=system_id, trade_hub=True).first()
         if th and th not in user.trade_hubs:
             user.trade_hubs.append(th)
     for group_id in [973, 972, 927, 917]:
-        mg = MarketGroup.query.filter_by(cpp_market_group_id=group_id).first()
+        mg = MarketGroup.query.filter_by(id=group_id).first()
         if mg:
             for item in mg.eve_items:
                 if item not in user.eve_items:

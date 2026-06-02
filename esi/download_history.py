@@ -41,12 +41,12 @@ class DownloadHistory:
 
         if self.essentials:
             from evebs.models import UniverseSystem, EveItem
-            hub_region_cpp_ids = {
-                int(us.universe_constellation.universe_region.cpp_region_id)
+            hub_region_ids = {
+                us.universe_constellation.universe_region.id
                 for us in UniverseSystem.query.filter_by(trade_hub=True).all()
                 if us.universe_constellation and us.universe_constellation.universe_region
             }
-            regions = [r for r in regions if r.cpp_region_id in hub_region_cpp_ids]
+            regions = [r for r in regions if r.id in hub_region_ids]
             ammo_group_ids = _ammo_market_group_ids()
             ammo_ids = {
                 item.id
@@ -73,7 +73,7 @@ class DownloadHistory:
                 logger.debug('[history] [%s/%s] %s — fetching type list',
                              region_idx, total_regions, region.name)
 
-                client = EsiClient(f'markets/{region.cpp_region_id}/types/')
+                client = EsiClient(f'markets/{region.id}/types/')
                 try:
                     type_ids = client.get_all_pages()
                 except Exception as e:
@@ -98,7 +98,7 @@ class DownloadHistory:
                         logger.debug('[history]   %s %s/%s types processed',
                                      region.name, type_idx, region_type_count)
 
-                    hist_client = EsiClient(f'markets/{region.cpp_region_id}/history/',
+                    hist_client = EsiClient(f'markets/{region.id}/history/',
                                             params={'type_id': type_id})
                     try:
                         records = hist_client.get_all_pages()
@@ -133,8 +133,8 @@ class DownloadHistory:
                         continue
 
                     record = {
-                        'cpp_region_id': region.cpp_region_id,
-                        'cpp_type_id': type_id,
+                        'region_id': region.id,
+                        'type_id': type_id,
                         'volume': total_volume,
                         'min': min_price,
                         'max': max_price,

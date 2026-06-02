@@ -107,9 +107,9 @@ def update_eve_item_cost() -> None:
     logger.info('=== update_eve_item_cost started ===')
 
     # Resolve Jita's internal DB id — needed to filter public_trade_orders
-    jita = UniverseSystem.query.filter_by(cpp_system_id=JITA_SYSTEM_ID, trade_hub=True).first()
+    jita = UniverseSystem.query.filter_by(id=JITA_SYSTEM_ID, trade_hub=True).first()
     if not jita:
-        logger.error('Jita trade hub system not found (cpp_system_id=%d).', JITA_SYSTEM_ID)
+        logger.error('Jita trade hub system not found (id=%d).', JITA_SYSTEM_ID)
         return
     jita_hub_id: int = jita.id
 

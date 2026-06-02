@@ -9,9 +9,9 @@ from tests.factories import make_trade_hub, make_item, make_universe_system, mak
 
 @pytest.fixture
 def seeded(db, user):
-    us = make_universe_system(db)  # cpp_system_id=30000142 (Jita)
+    us = make_universe_system(db)  # system_id=30000142 (Jita)
     hub = make_trade_hub(db, us)  # marks us as trade_hub=True
-    item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
+    item = make_item(db, item_id=34, slug='tritanium')
     station = make_universe_station(db, us)  # id=60003760
     db.session.commit()
     return {'hub': hub, 'item': item, 'station': station}

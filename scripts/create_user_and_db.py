@@ -99,8 +99,18 @@ alembic_cfg = AlembicConfig(os.path.join(_project_root, 'alembic.ini'))
 alembic_cfg.set_main_option('script_location', os.path.join(_project_root, 'migrations'))
 
 if args.recreate:
-    print("Downgrading to base…")
-    command.downgrade(alembic_cfg, 'base')
+    print("Dropping and recreating public schema…")
+    with psycopg.connect(
+        host=host, port=port, dbname=db_name,
+        user=admin_user, password=admin_password,
+    ) as conn:
+        conn.autocommit = True
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA public CASCADE")
+            cur.execute("CREATE SCHEMA public")
+            cur.execute(sql.SQL("GRANT ALL ON SCHEMA public TO {}").format(sql.Identifier(db_user)))
+            cur.execute("GRANT ALL ON SCHEMA public TO public")
+    print("  Schema dropped and recreated.")
 
 print("Upgrading to head…")
 command.upgrade(alembic_cfg, 'head')

@@ -6,11 +6,10 @@ from evebs.extensions import db
 class Blueprint(db.Model):
     __tablename__ = 'blueprints'
 
-    id = db.Column(db.Integer, primary_key=True)
-    produced_cpp_type_id = db.Column(db.Integer, nullable=False, unique=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
+    produced_type_id = db.Column(db.Integer, nullable=False, unique=True)
     nb_runs = db.Column(db.Integer, nullable=False)
     prod_qtt = db.Column(db.Integer, nullable=False)
-    cpp_blueprint_id = db.Column(db.Integer, nullable=False, unique=True)
     name = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

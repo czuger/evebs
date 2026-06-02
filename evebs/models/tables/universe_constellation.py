@@ -6,10 +6,9 @@ from evebs.extensions import db
 class UniverseConstellation(db.Model):
     __tablename__ = 'universe_constellations'
 
-    id = db.Column(db.BigInteger, primary_key=True)
-    cpp_constellation_id = db.Column(db.Integer, nullable=False, unique=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String, nullable=False)
-    universe_region_id = db.Column(db.BigInteger, db.ForeignKey('universe_regions.id'), nullable=False)
+    universe_region_id = db.Column(db.Integer, db.ForeignKey('universe_regions.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

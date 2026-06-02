@@ -11,7 +11,7 @@ class TestItemShow:
     def test_200_for_existing_slug(self, db, client):
         system = make_universe_system(db)
         make_trade_hub(db, system)
-        item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
+        item = make_item(db, item_id=34, slug='tritanium')
         db.session.commit()
 
         resp = client.get('/items/tritanium')
@@ -21,7 +21,7 @@ class TestItemShow:
     def test_item_found_by_numeric_id(self, db, client):
         system = make_universe_system(db)
         make_trade_hub(db, system)
-        item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
+        item = make_item(db, item_id=34, slug='tritanium')
         db.session.commit()
 
         resp = client.get(f'/items/{item.id}')
@@ -30,7 +30,7 @@ class TestItemShow:
     def test_taxes_default_when_constant_missing(self, db, client):
         system = make_universe_system(db)
         make_trade_hub(db, system)
-        make_item(db, cpp_eve_item_id=34, slug='tritanium')
+        make_item(db, item_id=34, slug='tritanium')
         db.session.commit()
 
         # No Constant row seeded — route should fall back to 1.13
@@ -41,7 +41,7 @@ class TestItemShow:
         from evebs.models import Constant
         system = make_universe_system(db)
         make_trade_hub(db, system)
-        make_item(db, cpp_eve_item_id=34, slug='tritanium')
+        make_item(db, item_id=34, slug='tritanium')
         c = Constant(libe='taxes', f_value=1.10, description='Tax rate')
         db.session.add(c)
         db.session.commit()

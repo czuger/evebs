@@ -25,15 +25,15 @@ class TestUserBlueprintsRefresh:
         assert resp.status_code == 302
 
     def test_refresh_populates_blueprints_and_redirects(self, db, auth_client):
-        item = make_item(db, cpp_eve_item_id=34, slug='trit')
-        bp = make_blueprint(db, item, cpp_blueprint_id=11399)
+        item = make_item(db, item_id=34, slug='trit')
+        bp = make_blueprint(db, item, blueprint_id=11399)
         db.session.commit()
 
         client, user = auth_client
         with patch('esi.download_my_blueprints.EsiClient') as MockClient:
             instance = MockClient.return_value
             instance.set_auth_token.return_value = True
-            instance.get_all_pages.return_value = [{'type_id': bp.cpp_blueprint_id}]
+            instance.get_all_pages.return_value = [{'type_id': bp.id}]
             resp = client.post('/user_blueprints/refresh')
 
         assert resp.status_code == 302

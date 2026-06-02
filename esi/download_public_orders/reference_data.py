@@ -20,24 +20,24 @@ def load_reference_data(
              'all'     — every region
     """
     trade_hubs = UniverseSystem.query.filter_by(trade_hub=True).all()
-    hub_map = {us.cpp_system_id: us.id for us in trade_hubs}
+    hub_map = {us.id: us.id for us in trade_hubs}
     item_map = {ei.id: ei.id for ei in EveItem.query.all()}
 
     hub_region_ids = {
-        int(us.universe_constellation.universe_region.cpp_region_id)
+        us.universe_constellation.universe_region.id
         for us in trade_hubs
         if us.universe_constellation and us.universe_constellation.universe_region
     }
     all_regions = UniverseRegion.query.all()
     if regions == 'hub':
-        region_list = [r for r in all_regions if r.cpp_region_id in hub_region_ids]
+        region_list = [r for r in all_regions if r.id in hub_region_ids]
     elif regions == 'non_hub':
-        region_list = [r for r in all_regions if r.cpp_region_id not in hub_region_ids]
+        region_list = [r for r in all_regions if r.id not in hub_region_ids]
     else:
         region_list = all_regions
 
     if forge_only:
-        region_list = [r for r in region_list if r.cpp_region_id == FORGE_REGION_ID]
+        region_list = [r for r in region_list if r.id == FORGE_REGION_ID]
         logger.info('[orders] forge-only mode: region %d', FORGE_REGION_ID)
 
     elif essentials:

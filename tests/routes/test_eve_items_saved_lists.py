@@ -29,8 +29,8 @@ class TestSavedListsCreate:
 
     def test_creates_list_with_current_items(self, db, auth_client):
         client, user = auth_client
-        mg = make_market_group(db, cpp_market_group_id=1, name='Minerals')
-        item = make_item(db, cpp_eve_item_id=34, slug='tritanium', market_group=mg)
+        mg = make_market_group(db, group_id=1, name='Minerals')
+        item = make_item(db, item_id=34, slug='tritanium', market_group=mg)
         db.session.commit()
         user.eve_items.append(item)
         db.session.commit()
@@ -58,9 +58,9 @@ class TestSavedListsLoad:
 
     def test_replaces_current_items_with_saved_ids(self, db, auth_client):
         client, user = auth_client
-        mg = make_market_group(db, cpp_market_group_id=1, name='Minerals')
-        item1 = make_item(db, cpp_eve_item_id=34, slug='tritanium', market_group=mg)
-        item2 = make_item(db, cpp_eve_item_id=35, slug='pyerite', market_group=mg)
+        mg = make_market_group(db, group_id=1, name='Minerals')
+        item1 = make_item(db, item_id=34, slug='tritanium', market_group=mg)
+        item2 = make_item(db, item_id=35, slug='pyerite', market_group=mg)
         sl = make_saved_list(db, user, description='Saved', item_ids=[item1.id])
         user.eve_items.append(item2)
         db.session.commit()
@@ -94,8 +94,8 @@ class TestSavedListsClear:
 
     def test_clears_user_items(self, db, auth_client):
         client, user = auth_client
-        mg = make_market_group(db, cpp_market_group_id=1, name='Minerals')
-        item = make_item(db, cpp_eve_item_id=34, slug='tritanium', market_group=mg)
+        mg = make_market_group(db, group_id=1, name='Minerals')
+        item = make_item(db, item_id=34, slug='tritanium', market_group=mg)
         db.session.commit()
         user.eve_items.append(item)
         db.session.commit()

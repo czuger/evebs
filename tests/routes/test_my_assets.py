@@ -27,10 +27,10 @@ class TestSetAssetsStation:
             make_universe_region, make_universe_constellation,
             make_universe_system, make_universe_station,
         )
-        ur = make_universe_region(db, cpp_region_id=10000099)
-        uc = make_universe_constellation(db, ur, cpp_constellation_id=20000099)
-        us = make_universe_system(db, uc, cpp_system_id=30000999, name='TestSys')
-        st = make_universe_station(db, us, cpp_station_id=60009999)
+        ur = make_universe_region(db, region_id=10000099)
+        uc = make_universe_constellation(db, ur, constellation_id=20000099)
+        us = make_universe_system(db, uc, system_id=30000999, name='TestSys')
+        st = make_universe_station(db, us, station_id=60009999)
         db.session.commit()
         client, user = auth_client
         resp = client.post('/my_assets/set_assets_station', data={'station_id': str(st.id)})

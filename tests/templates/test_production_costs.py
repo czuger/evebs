@@ -18,8 +18,8 @@ class TestProductionCostsShowTemplate:
         assert 'Total for batch' in html
 
     def test_renders_item_with_blueprint(self, app, db):
-        mat = make_item(db, cpp_eve_item_id=34, slug='trit', cost=10.0)
-        crafted = make_item(db, cpp_eve_item_id=35, slug='ammo')
+        mat = make_item(db, item_id=34, slug='trit', cost=10.0)
+        crafted = make_item(db, item_id=35, slug='ammo')
         bp = make_blueprint(db, crafted, prod_qtt=1)
         make_blueprint_material(db, bp, mat, required_qtt=5)
         db.session.commit()

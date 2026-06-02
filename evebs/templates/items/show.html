@@ -36,12 +36,12 @@
           {% if item.market_group %}
           <div class="col">
             <div class="text-muted small">Market group ID</div>
-            <div class="font-monospace">{{ item.market_group.cpp_market_group_id }}</div>
+            <div class="font-monospace">{{ item.market_group.id }}</div>
           </div>
-          {% if item.market_group.cpp_parent_market_group_id %}
+          {% if item.market_group.parent_id %}
           <div class="col">
             <div class="text-muted small">Parent group ID</div>
-            <div class="font-monospace">{{ item.market_group.cpp_parent_market_group_id }}</div>
+            <div class="font-monospace">{{ item.market_group.parent_id }}</div>
           </div>
           {% endif %}
           {% endif %}

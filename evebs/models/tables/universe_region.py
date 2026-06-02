@@ -7,8 +7,7 @@ from evebs.extensions import db
 class UniverseRegion(db.Model):
     __tablename__ = 'universe_regions'
 
-    id = db.Column(db.BigInteger, primary_key=True)
-    cpp_region_id = db.Column(db.Integer, nullable=False, unique=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String, nullable=False)
     orders_pages_count = db.Column(db.Integer, default=0, nullable=False)
     _market_items = db.Column('market_items', db.Text, default='[]', nullable=False)

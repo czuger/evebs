@@ -25,7 +25,7 @@ class TestMyAssetsTemplate:
             make_universe_region, make_universe_constellation,
             make_universe_system, make_universe_station,
         )
-        ur = make_universe_region(db, cpp_region_id=10000002)
+        ur = make_universe_region(db, region_id=10000002)
         uc = make_universe_constellation(db, ur)
         us = make_universe_system(db, uc)
         st = make_universe_station(db, us)
@@ -39,10 +39,10 @@ class TestMyAssetsTemplate:
             make_universe_region, make_universe_constellation,
             make_universe_system, make_universe_station,
         )
-        ur = make_universe_region(db, cpp_region_id=10000003)
-        uc = make_universe_constellation(db, ur, cpp_constellation_id=20000021)
-        us = make_universe_system(db, uc, cpp_system_id=30000143, name='Perimeter')
-        st = make_universe_station(db, us, cpp_station_id=60003761)
+        ur = make_universe_region(db, region_id=10000003)
+        uc = make_universe_constellation(db, ur, constellation_id=20000021)
+        us = make_universe_system(db, uc, system_id=30000143, name='Perimeter')
+        st = make_universe_station(db, us, station_id=60003761)
         user.selected_assets_station_id = st.id
         db.session.commit()
         html = _render(app, user=user, assets=[], stations=[st])

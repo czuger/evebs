@@ -8,7 +8,7 @@ class SalesFinal(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     day = db.Column(db.Date, nullable=False)
-    universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'), nullable=False)
+    universe_system_id = db.Column(db.Integer, db.ForeignKey('universe_systems.id'), nullable=False)
     eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False)
     volume = db.Column(db.BigInteger, nullable=False)
     price = db.Column(db.Float, nullable=False)

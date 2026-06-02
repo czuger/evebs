@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def fetch_region_types(region) -> set[int]:
-    client = EsiClient(f'markets/{region.cpp_region_id}/types/')
+    client = EsiClient(f'markets/{region.id}/types/')
     try:
         type_ids = client.get_all_pages()
     except NotFound:
@@ -19,7 +19,7 @@ def fetch_region_types(region) -> set[int]:
 
 
 def fetch_type_orders(region, type_id: int) -> list[dict]:
-    client = EsiClient(f'markets/{region.cpp_region_id}/orders/', params={'type_id': type_id})
+    client = EsiClient(f'markets/{region.id}/orders/', params={'type_id': type_id})
     try:
         return client.get_all_pages()
     except NotFound:
@@ -29,7 +29,7 @@ def fetch_type_orders(region, type_id: int) -> list[dict]:
 
 
 def fetch_region_all_orders(region) -> list[dict]:
-    client  = EsiClient(f'markets/{region.cpp_region_id}/orders/')
+    client  = EsiClient(f'markets/{region.id}/orders/')
     page    = 1
     result  = []
     t_start = time.perf_counter()

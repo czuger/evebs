@@ -225,7 +225,7 @@ def update_weekly_price_details():
             SELECT SUM(wpd.volume * wpd.weighted_avg_price) / SUM(wpd.volume)
             FROM weekly_price_details wpd
             JOIN universe_systems us ON wpd.universe_system_id = us.id
-            WHERE us.cpp_system_id = 30000142
+            WHERE us.id = 30000142
             AND wpd.eve_item_id = eve_items.id
         ), updated_at = :now
     """), {'now': now})
@@ -240,7 +240,7 @@ def update_market_histories():
     import os
     from evebs.models import EveMarketHistoriesGroup, UniverseRegion
 
-    region_map = {str(r.cpp_region_id): r.id for r in UniverseRegion.query.all()}
+    region_ids = {r.id for r in UniverseRegion.query.all()}
     from evebs.models import EveItem
     item_map = {str(i.id): i.id for i in EveItem.query.all()}
 
@@ -259,8 +259,8 @@ def update_market_histories():
             except json.JSONDecodeError:
                 continue
 
-            region_id = region_map.get(str(rec.get('cpp_region_id')))
-            item_id = item_map.get(str(rec.get('cpp_type_id')))
+            region_id = rec.get('region_id') if rec.get('region_id') in region_ids else None
+            item_id = item_map.get(str(rec.get('type_id')))
             if not region_id or not item_id:
                 continue
 

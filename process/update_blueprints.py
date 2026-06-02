@@ -37,7 +37,7 @@ with app.app_context():
     logger.debug('Item map: %d items loaded.', len(item_map))
 
     logger.debug('Loading blueprint map...')
-    bp_map = {bp.produced_cpp_type_id: bp for bp in Blueprint.query.all()}
+    bp_map = {bp.produced_type_id: bp for bp in Blueprint.query.all()}
     logger.debug('Blueprint map: %d blueprints loaded.', len(bp_map))
 
     logger.debug('Processing %d tree entries...', len(tree))
@@ -62,11 +62,11 @@ with app.app_context():
         else:
             bp_name = produced_item.name if produced_item else f'Unknown ({produced_cpp_id})'
             bp = Blueprint(
-                cpp_blueprint_id     = produced_cpp_id,
-                produced_cpp_type_id = produced_cpp_id,
-                nb_runs              = 1,
-                prod_qtt             = prod_qty,
-                name                 = bp_name,
+                id               = produced_cpp_id,
+                produced_type_id = produced_cpp_id,
+                nb_runs          = 1,
+                prod_qtt         = prod_qty,
+                name             = bp_name,
             )
             db.session.add(bp)
             db.session.flush()

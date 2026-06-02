@@ -24,7 +24,7 @@ DATA_DIR = os.path.join(
 COMMIT_EVERY = 2000
 PROGRESS_EVERY = 5000
 
-# name, eve_system_id, cpp_region_id (str – matches regions.cpp_region_id), inner
+# name, system_id, region_id, inner
 TRADE_HUBS = [
     ('Jita',      30000142, '10000002', False),  # The Forge
     ('Amarr',     30002187, '10000043', False),  # Domain
@@ -90,22 +90,22 @@ def _progress(i, label='records'):
 def seed_regions(db, UniverseRegion):
     done = _step('Regions  (mapRegions.jsonl → UniverseRegion)')
 
-    existing_ur = {ur.cpp_region_id: ur for ur in UniverseRegion.query.all()}
+    existing_ur = {ur.id: ur for ur in UniverseRegion.query.all()}
     print(f'    existing: {_fmt(len(existing_ur))} UniverseRegion')
     new_ur = upd_ur = 0
 
     for obj in _jsonl('mapRegions.jsonl'):
-        cpp_id = obj['_key']
-        name   = _en(obj)
+        region_id = obj['_key']
+        name      = _en(obj)
 
-        ur = existing_ur.get(cpp_id)
+        ur = existing_ur.get(region_id)
         if ur:
             ur.name = name
             upd_ur += 1
         else:
-            ur = UniverseRegion(cpp_region_id=cpp_id, name=name)
+            ur = UniverseRegion(id=region_id, name=name)
             db.session.add(ur)
-            existing_ur[cpp_id] = ur
+            existing_ur[region_id] = ur
             new_ur += 1
 
     db.session.commit()
@@ -115,30 +115,28 @@ def seed_regions(db, UniverseRegion):
 def seed_market_groups(db, MarketGroup):
     done = _step('Market groups  (marketGroups.jsonl → MarketGroup)')
 
-    existing = {mg.cpp_market_group_id: mg for mg in MarketGroup.query.all()}
+    existing = {mg.id: mg for mg in MarketGroup.query.all()}
     print(f'    existing: {_fmt(len(existing))} MarketGroup')
     new = updated = 0
+    parent_map = {}  # group_id → parent_id (raw EVE ID, resolved in pass 2)
 
     for obj in _jsonl('marketGroups.jsonl'):
-        cpp_id     = obj['_key']
+        group_id   = obj['_key']
         name       = _en(obj)
-        parent_cpp = obj.get('parentGroupID')
+        parent_id  = obj.get('parentGroupID')
 
-        mg = existing.get(cpp_id)
+        mg = existing.get(group_id)
         if mg:
             mg.name = name
-            mg.cpp_parent_market_group_id = parent_cpp
             updated += 1
         else:
-            mg = MarketGroup(
-                cpp_market_group_id=cpp_id,
-                name=name,
-                cpp_parent_market_group_id=parent_cpp,
-                parent_id=None,
-            )
+            mg = MarketGroup(id=group_id, name=name, parent_id=None)
             db.session.add(mg)
-            existing[cpp_id] = mg
+            existing[group_id] = mg
             new += 1
+
+        if parent_id:
+            parent_map[group_id] = parent_id
 
     db.session.commit()
     print(f'    pass 1: {_fmt(new)} new, {_fmt(updated)} updated')
@@ -146,14 +144,12 @@ def seed_market_groups(db, MarketGroup):
     print('    pass 2: resolving parent links…')
     sys.stdout.flush()
     linked = skipped = 0
-    for mg in MarketGroup.query.filter(
-        MarketGroup.cpp_parent_market_group_id.isnot(None)
-    ).all():
-        parent = existing.get(mg.cpp_parent_market_group_id)
-        if parent and mg.parent_id != parent.id:
-            mg.parent_id = parent.id
+    for group_id, parent_id in parent_map.items():
+        mg = existing.get(group_id)
+        if mg and parent_id in existing and mg.parent_id != parent_id:
+            mg.parent_id = parent_id
             linked += 1
-        elif not parent:
+        elif parent_id not in existing:
             skipped += 1
 
     db.session.commit()
@@ -163,33 +159,33 @@ def seed_market_groups(db, MarketGroup):
 
 def seed_universe(db, UniverseConstellation, UniverseSystem, UniverseRegion):
     done_c = _step('Constellations  (mapConstellations.jsonl → UniverseConstellation)')
-    region_map = {ur.cpp_region_id: ur.id for ur in UniverseRegion.query.all()}
-    existing_c = {uc.cpp_constellation_id: uc for uc in UniverseConstellation.query.all()}
+    region_ids = {ur.id for ur in UniverseRegion.query.all()}
+    existing_c = {uc.id: uc for uc in UniverseConstellation.query.all()}
     print(f'    existing: {_fmt(len(existing_c))} UniverseConstellation  |  '
-          f'region map size: {_fmt(len(region_map))}')
+          f'region count: {_fmt(len(region_ids))}')
     new_c = upd_c = skip_c = 0
 
     for obj in _jsonl('mapConstellations.jsonl'):
-        cpp_id    = obj['_key']
+        const_id  = obj['_key']
         name      = _en(obj)
-        region_id = region_map.get(obj.get('regionID'))
-        if not region_id:
+        region_id = obj.get('regionID')
+        if not region_id or region_id not in region_ids:
             skip_c += 1
             continue
 
-        uc = existing_c.get(cpp_id)
+        uc = existing_c.get(const_id)
         if uc:
             uc.name = name
             uc.universe_region_id = region_id
             upd_c += 1
         else:
             uc = UniverseConstellation(
-                cpp_constellation_id=cpp_id,
+                id=const_id,
                 name=name,
                 universe_region_id=region_id,
             )
             db.session.add(uc)
-            existing_c[cpp_id] = uc
+            existing_c[const_id] = uc
             new_c += 1
 
     db.session.commit()
@@ -197,40 +193,40 @@ def seed_universe(db, UniverseConstellation, UniverseSystem, UniverseRegion):
            f'{_fmt(skip_c)} skipped (no region)')
 
     done_s = _step('Solar systems  (mapSolarSystems.jsonl → UniverseSystem)')
-    const_map  = {uc.cpp_constellation_id: uc.id for uc in UniverseConstellation.query.all()}
-    existing_s = {us.cpp_system_id: us for us in UniverseSystem.query.all()}
+    const_ids  = {uc.id for uc in UniverseConstellation.query.all()}
+    existing_s = {us.id: us for us in UniverseSystem.query.all()}
     print(f'    existing: {_fmt(len(existing_s))} UniverseSystem  |  '
-          f'constellation map size: {_fmt(len(const_map))}')
+          f'constellation count: {_fmt(len(const_ids))}')
     new_s = upd_s = skip_s = 0
     i = 0
 
     for obj in _jsonl('mapSolarSystems.jsonl'):
-        cpp_id   = obj['_key']
-        name     = _en(obj)
-        const_id = const_map.get(obj.get('constellationID'))
-        if not const_id:
+        system_id = obj['_key']
+        name      = _en(obj)
+        const_id  = obj.get('constellationID')
+        if not const_id or const_id not in const_ids:
             skip_s += 1
             continue
 
-        us = existing_s.get(cpp_id)
+        us = existing_s.get(system_id)
         if us:
             us.name = name
             us.security_status = obj.get('securityStatus', 0.0)
             us.security_class  = obj.get('securityClass')
-            us.cpp_star_id     = obj.get('starID')
+            us.star_id         = obj.get('starID')
             us.universe_constellation_id = const_id
             upd_s += 1
         else:
             us = UniverseSystem(
-                cpp_system_id=cpp_id,
+                id=system_id,
                 name=name,
                 security_status=obj.get('securityStatus', 0.0),
                 security_class=obj.get('securityClass'),
-                cpp_star_id=obj.get('starID'),
+                star_id=obj.get('starID'),
                 universe_constellation_id=const_id,
             )
             db.session.add(us)
-            existing_s[cpp_id] = us
+            existing_s[system_id] = us
             new_s += 1
 
         i += 1
@@ -246,32 +242,32 @@ def seed_universe(db, UniverseConstellation, UniverseSystem, UniverseRegion):
 
 def seed_stations(db, UniverseStation, UniverseSystem):
     done = _step('NPC stations  (npcStations.jsonl → UniverseStation)')
-    system_map = {us.cpp_system_id: us.id for us in UniverseSystem.query.all()}
+    system_ids = {us.id for us in UniverseSystem.query.all()}
     existing   = {st.id: st for st in UniverseStation.query.all()}
     print(f'    existing: {_fmt(len(existing))} UniverseStation  |  '
           f'system map size: {_fmt(len(system_map))}')
     new = updated = skipped = 0
 
     for obj in _jsonl('npcStations.jsonl'):
-        cpp_id    = obj['_key']
-        system_id = system_map.get(obj.get('solarSystemID'))
-        if not system_id:
+        station_id = obj['_key']
+        system_id  = obj.get('solarSystemID')
+        if not system_id or system_id not in system_ids:
             skipped += 1
             continue
 
-        st = existing.get(cpp_id)
+        st = existing.get(station_id)
         if st:
             st.universe_system_id = system_id
             updated += 1
         else:
             st = UniverseStation(
-                id=cpp_id,
+                id=station_id,
                 name='',
                 office_rental_cost=0.0,
                 universe_system_id=system_id,
             )
             db.session.add(st)
-            existing[cpp_id] = st
+            existing[station_id] = st
             new += 1
 
     db.session.commit()
@@ -281,7 +277,7 @@ def seed_stations(db, UniverseStation, UniverseSystem):
 
 def seed_items(db, EveItem, MarketGroup):
     done = _step('Eve items  (types.jsonl → EveItem)')
-    mg_map   = {mg.cpp_market_group_id: mg.id for mg in MarketGroup.query.all()}
+    mg_ids   = {mg.id for mg in MarketGroup.query.all()}
     existing = {ei.id: ei for ei in EveItem.query.all()}
     used_slugs = {ei.slug for ei in existing.values() if ei.slug}
     print(f'    existing: {_fmt(len(existing))} EveItem  |  '
@@ -303,7 +299,7 @@ def seed_items(db, EveItem, MarketGroup):
 
         desc      = _en(obj, 'description') or None
         mg_cpp_id = obj.get('marketGroupID')
-        mg_id     = mg_map.get(mg_cpp_id) if mg_cpp_id else None
+        mg_id     = mg_cpp_id if mg_cpp_id and mg_cpp_id in mg_ids else None
 
         item = existing.get(cpp_id)
         if item:
@@ -349,8 +345,8 @@ def seed_items(db, EveItem, MarketGroup):
 def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
     done = _step('Blueprints  (blueprints.jsonl → Blueprint + BlueprintMaterial)')
     item_map    = {ei.id: ei for ei in EveItem.query.all()}
-    existing_bp = {bp.cpp_blueprint_id: bp for bp in Blueprint.query.all()}
-    existing_bp_by_product = {bp.produced_cpp_type_id: bp for bp in existing_bp.values()}
+    existing_bp = {bp.id: bp for bp in Blueprint.query.all()}
+    existing_bp_by_product = {bp.produced_type_id: bp for bp in existing_bp.values()}
     print(f'    existing: {_fmt(len(existing_bp))} Blueprint  |  '
           f'item map size: {_fmt(len(item_map))}')
     bp_new = bp_updated = mat_total = skipped_no_mfg = skipped_no_product = 0
@@ -380,16 +376,16 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
 
         bp = existing_bp.get(cpp_bp_id) or existing_bp_by_product.get(produced_cpp_id)
         if bp:
-            bp.nb_runs              = nb_runs
-            bp.prod_qtt             = prod_qtt
-            bp.name                 = bp_name
-            bp.produced_cpp_type_id = produced_cpp_id
+            bp.nb_runs         = nb_runs
+            bp.prod_qtt        = prod_qtt
+            bp.name            = bp_name
+            bp.produced_type_id = produced_cpp_id
             BlueprintMaterial.query.filter_by(blueprint_id=bp.id).delete()
             bp_updated += 1
         else:
             bp = Blueprint(
-                cpp_blueprint_id=cpp_bp_id,
-                produced_cpp_type_id=produced_cpp_id,
+                id=cpp_bp_id,
+                produced_type_id=produced_cpp_id,
                 nb_runs=nb_runs,
                 prod_qtt=prod_qtt,
                 name=bp_name,
@@ -431,14 +427,14 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
 
 def seed_trade_hubs(db, UniverseSystem):
     done = _step('Trade hubs  (hardcoded list → UniverseSystem.trade_hub)')
-    existing = {us.cpp_system_id: us for us in UniverseSystem.query.all()}
+    existing = {us.id: us for us in UniverseSystem.query.all()}
     print(f'    existing: {_fmt(len(existing))} UniverseSystem rows  |  seeding {len(TRADE_HUBS)} trade hubs')
     updated = skipped = 0
 
-    for name, system_id, cpp_region_id, inner in TRADE_HUBS:
+    for name, system_id, region_id, inner in TRADE_HUBS:
         us = existing.get(system_id)
         if us is None:
-            print(f'    WARNING: UniverseSystem cpp_system_id={system_id} ({name}) not found — run --universe first')
+            print(f'    WARNING: UniverseSystem id={system_id} ({name}) not found — run --universe first')
             skipped += 1
             continue
         us.trade_hub = True

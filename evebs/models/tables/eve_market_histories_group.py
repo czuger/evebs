@@ -12,7 +12,7 @@ class EveMarketHistoriesGroup(db.Model):
     highest = db.Column(db.Float)
     lowest = db.Column(db.Float)
     average = db.Column(db.Float)
-    universe_region_id = db.Column(db.BigInteger, db.ForeignKey('universe_regions.id'), nullable=False)
+    universe_region_id = db.Column(db.Integer, db.ForeignKey('universe_regions.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

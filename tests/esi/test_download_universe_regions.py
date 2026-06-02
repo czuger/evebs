@@ -46,7 +46,7 @@ class TestDownloadUniverseRegions:
 
     def test_updates_existing_region_name(self, db):
         from evebs.models import UniverseRegion
-        existing = UniverseRegion(cpp_region_id=10000002, name='Old Name')
+        existing = UniverseRegion(id=10000002, name='Old Name')
         db.session.add(existing)
         db.session.commit()
 

@@ -10,7 +10,7 @@ class UniverseStructure(db.Model):
     name = db.Column(db.String, nullable=False)
     owner_id = db.Column(db.Integer, nullable=False)
     type_id = db.Column(db.Integer)
-    universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'))
+    universe_system_id = db.Column(db.Integer, db.ForeignKey('universe_systems.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

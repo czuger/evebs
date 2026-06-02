@@ -16,15 +16,15 @@ class TestProductionCostsShow:
         assert resp.status_code == 400
 
     def test_200_for_crafted_item_without_blueprint(self, client, db):
-        item = make_item(db, cpp_eve_item_id=99, slug='ammo', name='Fusion Charge S', base_item=False)
+        item = make_item(db, item_id=99, slug='ammo', name='Fusion Charge S', base_item=False)
         db.session.commit()
         resp = client.get('/production_costs/ammo')
         assert resp.status_code == 200
         assert b'Fusion Charge S' in resp.data
 
     def test_200_for_crafted_item_with_blueprint(self, client, db):
-        mat = make_item(db, cpp_eve_item_id=34, slug='trit', cost=10.0)
-        crafted = make_item(db, cpp_eve_item_id=35, slug='ammo2')
+        mat = make_item(db, item_id=34, slug='trit', cost=10.0)
+        crafted = make_item(db, item_id=35, slug='ammo2')
         bp = make_blueprint(db, crafted)
         make_blueprint_material(db, bp, mat, required_qtt=3)
         db.session.commit()
@@ -48,7 +48,7 @@ class TestDailiesAvgPrices:
         from tests.factories import make_universe_system, make_trade_hub
         system = make_universe_system(db)
         hub = make_trade_hub(db, system)
-        item = make_item(db, cpp_eve_item_id=36, slug='base-item', base_item=True)
+        item = make_item(db, item_id=36, slug='base-item', base_item=True)
         db.session.commit()
         resp = client.get(f'/production_costs/base-item/dailies_avg_prices/{hub.id}')
         assert resp.status_code == 200
@@ -60,7 +60,7 @@ class TestMarketHistories:
         assert resp.status_code == 404
 
     def test_200_for_existing_item(self, client, db):
-        item = make_item(db, cpp_eve_item_id=37, slug='hist-item')
+        item = make_item(db, item_id=37, slug='hist-item')
         db.session.commit()
         resp = client.get('/production_costs/hist-item/market_histories')
         assert resp.status_code == 200

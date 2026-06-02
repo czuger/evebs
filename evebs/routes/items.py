@@ -11,7 +11,7 @@ def show(slug):
     item = EveItem.find_by_slug(slug)
     if item is None:
         abort(404)
-    jita = UniverseSystem.query.filter_by(cpp_system_id=30000142, trade_hub=True).first()
+    jita = UniverseSystem.query.filter_by(id=30000142, trade_hub=True).first()
     taxes = Constant.query.filter_by(libe='taxes').first()
     taxes_value = taxes.f_value if taxes else 1.13
     return render_template('items/show.html',

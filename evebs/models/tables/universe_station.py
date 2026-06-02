@@ -14,7 +14,7 @@ class UniverseStation(db.Model):
     security_status = db.Column(db.Float)
     jita_distance = db.Column(db.Integer)
     _industry_costs_indices = db.Column('industry_costs_indices', db.Text)
-    universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'), nullable=False)
+    universe_system_id = db.Column(db.Integer, db.ForeignKey('universe_systems.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

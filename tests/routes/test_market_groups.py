@@ -8,15 +8,15 @@ class TestMarketGroupsIndex:
         assert resp.status_code == 200
 
     def test_shows_root_groups(self, client, db):
-        make_market_group(db, cpp_market_group_id=1, name='Ammunition & Charges')
+        make_market_group(db, group_id=1, name='Ammunition & Charges')
         db.session.commit()
         resp = client.get('/market_groups')
         assert resp.status_code == 200
         assert 'Ammunition' in resp.data.decode()
 
     def test_does_not_show_child_groups(self, client, db):
-        parent = make_market_group(db, cpp_market_group_id=1, name='Parent')
-        make_market_group(db, cpp_market_group_id=2, name='Child', parent=parent)
+        parent = make_market_group(db, group_id=1, name='Parent')
+        make_market_group(db, group_id=2, name='Child', parent=parent)
         db.session.commit()
         resp = client.get('/market_groups')
         assert b'Parent' in resp.data

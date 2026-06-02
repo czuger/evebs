@@ -21,8 +21,8 @@ def download_my_blueprints(user):
         logger.warning('No data returned from ESI for user %s', user.id)
         return False
 
-    known = {bp.cpp_blueprint_id: bp.id for bp in Blueprint.query.all()}
-    bp_ids = list({known[a['type_id']] for a in pages if a.get('type_id') in known})
+    known = {bp.id for bp in Blueprint.query.all()}
+    bp_ids = list({a['type_id'] for a in pages if a.get('type_id') in known})
 
     db.session.execute(
         user_blueprints.delete().where(user_blueprints.c.user_id == user.id)

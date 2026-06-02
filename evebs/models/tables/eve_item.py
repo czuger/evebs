@@ -12,7 +12,7 @@ class EveItem(db.Model):
     name = db.Column(db.String, nullable=False)
     cost = db.Column(db.Float)
     market_group_id = db.Column(db.Integer, db.ForeignKey('market_groups.id'))
-    blueprint_id = db.Column(db.BigInteger, db.ForeignKey('blueprints.id'))
+    blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'))
     volume = db.Column(db.Float)
     production_level = db.Column(db.Integer)
     base_item = db.Column(db.Boolean, default=False, nullable=False)
@@ -66,6 +66,6 @@ class EveItem(db.Model):
         return item
 
     @classmethod
-    def to_eve_item_id(cls, cpp_eve_item_id):
-        item = cls.query.get(cpp_eve_item_id)
+    def to_eve_item_id(cls, type_id):
+        item = cls.query.get(type_id)
         return item.id if item else None

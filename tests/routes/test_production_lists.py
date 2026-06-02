@@ -7,7 +7,7 @@ from tests.factories import make_universe_system, make_trade_hub, make_item, mak
 def seeded(db, user):
     system = make_universe_system(db)
     hub = make_trade_hub(db, system)
-    item = make_item(db, cpp_eve_item_id=34, slug='tritanium')
+    item = make_item(db, item_id=34, slug='tritanium')
     db.session.commit()
     return {'hub': hub, 'item': item}
 

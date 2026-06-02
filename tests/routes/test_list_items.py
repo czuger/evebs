@@ -9,8 +9,8 @@ class TestListItemsShow:
         assert resp.status_code == 200
 
     def test_shows_root_market_groups(self, db, client):
-        make_market_group(db, cpp_market_group_id=1, name='Minerals')
-        make_market_group(db, cpp_market_group_id=2, name='Ships')
+        make_market_group(db, group_id=1, name='Minerals')
+        make_market_group(db, group_id=2, name='Ships')
         db.session.commit()
 
         resp = client.get('/list_items')
@@ -19,8 +19,8 @@ class TestListItemsShow:
         assert b'Ships' in resp.data
 
     def test_shows_items_for_leaf_group(self, db, client):
-        mg = make_market_group(db, cpp_market_group_id=1, name='Minerals')
-        make_item(db, cpp_eve_item_id=34, slug='tritanium', market_group=mg)
+        mg = make_market_group(db, group_id=1, name='Minerals')
+        make_item(db, item_id=34, slug='tritanium', market_group=mg)
         db.session.commit()
 
         resp = client.get(f'/list_items?group_id={mg.id}')
@@ -28,8 +28,8 @@ class TestListItemsShow:
         assert b'Tritanium' in resp.data
 
     def test_shows_children_for_non_leaf_group(self, db, client):
-        parent = make_market_group(db, cpp_market_group_id=1, name='Materials')
-        child = make_market_group(db, cpp_market_group_id=2, name='Minerals', parent=parent)
+        parent = make_market_group(db, group_id=1, name='Materials')
+        child = make_market_group(db, group_id=2, name='Minerals', parent=parent)
         db.session.commit()
 
         resp = client.get(f'/list_items?group_id={parent.id}')
@@ -48,8 +48,8 @@ class TestSelectionChange:
         assert resp.status_code == 302
 
     def test_adds_item_to_user_watch_list(self, db, auth_client):
-        mg = make_market_group(db, cpp_market_group_id=1, name='Minerals')
-        item = make_item(db, cpp_eve_item_id=34, slug='tritanium', market_group=mg)
+        mg = make_market_group(db, group_id=1, name='Minerals')
+        item = make_item(db, item_id=34, slug='tritanium', market_group=mg)
         db.session.commit()
 
         client, user = auth_client
@@ -64,8 +64,8 @@ class TestSelectionChange:
         assert item in user.eve_items
 
     def test_removes_item_from_user_watch_list(self, db, auth_client):
-        mg = make_market_group(db, cpp_market_group_id=1, name='Minerals')
-        item = make_item(db, cpp_eve_item_id=34, slug='tritanium', market_group=mg)
+        mg = make_market_group(db, group_id=1, name='Minerals')
+        item = make_item(db, item_id=34, slug='tritanium', market_group=mg)
         db.session.commit()
 
         client, user = auth_client

@@ -129,9 +129,9 @@ class TestUpdateWeeklyPriceDetails:
         assert WeeklyPriceDetail.query.count() == 0
 
     def test_updates_weekly_avg_price_on_item_from_jita(self, db):
-        system = make_universe_system(db, cpp_system_id=30000142, name='Jita')
+        system = make_universe_system(db, system_id=30000142, name='Jita')
         hub = make_trade_hub(db, system)
-        item = make_item(db, cpp_eve_item_id=35, slug='rounds')
+        item = make_item(db, item_id=35, slug='rounds')
         today = date.today()
         make_sales_final(db, item, hub, volume=100, price=800.0, day=today, order_id=1)
         db.session.commit()
@@ -160,12 +160,12 @@ class TestUpdateMarketHistories:
     def test_inserts_records_from_file(self, db, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
         (tmp_path / 'data').mkdir()
-        region = make_universe_region(db, cpp_region_id=10000002)
-        item = make_item(db, cpp_eve_item_id=34)
+        region = make_universe_region(db, region_id=10000002)
+        item = make_item(db, item_id=34)
         db.session.commit()
         record = {
-            'cpp_region_id': 10000002,
-            'cpp_type_id': 34,
+            'region_id': 10000002,
+            'type_id': 34,
             'volume': 5000,
             'avg': 100.0,
             'max': 120.0,
@@ -185,8 +185,8 @@ class TestUpdateMarketHistories:
     def test_updates_existing_entry(self, db, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
         (tmp_path / 'data').mkdir()
-        region = make_universe_region(db, cpp_region_id=10000002)
-        item = make_item(db, cpp_eve_item_id=34)
+        region = make_universe_region(db, region_id=10000002)
+        item = make_item(db, item_id=34)
         db.session.commit()
         from evebs.models import EveMarketHistoriesGroup
         existing = EveMarketHistoriesGroup(
@@ -199,7 +199,7 @@ class TestUpdateMarketHistories:
         )
         db.session.add(existing)
         db.session.commit()
-        record = {'cpp_region_id': 10000002, 'cpp_type_id': 34,
+        record = {'region_id': 10000002, 'type_id': 34,
                   'volume': 9999, 'avg': 200.0, 'max': 250.0, 'min': 150.0}
         (tmp_path / 'data' / 'regional_sales_volumes.json_stream').write_text(
             json.dumps(record) + '\n'
@@ -217,7 +217,7 @@ class TestUpdateMarketHistories:
     def test_skips_unknown_region_or_item(self, db, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
         (tmp_path / 'data').mkdir()
-        record = {'cpp_region_id': 99999999, 'cpp_type_id': 99999999,
+        record = {'region_id': 99999999, 'type_id': 99999999,
                   'volume': 1, 'avg': 1.0, 'max': 1.0, 'min': 1.0}
         (tmp_path / 'data' / 'regional_sales_volumes.json_stream').write_text(
             json.dumps(record) + '\n'

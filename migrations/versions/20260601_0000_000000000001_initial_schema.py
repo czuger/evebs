@@ -55,22 +55,19 @@ def upgrade() -> None:
 
     op.create_table(
         'market_groups',
-        sa.Column('id', sa.Integer(), primary_key=True),
+        sa.Column('id', sa.Integer(), primary_key=True, autoincrement=False),
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('parent_id', sa.Integer(), sa.ForeignKey('market_groups.id'), nullable=True),
-        sa.Column('cpp_market_group_id', sa.Integer(), nullable=False, unique=True),
-        sa.Column('cpp_parent_market_group_id', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
     )
 
     op.create_table(
         'blueprints',
-        sa.Column('id', sa.Integer(), primary_key=True),
-        sa.Column('produced_cpp_type_id', sa.Integer(), nullable=False, unique=True),
+        sa.Column('id', sa.Integer(), primary_key=True, autoincrement=False),
+        sa.Column('produced_type_id', sa.Integer(), nullable=False, unique=True),
         sa.Column('nb_runs', sa.Integer(), nullable=False),
         sa.Column('prod_qtt', sa.Integer(), nullable=False),
-        sa.Column('cpp_blueprint_id', sa.Integer(), nullable=False, unique=True),
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -79,8 +76,7 @@ def upgrade() -> None:
     # --- universe hierarchy ---
     op.create_table(
         'universe_regions',
-        sa.Column('id', sa.BigInteger(), primary_key=True),
-        sa.Column('cpp_region_id', sa.Integer(), nullable=False, unique=True),
+        sa.Column('id', sa.Integer(), primary_key=True, autoincrement=False),
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('orders_pages_count', sa.Integer(), nullable=False, server_default='0'),
         sa.Column('market_items', sa.Text(), nullable=False, server_default='[]'),
@@ -92,27 +88,25 @@ def upgrade() -> None:
 
     op.create_table(
         'universe_constellations',
-        sa.Column('id', sa.BigInteger(), primary_key=True),
-        sa.Column('cpp_constellation_id', sa.Integer(), nullable=False, unique=True),
+        sa.Column('id', sa.Integer(), primary_key=True, autoincrement=False),
         sa.Column('name', sa.String(), nullable=False),
-        sa.Column('universe_region_id', sa.BigInteger(), sa.ForeignKey('universe_regions.id'), nullable=False),
+        sa.Column('universe_region_id', sa.Integer(), sa.ForeignKey('universe_regions.id'), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
     )
 
     op.create_table(
         'universe_systems',
-        sa.Column('id', sa.BigInteger(), primary_key=True),
-        sa.Column('cpp_system_id', sa.Integer(), nullable=False, unique=True),
+        sa.Column('id', sa.Integer(), primary_key=True, autoincrement=False),
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('trade_hub', sa.Boolean(), nullable=False, server_default='false'),
         sa.Column('is_inner', sa.Boolean(), nullable=False, server_default='false'),
-        sa.Column('cpp_star_id', sa.Integer(), nullable=True),
+        sa.Column('star_id', sa.Integer(), nullable=True),
         sa.Column('security_class', sa.String(), nullable=True),
         sa.Column('security_status', sa.Float(), nullable=False),
         sa.Column('kill_stats_current_month', sa.Integer(), nullable=False, server_default='0'),
         sa.Column('kill_stats_last_month', sa.Integer(), nullable=False, server_default='0'),
-        sa.Column('universe_constellation_id', sa.BigInteger(), sa.ForeignKey('universe_constellations.id'), nullable=True),
+        sa.Column('universe_constellation_id', sa.Integer(), sa.ForeignKey('universe_constellations.id'), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
     )
@@ -126,7 +120,7 @@ def upgrade() -> None:
         sa.Column('security_status', sa.Float(), nullable=True),
         sa.Column('jita_distance', sa.Integer(), nullable=True),
         sa.Column('industry_costs_indices', sa.Text(), nullable=True),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
     )
@@ -137,7 +131,7 @@ def upgrade() -> None:
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('owner_id', sa.Integer(), nullable=False),
         sa.Column('type_id', sa.Integer(), nullable=True),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=True),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
     )
@@ -149,7 +143,7 @@ def upgrade() -> None:
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('cost', sa.Float(), nullable=True),
         sa.Column('market_group_id', sa.Integer(), sa.ForeignKey('market_groups.id'), nullable=True),
-        sa.Column('blueprint_id', sa.BigInteger(), sa.ForeignKey('blueprints.id'), nullable=True),
+        sa.Column('blueprint_id', sa.Integer(), sa.ForeignKey('blueprints.id'), nullable=True),
         sa.Column('volume', sa.Float(), nullable=True),
         sa.Column('production_level', sa.Integer(), nullable=True),
         sa.Column('base_item', sa.Boolean(), nullable=False, server_default='false'),
@@ -213,7 +207,7 @@ def upgrade() -> None:
         'trade_hubs_users',
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('user_id', sa.Integer(), sa.ForeignKey('users.id'), nullable=True),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=True),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=True),
     )
 
     op.create_table(
@@ -240,7 +234,7 @@ def upgrade() -> None:
         'blueprint_modifications',
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('user_id', sa.BigInteger(), sa.ForeignKey('users.id'), nullable=False),
-        sa.Column('blueprint_id', sa.BigInteger(), sa.ForeignKey('blueprints.id'), nullable=False),
+        sa.Column('blueprint_id', sa.Integer(), sa.ForeignKey('blueprints.id'), nullable=False),
         sa.Column('percent_modification_value', sa.Float(), nullable=False),
         sa.Column('touched', sa.Boolean(), nullable=False, server_default='false'),
         sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -251,7 +245,7 @@ def upgrade() -> None:
         'prices_mins',
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=True),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=True),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=True),
         sa.Column('min_price', sa.Float(), nullable=True),
         sa.Column('volume', sa.BigInteger(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -263,7 +257,7 @@ def upgrade() -> None:
         'prices_advices',
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=False),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('vol_month', sa.BigInteger(), nullable=True),
         sa.Column('avg_price_month', sa.Float(), nullable=True),
         sa.Column('immediate_montly_pcent', sa.Float(), nullable=True),
@@ -277,7 +271,7 @@ def upgrade() -> None:
     op.create_table(
         'public_trade_orders',
         sa.Column('id', sa.BigInteger(), primary_key=True),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=False),
         sa.Column('order_id', sa.BigInteger(), nullable=False, unique=True),
         sa.Column('is_buy_order', sa.Boolean(), nullable=False),
@@ -301,7 +295,7 @@ def upgrade() -> None:
     op.create_table(
         'buy_orders_analytics',
         sa.Column('id', sa.BigInteger(), primary_key=True),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=False),
         sa.Column('approx_max_price', sa.Float(), nullable=True),
         sa.Column('over_approx_max_price_volume', sa.BigInteger(), nullable=True),
@@ -320,7 +314,7 @@ def upgrade() -> None:
         'sales_finals',
         sa.Column('id', sa.BigInteger(), primary_key=True),
         sa.Column('day', sa.Date(), nullable=False),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=False),
         sa.Column('volume', sa.BigInteger(), nullable=False),
         sa.Column('price', sa.Float(), nullable=False),
@@ -333,7 +327,7 @@ def upgrade() -> None:
         'production_lists',
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('user_id', sa.Integer(), sa.ForeignKey('users.id'), nullable=False),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=False),
         sa.Column('runs_count', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -345,7 +339,7 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('user_id', sa.Integer(), sa.ForeignKey('users.id'), nullable=False),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=False),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('price', sa.Float(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -369,7 +363,7 @@ def upgrade() -> None:
         sa.Column('highest', sa.Float(), nullable=True),
         sa.Column('lowest', sa.Float(), nullable=True),
         sa.Column('average', sa.Float(), nullable=True),
-        sa.Column('universe_region_id', sa.BigInteger(), sa.ForeignKey('universe_regions.id'), nullable=False),
+        sa.Column('universe_region_id', sa.Integer(), sa.ForeignKey('universe_regions.id'), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
     )
@@ -378,7 +372,7 @@ def upgrade() -> None:
         'weekly_price_details',
         sa.Column('id', sa.BigInteger(), primary_key=True),
         sa.Column('eve_item_id', sa.BigInteger(), sa.ForeignKey('eve_items.id'), nullable=False),
-        sa.Column('universe_system_id', sa.BigInteger(), sa.ForeignKey('universe_systems.id'), nullable=False),
+        sa.Column('universe_system_id', sa.Integer(), sa.ForeignKey('universe_systems.id'), nullable=False),
         sa.Column('day', sa.Date(), nullable=False),
         sa.Column('volume', sa.Float(), nullable=False),
         sa.Column('weighted_avg_price', sa.Float(), nullable=False),
@@ -596,8 +590,7 @@ def upgrade() -> None:
           (pm.min_price - uso.price) AS price_delta,
           uso.eve_item_id,
           uso.universe_system_id AS trade_hub_id,
-          ei.id AS cpp_eve_item_id,
-          us.cpp_system_id AS eve_system_id
+          us.id AS eve_system_id
         FROM user_sale_orders uso
         JOIN eve_items ei ON ei.id = uso.eve_item_id
         JOIN blueprints b ON ei.blueprint_id = b.id
@@ -613,7 +606,7 @@ def upgrade() -> None:
         CREATE MATERIALIZED VIEW jita_prices AS
         WITH
         jita AS (
-            SELECT id FROM universe_systems WHERE cpp_system_id = 30000142 AND trade_hub = TRUE
+            SELECT id FROM universe_systems WHERE id = 30000142 AND trade_hub = TRUE
         ),
         sell AS (
             SELECT ei.id, pto.price, pto.volume_remain,
@@ -664,17 +657,17 @@ def upgrade() -> None:
         CREATE MATERIALIZED VIEW jita_manufacturing_margins AS
         WITH mat_costs AS (
             SELECT
-                b.produced_cpp_type_id,
+                b.produced_type_id,
                 b.prod_qtt,
                 SUM(bm.required_qtt::bigint * jp.min_sell_price) AS manufacturing_cost
             FROM blueprints b
             JOIN blueprint_materials bm ON bm.blueprint_id = b.id
             JOIN eve_items ei_mat ON ei_mat.id = bm.eve_item_id
             JOIN jita_prices jp ON jp.id = ei_mat.id
-            GROUP BY b.produced_cpp_type_id, b.prod_qtt
+            GROUP BY b.produced_type_id, b.prod_qtt
         )
         SELECT
-            mc.produced_cpp_type_id                                       AS id,
+            mc.produced_type_id                                       AS id,
             ei.id                                                         AS eve_item_id,
             mc.manufacturing_cost,
             mc.manufacturing_cost * 0.10                                  AS manufacturing_tax,
@@ -685,8 +678,8 @@ def upgrade() -> None:
                 - mc.manufacturing_cost
                 - (mc.manufacturing_cost * 0.10)                          AS benefit
         FROM mat_costs mc
-        JOIN eve_items ei        ON ei.id        = mc.produced_cpp_type_id
-        JOIN jita_prices jp_prod ON jp_prod.id   = mc.produced_cpp_type_id
+        JOIN eve_items ei        ON ei.id        = mc.produced_type_id
+        JOIN jita_prices jp_prod ON jp_prod.id   = mc.produced_type_id
         WITH NO DATA
     """))
     conn.execute(sa.text('CREATE UNIQUE INDEX ON jita_manufacturing_margins (id)'))

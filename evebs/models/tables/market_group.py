@@ -6,11 +6,9 @@ from evebs.extensions import db
 class MarketGroup(db.Model):
     __tablename__ = 'market_groups'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String, nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey('market_groups.id'))
-    cpp_market_group_id = db.Column(db.Integer, nullable=False, unique=True)
-    cpp_parent_market_group_id = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

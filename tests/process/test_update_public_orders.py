@@ -31,9 +31,9 @@ def _base_order(**kwargs):
 
 @pytest.fixture
 def setup(db):
-    system = make_universe_system(db, cpp_system_id=30000142)
+    system = make_universe_system(db, system_id=30000142)
     hub = make_trade_hub(db, system)
-    item = make_item(db, cpp_eve_item_id=34)
+    item = make_item(db, item_id=34)
     db.session.commit()
     return hub, item
 

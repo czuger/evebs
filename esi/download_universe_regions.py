@@ -18,9 +18,9 @@ class DownloadUniverseRegions:
             if not data:
                 continue
 
-            region = UniverseRegion.query.filter_by(cpp_region_id=region_id).first()
+            region = UniverseRegion.query.get(region_id)
             if not region:
-                region = UniverseRegion(cpp_region_id=region_id, name=data.get('name', ''))
+                region = UniverseRegion(id=region_id, name=data.get('name', ''))
                 db.session.add(region)
             else:
                 region.name = data.get('name', region.name)

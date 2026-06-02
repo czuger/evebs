@@ -2,18 +2,18 @@
 from datetime import datetime
 
 
-def make_universe_region(db, cpp_region_id=10000002, name='The Forge'):
+def make_universe_region(db, region_id=10000002, name='The Forge'):
     from evebs.models import UniverseRegion
-    ur = UniverseRegion(cpp_region_id=cpp_region_id, name=name)
+    ur = UniverseRegion(id=region_id, name=name)
     db.session.add(ur)
     db.session.flush()
     return ur
 
 
-def make_universe_constellation(db, universe_region, cpp_constellation_id=20000020, name='Kimotoro'):
+def make_universe_constellation(db, universe_region, constellation_id=20000020, name='Kimotoro'):
     from evebs.models import UniverseConstellation
     uc = UniverseConstellation(
-        cpp_constellation_id=cpp_constellation_id,
+        id=constellation_id,
         name=name,
         universe_region_id=universe_region.id,
     )
@@ -22,10 +22,10 @@ def make_universe_constellation(db, universe_region, cpp_constellation_id=200000
     return uc
 
 
-def make_universe_system(db, constellation=None, cpp_system_id=30000142, name='Jita'):
+def make_universe_system(db, constellation=None, system_id=30000142, name='Jita'):
     from evebs.models import UniverseSystem
     us = UniverseSystem(
-        cpp_system_id=cpp_system_id,
+        id=system_id,
         name=name,
         security_status=0.9,
         universe_constellation_id=constellation.id if constellation else None,
@@ -35,10 +35,10 @@ def make_universe_system(db, constellation=None, cpp_system_id=30000142, name='J
     return us
 
 
-def make_universe_station(db, system, cpp_station_id=60003760):
+def make_universe_station(db, system, station_id=60003760):
     from evebs.models import UniverseStation
     st = UniverseStation(
-        id=cpp_station_id,
+        id=station_id,
         name='Jita IV - Moon 4 - Caldari Navy Assembly Plant',
         office_rental_cost=0.0,
         universe_system_id=system.id,
@@ -57,10 +57,10 @@ def make_trade_hub(db, system, inner=False):
 
 
 
-def make_market_group(db, cpp_market_group_id=1, name='Minerals', parent=None):
+def make_market_group(db, group_id=1, name='Minerals', parent=None):
     from evebs.models import MarketGroup
     mg = MarketGroup(
-        cpp_market_group_id=cpp_market_group_id,
+        id=group_id,
         name=name,
         parent_id=parent.id if parent else None,
     )
@@ -69,12 +69,12 @@ def make_market_group(db, cpp_market_group_id=1, name='Minerals', parent=None):
     return mg
 
 
-def make_item(db, cpp_eve_item_id=34, name='Tritanium', slug='tritanium',
+def make_item(db, item_id=34, name='Tritanium', slug='tritanium',
               market_group=None, base_item=False, cost=None,
               weekly_avg_price=None, production_level=None):
     from evebs.models import EveItem
     item = EveItem(
-        id=cpp_eve_item_id,
+        id=item_id,
         name=name,
         slug=slug,
         base_item=base_item,
@@ -125,12 +125,12 @@ def make_sales_final(db, item, trade_hub, volume=100, price=1000.0,
     return sf
 
 
-def make_blueprint(db, item, cpp_blueprint_id=None, nb_runs=1, prod_qtt=1):
+def make_blueprint(db, item, blueprint_id=None, nb_runs=1, prod_qtt=1):
     from evebs.models import Blueprint
-    cpp_blueprint_id = cpp_blueprint_id or (item.id + 100000)
+    blueprint_id = blueprint_id or (item.id + 100000)
     bp = Blueprint(
-        cpp_blueprint_id=cpp_blueprint_id,
-        produced_cpp_type_id=item.id,
+        id=blueprint_id,
+        produced_type_id=item.id,
         nb_runs=nb_runs,
         prod_qtt=prod_qtt,
         name=f'{item.name} Blueprint',
@@ -185,6 +185,21 @@ def make_user_sale_order(db, user, item, trade_hub, price=10000.0):
     db.session.add(o)
     db.session.flush()
     return o
+
+
+def make_universe_structure(db, system, structure_id=1_000_000_000_001,
+                            name='Test Structure', owner_id=1, type_id=35835):
+    from evebs.models import UniverseStructure
+    s = UniverseStructure(
+        id=structure_id,
+        name=name,
+        owner_id=owner_id,
+        type_id=type_id,
+        universe_system_id=system.id,
+    )
+    db.session.add(s)
+    db.session.flush()
+    return s
 
 
 def make_bpc_asset(db, user, item, quantity=5, station=None):

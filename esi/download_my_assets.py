@@ -3,7 +3,7 @@ from datetime import datetime
 
 from esi.client import EsiClient
 from evebs.extensions import db
-from evebs.models import BpcAsset, EveItem, UniverseStation, UniverseStructure
+from evebs.models import BpcAsset, EveItem, UniverseStation, UniverseStructure, UniverseSystem
 
 logger = logging.getLogger(__name__)
 
@@ -84,12 +84,15 @@ class DownloadMyAssets:
             logger.error('Empty response for structure %s', location_id)
             return None
 
+        solar_system_id = data.get('solar_system_id')
+        system = UniverseSystem.query.get(solar_system_id) if solar_system_id else None
+
         structure = UniverseStructure(
             id=location_id,
             name=data.get('name', ''),
             owner_id=data.get('owner_id', 0),
             type_id=data.get('type_id'),
-            universe_system_id=data.get('solar_system_id'),
+            universe_system_id=system.id if system else None,
         )
         db.session.add(structure)
         db.session.flush()

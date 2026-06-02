@@ -37,21 +37,21 @@ def auth_page(page, app, user, live_server_url):
 
 @pytest.fixture
 def root_group(db):
-    grp = make_market_group(db, cpp_market_group_id=100, name='Ships')
+    grp = make_market_group(db, group_id=100, name='Ships')
     db.session.commit()
     return grp
 
 
 @pytest.fixture
 def leaf_group(db, root_group):
-    grp = make_market_group(db, cpp_market_group_id=101, name='Frigates', parent=root_group)
+    grp = make_market_group(db, group_id=101, name='Frigates', parent=root_group)
     db.session.commit()
     return grp
 
 
 @pytest.fixture
 def eve_item(db, leaf_group):
-    item = make_item(db, cpp_eve_item_id=582, name='Rifter', slug='rifter',
+    item = make_item(db, item_id=582, name='Rifter', slug='rifter',
                      market_group=leaf_group)
     db.session.commit()
     return item

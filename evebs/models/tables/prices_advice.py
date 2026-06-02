@@ -11,7 +11,7 @@ class PricesAdvice(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False)
-    universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'), nullable=False)
+    universe_system_id = db.Column(db.Integer, db.ForeignKey('universe_systems.id'), nullable=False)
     vol_month = db.Column(db.BigInteger)
     avg_price_month = db.Column(db.Float)
     immediate_montly_pcent = db.Column(db.Float)

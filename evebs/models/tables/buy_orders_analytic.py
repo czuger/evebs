@@ -10,7 +10,7 @@ class BuyOrdersAnalytic(db.Model):
     )
 
     id = db.Column(db.BigInteger, primary_key=True)
-    universe_system_id = db.Column(db.BigInteger, db.ForeignKey('universe_systems.id'), nullable=False)
+    universe_system_id = db.Column(db.Integer, db.ForeignKey('universe_systems.id'), nullable=False)
     eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False)
     approx_max_price = db.Column(db.Float)
     over_approx_max_price_volume = db.Column(db.BigInteger)

@@ -8,7 +8,7 @@ class BlueprintModification(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
-    blueprint_id = db.Column(db.BigInteger, db.ForeignKey('blueprints.id'), nullable=False)
+    blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=False)
     percent_modification_value = db.Column(db.Float, nullable=False)
     touched = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
