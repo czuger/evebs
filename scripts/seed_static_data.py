@@ -281,7 +281,7 @@ def seed_items(db, EveItem, MarketGroup):
     existing = {ei.id: ei for ei in EveItem.query.all()}
     used_slugs = {ei.slug for ei in existing.values() if ei.slug}
     print(f'    existing: {_fmt(len(existing))} EveItem  |  '
-          f'market group map size: {_fmt(len(mg_map))}')
+          f'market group count: {_fmt(len(mg_ids))}')
     new = updated = skipped_unpublished = skipped_noname = 0
     slug_collisions = 0
     i = 0

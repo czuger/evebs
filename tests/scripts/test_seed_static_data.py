@@ -131,3 +131,102 @@ class TestSeedStations:
             seed_stations(db, UniverseStation, UniverseSystem)
 
         assert UniverseStation.query.count() == 0
+
+
+class TestSeedItems:
+    def test_creates_items(self, db):
+        from scripts.seed_static_data import seed_items
+        from evebs.models import EveItem, MarketGroup
+
+        make_market_group(db, group_id=4)
+        db.session.commit()
+
+        data = [{'_key': 34, 'name': {'en': 'Tritanium'}, 'published': True,
+                 'marketGroupID': 4, 'volume': 0.01}]
+        with _patch_jsonl(data):
+            seed_items(db, EveItem, MarketGroup)
+
+        item = db.session.get(EveItem, 34)
+        assert item is not None
+        assert item.name == 'Tritanium'
+        assert item.market_group_id == 4
+        assert item.slug == 'tritanium'
+
+    def test_creates_item_without_market_group(self, db):
+        from scripts.seed_static_data import seed_items
+        from evebs.models import EveItem, MarketGroup
+
+        data = [{'_key': 34, 'name': {'en': 'Tritanium'}, 'published': True,
+                 'marketGroupID': None}]
+        with _patch_jsonl(data):
+            seed_items(db, EveItem, MarketGroup)
+
+        item = db.session.get(EveItem, 34)
+        assert item is not None
+        assert item.market_group_id is None
+
+    def test_skips_unknown_market_group(self, db):
+        from scripts.seed_static_data import seed_items
+        from evebs.models import EveItem, MarketGroup
+
+        data = [{'_key': 34, 'name': {'en': 'Tritanium'}, 'published': True,
+                 'marketGroupID': 9999}]
+        with _patch_jsonl(data):
+            seed_items(db, EveItem, MarketGroup)
+
+        item = db.session.get(EveItem, 34)
+        assert item.market_group_id is None
+
+    def test_skips_unpublished_items(self, db):
+        from scripts.seed_static_data import seed_items
+        from evebs.models import EveItem, MarketGroup
+
+        data = [{'_key': 34, 'name': {'en': 'Tritanium'}, 'published': False}]
+        with _patch_jsonl(data):
+            seed_items(db, EveItem, MarketGroup)
+
+        assert EveItem.query.count() == 0
+
+    def test_updates_existing_item(self, db):
+        from scripts.seed_static_data import seed_items
+        from evebs.models import EveItem, MarketGroup
+
+        item = EveItem(id=34, name='Old Name', slug='old-name')
+        db.session.add(item)
+        db.session.commit()
+
+        data = [{'_key': 34, 'name': {'en': 'Tritanium'}, 'published': True}]
+        with _patch_jsonl(data):
+            seed_items(db, EveItem, MarketGroup)
+
+        db.session.expire(item)
+        assert item.name == 'Tritanium'
+        assert item.slug == 'old-name'
+
+
+class TestSeedBlueprints:
+    def test_creates_blueprint_with_materials(self, db):
+        from scripts.seed_static_data import seed_blueprints
+        from evebs.models import Blueprint, BlueprintMaterial, EveItem
+
+        item = EveItem(id=34, name='Tritanium', slug='tritanium')
+        product = EveItem(id=35, name='Pyerite', slug='pyerite')
+        db.session.add_all([item, product])
+        db.session.commit()
+
+        data = [{'_key': 100035, 'maxProductionLimit': 300,
+                 'activities': {'manufacturing': {
+                     'products': [{'typeID': 35, 'quantity': 1}],
+                     'materials': [{'typeID': 34, 'quantity': 10}],
+                 }}}]
+        with _patch_jsonl(data):
+            seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem)
+
+        bp = db.session.get(Blueprint, 100035)
+        assert bp is not None
+        assert bp.produced_type_id == 35
+        assert bp.nb_runs == 300
+        mats = BlueprintMaterial.query.filter_by(blueprint_id=bp.id).all()
+        assert len(mats) == 1
+        assert mats[0].eve_item_id == 34
+        assert mats[0].required_qtt == 10
