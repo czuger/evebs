@@ -25,6 +25,7 @@ from evebs.models.tables.crontab import Crontab
 from evebs.models.tables.weekly_price_detail import WeeklyPriceDetail
 from evebs.models.tables.bpc_asset import BpcAsset
 from evebs.models.tables.bpc_assets_station import BpcAssetsStation
+from evebs.models.tables.unknown_structure import UnknownStructure
 from evebs.models.tables.user_to_user_duplication_request import UserToUserDuplicationRequest
 from evebs.models.tables.user_activity_log import UserActivityLog
 from evebs.models.views import (
@@ -64,6 +65,7 @@ __all__ = [
     'WeeklyPriceDetail',
     'BpcAsset',
     'BpcAssetsStation',
+    'UnknownStructure',
     'UserToUserDuplicationRequest',
     'UserActivityLog',
     'BuyOrdersAnalyticsResult',

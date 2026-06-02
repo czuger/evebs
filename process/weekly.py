@@ -21,8 +21,10 @@ with app.app_context():
 
     from esi.download_universe_regions import DownloadUniverseRegions
     from esi.download_universe_structures import DownloadUniverseStructures
+    from esi.download_universe_stations import DownloadUniverseStations
 
     DownloadUniverseRegions().download()
+    DownloadUniverseStations().download()
     DownloadUniverseStructures().download()
 
     # Blueprint and eve item downloads are data-heavy; see esi/ for individual downloaders

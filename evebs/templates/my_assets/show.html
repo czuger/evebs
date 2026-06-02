@@ -9,18 +9,43 @@
   </form>
 </div>
 
-{% if stations %}
-<form action="{{ url_for('my_assets.set_assets_station') }}" method="post" class="mb-3">
+{% if stations or known_structures or unknown_structures %}
+<form action="{{ url_for('my_assets.show') }}" method="get" class="mb-3">
   <div class="d-flex align-items-center gap-2">
-    <select name="station_id" class="form-select" style="max-width:400px">
-      <option value="">-- All stations --</option>
-      {% for st in stations %}
-      <option value="{{ st.id }}" {% if user.selected_assets_station_id == st.id %}selected{% endif %}>
-        {{ st.name or st.id }}
-      </option>
-      {% endfor %}
+    <select name="location_id" class="form-select" style="max-width:400px">
+      <option value="">-- All locations --</option>
+      {% if stations %}
+      <optgroup label="Stations">
+        {% for st in stations %}
+        <option value="{{ st.id }}" {% if selected_location_id == st.id %}selected{% endif %}>
+          {{ st.name or st.id }}
+        </option>
+        {% endfor %}
+      </optgroup>
+      {% endif %}
+      {% if known_structures %}
+      <optgroup label="Structures">
+        {% for s in known_structures %}
+        <option value="{{ s.id }}" {% if selected_location_id == s.id %}selected{% endif %}>
+          {{ s.name }}
+        </option>
+        {% endfor %}
+      </optgroup>
+      {% endif %}
+      {% if unknown_structures %}
+      <optgroup label="Unknown structures">
+        {% for u in unknown_structures %}
+        <option value="{{ u.id }}" {% if selected_location_id == u.id %}selected{% endif %}>
+          {{ u.name }}
+        </option>
+        {% endfor %}
+      </optgroup>
+      {% endif %}
     </select>
-    <button type="submit" class="btn btn-secondary btn-sm">Set station</button>
+    <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
+    {% if selected_location_id %}
+    <a href="{{ url_for('my_assets.show') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+    {% endif %}
   </div>
 </form>
 {% endif %}
@@ -30,18 +55,28 @@
     <tr>
       <th>Item</th>
       <th class="text-end">Qty</th>
-      <th>Station</th>
+      <th>Location</th>
+      <th>Flag</th>
+      <th>Type</th>
     </tr>
   </thead>
   <tbody>
-    {% for asset, item, station in assets %}
+    {% for asset, item, station, structure, unknown in assets %}
     <tr>
       <td>{{ item.name }}</td>
       <td class="text-end">{{ asset.quantity }}</td>
-      <td>{{ station.name if station else '—' }}</td>
+      <td>
+        {% if station %}{{ station.name or station.id }}
+        {% elif structure %}{{ structure.name }}
+        {% elif unknown %}{{ unknown.name }}
+        {% else %}—
+        {% endif %}
+      </td>
+      <td>{{ asset.location_flag or '—' }}</td>
+      <td>{{ asset.location_type or '—' }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="3" class="text-center text-muted">No assets. Click "Sync assets" to load.</td></tr>
+    <tr><td colspan="5" class="text-center text-muted">No assets. Click "Sync assets" to load.</td></tr>
     {% endfor %}
   </tbody>
 </table>

@@ -1,6 +1,11 @@
 """Download all known public structures from the EveRef bulk dataset."""
 import logging
+import os
+import sys
+
 import requests
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger = logging.getLogger(__name__)
 
@@ -61,3 +66,11 @@ class DownloadUniverseStructures:
 
         db.session.commit()
         logger.info('Structures: %d new, %d updated, %d skipped (no owner_id)', new, updated, skipped)
+
+
+if __name__ == '__main__':
+    from config import setup_logging
+    setup_logging()
+    from app import app
+    with app.app_context():
+        DownloadUniverseStructures().download()
