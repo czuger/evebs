@@ -1,3 +1,10 @@
+{% if margin_type == 'daily' %}
+<h2 class="mb-1">Price advices — immediate</h2>
+<p class="text-muted small mb-3">Manufacturing items with positive margin at today's live minimum sell price, filtered by your ISK and margin % thresholds.</p>
+{% else %}
+<h2 class="mb-1">Price advices — weekly</h2>
+<p class="text-muted small mb-3">Same analysis using the 7-day weighted average price — more stable than the live price but may lag recent market moves.</p>
+{% endif %}
 <div class="table-responsive-md">
   <table class="table">
     <tr>

@@ -10,6 +10,7 @@
   </div>
 </div>
 
+<p class="text-muted small mb-3">All items and blueprints in your character's hangars, synced from ESI on demand. Setting a default station automatically deducts your existing stock from the Components to buy list.</p>
 {% if stations or known_structures or unknown_structures %}
 {%- set station_ids = stations | map(attribute='id') | list %}
 {%- set is_station_selected = selected_location_id and selected_location_id in station_ids %}

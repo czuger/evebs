@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Production list</h2>
+<p class="text-muted small mb-3">Items you plan to manufacture and how many runs to produce — drives the Components to buy list.</p>
 <form action="{{ url_for('production_lists.update') }}" method="post">
   <table class="table">
     <tr>

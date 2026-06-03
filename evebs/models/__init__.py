@@ -35,7 +35,7 @@ from evebs.models.views import (
     PriceAdviceMarginComp,
     ComponentToBuy,
 )
-from evebs.models.materialized_views import JitaPrices, JitaManufacturingMargins
+from evebs.models.materialized_views import JitaPrices, JitaManufacturingMargins, JitaReactionMargins
 
 __all__ = [
     'eve_items_users', 'trade_hubs_users',
@@ -75,4 +75,5 @@ __all__ = [
     'ComponentToBuy',
     'JitaPrices',
     'JitaManufacturingMargins',
+    'JitaReactionMargins',
 ]
