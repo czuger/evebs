@@ -4,6 +4,11 @@ from flask import render_template
 
 
 def _render(app, **ctx):
+    ctx.setdefault('stations', [])
+    ctx.setdefault('known_structures', [])
+    ctx.setdefault('unknown_structures', [])
+    ctx.setdefault('selected_station_id', None)
+    ctx.setdefault('asset_qty', {})
     with app.test_request_context('/'):
         return render_template('components_to_buys/show.html', title='Components to buy', **ctx)
 

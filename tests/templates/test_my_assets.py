@@ -102,7 +102,6 @@ class TestMyAssetsTemplate:
         st = make_universe_station(db, us)
         db.session.commit()
         html = _render(app, user=user, locations=[], stations=[st])
-        assert 'Filter' in html
         assert st.name in html
 
     def test_unknown_structure_shown_in_dropdown(self, app, user):

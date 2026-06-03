@@ -31,6 +31,7 @@ with app.app_context():
     from process.update_prices import (
         update_prices_min, update_buy_orders_analytics, update_prices_advices_immediate,
     )
+    from process.update_eve_item_costs import update_eve_item_cost
 
     step = 0
     while True:
@@ -43,6 +44,7 @@ with app.app_context():
         _step('prices_min', update_prices_min)
         _step('prices_advices', update_prices_advices_immediate)
         _step('buy_orders_analytics', update_buy_orders_analytics)
+        _step('eve_item_cost', update_eve_item_cost)
 
         elapsed = time.perf_counter() - t_start
         logger.info('=== Step %d done in %.1fs ===', step, elapsed)

@@ -45,4 +45,16 @@
   </tr>
   {% endif %}
 </table>
+{% if current_user.is_authenticated and current_user.trade_hubs %}
+<form method="post" action="{{ url_for('production_lists.create') }}" class="d-flex align-items-center gap-2 mt-2">
+  <input type="hidden" name="eve_item_id" value="{{ item.id }}">
+  <select name="universe_system_id" class="form-select form-select-sm" style="max-width:200px">
+    {% for hub in current_user.trade_hubs %}
+    <option value="{{ hub.id }}">{{ hub.name }}</option>
+    {% endfor %}
+  </select>
+  <input type="number" name="runs_count" value="1" min="1" class="form-control form-control-sm" style="width:80px">
+  <button type="submit" class="btn btn-sm btn-primary">Add to production list</button>
+</form>
+{% endif %}
 {% endblock %}

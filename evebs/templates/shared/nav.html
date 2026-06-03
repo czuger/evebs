@@ -18,6 +18,8 @@
             <a class="dropdown-item" href="{{ url_for('eve_items_saved_lists.index') }}">Show my lists</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{ url_for('user_blueprints.show') }}">My blueprints</a>
+            <a class="dropdown-item" href="{{ url_for('production_lists.edit') }}">Production list</a>
+            <a class="dropdown-item" href="{{ url_for('components_to_buys.show') }}">Components to buy</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{ url_for('my_assets.show') }}">My assets</a>
           </div>
@@ -37,6 +39,7 @@
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{ url_for('jita_benefits.show') }}">Jita manufacturing (all)</a>
             <a class="dropdown-item" href="{{ url_for('jita_manufacturing.show') }}">Jita manufacturing (mine)</a>
+            <a class="dropdown-item" href="{{ url_for('jita_reactions.show') }}">Jita reactions (mine)</a>
           </div>
         </li>
         <li class="nav-item">

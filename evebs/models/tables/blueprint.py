@@ -11,6 +11,7 @@ class Blueprint(db.Model):
     nb_runs = db.Column(db.Integer, nullable=False)
     prod_qtt = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
+    activity_type = db.Column(db.String(20), nullable=False, server_default='manufacturing')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

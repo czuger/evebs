@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from werkzeug.middleware.proxy_fix import ProxyFix
 from config import Config
 from evebs.extensions import db, login_manager
@@ -34,6 +34,7 @@ def create_app(config_class=Config):
     from evebs.routes.jita_benefits import bp as jita_benefits_bp
     from evebs.routes.user_blueprints import bp as user_blueprints_bp
     from evebs.routes.jita_manufacturing import bp as jita_manufacturing_bp
+    from evebs.routes.jita_reactions import bp as jita_reactions_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
@@ -55,6 +56,11 @@ def create_app(config_class=Config):
     app.register_blueprint(jita_benefits_bp)
     app.register_blueprint(user_blueprints_bp)
     app.register_blueprint(jita_manufacturing_bp)
+    app.register_blueprint(jita_reactions_bp)
+
+    @app.errorhandler(401)
+    def unauthorized(_e):
+        return redirect(url_for('auth.login'))
 
     root = app.config.get('APPLICATION_ROOT', '/')
     if root and root != '/':

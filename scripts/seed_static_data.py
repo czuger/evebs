@@ -355,11 +355,14 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
 
     for obj in _jsonl('blueprints.jsonl'):
         mfg = obj.get('activities', {}).get('manufacturing')
-        if not mfg:
+        rxn = obj.get('activities', {}).get('reaction')
+        activity = mfg or rxn
+        if not activity:
             skipped_no_mfg += 1
             continue
+        activity_type = 'manufacturing' if mfg else 'reaction'
 
-        products = mfg.get('products', [])
+        products = activity.get('products', [])
         if not products:
             skipped_no_product += 1
             continue
@@ -376,10 +379,11 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
 
         bp = existing_bp.get(cpp_bp_id) or existing_bp_by_product.get(produced_cpp_id)
         if bp:
-            bp.nb_runs         = nb_runs
-            bp.prod_qtt        = prod_qtt
-            bp.name            = bp_name
+            bp.nb_runs          = nb_runs
+            bp.prod_qtt         = prod_qtt
+            bp.name             = bp_name
             bp.produced_type_id = produced_cpp_id
+            bp.activity_type    = activity_type
             BlueprintMaterial.query.filter_by(blueprint_id=bp.id).delete()
             bp_updated += 1
         else:
@@ -389,6 +393,7 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
                 nb_runs=nb_runs,
                 prod_qtt=prod_qtt,
                 name=bp_name,
+                activity_type=activity_type,
             )
             db.session.add(bp)
             db.session.flush()
@@ -400,7 +405,7 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
             produced_item.blueprint_id = bp.id
 
         mat_count = 0
-        for mat in mfg.get('materials', []):
+        for mat in activity.get('materials', []):
             mat_item = item_map.get(mat['typeID'])
             if not mat_item:
                 continue

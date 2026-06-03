@@ -11,9 +11,11 @@
 </div>
 
 {% if stations or known_structures or unknown_structures %}
+{%- set station_ids = stations | map(attribute='id') | list %}
+{%- set is_station_selected = selected_location_id and selected_location_id in station_ids %}
 <form action="{{ url_for('my_assets.show') }}" method="get" class="mb-3">
   <div class="d-flex align-items-center gap-2">
-    <select name="location_id" class="form-select" style="max-width:400px">
+    <select name="location_id" class="form-select" style="max-width:400px" onchange="this.form.submit()">
       <option value="">-- All locations --</option>
       {% if stations %}
       <optgroup label="Stations">
@@ -43,9 +45,18 @@
       </optgroup>
       {% endif %}
     </select>
-    <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
-    {% if selected_location_id %}
+{% if selected_location_id %}
     <a href="{{ url_for('my_assets.show') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+    {% endif %}
+    {% if is_station_selected %}
+    <form method="post" action="{{ url_for('my_assets.set_assets_station') }}" class="d-inline">
+      <input type="hidden" name="station_id" value="{{ selected_location_id }}">
+      {% if user.selected_assets_station_id == selected_location_id %}
+      <button type="submit" class="btn btn-sm btn-outline-primary" disabled>★ Default</button>
+      {% else %}
+      <button type="submit" class="btn btn-sm btn-outline-primary">Set as default</button>
+      {% endif %}
+    </form>
     {% endif %}
   </div>
 </form>
