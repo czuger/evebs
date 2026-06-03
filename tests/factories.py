@@ -202,13 +202,16 @@ def make_universe_structure(db, system, structure_id=1_000_000_000_001,
     return s
 
 
-def make_bpc_asset(db, user, item, quantity=5, station=None):
+def make_bpc_asset(db, user, item, quantity=5, station=None, esi_item_id=None,
+                   structure_id=None):
     from evebs.models import BpcAsset
     a = BpcAsset(
         user_id=user.id,
         eve_item_id=item.id,
         quantity=quantity,
         universe_station_id=station.id if station else None,
+        universe_structure_id=structure_id,
+        esi_item_id=esi_item_id,
         touched=True,
     )
     db.session.add(a)

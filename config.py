@@ -64,6 +64,7 @@ class Config:
 
     PER_PAGE = 12
     VERBOSE_OUTPUT = _cfg.get('verbose_output', False)
+    REDIS_URL = _cfg['redis_url']
 
 
 def setup_logging(level=logging.DEBUG):

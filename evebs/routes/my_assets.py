@@ -1,20 +1,75 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+import os
+import subprocess
+import sys
+
+import redis as redis_lib
+from flask import Blueprint, render_template, request, redirect, url_for, current_app, jsonify
 from flask_login import login_required, current_user
 
-from esi.download_my_assets import DownloadMyAssets
 from evebs.extensions import db
 from evebs.models import BpcAsset, EveItem, UniverseStation, UniverseStructure, UnknownStructure
 
 bp = Blueprint('my_assets', __name__)
 
-PER_PAGE = 20
+
+def _redis():
+    return redis_lib.from_url(current_app.config['REDIS_URL'])
+
+
+def _sync_key(user_id):
+    return f'assets_sync:{user_id}'
+
+
+def _location_label(station, structure, unknown):
+    if station:
+        return station.name or str(station.id)
+    if structure:
+        return structure.name
+    if unknown:
+        return unknown.name
+    return '—'
+
+
+def _build_groups(rows):
+    """Transform flat query rows into location→container hierarchy for the template."""
+    item_name_by_esi_id = {
+        bpc.esi_item_id: item.name
+        for bpc, item, *_ in rows
+        if bpc.esi_item_id is not None
+    }
+
+    loc_order = []
+    loc_seen = {}
+    for bpc, item, station, structure, unknown in rows:
+        loc = _location_label(station, structure, unknown)
+        if loc not in loc_seen:
+            loc_seen[loc] = {'label': loc, '_containers': {}}
+            loc_order.append(loc)
+        container_label = (
+            item_name_by_esi_id.get(bpc.parent_esi_item_id)
+            if bpc.parent_esi_item_id else None
+        )
+        containers = loc_seen[loc]['_containers']
+        if container_label not in containers:
+            containers[container_label] = []
+        containers[container_label].append((bpc, item))
+
+    result = []
+    for loc in loc_order:
+        containers = loc_seen[loc]['_containers']
+        groups = []
+        if None in containers:
+            groups.append({'container': None, 'rows': containers[None]})
+        for cname in sorted(k for k in containers if k is not None):
+            groups.append({'container': cname, 'rows': containers[cname]})
+        result.append({'label': loc, 'groups': groups})
+    return result
 
 
 @bp.route('/my_assets')
 @login_required
 def show():
     user = current_user
-    page = request.args.get('page', 1, type=int)
     location_id = request.args.get('location_id', type=int)
 
     query = (
@@ -30,7 +85,14 @@ def show():
             (BpcAsset.universe_station_id == location_id) |
             (BpcAsset.universe_structure_id == location_id)
         )
-    pagination = query.order_by(EveItem.name).paginate(page=page, per_page=PER_PAGE)
+    rows = query.order_by(
+        BpcAsset.universe_station_id.nulls_last(),
+        BpcAsset.universe_structure_id.nulls_last(),
+        BpcAsset.parent_esi_item_id.nulls_first(),
+        EveItem.name,
+    ).all()
+
+    locations = _build_groups(rows)
 
     stations = (
         UniverseStation.query
@@ -50,25 +112,45 @@ def show():
         .filter(BpcAsset.user_id == user.id)
         .distinct().all()
     )
+
+    sync_running = _redis().get(_sync_key(user.id)) == b'running'
+
     return render_template('my_assets/show.html',
                            title='My assets',
-                           assets=pagination.items,
-                           pagination=pagination,
+                           locations=locations,
                            stations=stations,
                            known_structures=known_structures,
                            unknown_structures=unknown_structures,
                            selected_location_id=location_id,
+                           sync_running=sync_running,
                            user=user)
 
 
 @bp.route('/my_assets/sync', methods=['POST'])
 @login_required
 def sync():
-    current_user.download_assets_running = True
-    db.session.commit()
-    DownloadMyAssets().update(current_user)
-    flash('Assets synced.')
-    return redirect(url_for('my_assets.show'))
+    r = _redis()
+    key = _sync_key(current_user.id)
+    if r.get(key) == b'running':
+        return jsonify({'status': 'already_running'})
+    script = os.path.join(
+        os.path.dirname(current_app.root_path), 'process', 'sync_assets.py'
+    )
+    subprocess.Popen(
+        [sys.executable, script, '--user-id', str(current_user.id)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        close_fds=True,
+    )
+    r.set(key, 'running', ex=300)
+    return jsonify({'status': 'started'})
+
+
+@bp.route('/my_assets/sync_status')
+@login_required
+def sync_status():
+    val = _redis().get(_sync_key(current_user.id))
+    return jsonify({'status': val.decode() if val else 'idle'})
 
 
 @bp.route('/my_assets/set_assets_station', methods=['POST'])

@@ -2,11 +2,12 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-3">
   <h2 class="mb-0">My assets</h2>
-  <form action="{{ url_for('my_assets.sync') }}" method="post" class="mb-0">
-    <button type="submit" class="btn btn-outline-secondary btn-sm">
+  <div class="d-flex align-items-center gap-2">
+    <button id="sync-btn" class="btn btn-outline-secondary btn-sm" onclick="startSync()">
       Sync assets{% if user.last_assets_download %} · last {{ user.last_assets_download.strftime('%Y-%m-%d %H:%M') }}{% endif %}
     </button>
-  </form>
+    <span id="sync-spinner" class="spinner-border spinner-border-sm text-secondary {% if not sync_running %}d-none{% endif %}" role="status" aria-label="Syncing…"></span>
+  </div>
 </div>
 
 {% if stations or known_structures or unknown_structures %}
@@ -50,35 +51,80 @@
 </form>
 {% endif %}
 
-<table class="table table-hover">
-  <thead>
+{% if not locations %}
+<p class="text-muted">No assets. Click "Sync assets" to load.</p>
+{% else %}
+
+{% for loc in locations %}
+<table class="table table-hover mb-4">
+  <thead class="table-dark">
+    <tr>
+      <th colspan="4">{{ loc.label }}</th>
+    </tr>
     <tr>
       <th>Item</th>
       <th class="text-end">Qty</th>
-      <th>Location</th>
-      <th>Flag</th>
       <th>Type</th>
+      <th>Flag</th>
     </tr>
   </thead>
   <tbody>
-    {% for asset, item, station, structure, unknown in assets %}
-    <tr>
-      <td>{{ item.name }}</td>
+    {% for group in loc.groups %}
+    {% if group.container %}
+    <tr class="table-secondary">
+      <td colspan="4" class="ps-3 fst-italic text-muted small">
+        Inside: {{ group.container }}
+      </td>
+    </tr>
+    {% endif %}
+    {% for asset, item in group.rows %}
+    <tr {% if group.container %}class="ps-4"{% endif %}>
+      <td {% if group.container %}class="ps-4"{% endif %}>{{ item.name }}</td>
       <td class="text-end">{{ asset.quantity }}</td>
       <td>
-        {% if station %}{{ station.name or station.id }}
-        {% elif structure %}{{ structure.name }}
-        {% elif unknown %}{{ unknown.name }}
-        {% else %}—
+        {% if asset.is_blueprint_copy is none %}—
+        {% elif asset.is_blueprint_copy %}BPC
+        {% else %}BPO
         {% endif %}
       </td>
       <td>{{ asset.location_flag or '—' }}</td>
-      <td>{{ asset.location_type or '—' }}</td>
     </tr>
-    {% else %}
-    <tr><td colspan="5" class="text-center text-muted">No assets. Click "Sync assets" to load.</td></tr>
+    {% endfor %}
     {% endfor %}
   </tbody>
 </table>
-{% include 'shared/pagination.html' %}
+{% endfor %}
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  var _poll = null;
+
+  function startSync() {
+    document.getElementById('sync-btn').disabled = true;
+    document.getElementById('sync-spinner').classList.remove('d-none');
+    fetch("{{ url_for('my_assets.sync') }}", {method: 'POST'})
+      .then(function() { _poll = setInterval(pollStatus, 1000); });
+  }
+
+  function pollStatus() {
+    fetch("{{ url_for('my_assets.sync_status') }}")
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.status !== 'running') {
+          clearInterval(_poll);
+          location.reload();
+        }
+      });
+  }
+
+  {% if sync_running %}
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('sync-btn').disabled = true;
+    _poll = setInterval(pollStatus, 1000);
+  });
+  {% endif %}
+</script>
 {% endblock %}

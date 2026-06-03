@@ -90,3 +90,18 @@ class TestMyAssetsFilter:
         resp = client.get(f'/my_assets?location_id={STRUCT_A}')
         assert b'Mexallon' in resp.data
         assert b'Isogen' not in resp.data
+
+    def test_groups_by_location_in_html(self, db, auth_client):
+        ur = make_universe_region(db, region_id=10000004)
+        uc = make_universe_constellation(db, ur, constellation_id=20000030)
+        us = make_universe_system(db, uc, system_id=30000200)
+        st = make_universe_station(db, us, station_id=60005000)
+        st.name = 'Amarr VIII'
+        item = make_item(db, item_id=38, slug='zydrine', name='Zydrine Blueprint')
+        _, user = auth_client
+        make_bpc_asset(db, user, item, station=st)
+        db.session.commit()
+        client, _ = auth_client
+        resp = client.get('/my_assets')
+        assert b'Amarr VIII' in resp.data
+        assert b'Zydrine Blueprint' in resp.data

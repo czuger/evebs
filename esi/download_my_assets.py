@@ -51,6 +51,11 @@ class DownloadMyAssets:
             qty = asset.get('quantity', 1)
             location_flag = asset.get('location_flag')
             location_type = asset.get('location_type')
+            esi_item_id = asset.get('item_id')
+            is_blueprint_copy = asset.get('is_blueprint_copy', False)
+            parent_esi_item_id = (
+                asset.get('location_id') if location_type == 'item' else None
+            )
 
             eve_item_id = EveItem.to_eve_item_id(type_id)
             if not eve_item_id:
@@ -69,7 +74,7 @@ class DownloadMyAssets:
                     station_id = self._resolve_station(location_id)
 
             bpc = BpcAsset.query.filter_by(
-                user_id=user.id, eve_item_id=eve_item_id
+                user_id=user.id, esi_item_id=esi_item_id
             ).first()
             if bpc:
                 bpc.quantity = qty
@@ -77,10 +82,15 @@ class DownloadMyAssets:
                 bpc.universe_structure_id = structure_id
                 bpc.location_flag = location_flag
                 bpc.location_type = location_type
+                bpc.parent_esi_item_id = parent_esi_item_id
+                bpc.is_blueprint_copy = is_blueprint_copy
                 bpc.touched = True
             else:
                 bpc = BpcAsset(
                     user_id=user.id, eve_item_id=eve_item_id,
+                    esi_item_id=esi_item_id,
+                    parent_esi_item_id=parent_esi_item_id,
+                    is_blueprint_copy=is_blueprint_copy,
                     quantity=qty, universe_station_id=station_id,
                     universe_structure_id=structure_id,
                     location_flag=location_flag, location_type=location_type,

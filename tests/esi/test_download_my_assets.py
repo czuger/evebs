@@ -25,7 +25,8 @@ def seeded(db):
 
 
 def _esi_asset(type_id=34, location_id=60003760, quantity=5, item_id=1,
-               location_flag='Hangar', location_type='station'):
+               location_flag='Hangar', location_type='station',
+               is_blueprint_copy=False):
     return {
         'item_id': item_id,
         'type_id': type_id,
@@ -33,6 +34,7 @@ def _esi_asset(type_id=34, location_id=60003760, quantity=5, item_id=1,
         'quantity': quantity,
         'location_flag': location_flag,
         'location_type': location_type,
+        'is_blueprint_copy': is_blueprint_copy,
     }
 
 
@@ -62,9 +64,12 @@ class TestDownloadMyAssets:
         assert assets[0].universe_station_id == seeded['station'].id
         assert assets[0].location_flag == 'Hangar'
         assert assets[0].location_type == 'station'
+        assert assets[0].esi_item_id == 1
+        assert assets[0].parent_esi_item_id is None
+        assert assets[0].is_blueprint_copy is False
 
     def test_updates_quantity_on_existing_asset(self, db, user, seeded):
-        existing = make_bpc_asset(db, user, seeded['item'], quantity=3)
+        existing = make_bpc_asset(db, user, seeded['item'], quantity=3, esi_item_id=1)
         db.session.commit()
 
         with patch('esi.client.EsiClient.get_all_pages', return_value=[_esi_asset(quantity=10)]), \
@@ -118,6 +123,51 @@ class TestDownloadMyAssets:
         db.session.expire(user)
         assert user.download_assets_running is False
         assert user.last_assets_download >= before
+
+    def test_stores_is_blueprint_copy_true(self, db, user, seeded):
+        with patch('esi.client.EsiClient.get_all_pages',
+                   return_value=[_esi_asset(is_blueprint_copy=True)]), \
+             patch('esi.client.EsiClient.set_auth_token', return_value=True):
+            DownloadMyAssets().update(user)
+
+        from evebs.models import BpcAsset
+        asset = BpcAsset.query.filter_by(user_id=user.id).first()
+        assert asset.is_blueprint_copy is True
+
+    def test_same_type_in_two_containers_creates_two_rows(self, db, user, seeded):
+        pages = [
+            _esi_asset(type_id=34, item_id=101, location_id=60003760,
+                       location_type='station', quantity=5),
+            _esi_asset(type_id=34, item_id=102, location_id=60003760,
+                       location_type='station', quantity=3),
+        ]
+        with patch('esi.client.EsiClient.get_all_pages', return_value=pages), \
+             patch('esi.client.EsiClient.set_auth_token', return_value=True):
+            DownloadMyAssets().update(user)
+
+        from evebs.models import BpcAsset
+        assets = BpcAsset.query.filter_by(user_id=user.id).all()
+        assert len(assets) == 2
+        esi_ids = {a.esi_item_id for a in assets}
+        assert esi_ids == {101, 102}
+
+    def test_item_in_container_sets_parent_esi_item_id(self, db, user, seeded):
+        pages = [
+            {'item_id': 10, 'type_id': 17366, 'location_id': 60003760,
+             'location_type': 'station', 'location_flag': 'Hangar',
+             'quantity': 1, 'is_blueprint_copy': False},
+            _esi_asset(type_id=34, item_id=20, location_id=10,
+                       location_type='item', location_flag='Cargo'),
+        ]
+        with patch('esi.client.EsiClient.get_all_pages', return_value=pages), \
+             patch('esi.client.EsiClient.set_auth_token', return_value=True):
+            DownloadMyAssets().update(user)
+
+        from evebs.models import BpcAsset
+        inner = BpcAsset.query.filter_by(user_id=user.id, esi_item_id=20).first()
+        assert inner is not None
+        assert inner.parent_esi_item_id == 10
+        assert inner.universe_station_id == seeded['station'].id
 
 
 class TestDownloadMyAssetsStructure:
