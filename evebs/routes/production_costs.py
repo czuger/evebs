@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from flask import Blueprint, render_template, abort, request
 from flask_login import current_user
 
-from evebs.models import EveItem, Constant, WeeklyPriceDetail
+from evebs.models import EveItem, JitaMarketAnalytics, Constant, WeeklyPriceDetail
 
 bp = Blueprint('production_costs', __name__)
 PER_PAGE = 20
@@ -18,6 +18,8 @@ def _build_materials(item: EveItem) -> list:
         return []
     mat_ids = [int(k) for k in chain]
     item_map = {ei.id: ei for ei in EveItem.query.filter(EveItem.id.in_(mat_ids)).all()}
+    jma_map = {jma.id: jma.min_sell_price
+               for jma in JitaMarketAnalytics.query.filter(JitaMarketAnalytics.id.in_(mat_ids)).all()}
     materials = []
     for mat_id_str, mat_data in chain.items():
         mat_item = item_map.get(int(mat_id_str))
@@ -25,6 +27,7 @@ def _build_materials(item: EveItem) -> list:
             materials.append(SimpleNamespace(
                 required_qtt=mat_data['quantity'],
                 eve_item=mat_item,
+                jita_price=jma_map.get(int(mat_id_str)),
             ))
     return materials
 

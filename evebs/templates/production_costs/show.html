@@ -13,11 +13,11 @@
   {% for material in materials %}
     {% set component = material.eve_item %}
     {% if component %}
-      {% set total = (component.cost or 0) * material.required_qtt %}
+      {% set total = (material.jita_price or 0) * material.required_qtt %}
       {% set total_for_batch.value = total_for_batch.value + total %}
       <tr>
         <td><a href="{{ url_for('items.show', slug=component.slug or component.id) }}">{{ component.name }}</a></td>
-        <td class="text-end">{{ component.cost | isk }}</td>
+        <td class="text-end">{{ material.jita_price | isk }}</td>
         <td class="text-end">{{ material.required_qtt | vol }}</td>
         <td class="text-end">{{ total | isk }}</td>
       </tr>

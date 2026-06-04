@@ -70,8 +70,7 @@ def make_market_group(db, group_id=1, name='Minerals', parent=None):
 
 
 def make_item(db, item_id=34, name='Tritanium', slug='tritanium',
-              market_group=None, base_item=False, cost=None,
-              weekly_avg_price=None, production_level=None):
+              market_group=None, base_item=False, production_level=None):
     from evebs.models import EveItem
     item = EveItem(
         id=item_id,
@@ -79,8 +78,6 @@ def make_item(db, item_id=34, name='Tritanium', slug='tritanium',
         slug=slug,
         base_item=base_item,
         market_group_id=market_group.id if market_group else None,
-        cost=cost,
-        weekly_avg_price=weekly_avg_price,
         production_level=production_level,
     )
     db.session.add(item)

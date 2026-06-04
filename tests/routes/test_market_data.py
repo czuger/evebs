@@ -21,9 +21,7 @@ class TestMarketOverview:
         resp = client.get(f'/market_data/{seeded["item"].id}/market_overview/')
         assert resp.status_code == 200
 
-    def test_base_item_uses_prices_min(self, db, client):
-        system = make_universe_system(db)
-        hub = make_trade_hub(db, system)
+    def test_returns_200_for_base_item(self, db, client):
         item = make_item(db, item_id=34, slug='tritanium-base', base_item=True)
         db.session.commit()
 

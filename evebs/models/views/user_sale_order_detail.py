@@ -11,23 +11,22 @@ class UserSaleOrderDetail(db.Model):
     HOW IT IS COMPUTED
     ------------------
     Source tables:
-      - user_sale_orders  – the user's open sell orders (synced via ESI),
-                            refreshed by esi/download_my_orders.py when the user
-                            clicks "Sync orders" (GET /user_sales_orders/sync)
-      - eve_items         – item name and manufacturing cost
-      - blueprints        – prod_qtt (production batch size)
-      - universe_*        – for human-readable trade hub name
-      - prices_mins       – current minimum sell price per item/hub (LEFT JOIN — nullable),
-                            updated by process/update_prices.py::update_prices_min()
-                            every ~15 minutes via process/orders_daemon.py / hourly.py
+      - user_sale_orders      – the user's open sell orders (synced via ESI),
+                                refreshed by esi/download_my_orders.py when the user
+                                clicks "Sync orders" (GET /user_sales_orders/sync)
+      - eve_items             – item name
+      - blueprints            – manufacturing_cost, prod_qtt
+      - universe_*            – for human-readable trade hub name
+      - jita_market_analytics – Jita min_sell_price (LEFT JOIN — nullable),
+                                updated by process/update_jita_market_analytics.py
 
     Key derived columns:
-      min_price_margin_pcent = prices_mins.min_price / eve_items.cost - 1.0
-        → current market margin regardless of user's own price
-      price_delta = prices_mins.min_price - user_sale_orders.price
-        → positive  → user is being undercut (cheaper offers exist)
-        → negative  → user has the lowest price
-        → NULL      → no sell orders at that hub
+      cost                   = blueprints.manufacturing_cost / prod_qtt
+      min_price_margin_pcent = jma.min_sell_price / cost - 1.0
+      price_delta            = jma.min_sell_price - user_sale_orders.price
+        → positive  → user is being undercut (cheaper Jita offer exists)
+        → negative  → user has the lowest Jita price
+        → NULL      → no Jita analytics data for this item
 
     WHEN DATA CHANGES
     -----------------

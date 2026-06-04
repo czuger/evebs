@@ -4,15 +4,12 @@ from evebs.models.tables.market_group import MarketGroup
 from evebs.models.tables.blueprint import Blueprint
 from evebs.models.tables.eve_item import EveItem
 from evebs.models.tables.blueprint_modification import BlueprintModification
-from evebs.models.tables.prices_min import PricesMin
-from evebs.models.tables.prices_advice import PricesAdvice
 from evebs.models.tables.public_trade_order import PublicTradeOrder
 from evebs.models.tables.buy_orders_analytic import BuyOrdersAnalytic
 from evebs.models.tables.sales_final import SalesFinal
 from evebs.models.tables.production_list import ProductionList
 from evebs.models.tables.user_sale_order import UserSaleOrder
 from evebs.models.tables.eve_items_saved_list import EveItemsSavedList
-from evebs.models.tables.eve_market_histories_group import EveMarketHistoriesGroup
 from evebs.models.tables.universe_region import UniverseRegion
 from evebs.models.tables.universe_constellation import UniverseConstellation
 from evebs.models.tables.universe_system import UniverseSystem
@@ -30,11 +27,9 @@ from evebs.models.tables.user_activity_log import UserActivityLog
 from evebs.models.tables.jita_market_analytics import JitaMarketAnalytics
 from evebs.models.views import (
     BuyOrdersAnalyticsResult,
-    PriceAdvicesMinPrice,
     UserSaleOrderDetail,
-    PriceAdviceMarginComp,
 )
-from evebs.models.materialized_views import JitaPrices, JitaManufacturingMargins, JitaReactionMargins
+from evebs.models.materialized_views import JitaPrices
 
 __all__ = [
     'eve_items_users', 'trade_hubs_users',
@@ -43,15 +38,12 @@ __all__ = [
     'Blueprint',
     'EveItem',
     'BlueprintModification',
-    'PricesMin',
-    'PricesAdvice',
     'PublicTradeOrder',
     'BuyOrdersAnalytic',
     'SalesFinal',
     'ProductionList',
     'UserSaleOrder',
     'EveItemsSavedList',
-    'EveMarketHistoriesGroup',
     'UniverseRegion',
     'UniverseConstellation',
     'UniverseSystem',
@@ -67,11 +59,7 @@ __all__ = [
     'UserToUserDuplicationRequest',
     'UserActivityLog',
     'BuyOrdersAnalyticsResult',
-    'PriceAdvicesMinPrice',
     'UserSaleOrderDetail',
-    'PriceAdviceMarginComp',
     'JitaPrices',
-    'JitaManufacturingMargins',
-    'JitaReactionMargins',
     'JitaMarketAnalytics',
 ]

@@ -28,10 +28,7 @@ def _step(label, fn):
 
 with app.app_context():
     from esi.download_public_orders.download import download as download_public_orders
-    from process.update_prices import (
-        update_prices_min, update_buy_orders_analytics, update_prices_advices_immediate,
-    )
-    from process.update_eve_item_costs import update_eve_item_cost
+    from process.update_prices import update_buy_orders_analytics
 
     step = 0
     while True:
@@ -41,10 +38,7 @@ with app.app_context():
         t_start = time.perf_counter()
 
         _step('download', lambda: download_public_orders(regions=region_scope))
-        _step('prices_min', update_prices_min)
-        _step('prices_advices', update_prices_advices_immediate)
         _step('buy_orders_analytics', update_buy_orders_analytics)
-        _step('eve_item_cost', update_eve_item_cost)
 
         elapsed = time.perf_counter() - t_start
         logger.info('=== Step %d done in %.1fs ===', step, elapsed)

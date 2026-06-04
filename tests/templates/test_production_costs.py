@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 from flask import render_template
 
-from tests.factories import make_item, make_blueprint, make_universe_region
+from tests.factories import make_item, make_blueprint
 
 
 def _render(app, template, **ctx):
@@ -17,11 +17,11 @@ class TestProductionCostsShowTemplate:
         assert 'Total for batch' in html
 
     def test_renders_item_with_materials(self, app, db):
-        mat = make_item(db, item_id=34, slug='trit', cost=10.0)
+        mat = make_item(db, item_id=34, slug='trit')
         crafted = make_item(db, item_id=35, slug='ammo')
         make_blueprint(db, crafted, prod_qtt=1, manufacturing_cost=50.0)
         db.session.commit()
-        materials = [SimpleNamespace(required_qtt=5, eve_item=mat)]
+        materials = [SimpleNamespace(required_qtt=5, eve_item=mat, jita_price=10.0)]
         html = _render(app, 'production_costs/show.html', item=crafted, materials=materials, taxes=1.1, title='T')
         assert mat.name in html
         assert 'Batch size' in html
@@ -51,22 +51,3 @@ class TestDailiesAvgPricesTemplate:
         html = _render(app, 'production_costs/dailies_avg_prices.html',
                        item=item, dailies_details=[row], pagination=None, title='T')
         assert str(date.today()) in html
-
-
-class TestMarketHistoriesTemplate:
-    def test_renders_empty_list(self, app, db):
-        item = make_item(db, slug='trit4')
-        db.session.commit()
-        html = _render(app, 'production_costs/market_histories.html',
-                       item=item, market_histories=[], title='T')
-        assert item.name in html
-
-    def test_renders_with_rows(self, app, db):
-        item = make_item(db, slug='trit5')
-        db.session.commit()
-        region = SimpleNamespace(name='The Forge')
-        row = SimpleNamespace(universe_region=region, volume=10000,
-                              average=50.0, highest=60.0, lowest=40.0)
-        html = _render(app, 'production_costs/market_histories.html',
-                       item=item, market_histories=[row], title='T')
-        assert 'The Forge' in html

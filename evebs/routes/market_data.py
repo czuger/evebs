@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort
 
 from evebs.extensions import db
-from evebs.models import EveItem, UniverseSystem, UniverseStation, PricesMin, PriceAdvicesMinPrice, PublicTradeOrder
+from evebs.models import EveItem, UniverseSystem, UniverseStation, JitaMarketAnalytics, PublicTradeOrder
 
 bp = Blueprint('market_data', __name__)
 
@@ -9,26 +9,11 @@ bp = Blueprint('market_data', __name__)
 @bp.route('/market_data/<int:item_id>/market_overview/')
 def market_overview(item_id):
     item = EveItem.query.get_or_404(item_id)
-    if item.base_item:
-        item_prices = (PricesMin.query
-                       .filter_by(eve_item_id=item.id)
-                       .join(PricesMin.universe_system)
-                       .order_by(PricesMin.min_price)
-                       .all())
-        advice_prices = None
-    else:
-        item_prices = None
-        advice_prices = (PriceAdvicesMinPrice.query
-                         .filter_by(eve_item_id=item.id)
-                         .filter(PriceAdvicesMinPrice.margin_percent.isnot(None))
-                         .order_by(PriceAdvicesMinPrice.vol_month.desc(),
-                                   PriceAdvicesMinPrice.margin_percent.desc())
-                         .all())
+    jma = JitaMarketAnalytics.query.get(item_id)
     return render_template('market_data/market_overview.html',
                            item=item,
-                           item_prices=item_prices,
-                           advice_prices=advice_prices,
-                           title=f'Trade hubs prices comparison for {item.name}')
+                           jma=jma,
+                           title=f'Market overview for {item.name}')
 
 
 @bp.route('/market_data/<int:item_id>/trade_hub_detail/<int:trade_hub_id>')

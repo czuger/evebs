@@ -16,7 +16,6 @@ class UniverseRegion(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    eve_market_histories_groups = db.relationship('EveMarketHistoriesGroup', back_populates='universe_region')
     universe_constellations = db.relationship('UniverseConstellation', back_populates='universe_region')
 
     @property

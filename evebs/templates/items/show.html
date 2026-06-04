@@ -57,24 +57,6 @@
             <div class="text-muted small">Mass</div>
             <div>{{ item.mass }} kg</div>
           </div>
-          {% if item.cost %}
-          <div class="col">
-            <div class="text-muted small">Production cost</div>
-            <div>{{ item.cost | isk }}</div>
-          </div>
-          {% endif %}
-          {% if item.cpp_market_adjusted_price %}
-          <div class="col">
-            <div class="text-muted small">Adjusted price</div>
-            <div>{{ item.cpp_market_adjusted_price | isk }}</div>
-          </div>
-          {% endif %}
-          {% if item.cpp_market_average_price %}
-          <div class="col">
-            <div class="text-muted small">Average price</div>
-            <div>{{ item.cpp_market_average_price | isk }}</div>
-          </div>
-          {% endif %}
         </div>
       </div>
     </div>
@@ -104,10 +86,6 @@
         <a href="{{ url_for('market_data.market_overview', item_id=item.id) }}"
            class="list-group-item list-group-item-action">
           <i class="fas fa-globe me-2"></i>Markets overview
-        </a>
-        <a href="{{ url_for('production_costs.market_histories', slug=item.slug or item.id) }}"
-           class="list-group-item list-group-item-action">
-          <i class="fas fa-history me-2"></i>Last month data
         </a>
       </div>
     </div>

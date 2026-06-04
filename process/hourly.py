@@ -27,9 +27,7 @@ with app.app_context():
 
     from esi.download_public_orders import download as download_public_orders
     from esi.download_markets_prices import DownloadMarketsPrices
-    from process.update_prices import (
-        update_prices_min, update_buy_orders_analytics, update_prices_advices_immediate
-    )
+    from process.update_prices import update_buy_orders_analytics
 
     def _step(label, fn):
         logger.info('--- %s', label)
@@ -47,8 +45,6 @@ with app.app_context():
               lambda: download_public_orders(essentials=args.essentials))
         _step('Downloading market prices', DownloadMarketsPrices().download)
 
-    _step('Updating min prices', update_prices_min)
-    _step('Updating price advices', update_prices_advices_immediate)
     _step('Updating buy orders analytics', update_buy_orders_analytics)
 
     LastUpdate.set('hourly')

@@ -6,7 +6,7 @@
     <button type="submit" class="btn btn-outline-secondary btn-sm">Refresh reaction formulas</button>
   </form>
 </div>
-<p class="text-muted small mb-3">Your reaction formulas' profitability at Jita based on current market prices — run <code>process/update_jita_reaction_margins.py</code> to refresh.</p>
+<p class="text-muted small mb-3">Your reaction formulas' profitability at Jita, computed live from current Jita prices.</p>
 <div class="table-responsive-md">
   <table class="table table-hover">
     <tr>
@@ -20,9 +20,9 @@
     {% for jr in rows %}
     <tr>
       <td class="item_name">
-        <a href="{{ url_for('items.show', slug=jr.eve_item.slug or jr.eve_item.id) }}">{{ jr.eve_item.name }}</a>
+        <a href="{{ url_for('items.show', slug=jr.item_slug or jr.item_id) }}">{{ jr.item_name }}</a>
       </td>
-      <td>{{ jr.eve_item.market_group.name if jr.eve_item.market_group else '' }}</td>
+      <td>{{ jr.market_group_name }}</td>
       <td class="text-end">{{ jr.reaction_cost | isk }}</td>
       <td class="text-end">{{ jr.estimated_selling_price | isk }}</td>
       <td class="text-end">{{ jr.selling_tax | isk }}</td>

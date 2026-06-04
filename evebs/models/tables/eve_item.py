@@ -10,19 +10,15 @@ class EveItem(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)
     name = db.Column(db.String, nullable=False)
-    cost = db.Column(db.Float)
     market_group_id = db.Column(db.Integer, db.ForeignKey('market_groups.id'))
     blueprint_id = db.Column(db.Integer, db.ForeignKey('blueprints.id'))
     volume = db.Column(db.Float)
     production_level = db.Column(db.Integer)
     base_item = db.Column(db.Boolean, default=False, nullable=False)
-    cpp_market_adjusted_price = db.Column(db.Float)
-    cpp_market_average_price = db.Column(db.Float)
     description = db.Column(db.Text)
     _market_group_path = db.Column('market_group_path', db.Text, default='[]', nullable=False)
     mass = db.Column(db.Float)
     packaged_volume = db.Column(db.Float)
-    weekly_avg_price = db.Column(db.Float)
     faction = db.Column(db.Boolean, default=False, nullable=False)
     slug = db.Column(db.String, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -31,19 +27,9 @@ class EveItem(db.Model):
     users = db.relationship('User', secondary=eve_items_users, back_populates='eve_items')
     market_group = db.relationship('MarketGroup', back_populates='eve_items')
     blueprint = db.relationship('Blueprint', back_populates='eve_item')
-    prices_mins = db.relationship('PricesMin', back_populates='eve_item', cascade='all, delete-orphan')
     sales_finals = db.relationship('SalesFinal', back_populates='eve_item', cascade='all, delete-orphan')
-    prices_advices = db.relationship('PricesAdvice', back_populates='eve_item', cascade='all, delete-orphan')
     buy_orders_analytics = db.relationship('BuyOrdersAnalytic', back_populates='eve_item', cascade='all, delete-orphan')
     public_trade_orders = db.relationship('PublicTradeOrder', back_populates='eve_item', cascade='all, delete-orphan')
-    eve_market_histories_groups = db.relationship('EveMarketHistoriesGroup', back_populates='eve_item', cascade='all, delete-orphan')
-    price_advices_min_prices = db.relationship(
-        'PriceAdvicesMinPrice',
-        foreign_keys='PriceAdvicesMinPrice.eve_item_id',
-        primaryjoin='EveItem.id == PriceAdvicesMinPrice.eve_item_id',
-        back_populates='eve_item',
-        viewonly=True,
-    )
     weekly_price_details = db.relationship('WeeklyPriceDetail', back_populates='eve_item', cascade='all, delete-orphan')
 
     @property

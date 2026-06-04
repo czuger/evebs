@@ -16,9 +16,9 @@
     {% for jm in rows %}
     <tr>
       <td class="item_name">
-        <a href="{{ url_for('items.show', slug=jm.eve_item.slug or jm.eve_item.id) }}">{{ jm.eve_item.name }}</a>
+        <a href="{{ url_for('items.show', slug=jm.item_slug or jm.item_id) }}">{{ jm.item_name }}</a>
       </td>
-      <td>{{ jm.eve_item.market_group.name if jm.eve_item.market_group else '' }}</td>
+      <td>{{ jm.market_group_name }}</td>
       <td class="text-end">{{ jm.manufacturing_cost | isk }}</td>
       <td class="text-end">{{ jm.manufacturing_tax | isk }}</td>
       <td class="text-end">{{ jm.estimated_selling_price | isk }}</td>

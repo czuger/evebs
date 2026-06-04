@@ -51,13 +51,3 @@ class TestDailiesAvgPrices:
         assert resp.status_code == 200
 
 
-class TestMarketHistories:
-    def test_404_for_unknown_item(self, client, db):
-        resp = client.get('/production_costs/nope/market_histories')
-        assert resp.status_code == 404
-
-    def test_200_for_existing_item(self, client, db):
-        item = make_item(db, item_id=37, slug='hist-item')
-        db.session.commit()
-        resp = client.get('/production_costs/hist-item/market_histories')
-        assert resp.status_code == 200

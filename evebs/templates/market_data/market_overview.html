@@ -1,42 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>{{ item.name }} - Market overview</h2>
-<p class="text-muted small mb-3">Current prices and volumes for {{ item.name }} across your selected trade hubs — updated hourly from ESI.</p>
-{% if item.base_item %}
-<div class="table-responsive-md">
-  <table class="table">
-    <tr>
-      <th>Trade hub</th>
-      <th class="text-end">Min price</th>
-      <th class="text-end">Volume</th>
-    </tr>
-    {% for pm in item_prices %}
-    <tr>
-      <td>{{ pm.universe_system.name }}{% if pm.universe_system.universe_constellation and pm.universe_system.universe_constellation.universe_region %} ({{ pm.universe_system.universe_constellation.universe_region.name }}){% endif %}</td>
-      <td class="text-end">{{ pm.min_price | isk }}</td>
-      <td class="text-end">{{ pm.volume | vol }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+<p class="text-muted small mb-3">Jita price benchmark and 3-day forecast from linear regression on recent sales data.</p>
+{% if jma %}
+<div class="row g-3 mb-4">
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <div class="card-body py-2">
+        <div class="text-muted small">Jita min sell price</div>
+        <div class="fw-semibold font-monospace">{{ jma.min_sell_price | isk }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <div class="card-body py-2">
+        <div class="text-muted small">3-day price forecast</div>
+        <div class="fw-semibold font-monospace">{{ jma.price_forecast_3d | isk if jma.price_forecast_3d else '—' }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <div class="card-body py-2">
+        <div class="text-muted small">Last updated</div>
+        <div class="text-muted small font-monospace">{{ jma.updated_at.strftime('%Y-%m-%d %H:%M') if jma.updated_at else '—' }}</div>
+      </div>
+    </div>
+  </div>
 </div>
 {% else %}
-<div class="table-responsive-md">
-  <table class="table">
-    <tr>
-      <th>Trade hub</th>
-      <th class="text-end">Min price</th>
-      <th class="text-end">Avg monthly margin %</th>
-      <th class="text-end">Volume/month</th>
-    </tr>
-    {% for ap in advice_prices %}
-    <tr>
-      <td>{{ ap.trade_hub_name }}</td>
-      <td class="text-end">{{ ap.min_price | isk }}</td>
-      <td class="text-end">{{ ap.avg_monthly_margin_percent | pcent }}</td>
-      <td class="text-end">{{ ap.vol_month | vol }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-</div>
+<p class="text-muted">No Jita market data available for this item.</p>
 {% endif %}
 {% endblock %}

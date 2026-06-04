@@ -8,14 +8,15 @@ def _render(app, **ctx):
         return render_template('jita_benefits/show.html', **ctx)
 
 
-def _row(slug='tritanium', item_name='Tritanium', mg_name='Minerals',
+def _row(item_slug='tritanium', item_name='Tritanium', market_group_name='Minerals',
          manufacturing_cost=1_000_000.0, manufacturing_tax=100_000.0,
          estimated_selling_price=1_500_000.0, selling_tax=75_000.0,
          benefit=325_000.0):
-    mg = SimpleNamespace(name=mg_name) if mg_name else None
-    eve_item = SimpleNamespace(slug=slug, id=1, name=item_name, market_group=mg)
     return SimpleNamespace(
-        eve_item=eve_item,
+        item_id=1,
+        item_slug=item_slug,
+        item_name=item_name,
+        market_group_name=market_group_name or '',
         manufacturing_cost=manufacturing_cost,
         manufacturing_tax=manufacturing_tax,
         estimated_selling_price=estimated_selling_price,
@@ -45,5 +46,5 @@ class TestJitaBenefitsTemplate:
         assert 'Minerals' in html
 
     def test_renders_row_without_market_group(self, app):
-        html = _render(app, rows=[_row(mg_name=None)], pagination=None)
+        html = _render(app, rows=[_row(market_group_name=None)], pagination=None)
         assert 'Tritanium' in html

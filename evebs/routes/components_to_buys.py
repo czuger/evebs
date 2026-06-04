@@ -7,7 +7,7 @@ from sqlalchemy import func
 
 from evebs.extensions import db
 from evebs.models import (
-    EveItem, ProductionList, BlueprintModification,
+    EveItem, JitaMarketAnalytics, ProductionList, BlueprintModification,
     BpcAsset, UniverseStation, UniverseStructure, UnknownStructure,
 )
 
@@ -56,11 +56,11 @@ def _compute_components(user) -> list:
     if not material_qtys:
         return []
 
-    # Bulk-load all needed EveItems in one query
-    item_map = {
-        ei.id: ei
-        for ei in EveItem.query.filter(EveItem.id.in_(list(material_qtys))).all()
-    }
+    mat_ids = list(material_qtys)
+    # Bulk-load EveItems and Jita prices in one query each
+    item_map = {ei.id: ei for ei in EveItem.query.filter(EveItem.id.in_(mat_ids)).all()}
+    jma_map = {jma.id: jma.min_sell_price
+               for jma in JitaMarketAnalytics.query.filter(JitaMarketAnalytics.id.in_(mat_ids)).all()}
 
     results = []
     for mat_id, qty_needed in material_qtys.items():
@@ -71,7 +71,7 @@ def _compute_components(user) -> list:
             eve_item_id=mat_id,
             eve_item_name=mat_item.name,
             qtt_to_buy=qty_needed,
-            total_cost=qty_needed * (mat_item.cost or 0),
+            total_cost=qty_needed * (jma_map.get(mat_id) or 0),
             required_volume=qty_needed * (mat_item.volume or 0),
             base_item=mat_item.base_item,
         ))

@@ -17,7 +17,6 @@ def create_app(config_class=Config):
     from evebs.routes.auth import bp as auth_bp
     from evebs.routes.main import bp as main_bp
     from evebs.routes.buy_orders import bp as buy_orders_bp
-    from evebs.routes.price_advices import bp as price_advices_bp
     from evebs.routes.items import bp as items_bp
     from evebs.routes.list_items import bp as list_items_bp
     from evebs.routes.production_costs import bp as production_costs_bp
@@ -39,7 +38,6 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(buy_orders_bp)
-    app.register_blueprint(price_advices_bp)
     app.register_blueprint(items_bp)
     app.register_blueprint(list_items_bp)
     app.register_blueprint(production_costs_bp)
