@@ -112,11 +112,13 @@
       ? 'Deselect all' : 'Select all';
   }
 
-  function syncToServer(id, state) {
+  function syncToServer(ids, state) {
+    var body = ids.map(function(id) { return 'ids=' + encodeURIComponent(id); }).join('&')
+      + '&check_state=' + encodeURIComponent(state);
     fetch('/list_items/selection_change', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'id=' + encodeURIComponent(id) + '&check_state=' + encodeURIComponent(state)
+      body: body
     }).catch(function(err) {
       var el = document.getElementById('error_area');
       el.textContent = err;
@@ -130,7 +132,7 @@
     cb.addEventListener('change', function() {
       var row = document.getElementById('row_' + this.getAttribute('item_id'));
       if (row) row.classList.toggle('table-primary', this.checked);
-      syncToServer(this.getAttribute('item_id'), this.checked);
+      syncToServer([this.getAttribute('item_id')], this.checked);
       updateCount();
       syncBtnLabel();
     });
@@ -142,14 +144,15 @@
     selectAllBtn.addEventListener('click', function() {
       var allChecked = checkboxes.length > 0 && checkboxes.every(function(cb) { return cb.checked; });
       var target = !allChecked;
-      checkboxes.forEach(function(cb) {
-        if (cb.checked !== target) {
-          cb.checked = target;
-          var row = document.getElementById('row_' + cb.getAttribute('item_id'));
-          if (row) row.classList.toggle('table-primary', target);
-          syncToServer(cb.getAttribute('item_id'), target);
-        }
+      var toChange = checkboxes.filter(function(cb) { return cb.checked !== target; });
+      toChange.forEach(function(cb) {
+        cb.checked = target;
+        var row = document.getElementById('row_' + cb.getAttribute('item_id'));
+        if (row) row.classList.toggle('table-primary', target);
       });
+      if (toChange.length > 0) {
+        syncToServer(toChange.map(function(cb) { return cb.getAttribute('item_id'); }), target);
+      }
       updateCount();
       syncBtnLabel();
     });

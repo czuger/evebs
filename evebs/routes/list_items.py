@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, abort
 from flask_login import current_user, login_required
 
 from evebs.extensions import db
-from evebs.models import EveItem, MarketGroup
+from evebs.models import EveItem, MarketGroup, eve_items_users
 
 bp = Blueprint('list_items', __name__)
 
@@ -53,16 +53,31 @@ def show():
 @bp.route('/list_items/selection_change', methods=['POST'])
 @login_required
 def selection_change():
-    item_id = request.form.get('id', type=int)
+    item_ids = request.form.getlist('ids', type=int)
     check_state = request.form.get('check_state') == 'true'
-    item = EveItem.query.get_or_404(item_id)
-    user = current_user
+    user_id = current_user.id
+
     if check_state:
-        if item not in user.eve_items:
-            user.eve_items.append(item)
+        existing = set(db.session.execute(
+            db.select(eve_items_users.c.eve_item_id).where(
+                eve_items_users.c.user_id == user_id,
+                eve_items_users.c.eve_item_id.in_(item_ids)
+            )
+        ).scalars().all())
+        to_insert = [iid for iid in item_ids if iid not in existing]
+        if to_insert:
+            db.session.execute(
+                eve_items_users.insert(),
+                [{'user_id': user_id, 'eve_item_id': iid} for iid in to_insert]
+            )
     else:
-        if item in user.eve_items:
-            user.eve_items.remove(item)
+        db.session.execute(
+            eve_items_users.delete().where(
+                eve_items_users.c.user_id == user_id,
+                eve_items_users.c.eve_item_id.in_(item_ids)
+            )
+        )
+
     db.session.commit()
     return jsonify({'ok': True})
 
@@ -73,10 +88,18 @@ def select_group():
     group_id = request.form.get('group_id', type=int)
     group = MarketGroup.query.get_or_404(group_id)
     item_ids = _collect_item_ids(group)
-    items = EveItem.query.filter(EveItem.id.in_(item_ids)).all()
-    user = current_user
-    for item in items:
-        if item not in user.eve_items:
-            user.eve_items.append(item)
+    user_id = current_user.id
+    existing = set(db.session.execute(
+        db.select(eve_items_users.c.eve_item_id).where(
+            eve_items_users.c.user_id == user_id,
+            eve_items_users.c.eve_item_id.in_(item_ids)
+        )
+    ).scalars().all())
+    to_insert = [iid for iid in item_ids if iid not in existing]
+    if to_insert:
+        db.session.execute(
+            eve_items_users.insert(),
+            [{'user_id': user_id, 'eve_item_id': iid} for iid in to_insert]
+        )
     db.session.commit()
     return jsonify({'ok': True, 'count': len(item_ids)})
