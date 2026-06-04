@@ -68,12 +68,8 @@
     <div class="card mb-4">
       <div class="card-header fw-semibold">Tools</div>
       <div class="list-group list-group-flush">
-        {% if item.base_item or not item.blueprint %}
-        <a href="{{ url_for('production_costs.dailies_avg_prices', item_slug=item.slug or item.id, trade_hub_id=jita.id) }}"
-           class="list-group-item list-group-item-action">
-          <i class="fas fa-chart-line me-2"></i>Average cost
-        </a>
-        {% else %}
+        {% if not item.base_item and item.blueprint %}
+
         <a href="{{ url_for('production_costs.show', slug=item.slug or item.id) }}"
            class="list-group-item list-group-item-action">
           <i class="fas fa-industry me-2"></i>Production cost

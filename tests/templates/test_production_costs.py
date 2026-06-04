@@ -33,21 +33,3 @@ class TestProductionCostsShowTemplate:
         db.session.commit()
         html = _render(app, 'production_costs/show.html', item=item, materials=[], taxes=1.13, title='T')
         assert '13.0' in html
-
-
-class TestDailiesAvgPricesTemplate:
-    def test_renders_empty_list(self, app, db):
-        item = make_item(db, slug='trit2')
-        db.session.commit()
-        html = _render(app, 'production_costs/dailies_avg_prices.html',
-                       item=item, dailies_details=[], pagination=None, title='T')
-        assert item.name in html
-
-    def test_renders_with_rows(self, app, db):
-        from datetime import date
-        item = make_item(db, slug='trit3')
-        db.session.commit()
-        row = SimpleNamespace(day=date.today(), volume=500, weighted_avg_price=123.45)
-        html = _render(app, 'production_costs/dailies_avg_prices.html',
-                       item=item, dailies_details=[row], pagination=None, title='T')
-        assert str(date.today()) in html

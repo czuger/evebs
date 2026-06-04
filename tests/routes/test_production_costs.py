@@ -28,26 +28,3 @@ class TestProductionCostsShow:
         db.session.commit()
         resp = client.get('/production_costs/ammo2')
         assert resp.status_code == 200
-
-
-class TestDailiesAvgPrices:
-    def test_404_for_unknown_item(self, client, db):
-        resp = client.get('/production_costs/nope/dailies_avg_prices/1')
-        assert resp.status_code == 404
-
-    def test_400_for_crafted_item(self, client, db):
-        item = make_item(db, slug='crafted-item', base_item=False)
-        db.session.commit()
-        resp = client.get(f'/production_costs/crafted-item/dailies_avg_prices/1')
-        assert resp.status_code == 400
-
-    def test_200_for_base_item(self, client, db):
-        from tests.factories import make_universe_system, make_trade_hub
-        system = make_universe_system(db)
-        hub = make_trade_hub(db, system)
-        item = make_item(db, item_id=36, slug='base-item', base_item=True)
-        db.session.commit()
-        resp = client.get(f'/production_costs/base-item/dailies_avg_prices/{hub.id}')
-        assert resp.status_code == 200
-
-

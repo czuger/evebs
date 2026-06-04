@@ -18,7 +18,7 @@ from evebs.models.tables.universe_structure import UniverseStructure
 from evebs.models.tables.constant import Constant
 from evebs.models.tables.last_update import LastUpdate
 from evebs.models.tables.crontab import Crontab
-from evebs.models.tables.weekly_price_detail import WeeklyPriceDetail
+
 from evebs.models.tables.bpc_asset import BpcAsset
 from evebs.models.tables.bpc_assets_station import BpcAssetsStation
 from evebs.models.tables.unknown_structure import UnknownStructure
@@ -29,7 +29,7 @@ from evebs.models.views import (
     BuyOrdersAnalyticsResult,
     UserSaleOrderDetail,
 )
-from evebs.models.materialized_views import JitaPrices
+
 
 __all__ = [
     'eve_items_users', 'trade_hubs_users',
@@ -52,7 +52,6 @@ __all__ = [
     'Constant',
     'LastUpdate',
     'Crontab',
-    'WeeklyPriceDetail',
     'BpcAsset',
     'BpcAssetsStation',
     'UnknownStructure',
@@ -60,6 +59,5 @@ __all__ = [
     'UserActivityLog',
     'BuyOrdersAnalyticsResult',
     'UserSaleOrderDetail',
-    'JitaPrices',
     'JitaMarketAnalytics',
 ]

@@ -30,7 +30,6 @@ class EveItem(db.Model):
     sales_finals = db.relationship('SalesFinal', back_populates='eve_item', cascade='all, delete-orphan')
     buy_orders_analytics = db.relationship('BuyOrdersAnalytic', back_populates='eve_item', cascade='all, delete-orphan')
     public_trade_orders = db.relationship('PublicTradeOrder', back_populates='eve_item', cascade='all, delete-orphan')
-    weekly_price_details = db.relationship('WeeklyPriceDetail', back_populates='eve_item', cascade='all, delete-orphan')
 
     @property
     def market_group_path(self):

@@ -25,7 +25,7 @@ from app import app
 
 with app.app_context():
     from evebs.extensions import db
-    from evebs.models import EveItem, Blueprint, JitaPrices
+    from evebs.models import EveItem, Blueprint, JitaMarketAnalytics
 
     with open(MANUFACTURING_TREE) as f:
         tree = json.load(f)
@@ -40,7 +40,7 @@ with app.app_context():
     logger.debug('Item map: %d items loaded.', len(item_map))
 
     logger.debug('Loading Jita prices...')
-    price_map = {jp.id: jp.min_sell_price for jp in JitaPrices.query.all()}
+    price_map = {jma.id: jma.min_sell_price for jma in JitaMarketAnalytics.query.all()}
     logger.debug('Jita price map: %d prices loaded.', len(price_map))
 
     logger.debug('Loading blueprint map...')

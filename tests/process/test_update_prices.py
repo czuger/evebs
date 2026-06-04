@@ -1,13 +1,10 @@
 import pytest
-from datetime import date, timedelta
+from datetime import date
 
-from process.update_prices import (
-    update_buy_orders_analytics,
-    update_weekly_price_details,
-)
+from process.update_prices import update_buy_orders_analytics
 from tests.factories import (
     make_universe_system, make_trade_hub, make_item, make_blueprint,
-    make_public_trade_order, make_sales_final,
+    make_public_trade_order,
 )
 
 
@@ -50,45 +47,3 @@ class TestUpdateBuyOrdersAnalytics:
         boa = BuyOrdersAnalytic.query.filter_by(universe_system_id=hub.id, eve_item_id=item.id).one()
         assert boa.single_unit_cost == pytest.approx(500.0)
         assert boa.single_unit_margin == pytest.approx(400.0)  # 900 - 500
-
-
-class TestUpdateWeeklyPriceDetails:
-    def test_aggregates_sales_for_today(self, db, hub_and_item):
-        hub, item = hub_and_item
-        today = date.today()
-        make_sales_final(db, item, hub, volume=100, price=500.0, day=today, order_id=1)
-        make_sales_final(db, item, hub, volume=200, price=600.0, day=today, order_id=2)
-        db.session.commit()
-        update_weekly_price_details()
-        from evebs.models import WeeklyPriceDetail
-        wpd = WeeklyPriceDetail.query.filter_by(
-            universe_system_id=hub.id, eve_item_id=item.id, day=today
-        ).one()
-        assert wpd.volume == 300
-        expected_avg = (100 * 500.0 + 200 * 600.0) / 300
-        assert wpd.weighted_avg_price == pytest.approx(expected_avg)
-
-    def test_removes_entries_older_than_seven_days(self, db, hub_and_item):
-        hub, item = hub_and_item
-        old_day = date.today() - timedelta(days=10)
-        make_sales_final(db, item, hub, volume=50, price=100.0, day=old_day, order_id=1)
-        db.session.commit()
-        update_weekly_price_details()
-        from evebs.models import WeeklyPriceDetail
-        assert WeeklyPriceDetail.query.count() == 0
-
-    def test_upserts_existing_entry(self, db, hub_and_item):
-        hub, item = hub_and_item
-        today = date.today()
-        make_sales_final(db, item, hub, volume=100, price=500.0, day=today, order_id=1)
-        db.session.commit()
-        update_weekly_price_details()
-        from evebs.models import WeeklyPriceDetail, SalesFinal
-        SalesFinal.query.delete()
-        db.session.commit()
-        make_sales_final(db, item, hub, volume=50, price=200.0, day=today, order_id=2)
-        db.session.commit()
-        update_weekly_price_details()
-        assert WeeklyPriceDetail.query.count() == 1
-        wpd = WeeklyPriceDetail.query.one()
-        assert wpd.volume == 50

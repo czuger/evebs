@@ -1,6 +1,6 @@
-"""Update buy_orders_analytics and weekly_price_details from trade order / sales data."""
+"""Update buy_orders_analytics from public trade order data."""
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from sqlalchemy import text
 from evebs.extensions import db
 
@@ -68,33 +68,3 @@ def update_buy_orders_analytics():
 
     db.session.commit()
     logger.debug('Buy orders analytics updated.')
-
-
-def update_weekly_price_details():
-    logger.debug('Updating weekly price details...')
-    now = datetime.utcnow()
-    yesterday = (now.date() - timedelta(days=1)).isoformat()
-    week_ago = (now.date() - timedelta(days=7)).isoformat()
-
-    db.session.execute(text("""
-        INSERT INTO weekly_price_details (eve_item_id, universe_system_id, day, volume, weighted_avg_price, created_at, updated_at)
-        SELECT sf.eve_item_id, sf.universe_system_id, sf.day,
-               SUM(sf.volume),
-               SUM(sf.volume * sf.price) / SUM(sf.volume),
-               :now, :now
-        FROM sales_finals sf
-        WHERE sf.day > :yesterday AND sf.volume > 0
-        GROUP BY sf.eve_item_id, sf.universe_system_id, sf.day
-        ON CONFLICT (eve_item_id, universe_system_id, day)
-        DO UPDATE SET
-            volume = excluded.volume,
-            weighted_avg_price = excluded.weighted_avg_price,
-            updated_at = :now
-    """), {'now': now, 'yesterday': yesterday})
-
-    db.session.execute(text("""
-        DELETE FROM weekly_price_details WHERE day < :week_ago
-    """), {'week_ago': week_ago})
-
-    db.session.commit()
-    logger.debug('Weekly price details updated.')

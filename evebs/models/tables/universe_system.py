@@ -28,4 +28,3 @@ class UniverseSystem(db.Model):
     production_lists = db.relationship('ProductionList', back_populates='universe_system')
     user_sale_orders = db.relationship('UserSaleOrder', back_populates='universe_system')
     sales_finals = db.relationship('SalesFinal', back_populates='universe_system')
-    weekly_price_details = db.relationship('WeeklyPriceDetail', back_populates='universe_system')
