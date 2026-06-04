@@ -88,18 +88,6 @@ def make_item(db, item_id=34, name='Tritanium', slug='tritanium',
     return item
 
 
-def make_blueprint_material(db, blueprint, item, required_qtt=1):
-    from evebs.models import BlueprintMaterial
-    mat = BlueprintMaterial(
-        blueprint_id=blueprint.id,
-        eve_item_id=item.id,
-        required_qtt=required_qtt,
-    )
-    db.session.add(mat)
-    db.session.flush()
-    return mat
-
-
 def make_constant(db, libe, f_value, description=''):
     from evebs.models import Constant
     c = Constant(libe=libe, f_value=f_value, description=description)
@@ -125,7 +113,7 @@ def make_sales_final(db, item, trade_hub, volume=100, price=1000.0,
     return sf
 
 
-def make_blueprint(db, item, blueprint_id=None, nb_runs=1, prod_qtt=1):
+def make_blueprint(db, item, blueprint_id=None, nb_runs=1, prod_qtt=1, manufacturing_cost=None):
     from evebs.models import Blueprint
     blueprint_id = blueprint_id or (item.id + 100000)
     bp = Blueprint(
@@ -134,6 +122,7 @@ def make_blueprint(db, item, blueprint_id=None, nb_runs=1, prod_qtt=1):
         nb_runs=nb_runs,
         prod_qtt=prod_qtt,
         name=f'{item.name} Blueprint',
+        manufacturing_cost=manufacturing_cost,
     )
     db.session.add(bp)
     db.session.flush()

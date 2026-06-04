@@ -12,24 +12,19 @@ class JitaReactionMargins(db.Model):
     HOW IT IS COMPUTED
     ------------------
     Source tables:
-      - blueprints            – reaction formulas (activity_type = 'reaction'),
-                                seeded from blueprints.jsonl activities.reaction
-      - blueprint_materials   – required inputs per reaction formula
-      - eve_items             – to look up material item IDs
-      - jita_prices           – Jita price oracle (MUST be refreshed first)
+      - blueprints  – reaction formulas (activity_type = 'reaction');
+                      manufacturing_cost column pre-computed by process/update_blueprints.py
+                      as SUM(input_qty × jita_prices.min_sell_price) per formula.
+      - eve_items   – to resolve the produced item's DB id
+      - jita_prices – Jita price oracle for the OUTPUT item only (MUST be refreshed first)
 
-    Formula:
-      reaction_cost          = SUM(required_qtt × jita_prices.min_sell_price)
-                                 over all input materials
+    Formula (derived from Blueprint.manufacturing_cost, stored as reaction_cost alias):
       estimated_selling_price= prod_qtt × jita_prices.min_sell_price  (output item)
       selling_tax            = estimated_selling_price × 0.05  (5% broker/sales tax)
-      benefit                = estimated_selling_price
-                               - selling_tax
-                               - reaction_cost
-                               (no manufacturing tax, unlike jita_manufacturing_margins)
+      benefit                = estimated_selling_price - selling_tax - reaction_cost
+                               (no manufacturing tax — reactions don't incur industry tax)
 
-    Only blueprints with activity_type = 'reaction' are included (created in
-    migration f0f0056bec00 alongside the activity_type column).
+    Rows with manufacturing_cost IS NULL are excluded.  Only activity_type = 'reaction'.
 
     WHEN IT IS REFRESHED
     --------------------

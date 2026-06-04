@@ -3,7 +3,6 @@ from evebs.models.tables.user import User, load_user
 from evebs.models.tables.market_group import MarketGroup
 from evebs.models.tables.blueprint import Blueprint
 from evebs.models.tables.eve_item import EveItem
-from evebs.models.tables.blueprint_material import BlueprintMaterial
 from evebs.models.tables.blueprint_modification import BlueprintModification
 from evebs.models.tables.prices_min import PricesMin
 from evebs.models.tables.prices_advice import PricesAdvice
@@ -28,12 +27,12 @@ from evebs.models.tables.bpc_assets_station import BpcAssetsStation
 from evebs.models.tables.unknown_structure import UnknownStructure
 from evebs.models.tables.user_to_user_duplication_request import UserToUserDuplicationRequest
 from evebs.models.tables.user_activity_log import UserActivityLog
+from evebs.models.tables.jita_market_analytics import JitaMarketAnalytics
 from evebs.models.views import (
     BuyOrdersAnalyticsResult,
     PriceAdvicesMinPrice,
     UserSaleOrderDetail,
     PriceAdviceMarginComp,
-    ComponentToBuy,
 )
 from evebs.models.materialized_views import JitaPrices, JitaManufacturingMargins, JitaReactionMargins
 
@@ -43,7 +42,6 @@ __all__ = [
     'MarketGroup',
     'Blueprint',
     'EveItem',
-    'BlueprintMaterial',
     'BlueprintModification',
     'PricesMin',
     'PricesAdvice',
@@ -72,8 +70,8 @@ __all__ = [
     'PriceAdvicesMinPrice',
     'UserSaleOrderDetail',
     'PriceAdviceMarginComp',
-    'ComponentToBuy',
     'JitaPrices',
     'JitaManufacturingMargins',
     'JitaReactionMargins',
+    'JitaMarketAnalytics',
 ]

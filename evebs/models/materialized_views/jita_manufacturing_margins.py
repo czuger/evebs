@@ -11,28 +11,24 @@ class JitaManufacturingMargins(db.Model):
     HOW IT IS COMPUTED
     ------------------
     Source tables:
-      - blueprints            – manufacturing blueprints (activity_type = 'manufacturing')
-      - blueprint_materials   – required inputs per blueprint
-      - eve_items             – to look up material item IDs
-      - jita_prices           – Jita price oracle (MUST be refreshed first)
+      - blueprints   – manufacturing blueprints (activity_type = 'manufacturing');
+                       manufacturing_cost column pre-computed by process/update_blueprints.py
+                       as SUM(material_qty × jita_prices.min_sell_price) at the time of the
+                       last blueprint update run.
+      - eve_items    – to resolve the produced item's DB id
+      - jita_prices  – Jita price oracle for the OUTPUT item only (MUST be refreshed first)
 
-    Formula:
-      manufacturing_cost     = SUM(required_qtt × jita_prices.min_sell_price)
-                                 over all materials
-      manufacturing_tax      = manufacturing_cost × 0.10  (10% facility tax)
-      estimated_selling_price= prod_qtt × jita_prices.min_sell_price  (for the output item)
+    Formula (all derived from Blueprint.manufacturing_cost):
+      manufacturing_tax      = blueprints.manufacturing_cost × 0.10  (10% facility tax)
+      estimated_selling_price= prod_qtt × jita_prices.min_sell_price  (output item)
       selling_tax            = estimated_selling_price × 0.05  (5% broker/sales tax)
       benefit                = estimated_selling_price
                                - selling_tax
                                - manufacturing_cost
                                - manufacturing_tax
 
-    A row only appears when the output item also has a Jita sell price (INNER JOIN
-    on jita_prices for the product).  Items with NULL material prices are excluded
-    since SUM would be NULL.
-
-    Only blueprints with activity_type = 'manufacturing' are included (filter added
-    in migration f0f0056bec00 to prevent reaction blueprints from polluting this view).
+    Rows with manufacturing_cost IS NULL are excluded (materials had no Jita price
+    when update_blueprints.py last ran).  Only activity_type = 'manufacturing'.
 
     WHEN IT IS REFRESHED
     --------------------

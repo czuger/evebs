@@ -205,9 +205,9 @@ class TestSeedItems:
 
 
 class TestSeedBlueprints:
-    def test_creates_blueprint_with_materials(self, db):
+    def test_creates_blueprint(self, db):
         from scripts.seed_static_data import seed_blueprints
-        from evebs.models import Blueprint, BlueprintMaterial, EveItem
+        from evebs.models import Blueprint, EveItem
 
         item = EveItem(id=34, name='Tritanium', slug='tritanium')
         product = EveItem(id=35, name='Pyerite', slug='pyerite')
@@ -220,13 +220,10 @@ class TestSeedBlueprints:
                      'materials': [{'typeID': 34, 'quantity': 10}],
                  }}}]
         with _patch_jsonl(data):
-            seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem)
+            seed_blueprints(db, Blueprint, EveItem)
 
         bp = db.session.get(Blueprint, 100035)
         assert bp is not None
         assert bp.produced_type_id == 35
         assert bp.nb_runs == 300
-        mats = BlueprintMaterial.query.filter_by(blueprint_id=bp.id).all()
-        assert len(mats) == 1
-        assert mats[0].eve_item_id == 34
-        assert mats[0].required_qtt == 10
+        assert bp.activity_type == 'manufacturing'

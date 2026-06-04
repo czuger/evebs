@@ -1,7 +1,7 @@
 """Tests for evebs/routes/production_costs.py."""
 import pytest
 
-from tests.factories import make_item, make_blueprint, make_blueprint_material
+from tests.factories import make_item, make_blueprint
 
 
 class TestProductionCostsShow:
@@ -23,14 +23,11 @@ class TestProductionCostsShow:
         assert b'Fusion Charge S' in resp.data
 
     def test_200_for_crafted_item_with_blueprint(self, client, db):
-        mat = make_item(db, item_id=34, slug='trit', cost=10.0)
         crafted = make_item(db, item_id=35, slug='ammo2')
-        bp = make_blueprint(db, crafted)
-        make_blueprint_material(db, bp, mat, required_qtt=3)
+        make_blueprint(db, crafted, manufacturing_cost=50.0)
         db.session.commit()
         resp = client.get('/production_costs/ammo2')
         assert resp.status_code == 200
-        assert b'Tritanium' in resp.data
 
 
 class TestDailiesAvgPrices:

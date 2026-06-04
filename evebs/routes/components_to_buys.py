@@ -1,11 +1,82 @@
+import math
+from types import SimpleNamespace
+
 from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from sqlalchemy import func
 
 from evebs.extensions import db
-from evebs.models import ComponentToBuy, BpcAsset, UniverseStation, UniverseStructure, UnknownStructure
+from evebs.models import (
+    EveItem, ProductionList, BlueprintModification,
+    BpcAsset, UniverseStation, UniverseStructure, UnknownStructure,
+)
 
 bp = Blueprint('components_to_buys', __name__)
+
+
+def _compute_components(user) -> list:
+    """Aggregate direct materials needed for the user's active production runs.
+
+    Applies per-user blueprint modification factors (material efficiency).
+    Material chain is read from Blueprint.manufacturing_tree (JSONB column),
+    populated by process/update_blueprints.py.
+    Returns a list of SimpleNamespace with eve_item_id, eve_item_name, qtt_to_buy,
+    total_cost, required_volume, base_item — matching the template's expected shape.
+    """
+    production_lists = (
+        ProductionList.query
+        .filter_by(user_id=user.id)
+        .filter(ProductionList.runs_count > 0)
+        .all()
+    )
+    if not production_lists:
+        return []
+
+    # Build per-blueprint modification factor map
+    mods = {
+        bm.blueprint_id: bm.percent_modification_value
+        for bm in BlueprintModification.query.filter_by(user_id=user.id).all()
+    }
+
+    # Aggregate required quantities per material across all production list entries
+    material_qtys: dict[int, int] = {}
+    for pl in production_lists:
+        item = pl.eve_item
+        if not item or not item.blueprint_id or not item.blueprint:
+            continue
+        chain = item.blueprint.manufacturing_tree
+        if not chain:
+            continue
+        mod = mods.get(item.blueprint_id, 1.0)
+        for mat_id_str, mat_data in chain.items():
+            mat_id = int(mat_id_str)
+            qty = math.ceil(mat_data['quantity'] * pl.runs_count * mod)
+            material_qtys[mat_id] = material_qtys.get(mat_id, 0) + qty
+
+    if not material_qtys:
+        return []
+
+    # Bulk-load all needed EveItems in one query
+    item_map = {
+        ei.id: ei
+        for ei in EveItem.query.filter(EveItem.id.in_(list(material_qtys))).all()
+    }
+
+    results = []
+    for mat_id, qty_needed in material_qtys.items():
+        mat_item = item_map.get(mat_id)
+        if not mat_item:
+            continue
+        results.append(SimpleNamespace(
+            eve_item_id=mat_id,
+            eve_item_name=mat_item.name,
+            qtt_to_buy=qty_needed,
+            total_cost=qty_needed * (mat_item.cost or 0),
+            required_volume=qty_needed * (mat_item.volume or 0),
+            base_item=mat_item.base_item,
+        ))
+
+    return sorted(results, key=lambda r: r.eve_item_name)
 
 
 @bp.route('/components_to_buys')
@@ -14,7 +85,7 @@ def show():
     user = current_user
     station_id = request.args.get('station_id', type=int)
 
-    components = ComponentToBuy.query.filter_by(user_id=user.id).all()
+    components = _compute_components(user)
 
     stations = (
         UniverseStation.query

@@ -1,8 +1,7 @@
-"""Update item costs: base items from weekly avg, crafted items from components."""
+"""Update item costs: base items from weekly avg, crafted items from Blueprint.manufacturing_cost."""
 import logging
-import math
 from evebs.extensions import db
-from evebs.models import EveItem, Blueprint, BlueprintMaterial, Constant
+from evebs.models import EveItem, Blueprint, Constant
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -21,7 +20,7 @@ def update_base_item_costs():
 
 
 def update_crafted_item_costs(production_level):
-    """Crafted items: cost = sum(component_cost * qty) * taxes / prod_qtt."""
+    """Crafted items: cost = blueprint.manufacturing_cost * taxes / prod_qtt."""
     logger.debug('Updating crafted item costs (level %s)...', production_level)
     taxes_const = Constant.query.filter_by(libe='taxes').first()
     if not taxes_const:
@@ -35,20 +34,10 @@ def update_crafted_item_costs(production_level):
 
     for item in items:
         bp = item.blueprint
-        if not bp:
+        if not bp or bp.manufacturing_cost is None:
+            item.cost = None
             continue
-        total = 0.0
-        infinite = False
-        for mat in bp.blueprint_materials:
-            comp = mat.eve_item
-            if comp is None or comp.cost is None:
-                infinite = True
-                break
-            total += mat.required_qtt * comp.cost
-        if infinite:
-            item.cost = float('inf')
-        else:
-            item.cost = (total * taxes) / bp.prod_qtt if bp.prod_qtt else float('inf')
+        item.cost = (bp.manufacturing_cost * taxes) / bp.prod_qtt if bp.prod_qtt else None
 
     db.session.commit()
     logger.debug('Crafted item costs (level %s) updated.', production_level)

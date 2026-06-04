@@ -1,8 +1,7 @@
+from types import SimpleNamespace
 from flask import render_template
 
-from tests.factories import (
-    make_item, make_blueprint, make_blueprint_material, make_universe_region,
-)
+from tests.factories import make_item, make_blueprint, make_universe_region
 
 
 def _render(app, template, **ctx):
@@ -14,16 +13,16 @@ class TestProductionCostsShowTemplate:
     def test_renders_item_without_blueprint(self, app, db):
         item = make_item(db, slug='ammo')
         db.session.commit()
-        html = _render(app, 'production_costs/show.html', item=item, taxes=1.13, title='T')
+        html = _render(app, 'production_costs/show.html', item=item, materials=[], taxes=1.13, title='T')
         assert 'Total for batch' in html
 
-    def test_renders_item_with_blueprint(self, app, db):
+    def test_renders_item_with_materials(self, app, db):
         mat = make_item(db, item_id=34, slug='trit', cost=10.0)
         crafted = make_item(db, item_id=35, slug='ammo')
-        bp = make_blueprint(db, crafted, prod_qtt=1)
-        make_blueprint_material(db, bp, mat, required_qtt=5)
+        make_blueprint(db, crafted, prod_qtt=1, manufacturing_cost=50.0)
         db.session.commit()
-        html = _render(app, 'production_costs/show.html', item=crafted, taxes=1.1, title='T')
+        materials = [SimpleNamespace(required_qtt=5, eve_item=mat)]
+        html = _render(app, 'production_costs/show.html', item=crafted, materials=materials, taxes=1.1, title='T')
         assert mat.name in html
         assert 'Batch size' in html
         assert 'Final cost' in html
@@ -32,7 +31,7 @@ class TestProductionCostsShowTemplate:
         item = make_item(db, slug='ammo2')
         make_blueprint(db, item)
         db.session.commit()
-        html = _render(app, 'production_costs/show.html', item=item, taxes=1.13, title='T')
+        html = _render(app, 'production_costs/show.html', item=item, materials=[], taxes=1.13, title='T')
         assert '13.0' in html
 
 
@@ -45,7 +44,6 @@ class TestDailiesAvgPricesTemplate:
         assert item.name in html
 
     def test_renders_with_rows(self, app, db):
-        from types import SimpleNamespace
         from datetime import date
         item = make_item(db, slug='trit3')
         db.session.commit()
@@ -64,7 +62,6 @@ class TestMarketHistoriesTemplate:
         assert item.name in html
 
     def test_renders_with_rows(self, app, db):
-        from types import SimpleNamespace
         item = make_item(db, slug='trit5')
         db.session.commit()
         region = SimpleNamespace(name='The Forge')

@@ -12,11 +12,12 @@ class Blueprint(db.Model):
     prod_qtt = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
     activity_type = db.Column(db.String(20), nullable=False, server_default='manufacturing')
+    manufacturing_cost = db.Column(db.Float, nullable=True)
+    manufacturing_tree = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     eve_item = db.relationship('EveItem', back_populates='blueprint', uselist=False)
-    blueprint_materials = db.relationship('BlueprintMaterial', back_populates='blueprint', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='blueprint')
     users = db.relationship('User', secondary='user_blueprints', back_populates='blueprints')
 

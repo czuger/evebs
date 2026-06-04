@@ -1,9 +1,7 @@
 import pytest
 
 from process.update_costs import update_base_item_costs, update_crafted_item_costs
-from tests.factories import (
-    make_item, make_blueprint, make_blueprint_material, make_constant,
-)
+from tests.factories import make_item, make_blueprint, make_constant
 
 
 class TestUpdateBaseItemCosts:
@@ -30,35 +28,29 @@ class TestUpdateBaseItemCosts:
 
 
 class TestUpdateCraftedItemCosts:
-    def test_computes_cost_from_materials(self, db):
-        mat = make_item(db, item_id=34, slug='trit', cost=10.0)
+    def test_computes_cost_from_manufacturing_cost(self, db):
         crafted = make_item(db, item_id=35, slug='ammo', production_level=1)
-        bp = make_blueprint(db, crafted, nb_runs=1, prod_qtt=1)
-        make_blueprint_material(db, bp, mat, required_qtt=5)
+        make_blueprint(db, crafted, nb_runs=1, prod_qtt=1, manufacturing_cost=50.0)
         make_constant(db, 'taxes', 1.1)
         update_crafted_item_costs(1)
         db.session.refresh(crafted)
         assert crafted.cost == pytest.approx(55.0)
 
     def test_cost_divided_by_prod_qtt(self, db):
-        mat = make_item(db, item_id=34, slug='trit', cost=10.0)
         crafted = make_item(db, item_id=35, slug='ammo', production_level=1)
-        bp = make_blueprint(db, crafted, nb_runs=1, prod_qtt=10)
-        make_blueprint_material(db, bp, mat, required_qtt=5)
+        make_blueprint(db, crafted, nb_runs=1, prod_qtt=10, manufacturing_cost=50.0)
         make_constant(db, 'taxes', 1.0)
         update_crafted_item_costs(1)
         db.session.refresh(crafted)
         assert crafted.cost == pytest.approx(5.0)
 
-    def test_infinity_when_material_cost_missing(self, db):
-        mat = make_item(db, item_id=34, slug='trit')  # cost is None
+    def test_none_when_manufacturing_cost_missing(self, db):
         crafted = make_item(db, item_id=35, slug='ammo', production_level=1)
-        bp = make_blueprint(db, crafted, nb_runs=1, prod_qtt=1)
-        make_blueprint_material(db, bp, mat, required_qtt=5)
+        make_blueprint(db, crafted, nb_runs=1, prod_qtt=1, manufacturing_cost=None)
         make_constant(db, 'taxes', 1.1)
         update_crafted_item_costs(1)
         db.session.refresh(crafted)
-        assert crafted.cost == float('inf')
+        assert crafted.cost is None
 
     def test_skips_when_taxes_constant_missing(self, db):
         crafted = make_item(db, item_id=35, slug='ammo', production_level=1)
@@ -68,13 +60,10 @@ class TestUpdateCraftedItemCosts:
         assert crafted.cost is None
 
     def test_only_updates_matching_production_level(self, db):
-        mat = make_item(db, item_id=34, slug='trit', cost=10.0)
         item_l1 = make_item(db, item_id=35, slug='ammo1', production_level=1)
         item_l2 = make_item(db, item_id=36, slug='ammo2', production_level=2)
-        bp1 = make_blueprint(db, item_l1, blueprint_id=135)
-        bp2 = make_blueprint(db, item_l2, blueprint_id=136)
-        make_blueprint_material(db, bp1, mat, required_qtt=1)
-        make_blueprint_material(db, bp2, mat, required_qtt=1)
+        make_blueprint(db, item_l1, blueprint_id=135, manufacturing_cost=10.0)
+        make_blueprint(db, item_l2, blueprint_id=136, manufacturing_cost=10.0)
         make_constant(db, 'taxes', 1.0)
         update_crafted_item_costs(1)
         db.session.refresh(item_l1)

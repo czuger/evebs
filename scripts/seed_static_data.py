@@ -342,14 +342,14 @@ def seed_items(db, EveItem, MarketGroup):
          f'|  {_fmt(slug_collisions)} slug collisions resolved')
 
 
-def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
-    done = _step('Blueprints  (blueprints.jsonl → Blueprint + BlueprintMaterial)')
+def seed_blueprints(db, Blueprint, EveItem):
+    done = _step('Blueprints  (blueprints.jsonl → Blueprint)')
     item_map    = {ei.id: ei for ei in EveItem.query.all()}
     existing_bp = {bp.id: bp for bp in Blueprint.query.all()}
     existing_bp_by_product = {bp.produced_type_id: bp for bp in existing_bp.values()}
     print(f'    existing: {_fmt(len(existing_bp))} Blueprint  |  '
           f'item map size: {_fmt(len(item_map))}')
-    bp_new = bp_updated = mat_total = skipped_no_mfg = skipped_no_product = 0
+    bp_new = bp_updated = skipped_no_mfg = skipped_no_product = 0
     unknown_products = 0
     i = 0
 
@@ -384,7 +384,6 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
             bp.name             = bp_name
             bp.produced_type_id = produced_cpp_id
             bp.activity_type    = activity_type
-            BlueprintMaterial.query.filter_by(blueprint_id=bp.id).delete()
             bp_updated += 1
         else:
             bp = Blueprint(
@@ -404,19 +403,6 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
         if produced_item:
             produced_item.blueprint_id = bp.id
 
-        mat_count = 0
-        for mat in activity.get('materials', []):
-            mat_item = item_map.get(mat['typeID'])
-            if not mat_item:
-                continue
-            db.session.add(BlueprintMaterial(
-                blueprint_id=bp.id,
-                required_qtt=mat['quantity'],
-                eve_item_id=mat_item.id,
-            ))
-            mat_count += 1
-            mat_total += 1
-
         i += 1
         if i % COMMIT_EVERY == 0:
             db.session.flush()
@@ -425,7 +411,6 @@ def seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem):
 
     db.session.commit()
     done(f'Blueprint: {_fmt(bp_new)} new, {_fmt(bp_updated)} updated  '
-         f'|  BlueprintMaterial: {_fmt(mat_total)} written  '
          f'|  skipped: {_fmt(skipped_no_mfg)} no-mfg, {_fmt(skipped_no_product)} no-product  '
          f'|  {_fmt(unknown_products)} unknown product items')
 
@@ -476,7 +461,7 @@ def main():
     parser.add_argument('--universe',      action='store_true', help='Seed UniverseConstellation + UniverseSystem (requires --regions first)')
     parser.add_argument('--stations',      action='store_true', help='Seed UniverseStation (requires --universe first)')
     parser.add_argument('--items',         action='store_true', help='Seed EveItem (requires --market-groups first)')
-    parser.add_argument('--blueprints',    action='store_true', help='Seed Blueprint + BlueprintMaterial (requires --items first)')
+    parser.add_argument('--blueprints',    action='store_true', help='Seed Blueprint (requires --items first)')
     parser.add_argument('--trade-hubs',    action='store_true', help='Seed TradeHub (requires --regions first)')
     args = parser.parse_args()
 
@@ -489,7 +474,7 @@ def main():
     from evebs.models import (
         UniverseRegion, MarketGroup,
         UniverseConstellation, UniverseSystem,
-        UniverseStation, EveItem, Blueprint, BlueprintMaterial,
+        UniverseStation, EveItem, Blueprint,
     )
 
     app = create_app()
@@ -515,7 +500,7 @@ def main():
         if do_items:
             seed_items(db, EveItem, MarketGroup)
         if do_blueprints:
-            seed_blueprints(db, Blueprint, BlueprintMaterial, EveItem)
+            seed_blueprints(db, Blueprint, EveItem)
         if do_trade_hubs:
             seed_trade_hubs(db, UniverseSystem)
 

@@ -10,7 +10,7 @@
     <th class="text-end">Required quantity</th>
     <th class="text-end">Total cost</th>
   </tr>
-  {% for material in item.blueprint.blueprint_materials if item.blueprint %}
+  {% for material in materials %}
     {% set component = material.eve_item %}
     {% if component %}
       {% set total = (component.cost or 0) * material.required_qtt %}
