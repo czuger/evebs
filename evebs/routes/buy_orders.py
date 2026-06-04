@@ -25,8 +25,10 @@ def show():
         ).order_by(BuyOrdersAnalyticsResult.full_margin.desc())
 
     pagination = q.paginate(page=page, per_page=PER_PAGE)
+    owned_bp_ids = {b.produced_type_id for b in user.blueprints}
     return render_template('buy_orders/show.html',
                            title='Show rentability with buy orders',
                            buy_orders=pagination.items,
                            pagination=pagination,
+                           owned_bp_ids=owned_bp_ids,
                            user=user)

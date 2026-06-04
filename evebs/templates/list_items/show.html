@@ -25,6 +25,14 @@
 {% endif %}
 
 {% if groups %}
+{% if current_group %}
+<div class="mb-3">
+  <button class="btn btn-sm btn-outline-primary" id="select_group_btn" type="button"
+          data-group-id="{{ current_group.id }}">
+    Select all items in all sub-groups
+  </button>
+</div>
+{% endif %}
 <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-4">
   {% for group in groups %}
   <div class="col">
@@ -146,6 +154,34 @@
       syncBtnLabel();
     });
   }
+})();
+
+(function() {
+  var btn = document.getElementById('select_group_btn');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    btn.disabled = true;
+    btn.textContent = 'Selecting…';
+    fetch('/list_items/select_group', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'group_id=' + encodeURIComponent(btn.dataset.groupId)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        btn.textContent = 'All items selected (' + data.count + ')';
+        btn.classList.remove('btn-outline-primary');
+        btn.classList.add('btn-success');
+      }
+    })
+    .catch(function(err) {
+      btn.disabled = false;
+      btn.textContent = 'Select all items in all sub-groups';
+      var el = document.getElementById('error_area');
+      if (el) { el.textContent = err; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
+    });
+  });
 })();
 </script>
 {% endblock %}

@@ -7,6 +7,7 @@
     <tr>
       <th>Trade hub</th>
       <th>Item</th>
+      <th>BP</th>
       <th class="text-end">Est. margin</th>
       <th class="text-end">Est. margin %</th>
       <th class="text-end">Estimated buy volume</th>
@@ -17,13 +18,18 @@
       <td class="item_name">
         <a href="{{ url_for('items.show', slug=cp.eve_item_id) }}">{{ cp.eve_item_name }}</a>
       </td>
+      <td>
+        {% if cp.eve_item_id in owned_bp_ids %}
+        <span class="badge bg-success">✓</span>
+        {% endif %}
+      </td>
       {% set final_margin = cp.capped_margin if user.batch_cap else cp.full_margin %}
       <td class="text-end">{{ final_margin | isk }}</td>
       <td class="text-end">{{ cp.margin_pcent | pcent }}</td>
       <td class="text-end">{{ cp.over_approx_max_price_volume | vol }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="5" class="text-center text-muted">No buy orders found.</td></tr>
+    <tr><td colspan="6" class="text-center text-muted">No buy orders found.</td></tr>
     {% endfor %}
   </table>
 </div>

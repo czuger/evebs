@@ -7,6 +7,15 @@ from evebs.models import EveItem, MarketGroup
 bp = Blueprint('list_items', __name__)
 
 
+def _collect_item_ids(group):
+    if group.is_leaf():
+        return [item.id for item in group.eve_items]
+    result = []
+    for child in group.children:
+        result.extend(_collect_item_ids(child))
+    return result
+
+
 @bp.route('/list_items')
 def show():
     group_id = request.args.get('group_id', type=int)
@@ -56,3 +65,18 @@ def selection_change():
             user.eve_items.remove(item)
     db.session.commit()
     return jsonify({'ok': True})
+
+
+@bp.route('/list_items/select_group', methods=['POST'])
+@login_required
+def select_group():
+    group_id = request.form.get('group_id', type=int)
+    group = MarketGroup.query.get_or_404(group_id)
+    item_ids = _collect_item_ids(group)
+    items = EveItem.query.filter(EveItem.id.in_(item_ids)).all()
+    user = current_user
+    for item in items:
+        if item not in user.eve_items:
+            user.eve_items.append(item)
+    db.session.commit()
+    return jsonify({'ok': True, 'count': len(item_ids)})

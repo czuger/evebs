@@ -35,13 +35,23 @@
           </div>
           {% if item.market_group %}
           <div class="col">
-            <div class="text-muted small">Market group ID</div>
-            <div class="font-monospace">{{ item.market_group.id }}</div>
+            <div class="text-muted small">Market group</div>
+            <div>
+              <a href="{{ url_for('list_items.show', group_id=item.market_group.id) }}" class="text-decoration-none">
+                {{ item.market_group.name }}
+              </a>
+              <div class="font-monospace text-muted small">{{ item.market_group.id }}</div>
+            </div>
           </div>
-          {% if item.market_group.parent_id %}
+          {% if item.market_group.parent %}
           <div class="col">
-            <div class="text-muted small">Parent group ID</div>
-            <div class="font-monospace">{{ item.market_group.parent_id }}</div>
+            <div class="text-muted small">Parent group</div>
+            <div>
+              <a href="{{ url_for('list_items.show', group_id=item.market_group.parent.id) }}" class="text-decoration-none">
+                {{ item.market_group.parent.name }}
+              </a>
+              <div class="font-monospace text-muted small">{{ item.market_group.parent.id }}</div>
+            </div>
           </div>
           {% endif %}
           {% endif %}

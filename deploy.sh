@@ -15,6 +15,8 @@ rsync -avz --progress \
   --exclude='config.json' \
   --exclude='*.json' \
   --exclude='*.yaml' \
+  --exclude='*.log' \
+  --exclude='*.log.*' \
   --exclude='old' \
   ./ nuc150:/home/ced/python/evebs/
   
@@ -23,3 +25,4 @@ ssh nuc150 "cd /home/ced/python/evebs/docker// && bash create_network.sh"
 
 ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose down"
 ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up app-eve-dominion -d --build"
+#ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up app-eve-dominion-public-orders-daemon-downloader -d --build"
