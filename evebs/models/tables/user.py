@@ -83,6 +83,8 @@ class User(UserMixin, db.Model):
     trade_hubs = db.relationship('UniverseSystem', secondary=trade_hubs_users, back_populates='users')
     blueprints = db.relationship('Blueprint', secondary=user_blueprints, back_populates='users')
     production_lists = db.relationship('ProductionList', back_populates='user', cascade='all, delete-orphan')
+    invention_lists = db.relationship('InventionList', back_populates='user', cascade='all, delete-orphan')
+    copy_lists = db.relationship('CopyList', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')
     user_sale_orders = db.relationship('UserSaleOrder', back_populates='user', cascade='all, delete-orphan')
     bpc_assets = db.relationship('BpcAsset', back_populates='user', cascade='all, delete-orphan')

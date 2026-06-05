@@ -8,6 +8,8 @@ from evebs.models.tables.public_trade_order import PublicTradeOrder
 from evebs.models.tables.buy_orders_analytic import BuyOrdersAnalytic
 from evebs.models.tables.sales_final import SalesFinal
 from evebs.models.tables.production_list import ProductionList
+from evebs.models.tables.invention_list import InventionList
+from evebs.models.tables.copy_list import CopyList
 from evebs.models.tables.user_sale_order import UserSaleOrder
 from evebs.models.tables.eve_items_saved_list import EveItemsSavedList
 from evebs.models.tables.universe_region import UniverseRegion
@@ -43,6 +45,8 @@ __all__ = [
     'BuyOrdersAnalytic',
     'SalesFinal',
     'ProductionList',
+    'InventionList',
+    'CopyList',
     'UserSaleOrder',
     'EveItemsSavedList',
     'UniverseRegion',

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
@@ -38,7 +38,10 @@ def create():
         )
         db.session.add(pl)
         db.session.commit()
-    return redirect(url_for('production_lists.edit'))
+        flash('Added to production list.', 'success')
+    else:
+        flash('Already in production list.', 'info')
+    return redirect(request.referrer or url_for('production_lists.edit'))
 
 
 @bp.route('/production_lists/update', methods=['POST'])

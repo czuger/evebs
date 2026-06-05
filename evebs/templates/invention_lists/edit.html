@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Invention list</h2>
+<p class="text-muted small mb-3">Items queued for invention runs.</p>
+<form action="{{ url_for('invention_lists.edit') }}" method="get">
+  <table class="table table-sm">
+    <tr>
+      <th>Item</th>
+      <th>Trade hub</th>
+      <th>Runs</th>
+      <th></th>
+    </tr>
+    {% for il in invention_lists %}
+    <tr>
+      <td><a href="{{ url_for('items.show', slug=il.eve_item.slug or il.eve_item.id) }}">{{ il.eve_item.name }}</a></td>
+      <td>{{ il.universe_system.name }}</td>
+      <td>{{ il.runs_count or 1 }}</td>
+      <td>
+        <form action="{{ url_for('invention_lists.remove_check') }}" method="post" style="display:inline">
+          <input type="hidden" name="universe_system_id" value="{{ il.universe_system_id }}">
+          <input type="hidden" name="eve_item_id" value="{{ il.eve_item_id }}">
+          <button type="submit" class="btn btn-sm btn-danger">×</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center text-muted">Invention list is empty.</td></tr>
+    {% endfor %}
+  </table>
+</form>
+{% endblock %}

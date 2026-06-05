@@ -31,6 +31,8 @@ def create_app(config_class=Config):
     from evebs.routes.my_assets import bp as my_assets_bp
     from evebs.routes.admin import bp as admin_bp
     from evebs.routes.user_blueprints import bp as user_blueprints_bp
+    from evebs.routes.invention_lists import bp as invention_lists_bp
+    from evebs.routes.copy_lists import bp as copy_lists_bp
     from evebs.routes.sell_orders import bp as sell_orders_bp
     from evebs.routes.jita_reactions import bp as jita_reactions_bp
     from evebs.routes.user_industry_costs import bp as user_industry_costs_bp
@@ -52,6 +54,8 @@ def create_app(config_class=Config):
     app.register_blueprint(my_assets_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_blueprints_bp)
+    app.register_blueprint(invention_lists_bp)
+    app.register_blueprint(copy_lists_bp)
     app.register_blueprint(sell_orders_bp)
     app.register_blueprint(jita_reactions_bp)
     app.register_blueprint(user_industry_costs_bp)
