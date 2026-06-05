@@ -418,38 +418,6 @@ def upgrade() -> None:
     conn = op.get_bind()
 
     conn.execute(sa.text("""
-        CREATE VIEW buy_orders_analytics_results AS
-        SELECT boa.id,
-          u.id AS user_id,
-          boa.universe_system_id,
-          boa.eve_item_id,
-          (us.name || ' (' || ur.name || ')') AS trade_hub_name,
-          ei.name AS eve_item_name,
-          boa.over_approx_max_price_volume,
-          boa.approx_max_price,
-          boa.single_unit_cost,
-          boa.single_unit_margin,
-          (1.0 - (boa.single_unit_cost / boa.approx_max_price)) AS margin_pcent,
-          (boa.over_approx_max_price_volume * boa.single_unit_margin) AS full_margin,
-          (bp.nb_runs * bp.prod_qtt * u.batch_cap_multiplier) AS batch_cap,
-          LEAST(CAST(boa.over_approx_max_price_volume AS REAL),
-              CAST(bp.nb_runs * bp.prod_qtt * u.batch_cap_multiplier AS REAL)) AS capped_volume,
-          (LEAST(CAST(boa.over_approx_max_price_volume AS REAL),
-               CAST(bp.nb_runs * bp.prod_qtt * u.batch_cap_multiplier AS REAL))
-           * boa.single_unit_margin) AS capped_margin
-        FROM buy_orders_analytics boa
-        JOIN eve_items ei ON ei.id = boa.eve_item_id
-        JOIN universe_systems us ON boa.universe_system_id = us.id
-        JOIN universe_constellations uc ON us.universe_constellation_id = uc.id
-        JOIN universe_regions ur ON uc.universe_region_id = ur.id
-        JOIN trade_hubs_users thu ON boa.universe_system_id = thu.universe_system_id
-        JOIN eve_items_users eiu ON boa.eve_item_id = eiu.eve_item_id
-        JOIN users u ON thu.user_id = u.id AND eiu.user_id = u.id
-        JOIN blueprints bp ON ei.blueprint_id = bp.id
-        WHERE boa.over_approx_max_price_volume > 0
-    """))
-
-    conn.execute(sa.text("""
         CREATE VIEW price_advices_min_prices AS
         SELECT pa.id,
           ei.id AS eve_item_id,

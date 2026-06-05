@@ -28,7 +28,7 @@ def _step(label, fn):
 
 with app.app_context():
     from esi.download_public_orders.download import download as download_public_orders
-    from process.update_prices import update_buy_orders_analytics
+    from process.update_jita_market_analytics import update_jita_market_analytics
 
     step = 0
     while True:
@@ -38,7 +38,7 @@ with app.app_context():
         t_start = time.perf_counter()
 
         _step('download', lambda: download_public_orders(regions=region_scope))
-        _step('buy_orders_analytics', update_buy_orders_analytics)
+        _step('jita_market_analytics', update_jita_market_analytics)
 
         elapsed = time.perf_counter() - t_start
         logger.info('=== Step %d done in %.1fs ===', step, elapsed)

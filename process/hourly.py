@@ -27,7 +27,6 @@ with app.app_context():
 
     from esi.download_public_orders import download as download_public_orders
     from esi.download_markets_prices import DownloadMarketsPrices
-    from process.update_prices import update_buy_orders_analytics
 
     def _step(label, fn):
         logger.info('--- %s', label)
@@ -44,8 +43,6 @@ with app.app_context():
         _step('Downloading public trade orders',
               lambda: download_public_orders(essentials=args.essentials))
         _step('Downloading market prices', DownloadMarketsPrices().download)
-
-    _step('Updating buy orders analytics', update_buy_orders_analytics)
 
     LastUpdate.set('hourly')
     Crontab.stop('hourly')

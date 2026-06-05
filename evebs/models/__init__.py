@@ -28,7 +28,6 @@ from evebs.models.tables.user_to_user_duplication_request import UserToUserDupli
 from evebs.models.tables.user_activity_log import UserActivityLog
 from evebs.models.tables.jita_market_analytics import JitaMarketAnalytics
 from evebs.models.views import (
-    BuyOrdersAnalyticsResult,
     UserSaleOrderDetail,
     UserIndustryCost,
 )
@@ -62,7 +61,6 @@ __all__ = [
     'UnknownStructure',
     'UserToUserDuplicationRequest',
     'UserActivityLog',
-    'BuyOrdersAnalyticsResult',
     'UserSaleOrderDetail',
     'UserIndustryCost',
     'JitaMarketAnalytics',
