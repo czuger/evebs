@@ -101,5 +101,6 @@ def show(slug):
         act_tax_label=act_tax_label,
         unit_tax_total=unit_tax_total,
         unit_total=unit_total,
+        jita_system_id=30000142,
         title=f'Production cost — {item.name}',
     )

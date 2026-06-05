@@ -27,7 +27,9 @@
       {% if m.eve_item %}
       <tr>
         <td><a href="{{ url_for('items.show', slug=m.eve_item.slug or m.eve_item.id) }}">{{ m.eve_item.name }}</a></td>
-        <td class="text-end">{{ m.jita_price | isk }}</td>
+        <td class="text-end">
+          <a href="{{ url_for('market_data.trade_hub_detail', item_id=m.eve_item.id, trade_hub_id=jita_system_id) }}" class="text-decoration-none">{{ m.jita_price | isk }}</a>
+        </td>
         <td class="text-end">{{ m.required_qtt | vol }}</td>
         <td class="text-end">{{ ((m.jita_price or 0) * m.required_qtt) | isk }}</td>
       </tr>

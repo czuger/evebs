@@ -1,0 +1,4 @@
+{%- if item_id in owned_bp_ids %}<span class="badge bg-success" title="You own a blueprint for this item">{{ owned_label|default('✓') }}</span>{% endif -%}
+{%- if item_id in potential_copy_ids %}<span class="badge bg-warning text-dark" title="You have the BPO — copy it to get a BPC">copy</span>{% endif -%}
+{%- if item_id in potential_invent_ids %}<span class="badge bg-info text-dark" title="You have the T1 BPC — run invention">invent</span>{% endif -%}
+{%- if item_id in potential_copy_invent_ids %}<span class="badge bg-secondary" title="You have the T1 BPO — copy it first, then run invention">copy+invent</span>{% endif -%}

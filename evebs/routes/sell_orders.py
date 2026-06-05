@@ -131,7 +131,7 @@ def show():
         .filter(BpcAsset.user_id == user.id, BpcAsset.is_potential == True)
         .all()
     )
-    owned_bp_ids              = {b.produced_type_id for b in user.blueprints}
+    owned_bp_ids              = {ei.id for ei in user.eve_items if ei.blueprint}
     _timings.info('sell_orders.badge_queries',
                   extra={'duration_ms': (time.perf_counter() - t0) * 1000})
     potential_copy_ids        = {r.eve_item_id for r in potential if r.potential_type == 'copy'}

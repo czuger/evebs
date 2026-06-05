@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h2 class="mb-0">Jita reactions (mine)</h2>
+  <h2 class="mb-0">Jita reactions</h2>
   <form action="{{ url_for('jita_reactions.refresh') }}" method="post">
     <button type="submit" class="btn btn-outline-secondary btn-sm">Refresh reaction formulas</button>
   </form>
 </div>
 <p class="text-muted small mb-3">Your reaction formulas' profitability at Jita, computed live from current Jita prices.</p>
 <div class="table-responsive-md">
-  <table class="table table-hover">
+  <table class="table table-hover table-sm">
     <tr>
       <th>Item</th>
       <th>Market group</th>
@@ -18,13 +18,23 @@
       <th class="text-end">Benefit</th>
     </tr>
     {% for jr in rows %}
-    <tr>
+    {% if jr.benefit > 0 %}
+    <tr class="table-success">
+    {% elif jr.benefit < 0 %}
+    <tr class="table-danger">
+    {% else %}
+    <tr class="table-warning">
+    {% endif %}
       <td class="item_name">
         <a href="{{ url_for('items.show', slug=jr.item_slug or jr.item_id) }}">{{ jr.item_name }}</a>
       </td>
       <td>{{ jr.market_group_name }}</td>
-      <td class="text-end">{{ jr.reaction_cost | isk }}</td>
-      <td class="text-end">{{ jr.estimated_selling_price | isk }}</td>
+      <td class="text-end">
+        <a href="{{ url_for('production_costs.show', slug=jr.item_slug or jr.item_id) }}" class="text-decoration-none">{{ jr.reaction_cost | isk }}</a>
+      </td>
+      <td class="text-end">
+        <a href="{{ url_for('market_data.trade_hub_detail', item_id=jr.item_id, trade_hub_id=30000142) }}" class="text-decoration-none">{{ jr.estimated_selling_price | isk }}</a>
+      </td>
       <td class="text-end">{{ jr.selling_tax | isk }}</td>
       <td class="text-end">{{ jr.benefit | isk }}</td>
     </tr>
@@ -33,5 +43,5 @@
     {% endfor %}
   </table>
 </div>
-{% include 'shared/pagination.html' %}
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
 {% endblock %}
