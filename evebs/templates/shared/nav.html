@@ -37,10 +37,17 @@
             <a class="dropdown-item" href="{{ url_for('jita_benefits.show') }}">Jita manufacturing (all)</a>
             <a class="dropdown-item" href="{{ url_for('jita_manufacturing.show') }}">Jita manufacturing (mine)</a>
             <a class="dropdown-item" href="{{ url_for('jita_reactions.show') }}">Jita reactions (mine)</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('user_industry_costs.show_manufacturing') }}">My industry costs</a>
           </div>
         </li>
-        <li class="nav-item">
-          <a class="nav-link{% if '/users' in request.path %} active{% endif %}" href="{{ url_for('users.edit') }}">User</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle{% if '/users' in request.path %} active{% endif %}"
+             href="#" role="button" data-bs-toggle="dropdown">User</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{{ url_for('users.edit') }}">Settings</a>
+            <a class="dropdown-item" href="{{ url_for('users.industry_taxes') }}">Industry taxes</a>
+          </div>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('auth.signout') }}">Sign out</a>

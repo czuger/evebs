@@ -1,37 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Buy orders</h2>
-<p class="text-muted small mb-3">Items you are watching with profitable buy orders at your selected trade hubs — updated every ~15 minutes from ESI market orders.</p>
+<p class="text-muted small mb-3">Items you are watching with profitable buy orders at your selected trade hubs — costs use your personal <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a>.</p>
 <div class="table-responsive-md">
-  <table class="table table-hover">
+  <table class="table table-hover table-sm">
     <tr>
       <th>Trade hub</th>
       <th>Item</th>
       <th>BP</th>
-      <th class="text-end">Est. margin</th>
-      <th class="text-end">Est. margin %</th>
-      <th class="text-end">Estimated buy volume</th>
+      <th class="text-end">Cost + tax / unit</th>
+      <th class="text-end">Highest buy / unit</th>
+      <th class="text-end">Sell tax / unit</th>
+      <th class="text-end">Margin / unit</th>
+      <th class="text-end">Margin %</th>
+      <th class="text-end">Buy vol.</th>
+      <th class="text-end">Full batch</th>
+      <th class="text-end">Batch margin</th>
     </tr>
     {% for cp in buy_orders %}
-    <tr>
+    {% if cp.buy_volume > cp.full_batch_amount * 2 %}
+    <tr class="table-success">
+    {% elif cp.buy_volume < cp.full_batch_amount %}
+    <tr class="table-danger">
+    {% else %}
+    <tr class="table-warning">
+    {% endif %}
       <td class="trade_hub_name">{{ cp.trade_hub_name }}</td>
       <td class="item_name">
-        <a href="{{ url_for('items.show', slug=cp.eve_item_id) }}">{{ cp.eve_item_name }}</a>
+        <a href="{{ url_for('items.show', slug=cp.item_slug or cp.eve_item_id) }}">{{ cp.item_name }}</a>
       </td>
       <td>
         {% if cp.eve_item_id in owned_bp_ids %}
-        <span class="badge bg-success">✓</span>
+        <span class="badge bg-success" title="You own a blueprint for this item">✓</span>
+        {% elif cp.eve_item_id in potential_copy_ids %}
+        <span class="badge bg-warning text-dark" title="You have the BPO — copy it to get a BPC">copy</span>
+        {% elif cp.eve_item_id in potential_invent_ids %}
+        <span class="badge bg-info text-dark" title="You have the T1 BPC — run invention">invent</span>
+        {% elif cp.eve_item_id in potential_copy_invent_ids %}
+        <span class="badge bg-secondary" title="You have the T1 BPO — copy it first, then run invention">copy+invent</span>
         {% endif %}
       </td>
-      {% set final_margin = cp.capped_margin if user.batch_cap else cp.full_margin %}
-      <td class="text-end">{{ final_margin | isk }}</td>
+      <td class="text-end">
+        <a href="{{ url_for('production_costs.show', slug=cp.item_slug or cp.eve_item_id) }}" class="text-decoration-none">
+          {{ cp.total_cost_per_unit | isk }}
+        </a>
+      </td>
+      <td class="text-end">
+        <a href="{{ url_for('market_data.trade_hub_detail', item_id=cp.eve_item_id, trade_hub_id=cp.universe_system_id) }}" class="text-decoration-none">
+          {{ cp.buy_price | isk }}
+        </a>
+      </td>
+      <td class="text-end">{{ cp.sell_tax_per_unit | isk }}</td>
+      <td class="text-end">{{ cp.margin_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_pcent | pcent }}</td>
-      <td class="text-end">{{ cp.over_approx_max_price_volume | vol }}</td>
+      <td class="text-end">{{ cp.buy_volume | vol }}</td>
+      <td class="text-end">{{ cp.full_batch_amount | vol }}</td>
+      <td class="text-end">{{ cp.margin_full_batch | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="6" class="text-center text-muted">No buy orders found.</td></tr>
+    <tr><td colspan="11" class="text-center text-muted">No buy orders found.</td></tr>
     {% endfor %}
   </table>
 </div>
-{% include 'shared/pagination.html' %}
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
 {% endblock %}

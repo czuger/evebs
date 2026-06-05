@@ -8,6 +8,39 @@ from evebs.models import UniverseStation
 bp = Blueprint('users', __name__)
 
 
+def _parse_taxes(form):
+    """Build a User.industry_taxes dict from a submitted HTML form.
+
+    Each activity section in the settings form uses short field-name prefixes to
+    avoid collisions (mfg_ = manufacturing, cpy_ = copying, inv_ = invention,
+    mer_ = material research, ter_ = time research, rxn_ = reaction).
+
+    Suffix meanings:
+      _sci  → system_cost_index  (CCP per-system rate, plain %)
+      _scc  → scc_tax            (Secure Commerce Commission surcharge, plain %)
+      _std  → standard_tax       (manufacturing: normal job tax, plain %)
+      _cap  → capital_tax        (manufacturing: capital ship job tax, plain %)
+      _tax  → activity-specific tax for all other activities (plain %)
+
+    All values are stored as plain percentages (5.0 = 5 %).
+    Missing or non-numeric fields default to 0.0 — the caller is responsible
+    for deciding whether to overwrite an existing value or keep the old one.
+    """
+    def pct(key):
+        try:
+            return float(form.get(key) or 0)
+        except (ValueError, TypeError):
+            return 0.0
+    return {
+        'manufacturing':     {'system_cost_index': pct('mfg_sci'), 'scc_tax': pct('mfg_scc'), 'standard_tax': pct('mfg_std'), 'capital_tax': pct('mfg_cap')},
+        'material_research': {'system_cost_index': pct('mer_sci'), 'scc_tax': pct('mer_scc'), 'material_tax': pct('mer_tax')},
+        'time_research':     {'system_cost_index': pct('ter_sci'), 'scc_tax': pct('ter_scc'), 'time_tax': pct('ter_tax')},
+        'copying':           {'system_cost_index': pct('cpy_sci'), 'scc_tax': pct('cpy_scc'), 'copying_tax': pct('cpy_tax')},
+        'invention':         {'system_cost_index': pct('inv_sci'), 'scc_tax': pct('inv_scc'), 'invention_tax': pct('inv_tax')},
+        'reaction':          {'system_cost_index': pct('rxn_sci'), 'scc_tax': pct('rxn_scc'), 'reaction_tax': pct('rxn_tax')},
+    }
+
+
 @bp.route('/users/edit')
 @login_required
 def edit():
@@ -38,6 +71,7 @@ def update():
         user.watch_my_prices = request.form.get('watch_my_prices') == 'on'
         user.remove_occuped_places = request.form.get('remove_occuped_places') == 'on'
         user.sales_orders_show_margin_min = int(raw_margin) if raw_margin else None
+        user.industry_taxes = _parse_taxes(request.form)
     except (ValueError, TypeError):
         flash('Invalid input.')
         return redirect(url_for('users.edit'))
@@ -45,6 +79,23 @@ def update():
     db.session.commit()
     flash('User updated successfully.')
     return redirect(url_for('users.edit'))
+
+
+@bp.route('/users/industry_taxes')
+@login_required
+def industry_taxes():
+    return render_template('users/industry_taxes.html',
+                           title='Industry taxes',
+                           user=current_user)
+
+
+@bp.route('/users/industry_taxes', methods=['POST'])
+@login_required
+def update_industry_taxes():
+    current_user.industry_taxes = _parse_taxes(request.form)
+    db.session.commit()
+    flash('Industry taxes updated.')
+    return redirect(url_for('users.industry_taxes'))
 
 
 @bp.route('/users/sync_location', methods=['POST'])

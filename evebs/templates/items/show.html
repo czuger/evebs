@@ -25,6 +25,85 @@
     </div>
     {% endif %}
 
+    {% if mfg %}
+    <div class="card mb-4">
+      <div class="card-header fw-semibold d-flex align-items-center gap-2">
+        {% if mfg.activity_type == 'reaction' %}
+        <span class="badge bg-info text-dark">Reaction</span>
+        {% else %}
+        <span class="badge bg-secondary">Manufacturing</span>
+        {% endif %}
+        {{ mfg.prod_qtt | vol }} units / batch &middot; {{ mfg.nb_runs }} run{{ 's' if mfg.nb_runs != 1 }}
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th class="text-end">Jita price</th>
+              <th class="text-end">Qty (batch)</th>
+              <th class="text-end">Total (batch)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in mfg.materials %}
+            {% if m.eve_item %}
+            <tr>
+              <td><a href="{{ url_for('items.show', slug=m.eve_item.slug or m.eve_item.id) }}">{{ m.eve_item.name }}</a></td>
+              <td class="text-end">{{ m.jita_price | isk }}</td>
+              <td class="text-end">{{ m.required_qtt | vol }}</td>
+              <td class="text-end">{{ ((m.jita_price or 0) * m.required_qtt) | isk }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="text-end">Per unit</th>
+              <th class="text-end">Per batch ({{ mfg.prod_qtt | vol }})</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Material cost</td>
+              <td class="text-end">{{ mfg.unit_mat_cost | isk }}</td>
+              <td class="text-end">{{ mfg.batch_mat_cost | isk }}</td>
+            </tr>
+            <tr class="text-muted small">
+              <td class="ps-3">System cost index ({{ mfg.sci }} %)</td>
+              <td class="text-end">{{ mfg.unit_sci_cost | isk }}</td>
+              <td class="text-end">{{ (mfg.unit_sci_cost * mfg.prod_qtt) | isk }}</td>
+            </tr>
+            <tr class="text-muted small">
+              <td class="ps-3">SCC tax ({{ mfg.scc }} %)</td>
+              <td class="text-end">{{ mfg.unit_scc_cost | isk }}</td>
+              <td class="text-end">{{ (mfg.unit_scc_cost * mfg.prod_qtt) | isk }}</td>
+            </tr>
+            <tr class="text-muted small">
+              <td class="ps-3">{{ mfg.act_tax_label }} ({{ mfg.act_tax }} %)</td>
+              <td class="text-end">{{ mfg.unit_act_cost | isk }}</td>
+              <td class="text-end">{{ (mfg.unit_act_cost * mfg.prod_qtt) | isk }}</td>
+            </tr>
+          </tbody>
+          <tfoot class="table-group-divider fw-semibold">
+            <tr>
+              <td>Total cost</td>
+              <td class="text-end">{{ mfg.unit_total | isk }}</td>
+              <td class="text-end">{{ (mfg.unit_total * mfg.prod_qtt) | isk }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
     <div class="card">
       <div class="card-header fw-semibold">Properties</div>
       <div class="card-body">

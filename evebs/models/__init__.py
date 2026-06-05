@@ -28,6 +28,7 @@ from evebs.models.tables.jita_market_analytics import JitaMarketAnalytics
 from evebs.models.views import (
     BuyOrdersAnalyticsResult,
     UserSaleOrderDetail,
+    UserIndustryCost,
 )
 
 
@@ -59,5 +60,6 @@ __all__ = [
     'UserActivityLog',
     'BuyOrdersAnalyticsResult',
     'UserSaleOrderDetail',
+    'UserIndustryCost',
     'JitaMarketAnalytics',
 ]

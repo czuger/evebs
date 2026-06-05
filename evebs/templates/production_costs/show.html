@@ -1,54 +1,95 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Production cost — {{ item.name }}</h2>
-<p class="text-muted small mb-3">Bill of materials and manufacturing cost estimate; material unit costs are Jita prices updated by the hourly process.</p>
-{% set total_for_batch = namespace(value=0) %}
-<table class="table my-3">
-  <tr>
-    <th>Item</th>
-    <th class="text-end">Unit cost</th>
-    <th class="text-end">Required quantity</th>
-    <th class="text-end">Total cost</th>
-  </tr>
-  {% for material in materials %}
-    {% set component = material.eve_item %}
-    {% if component %}
-      {% set total = (material.jita_price or 0) * material.required_qtt %}
-      {% set total_for_batch.value = total_for_batch.value + total %}
-      <tr>
-        <td><a href="{{ url_for('items.show', slug=component.slug or component.id) }}">{{ component.name }}</a></td>
-        <td class="text-end">{{ material.jita_price | isk }}</td>
-        <td class="text-end">{{ material.required_qtt | vol }}</td>
-        <td class="text-end">{{ total | isk }}</td>
-      </tr>
-    {% endif %}
-  {% endfor %}
-  <tr>
-    <td colspan="3">Total for batch</td>
-    <td class="text-end">{{ total_for_batch.value | isk }}</td>
-  </tr>
-  {% if item.blueprint %}
-  <tr>
-    <td colspan="3">Batch size</td>
-    <td class="text-end">{{ item.blueprint.prod_qtt | vol }}</td>
-  </tr>
-  {% set total_per_item = total_for_batch.value / item.blueprint.prod_qtt if item.blueprint.prod_qtt else 0 %}
-  <tr>
-    <td colspan="3">Total for one item</td>
-    <td class="text-end">{{ total_per_item | isk }}</td>
-  </tr>
-  <tr>
-    <td colspan="3">Taxes and setup costs estimation</td>
-    <td class="text-end">{{ ((taxes - 1) * 100) | round(2) }} %</td>
-  </tr>
-  <tr>
-    <td colspan="3">Final cost</td>
-    <td class="text-end">{{ (total_per_item * taxes) | isk }}</td>
-  </tr>
+<p class="text-muted small mb-3">
+  Material costs are live Jita prices from <code>jita_market_analytics</code>.
+  Taxes come from your
+  {% if current_user.is_authenticated %}
+  <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a>.
+  {% else %}
+  default industry tax settings (sign in to personalise).
   {% endif %}
-</table>
+</p>
+
+{# ── Bill of materials ────────────────────────────────────────────────── #}
+<div class="table-responsive mb-4">
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Material</th>
+        <th class="text-end">Unit price (Jita)</th>
+        <th class="text-end">Qty (batch)</th>
+        <th class="text-end">Total (batch)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in materials %}
+      {% if m.eve_item %}
+      <tr>
+        <td><a href="{{ url_for('items.show', slug=m.eve_item.slug or m.eve_item.id) }}">{{ m.eve_item.name }}</a></td>
+        <td class="text-end">{{ m.jita_price | isk }}</td>
+        <td class="text-end">{{ m.required_qtt | vol }}</td>
+        <td class="text-end">{{ ((m.jita_price or 0) * m.required_qtt) | isk }}</td>
+      </tr>
+      {% endif %}
+      {% else %}
+      <tr><td colspan="4" class="text-muted text-center">No materials found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{# ── Cost summary ─────────────────────────────────────────────────────── #}
+<div class="card mb-4" style="max-width:600px">
+  <div class="card-header fw-semibold">Cost summary — {{ prod_qtt | vol }} units / batch</div>
+  <table class="table table-sm mb-0">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="text-end">Per unit</th>
+        <th class="text-end">Per batch ({{ prod_qtt | vol }})</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Material cost</td>
+        <td class="text-end">{{ unit_mat_cost | isk }}</td>
+        <td class="text-end">{{ batch_mat_cost | isk }}</td>
+      </tr>
+      <tr class="text-muted small">
+        <td class="ps-3">System cost index ({{ sci }} %)</td>
+        <td class="text-end">{{ unit_sci_cost | isk }}</td>
+        <td class="text-end">{{ (unit_sci_cost * prod_qtt) | isk }}</td>
+      </tr>
+      <tr class="text-muted small">
+        <td class="ps-3">SCC tax ({{ scc }} %)</td>
+        <td class="text-end">{{ unit_scc_cost | isk }}</td>
+        <td class="text-end">{{ (unit_scc_cost * prod_qtt) | isk }}</td>
+      </tr>
+      <tr class="text-muted small">
+        <td class="ps-3">{{ act_tax_label }} ({{ act_tax }} %)</td>
+        <td class="text-end">{{ unit_act_cost | isk }}</td>
+        <td class="text-end">{{ (unit_act_cost * prod_qtt) | isk }}</td>
+      </tr>
+      <tr>
+        <td>Total taxes</td>
+        <td class="text-end">{{ unit_tax_total | isk }}</td>
+        <td class="text-end">{{ (unit_tax_total * prod_qtt) | isk }}</td>
+      </tr>
+    </tbody>
+    <tfoot class="table-group-divider fw-semibold">
+      <tr>
+        <td>Total cost</td>
+        <td class="text-end">{{ unit_total | isk }}</td>
+        <td class="text-end">{{ (unit_total * prod_qtt) | isk }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+{# ── Add to production list ───────────────────────────────────────────── #}
 {% if current_user.is_authenticated and current_user.trade_hubs %}
-<form method="post" action="{{ url_for('production_lists.create') }}" class="d-flex align-items-center gap-2 mt-2">
+<form method="post" action="{{ url_for('production_lists.create') }}" class="d-flex align-items-center gap-2">
   <input type="hidden" name="eve_item_id" value="{{ item.id }}">
   <select name="universe_system_id" class="form-select form-select-sm" style="max-width:200px">
     {% for hub in current_user.trade_hubs %}

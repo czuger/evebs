@@ -37,6 +37,35 @@ class User(UserMixin, db.Model):
     last_duplication_receiver_id = db.Column(db.Integer)
     sales_orders_show_margin_min = db.Column(db.Integer)
     initialization_finalized = db.Column(db.Boolean, default=False, nullable=False)
+
+    # Per-user EVE industry tax configuration.
+    #
+    # Structure: one key per activity type → dict of cost components (plain %, e.g. 5.0 = 5 %).
+    # Divide by 100 before applying to ISK amounts.
+    #
+    # Keys per activity:
+    #   system_cost_index — CCP-set per-system rate (varies with industrial activity level).
+    #   scc_tax           — Secure Commerce Commission flat surcharge (CCP-set).
+    #   <activity>_tax    — structure owner's tax for that specific job type.
+    #
+    # Activity-specific third key:
+    #   manufacturing  → standard_tax (normal jobs), capital_tax (capital ship jobs)
+    #   copying        → copying_tax
+    #   invention      → invention_tax
+    #   material_research → material_tax
+    #   time_research     → time_tax
+    #   reaction          → reaction_tax
+    #
+    # Edited via /users/edit and saved by _parse_taxes() in routes/users.py.
+    # Default values represent a quiet high-sec NPC station (5 % SCI, 4 % SCC, 1 % activity).
+    industry_taxes = db.Column(db.JSON, nullable=False, default=lambda: {
+        'manufacturing':     {'system_cost_index': 5.0, 'scc_tax': 4.0, 'standard_tax': 1.0, 'capital_tax': 1.0},
+        'material_research': {'system_cost_index': 5.0, 'scc_tax': 4.0, 'material_tax': 1.0},
+        'time_research':     {'system_cost_index': 5.0, 'scc_tax': 4.0, 'time_tax': 1.0},
+        'copying':           {'system_cost_index': 5.0, 'scc_tax': 4.0, 'copying_tax': 1.0},
+        'invention':         {'system_cost_index': 5.0, 'scc_tax': 4.0, 'invention_tax': 1.0},
+        'reaction':          {'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 1.0},
+    })
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

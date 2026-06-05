@@ -189,7 +189,7 @@ def make_universe_structure(db, system, structure_id=1_000_000_000_001,
 
 
 def make_bpc_asset(db, user, item, quantity=5, station=None, esi_item_id=None,
-                   structure_id=None):
+                   structure_id=None, is_blueprint_copy=False):
     from evebs.models import BpcAsset
     a = BpcAsset(
         user_id=user.id,
@@ -198,11 +198,20 @@ def make_bpc_asset(db, user, item, quantity=5, station=None, esi_item_id=None,
         universe_station_id=station.id if station else None,
         universe_structure_id=structure_id,
         esi_item_id=esi_item_id,
+        is_blueprint_copy=is_blueprint_copy,
         touched=True,
     )
     db.session.add(a)
     db.session.flush()
     return a
+
+
+def make_jma(db, item, min_sell_price=1000.0):
+    from evebs.models import JitaMarketAnalytics
+    jma = JitaMarketAnalytics(id=item.id, min_sell_price=min_sell_price)
+    db.session.add(jma)
+    db.session.flush()
+    return jma
 
 
 def make_saved_list(db, user, description='My List', item_ids=None):

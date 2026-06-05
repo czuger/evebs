@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>My industry costs</h2>
+
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <a class="nav-link{% if activity_type == 'manufacturing' %} active{% endif %}"
+       href="{{ url_for('user_industry_costs.show_manufacturing') }}">Manufacturing</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if activity_type == 'reaction' %} active{% endif %}"
+       href="{{ url_for('user_industry_costs.show_reaction') }}">Reaction</a>
+  </li>
+</ul>
+
+{% set it = user.industry_taxes or {} %}
+{% if activity_type == 'manufacturing' %}
+  {% set tax_block = it.get('manufacturing', {}) %}
+  {% set act_label = 'Standard tax' %}
+  {% set act_val   = tax_block.get('standard_tax', 1.0) %}
+{% else %}
+  {% set tax_block = it.get('reaction', {}) %}
+  {% set act_label = 'Reaction tax' %}
+  {% set act_val   = tax_block.get('reaction_tax', 1.0) %}
+{% endif %}
+<p class="text-muted small mb-3">
+  Active tax rates —
+  System cost index: <strong>{{ tax_block.get('system_cost_index', 5.0) }} %</strong> ·
+  SCC tax: <strong>{{ tax_block.get('scc_tax', 4.0) }} %</strong> ·
+  {{ act_label }}: <strong>{{ act_val }} %</strong>
+  — <a href="{{ url_for('users.industry_taxes') }}">Edit</a>
+</p>
+
+<div class="table-responsive-md">
+  <table class="table table-hover">
+    <tr>
+      <th>Item</th>
+      <th>User</th>
+      <th class="text-end">Material cost / unit</th>
+      <th class="text-end">Industry tax / unit</th>
+      <th class="text-end">Total cost / unit</th>
+      <th class="text-end">Jita sell price</th>
+      <th class="text-end">Margin / unit</th>
+    </tr>
+    {% for r in rows %}
+    <tr>
+      <td>
+        <a href="{{ url_for('items.show', slug=r.item_slug or r.produced_type_id) }}">{{ r.item_name }}</a>
+      </td>
+      <td class="text-muted small">{{ r.user_name }}</td>
+      <td class="text-end">{{ r.mat_cost_per_unit | isk }}</td>
+      <td class="text-end">{{ r.ind_tax_per_unit | isk }}</td>
+      <td class="text-end">
+        <a href="{{ url_for('production_costs.show', slug=r.item_slug or r.produced_type_id) }}"
+           class="text-decoration-none">
+          {{ r.total_cost_per_unit | isk }}
+        </a>
+      </td>
+      <td class="text-end">{{ r.jita_sell_price | isk }}</td>
+      <td class="text-end {% if r.margin_per_unit is not none and r.margin_per_unit > 0 %}text-success{% elif r.margin_per_unit is not none %}text-danger{% endif %}">
+        {{ r.margin_per_unit | isk }}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center text-muted">No data — make sure JMA prices are loaded.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+{% endblock %}

@@ -16,6 +16,8 @@ class BpcAsset(db.Model):
     location_flag = db.Column(db.String)
     location_type = db.Column(db.String)
     touched = db.Column(db.Boolean, default=False, nullable=False)
+    is_potential = db.Column(db.Boolean, default=False, nullable=False)
+    potential_type = db.Column(db.String, nullable=True)
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
     eve_item_id = db.Column(db.BigInteger, db.ForeignKey('eve_items.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

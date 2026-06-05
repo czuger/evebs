@@ -34,6 +34,7 @@ def create_app(config_class=Config):
     from evebs.routes.user_blueprints import bp as user_blueprints_bp
     from evebs.routes.jita_manufacturing import bp as jita_manufacturing_bp
     from evebs.routes.jita_reactions import bp as jita_reactions_bp
+    from evebs.routes.user_industry_costs import bp as user_industry_costs_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
@@ -55,6 +56,7 @@ def create_app(config_class=Config):
     app.register_blueprint(user_blueprints_bp)
     app.register_blueprint(jita_manufacturing_bp)
     app.register_blueprint(jita_reactions_bp)
+    app.register_blueprint(user_industry_costs_bp)
 
     @app.errorhandler(401)
     def unauthorized(_e):

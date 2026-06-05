@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-3">
+  <div class="col">
+    <h3>Industry taxes — {{ current_user.name }}</h3>
+    <p class="text-muted small">
+      All values in plain percent (e.g. 5 = 5 %). Divide by 100 when applying to ISK amounts.<br>
+      <strong>System cost index</strong>: CCP-set per-system rate based on industrial activity level.<br>
+      <strong>SCC tax</strong>: Secure Commerce Commission flat surcharge on all jobs.<br>
+      <strong>Activity tax</strong>: structure owner's tax for that specific job type.
+    </p>
+  </div>
+</div>
+
+<form action="{{ url_for('users.update_industry_taxes') }}" method="post">
+  {% set it = user.industry_taxes or {} %}
+  {% set mfg = it.get('manufacturing', {}) %}
+  {% set cpy = it.get('copying', {}) %}
+  {% set inv = it.get('invention', {}) %}
+  {% set mer = it.get('material_research', {}) %}
+  {% set ter = it.get('time_research', {}) %}
+  {% set rxn = it.get('reaction', {}) %}
+
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Manufacturing</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-3">
+          <label class="form-label">System cost index %</label>
+          <input type="number" name="mfg_sci" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ mfg.get('system_cost_index', 5.0) }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">SCC tax %</label>
+          <input type="number" name="mfg_scc" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ mfg.get('scc_tax', 4.0) }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Standard tax %</label>
+          <input type="number" name="mfg_std" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ mfg.get('standard_tax', 1.0) }}">
+          <div class="form-text">Normal manufacturing jobs.</div>
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Capital tax %</label>
+          <input type="number" name="mfg_cap" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ mfg.get('capital_tax', 1.0) }}">
+          <div class="form-text">Capital ship / capital component jobs.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Material research (ME)</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label">System cost index %</label>
+          <input type="number" name="mer_sci" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ mer.get('system_cost_index', 5.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">SCC tax %</label>
+          <input type="number" name="mer_scc" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ mer.get('scc_tax', 4.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Material tax %</label>
+          <input type="number" name="mer_tax" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ mer.get('material_tax', 1.0) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Time research (TE)</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label">System cost index %</label>
+          <input type="number" name="ter_sci" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ ter.get('system_cost_index', 5.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">SCC tax %</label>
+          <input type="number" name="ter_scc" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ ter.get('scc_tax', 4.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Time tax %</label>
+          <input type="number" name="ter_tax" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ ter.get('time_tax', 1.0) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Copying</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label">System cost index %</label>
+          <input type="number" name="cpy_sci" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ cpy.get('system_cost_index', 5.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">SCC tax %</label>
+          <input type="number" name="cpy_scc" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ cpy.get('scc_tax', 4.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Copying tax %</label>
+          <input type="number" name="cpy_tax" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ cpy.get('copying_tax', 1.0) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Invention</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label">System cost index %</label>
+          <input type="number" name="inv_sci" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ inv.get('system_cost_index', 5.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">SCC tax %</label>
+          <input type="number" name="inv_scc" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ inv.get('scc_tax', 4.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Invention tax %</label>
+          <input type="number" name="inv_tax" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ inv.get('invention_tax', 1.0) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Reaction</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label">System cost index %</label>
+          <input type="number" name="rxn_sci" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ rxn.get('system_cost_index', 5.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">SCC tax %</label>
+          <input type="number" name="rxn_scc" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ rxn.get('scc_tax', 4.0) }}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Reaction tax %</label>
+          <input type="number" name="rxn_tax" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ rxn.get('reaction_tax', 1.0) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+{% endblock %}
