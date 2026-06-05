@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Buy orders</h2>
-<p class="text-muted small mb-3">Items you are watching with profitable buy orders at your selected trade hubs — costs use your personal <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a>.</p>
+<h2>Sell orders (mine)</h2>
+<p class="text-muted small mb-3">Items you own blueprints for with a profitable sell order at your selected trade hubs — costs use your personal <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a> and fees use your <a href="{{ url_for('users.sales_taxes') }}">sales tax settings</a>.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <tr>
@@ -9,20 +9,20 @@
       <th>Item</th>
       <th>BP</th>
       <th class="text-end">Cost + tax / unit</th>
-      <th class="text-end">Highest buy / unit</th>
+      <th class="text-end">Min sell / unit</th>
       {% set st = user.sales_taxes or {} %}
       <th class="text-end" data-bs-toggle="tooltip" data-bs-placement="top"
-          title="Sales tax: {{ st.get('sales_taxes', 0) }}% + Safety: {{ st.get('safety_tax', 0) }}% = {{ st.get('sales_taxes', 0) + st.get('safety_tax', 0) }}%">Sell tax / unit ⓘ</th>
+          title="Broker: {{ st.get('broker_fee_taxes', 0) }}% + Sales tax: {{ st.get('sales_taxes', 0) }}% + Safety: {{ st.get('safety_tax', 0) }}% = {{ st.get('broker_fee_taxes', 0) + st.get('sales_taxes', 0) + st.get('safety_tax', 0) }}%">Sell fee / unit ⓘ</th>
       <th class="text-end">Margin / unit</th>
       <th class="text-end">Margin %</th>
-      <th class="text-end">Buy vol.</th>
+      <th class="text-end">Sell vol.</th>
       <th class="text-end">Full batch</th>
       <th class="text-end">Batch margin</th>
     </tr>
-    {% for cp in buy_orders %}
-    {% if cp.buy_volume > cp.full_batch_amount * 2 %}
+    {% for cp in sell_orders %}
+    {% if cp.sell_volume > cp.full_batch_amount * 2 %}
     <tr class="table-success">
-    {% elif cp.buy_volume < cp.full_batch_amount %}
+    {% elif cp.sell_volume < cp.full_batch_amount %}
     <tr class="table-danger">
     {% else %}
     <tr class="table-warning">
@@ -49,18 +49,18 @@
       </td>
       <td class="text-end">
         <a href="{{ url_for('market_data.trade_hub_detail', item_id=cp.eve_item_id, trade_hub_id=cp.universe_system_id) }}" class="text-decoration-none">
-          {{ cp.buy_price | isk }}
+          {{ cp.sell_price | isk }}
         </a>
       </td>
-      <td class="text-end">{{ cp.sell_tax_per_unit | isk }}</td>
+      <td class="text-end">{{ cp.sell_fee_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_pcent | pcent }}</td>
-      <td class="text-end">{{ cp.buy_volume | vol }}</td>
+      <td class="text-end">{{ cp.sell_volume | vol }}</td>
       <td class="text-end">{{ cp.full_batch_amount | vol }}</td>
       <td class="text-end">{{ cp.margin_full_batch | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="11" class="text-center text-muted">No buy orders found.</td></tr>
+    <tr><td colspan="11" class="text-center text-muted">No sell orders found — sync your blueprints and check your trade hub settings.</td></tr>
     {% endfor %}
   </table>
 </div>

@@ -36,6 +36,22 @@
       <tr><td colspan="4" class="text-muted text-center">No materials found.</td></tr>
       {% endfor %}
     </tbody>
+    {% set ns = namespace(total_qty=0, total_isk=0) %}
+    {% for m in materials %}{% if m.eve_item %}
+      {% set ns.total_qty = ns.total_qty + m.required_qtt %}
+      {% set ns.total_isk = ns.total_isk + (m.jita_price or 0) * m.required_qtt %}
+    {% endif %}{% endfor %}
+    <tfoot class="table-group-divider fw-semibold">
+      <tr>
+        <td>Total</td>
+        <td class="text-end">
+          {% if prod_qtt %}{{ (ns.total_isk / prod_qtt) | isk }}{% endif %}
+          <div class="text-muted fw-normal" style="font-size:.75em">{{ ns.total_isk | isk }} ÷ {{ prod_qtt | vol }}</div>
+        </td>
+        <td class="text-end">{{ ns.total_qty | vol }}</td>
+        <td class="text-end">{{ ns.total_isk | isk }}</td>
+      </tr>
+    </tfoot>
   </table>
 </div>
 

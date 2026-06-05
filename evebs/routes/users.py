@@ -81,6 +81,39 @@ def update():
     return redirect(url_for('users.edit'))
 
 
+def _parse_sales_taxes(form):
+    """Build a User.sales_taxes dict from a submitted HTML form.
+
+    Fields: broker_fee_taxes, sales_taxes, safety_tax — all plain percentages (e.g. 2.0 = 2 %).
+    Missing or non-numeric fields default to 0.0.
+    """
+    def pct(key):
+        try:
+            return float(form.get(key) or 0)
+        except (ValueError, TypeError):
+            return 0.0
+    return {
+        'broker_fee_taxes': pct('broker_fee_taxes'),
+        'sales_taxes':      pct('sales_taxes'),
+        'safety_tax':       pct('safety_tax'),
+    }
+
+
+@bp.route('/users/sales_taxes')
+@login_required
+def sales_taxes():
+    return render_template('users/sales_taxes.html', title='Sales taxes', user=current_user)
+
+
+@bp.route('/users/sales_taxes', methods=['POST'])
+@login_required
+def update_sales_taxes():
+    current_user.sales_taxes = _parse_sales_taxes(request.form)
+    db.session.commit()
+    flash('Sales taxes updated.')
+    return redirect(url_for('users.sales_taxes'))
+
+
 @bp.route('/users/industry_taxes')
 @login_required
 def industry_taxes():

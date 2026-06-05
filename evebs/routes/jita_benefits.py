@@ -4,11 +4,11 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required
 from sqlalchemy import text
 
+from config import PER_PAGE
 from evebs.extensions import db
 from evebs.utils import SimplePagination
 
 bp = Blueprint('jita_benefits', __name__)
-PER_PAGE = 50
 
 _SQL = """
     SELECT

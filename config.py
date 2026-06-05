@@ -40,6 +40,9 @@ def _build_database_uri():
     return f"sqlite:///{base}"
 
 
+PER_PAGE = 20
+
+
 class Config:
     SECRET_KEY = _cfg.get('secret_key', 'dev-secret-change-in-production')
     SQLALCHEMY_DATABASE_URI = _build_database_uri()
@@ -62,40 +65,97 @@ class Config:
         "esi-characters.read_blueprints.v1"
     ])
 
-    PER_PAGE = 12
+    PER_PAGE = PER_PAGE
     VERBOSE_OUTPUT = _cfg.get('verbose_output', False)
     REDIS_URL = _cfg['redis_url']
 
 
-def setup_logging(level=logging.DEBUG):
+def _make_rotating_handler(log_dir, filename):
     from pythonjsonlogger import jsonlogger
-
-    log_dir = os.path.join(BASE_DIR, 'logs')
-    os.makedirs(log_dir, exist_ok=True)
-
-    root = logging.getLogger()
-    root.setLevel(level)
-
-    file_handler = logging.handlers.TimedRotatingFileHandler(
-        filename=os.path.join(log_dir, 'evebs.log'),
+    handler = logging.handlers.TimedRotatingFileHandler(
+        filename=os.path.join(log_dir, filename),
         when='midnight',
         backupCount=30,
         encoding='utf-8',
     )
-    file_handler.suffix = '%Y-%m-%d'
-    file_handler.setFormatter(jsonlogger.JsonFormatter(
+    handler.suffix = '%Y-%m-%d'
+    handler.setFormatter(jsonlogger.JsonFormatter(
         '%(asctime)s %(name)s %(levelname)s %(message)s',
         datefmt='%Y-%m-%dT%H:%M:%SZ',
     ))
+    return handler
+
+
+def set_logger(name: str, level: int = logging.DEBUG) -> logging.Logger:
+    """Create a named logger that writes exclusively to logs/<name>.log.
+
+    Does not propagate to the root logger, so its messages never appear in
+    evebs.log or on the console. Idempotent — safe to call at module level
+    before setup_logging() runs; calling it a second time with the same name
+    returns the existing logger unchanged.
+
+    Args:
+        name:  Logger name and stem of the output file (e.g. ``"timings"``
+               → ``logs/timings.log``).
+        level: Minimum log level for this logger. Defaults to ``logging.DEBUG``.
+
+    Returns:
+        The configured :class:`logging.Logger` instance.
+
+    Example::
+
+        _foo = set_logger('foo')
+        _foo.info('hello')   # → logs/foo.log only
+    """
+    log_dir = os.path.join(BASE_DIR, 'logs')
+    os.makedirs(log_dir, exist_ok=True)
+
+    logger = logging.getLogger(name)
+    logger.propagate = False
+    logger.setLevel(level)
+
+    if not logger.handlers:
+        logger.addHandler(_make_rotating_handler(log_dir, f'{name}.log'))
+
+    return logger
+
+
+def setup_logging(level: int = logging.DEBUG, logger_name: str | None = None) -> None:
+    """Configure the root logger with a JSON file handler and a plain-text console handler.
+
+    Should be called once at process startup (app factory or script entry point).
+    All loggers that propagate to root (the default) will write to the file and
+    to stdout. Noisy third-party loggers (``urllib3``, ``esi.client``) are
+    silenced to WARNING afterwards.
+
+    Also bootstraps the dedicated ``timings`` logger via :func:`set_logger`, which
+    writes to ``logs/timings.log`` independently of the root logger.
+
+    Args:
+        level:       Minimum log level applied to the root logger and the JSON
+                     file handler. Defaults to ``logging.DEBUG``.
+        logger_name: Stem of the output log file. When ``None`` (default) the
+                     file is ``logs/evebs.log``; otherwise ``logs/<logger_name>.log``.
+                     Useful for distinguishing process logs (e.g. ``"hourly"``
+                     → ``logs/hourly.log``).
+    """
+    log_dir = os.path.join(BASE_DIR, 'logs')
+    os.makedirs(log_dir, exist_ok=True)
+
+    log_file = f'{logger_name}.log' if logger_name else 'evebs.log'
+
+    root = logging.getLogger()
+    root.setLevel(level)
+    root.addHandler(_make_rotating_handler(log_dir, log_file))
 
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(logging.Formatter(
         '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
     ))
+    root.addHandler(console_handler)
 
     logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
     logging.getLogger('esi.client').setLevel(logging.WARNING)
 
-    root.addHandler(file_handler)
-    root.addHandler(console_handler)
+    set_logger('timings', level=logging.INFO)

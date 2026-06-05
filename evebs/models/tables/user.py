@@ -66,6 +66,16 @@ class User(UserMixin, db.Model):
         'invention':         {'system_cost_index': 5.0, 'scc_tax': 4.0, 'invention_tax': 1.0},
         'reaction':          {'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 1.0},
     })
+
+    # Per-user sell-order fee configuration (plain %, e.g. 2 = 2 %).
+    # broker_fee_taxes: exchange/structure broker fee charged on listing
+    # sales_taxes:      CCP transaction tax charged on sale
+    # safety_tax:       user-defined undercut/buffer margin
+    sales_taxes = db.Column(db.JSON, nullable=False, default=lambda: {
+        'broker_fee_taxes': 2,
+        'sales_taxes':      4,
+        'safety_tax':       0,
+    })
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

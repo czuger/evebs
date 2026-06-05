@@ -1,3 +1,10 @@
+"""Sell orders: margin based on the lowest sell order price in public_trade_orders,
+net of the user's personal sales_taxes settings (broker fee + sales tax + safety margin).
+
+Contrast with buy_orders which uses the highest buy order price (instant sell to an
+existing buy order). Here the user places a sell order at or below the current market
+floor and waits for a buyer — the achievable price is higher, but not guaranteed.
+"""
 import time
 from types import SimpleNamespace
 
@@ -5,92 +12,93 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from sqlalchemy import text, bindparam
 
+from config import set_logger, PER_PAGE
 from evebs.extensions import db
 from evebs.models.tables.bpc_asset import BpcAsset
-from config import set_logger, PER_PAGE
 from evebs.utils import SimplePagination
 
-bp = Blueprint('buy_orders', __name__)
+bp = Blueprint('sell_orders', __name__)
 
 _timings = set_logger('timings')
 
-# DISTINCT ON gives the single highest-priced buy order per (item, hub) —
-# its volume_remain is the volume of that one order, not the sum of all orders.
+# DISTINCT ON gives the single lowest-priced sell order per (item, hub) —
+# that is the current market floor, the best price achievable by undercutting.
 _SQL = """
-WITH highest_buy AS (
+WITH lowest_sell AS (
     SELECT DISTINCT ON (eve_item_id, universe_system_id)
         eve_item_id,
         universe_system_id,
-        price        AS buy_price,
-        volume_remain AS buy_volume
+        price         AS sell_price,
+        volume_remain AS sell_volume
     FROM public_trade_orders
-    WHERE is_buy_order = TRUE
+    WHERE is_buy_order = FALSE
       AND eve_item_id IN :item_ids
       AND universe_system_id IN :hub_ids
-    ORDER BY eve_item_id, universe_system_id, price DESC
+    ORDER BY eve_item_id, universe_system_id, price ASC
 )
 SELECT
     uic.item_name,
     uic.item_slug,
-    uic.produced_type_id                                                        AS eve_item_id,
-    us.name || ' (' || ur.name || ')'                                           AS trade_hub_name,
-    hb.universe_system_id,
-    uic.mat_cost_per_unit + uic.ind_tax_per_unit                               AS total_cost_per_unit,
-    hb.buy_price,
-    hb.buy_price * :sell_tax                                                    AS sell_tax_per_unit,
-    hb.buy_price * (1.0 - :sell_tax) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
-                                                                                AS margin_per_unit,
-    CASE WHEN hb.buy_price > 0
-         THEN (hb.buy_price * (1.0 - :sell_tax) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
-              / hb.buy_price
+    uic.produced_type_id                                                         AS eve_item_id,
+    us.name || ' (' || ur.name || ')'                                            AS trade_hub_name,
+    ls.universe_system_id,
+    uic.mat_cost_per_unit + uic.ind_tax_per_unit                                AS total_cost_per_unit,
+    ls.sell_price,
+    ls.sell_price * :sell_fee                                                    AS sell_fee_per_unit,
+    ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
+                                                                                 AS margin_per_unit,
+    CASE WHEN ls.sell_price > 0
+         THEN (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+              / ls.sell_price
          ELSE 0
-    END                                                                         AS margin_pcent,
-    hb.buy_volume,
-    b.nb_runs * b.prod_qtt                                                      AS full_batch_amount,
+    END                                                                          AS margin_pcent,
+    ls.sell_volume,
+    b.nb_runs * b.prod_qtt                                                       AS full_batch_amount,
     (b.nb_runs * b.prod_qtt)
-        * (hb.buy_price * (1.0 - :sell_tax) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
-                                                                                AS margin_full_batch
+        * (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+                                                                                 AS margin_full_batch
 FROM user_industry_costs uic
-JOIN highest_buy hb ON hb.eve_item_id = uic.produced_type_id
+JOIN lowest_sell ls ON ls.eve_item_id = uic.produced_type_id
 JOIN blueprints b ON b.id = uic.blueprint_id
-JOIN universe_systems us ON us.id = hb.universe_system_id
+JOIN universe_systems us ON us.id = ls.universe_system_id
 JOIN universe_constellations uc ON uc.id = us.universe_constellation_id
 JOIN universe_regions ur ON ur.id = uc.universe_region_id
 WHERE uic.user_id    = :user_id
   AND uic.activity_type = 'manufacturing'
-  AND hb.buy_price * (1.0 - :sell_tax) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
+  AND ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
 ORDER BY margin_full_batch DESC
 """
 
 
-@bp.route('/buy_orders')
+@bp.route('/sell_orders')
 @login_required
 def show():
     page = request.args.get('page', 1, type=int)
     user = current_user
 
     t0 = time.perf_counter()
-    watched_item_ids = [ei.id for ei in user.eve_items if ei.blueprint]
-    hub_ids          = [h.id for h in user.trade_hubs]
-    _timings.info('buy_orders.user_items_and_hubs',
+    item_ids = [b.produced_type_id for b in user.blueprints]
+    hub_ids  = [h.id for h in user.trade_hubs]
+    _timings.info('sell_orders.user_items_and_hubs',
                   extra={'duration_ms': (time.perf_counter() - t0) * 1000,
-                         'n_items': len(watched_item_ids), 'n_hubs': len(hub_ids)})
+                         'n_items': len(item_ids), 'n_hubs': len(hub_ids)})
 
     rows = []
     pagination = None
 
-    if watched_item_ids and hub_ids:
+    if item_ids and hub_ids:
         st = user.sales_taxes or {}
-        sell_tax = (
-            st.get('sales_taxes', 0)
+        sell_fee = (
+            st.get('broker_fee_taxes', 0)
+            + st.get('sales_taxes', 0)
             + st.get('safety_tax', 0)
         ) / 100.0
 
         params = {
             'user_id':  user.id,
-            'item_ids': watched_item_ids,
+            'item_ids': item_ids,
             'hub_ids':  hub_ids,
-            'sell_tax': sell_tax,
+            'sell_fee': sell_fee,
         }
         bp_item = bindparam('item_ids', expanding=True)
         bp_hub  = bindparam('hub_ids',  expanding=True)
@@ -100,7 +108,7 @@ def show():
             text(f'SELECT COUNT(*) FROM ({_SQL}) t').bindparams(bp_item, bp_hub),
             params,
         ).scalar() or 0
-        _timings.info('buy_orders.count_query',
+        _timings.info('sell_orders.count_query',
                       extra={'duration_ms': (time.perf_counter() - t0) * 1000,
                              'total': total})
 
@@ -109,7 +117,7 @@ def show():
             text(_SQL + ' LIMIT :limit OFFSET :offset').bindparams(bp_item, bp_hub),
             {**params, 'limit': PER_PAGE, 'offset': (page - 1) * PER_PAGE},
         ).mappings().all()
-        _timings.info('buy_orders.main_query',
+        _timings.info('sell_orders.main_query',
                       extra={'duration_ms': (time.perf_counter() - t0) * 1000,
                              'n_rows': len(rows_raw)})
 
@@ -123,17 +131,17 @@ def show():
         .filter(BpcAsset.user_id == user.id, BpcAsset.is_potential == True)
         .all()
     )
-    owned_bp_ids          = {b.produced_type_id for b in user.blueprints}
-    _timings.info('buy_orders.badge_queries',
+    owned_bp_ids              = {b.produced_type_id for b in user.blueprints}
+    _timings.info('sell_orders.badge_queries',
                   extra={'duration_ms': (time.perf_counter() - t0) * 1000})
     potential_copy_ids        = {r.eve_item_id for r in potential if r.potential_type == 'copy'}
     potential_invent_ids      = {r.eve_item_id for r in potential if r.potential_type == 'invent'}
     potential_copy_invent_ids = {r.eve_item_id for r in potential if r.potential_type == 'copy_invent'}
 
     return render_template(
-        'buy_orders/show.html',
-        title='Buy orders',
-        buy_orders=rows,
+        'sell_orders/show.html',
+        title='Sell orders (mine)',
+        sell_orders=rows,
         pagination=pagination,
         owned_bp_ids=owned_bp_ids,
         potential_copy_ids=potential_copy_ids,

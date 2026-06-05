@@ -32,10 +32,10 @@
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Earnings</a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="{{ url_for('buy_orders.show') }}">Buy orders</a>
+            <a class="dropdown-item" href="{{ url_for('sell_orders.show') }}">Sell orders (mine)</a>
             <a class="dropdown-item" href="{{ url_for('user_sales_orders.show') }}">My sale orders</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{ url_for('jita_benefits.show') }}">Jita manufacturing (all)</a>
-            <a class="dropdown-item" href="{{ url_for('jita_manufacturing.show') }}">Jita manufacturing (mine)</a>
             <a class="dropdown-item" href="{{ url_for('jita_reactions.show') }}">Jita reactions (mine)</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{ url_for('user_industry_costs.show_manufacturing') }}">My industry costs</a>
@@ -47,6 +47,7 @@
           <div class="dropdown-menu">
             <a class="dropdown-item" href="{{ url_for('users.edit') }}">Settings</a>
             <a class="dropdown-item" href="{{ url_for('users.industry_taxes') }}">Industry taxes</a>
+            <a class="dropdown-item" href="{{ url_for('users.sales_taxes') }}">Sales taxes</a>
           </div>
         </li>
         <li class="nav-item">

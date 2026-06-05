@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 
+from config import PER_PAGE
 from evebs.extensions import db
 from evebs.models import Blueprint as BpModel
 
 bp = Blueprint('user_blueprints', __name__)
-
-PER_PAGE = 20
 
 
 @bp.route('/user_blueprints')
