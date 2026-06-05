@@ -10,9 +10,9 @@ import os
 import time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
-from config import setup_logging
+from config import setup_logging, set_logger
 setup_logging()
-logger = logging.getLogger(__name__)
+logger = set_logger('downloads')
 
 from app import app
 

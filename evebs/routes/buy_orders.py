@@ -7,6 +7,7 @@ from sqlalchemy import text, bindparam
 
 from evebs.extensions import db
 from evebs.models.tables.bpc_asset import BpcAsset
+from evebs.models.tables.eve_item import EveItem
 from config import set_logger, PER_PAGE
 from evebs.utils import SimplePagination
 
@@ -124,6 +125,10 @@ def show():
         .all()
     )
     owned_bp_ids          = {b.produced_type_id for b in user.blueprints}
+    t1_bp_ids = {row.id for row in db.session.query(EveItem.id).filter(
+        EveItem.production_level == 1, EveItem.blueprint_id.isnot(None)
+    )}
+    owned_bp_ids |= t1_bp_ids
     _timings.info('buy_orders.badge_queries',
                   extra={'duration_ms': (time.perf_counter() - t0) * 1000})
     potential_copy_ids        = {r.eve_item_id for r in potential if r.potential_type == 'copy'}

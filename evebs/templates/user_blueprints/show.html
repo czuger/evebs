@@ -10,11 +10,13 @@
 <div class="table-responsive-md">
   <table class="table table-hover">
     <tr>
+      <th></th>
       <th>Blueprint</th>
       <th>Produced item</th>
     </tr>
     {% for bp in blueprints %}
     <tr>
+      <td style="width:36px"><img src="https://images.evetech.net/types/{{ bp.id }}/bp" width="32" height="32" alt=""></td>
       <td>{{ bp.name }}</td>
       <td class="item_name">
         {% if bp.eve_item %}
@@ -23,7 +25,7 @@
       </td>
     </tr>
     {% else %}
-    <tr><td colspan="2" class="text-center text-muted">No blueprints — click Refresh to fetch from ESI.</td></tr>
+    <tr><td colspan="3" class="text-center text-muted">No blueprints — click Refresh to fetch from ESI.</td></tr>
     {% endfor %}
   </table>
 </div>
