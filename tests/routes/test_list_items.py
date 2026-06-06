@@ -1,6 +1,6 @@
 """Tests for evebs/routes/list_items.py."""
 import pytest
-from tests.factories import make_market_group, make_item
+from tests.factories import make_market_group, make_item, make_universe_system, make_trade_hub
 
 
 class TestListItemsShow:
@@ -78,3 +78,51 @@ class TestSelectionChange:
 
         db.session.expire(user)
         assert item not in user.eve_items
+
+
+class TestListItemsAuthenticatedShow:
+    def test_authenticated_user_item_ids_loaded(self, db, auth_client):
+        mg = make_market_group(db, group_id=10, name='Minerals')
+        item = make_item(db, item_id=34, slug='trit-auth', market_group=mg)
+        db.session.commit()
+
+        client, user = auth_client
+        user.eve_items.append(item)
+        db.session.commit()
+
+        resp = client.get(f'/list_items?group_id={mg.id}')
+        assert resp.status_code == 200
+
+
+class TestSelectGroup:
+    def test_adds_all_items_in_leaf_group(self, db, auth_client):
+        mg = make_market_group(db, group_id=11, name='Minerals 2')
+        item1 = make_item(db, item_id=40, slug='trit-sg', market_group=mg)
+        item2 = make_item(db, item_id=41, slug='pye-sg', market_group=mg)
+        db.session.commit()
+
+        client, user = auth_client
+        resp = client.post('/list_items/select_group', data={'group_id': mg.id})
+        assert resp.status_code == 200
+        data = resp.get_json()
+        assert data['count'] == 2
+
+        db.session.expire(user)
+        assert item1 in user.eve_items
+        assert item2 in user.eve_items
+
+    def test_recurses_into_child_groups(self, db, auth_client):
+        parent = make_market_group(db, group_id=12, name='Materials')
+        child = make_market_group(db, group_id=13, name='Minerals 3', parent=parent)
+        item = make_item(db, item_id=42, slug='trit-rec', market_group=child)
+        db.session.commit()
+
+        client, _ = auth_client
+        resp = client.post('/list_items/select_group', data={'group_id': parent.id})
+        assert resp.status_code == 200
+        data = resp.get_json()
+        assert data['count'] == 1
+
+    def test_redirects_unauthenticated(self, client, db):
+        resp = client.post('/list_items/select_group', data={'group_id': 1})
+        assert resp.status_code == 302

@@ -61,6 +61,15 @@ def update():
     return redirect(url_for('production_lists.edit'))
 
 
+@bp.route('/production_lists/clear_all', methods=['POST'])
+@login_required
+def clear_all():
+    ProductionList.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    flash('Production list cleared.', 'success')
+    return redirect(url_for('production_lists.edit'))
+
+
 @bp.route('/remove_production_list_check', methods=['POST'])
 @login_required
 def remove_check():

@@ -16,6 +16,13 @@ class TestUserSalesOrdersShow:
         resp = client.get('/user_sales_orders')
         assert b'No orders.' in resp.data
 
+    def test_filters_by_margin_min_when_set(self, db, auth_client):
+        client, user = auth_client
+        user.sales_orders_show_margin_min = 10
+        db.session.commit()
+        resp = client.get('/user_sales_orders')
+        assert resp.status_code == 200
+
 
 class TestUserSalesOrdersUpdate:
     def test_redirects_unauthenticated(self, client):

@@ -1,7 +1,8 @@
 """Tests for evebs/routes/my_assets.py."""
 from tests.factories import (
     make_universe_region, make_universe_constellation,
-    make_universe_system, make_universe_station, make_item, make_bpc_asset,
+    make_universe_system, make_universe_station, make_universe_structure,
+    make_item, make_bpc_asset,
 )
 
 
@@ -105,3 +106,83 @@ class TestMyAssetsFilter:
         resp = client.get('/my_assets')
         assert b'Amarr VIII' in resp.data
         assert b'Zydrine Blueprint' in resp.data
+
+
+class TestSyncStatus:
+    def test_returns_idle_when_no_sync_running(self, auth_client):
+        client, _ = auth_client
+        resp = client.get('/my_assets/sync_status')
+        assert resp.status_code == 200
+        data = resp.get_json()
+        assert data['status'] == 'idle'
+
+    def test_redirects_unauthenticated(self, client):
+        resp = client.get('/my_assets/sync_status')
+        assert resp.status_code == 302
+
+
+class TestLocationEdgeCases:
+    def test_known_structure_label(self, db, auth_client):
+        ur = make_universe_region(db, region_id=10000006)
+        uc = make_universe_constellation(db, ur, constellation_id=20000050)
+        us = make_universe_system(db, uc, system_id=30000400)
+        structure = make_universe_structure(db, us, structure_id=1_000_000_000_010, name='Keepstar Alpha')
+        item = make_item(db, item_id=55, slug='nocx-struct', name='Noxcium')
+        _, user = auth_client
+
+        from evebs.models import BpcAsset
+        db.session.add(BpcAsset(
+            user_id=user.id, eve_item_id=item.id,
+            universe_structure_id=structure.id, quantity=1, touched=True,
+        ))
+        db.session.commit()
+
+        client, _ = auth_client
+        resp = client.get('/my_assets')
+        assert resp.status_code == 200
+        assert b'Keepstar Alpha' in resp.data
+
+    def test_no_location_shows_dash(self, db, auth_client):
+        item = make_item(db, item_id=56, slug='nocx-noloc', name='Nocxium')
+        _, user = auth_client
+
+        from evebs.models import BpcAsset
+        db.session.add(BpcAsset(
+            user_id=user.id, eve_item_id=item.id,
+            quantity=1, touched=True,
+        ))
+        db.session.commit()
+
+        client, _ = auth_client
+        resp = client.get('/my_assets')
+        assert resp.status_code == 200
+
+
+class TestBuildGroupsContainer:
+    def test_groups_assets_inside_container(self, db, auth_client):
+        ur = make_universe_region(db, region_id=10000007)
+        uc = make_universe_constellation(db, ur, constellation_id=20000060)
+        us = make_universe_system(db, uc, system_id=30000500)
+        st = make_universe_station(db, us, station_id=60007000)
+        item1 = make_item(db, item_id=60, slug='container-bp', name='Container Ship')
+        item2 = make_item(db, item_id=61, slug='child-bp', name='Child Blueprint')
+        _, user = auth_client
+
+        from evebs.models import BpcAsset
+        db.session.add(BpcAsset(
+            user_id=user.id, eve_item_id=item1.id,
+            universe_station_id=st.id, esi_item_id=9000000000001,
+            quantity=1, touched=True,
+        ))
+        db.session.add(BpcAsset(
+            user_id=user.id, eve_item_id=item2.id,
+            universe_station_id=st.id, esi_item_id=9000000000002,
+            parent_esi_item_id=9000000000001,
+            quantity=1, touched=True,
+        ))
+        db.session.commit()
+
+        client, _ = auth_client
+        resp = client.get('/my_assets')
+        assert resp.status_code == 200
+        assert b'Container Ship' in resp.data

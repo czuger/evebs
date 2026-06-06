@@ -44,6 +44,15 @@ def create():
     return redirect(request.referrer or url_for('copy_lists.edit'))
 
 
+@bp.route('/copy_lists/clear_all', methods=['POST'])
+@login_required
+def clear_all():
+    CopyList.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    flash('Copy list cleared.', 'success')
+    return redirect(url_for('copy_lists.edit'))
+
+
 @bp.route('/remove_copy_list_check', methods=['POST'])
 @login_required
 def remove_check():

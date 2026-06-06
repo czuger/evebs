@@ -44,6 +44,15 @@ def create():
     return redirect(request.referrer or url_for('invention_lists.edit'))
 
 
+@bp.route('/invention_lists/clear_all', methods=['POST'])
+@login_required
+def clear_all():
+    InventionList.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    flash('Invention list cleared.', 'success')
+    return redirect(url_for('invention_lists.edit'))
+
+
 @bp.route('/remove_invention_list_check', methods=['POST'])
 @login_required
 def remove_check():

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Production list</h2>
+<h2>Production list <span class="badge bg-secondary">{{ production_lists | length }}</span></h2>
 <p class="text-muted small mb-3">Items you plan to manufacture and how many runs to produce — drives the Components to buy list.</p>
 <form action="{{ url_for('production_lists.update') }}" method="post">
   <table class="table">
@@ -31,7 +31,13 @@
     {% endfor %}
   </table>
   {% if production_lists %}
-  <button type="submit" class="btn btn-primary">Save runs</button>
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary">Save runs</button>
+    <form action="{{ url_for('production_lists.clear_all') }}" method="post"
+          onsubmit="return confirm('Delete all entries?')">
+      <button type="submit" class="btn btn-outline-danger">Delete all</button>
+    </form>
+  </div>
   {% endif %}
 </form>
 {% endblock %}

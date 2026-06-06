@@ -1,5 +1,9 @@
 """Tests for evebs/routes/users.py."""
 import pytest
+from tests.factories import (
+    make_universe_region, make_universe_constellation,
+    make_universe_system, make_universe_station,
+)
 
 
 class TestUsersEdit:
@@ -57,3 +61,62 @@ class TestUsersUpdate:
         client.post('/users', data={'min_batch_margin_amount': '10 000 000'})
         db.session.expire(user)
         assert user.sell_orders_filtering['min_batch_margin_amount'] == 10_000_000
+
+
+class TestUsersEditWithStation:
+    def test_returns_200_with_current_station(self, db, auth_client):
+        ur = make_universe_region(db, region_id=10000099)
+        uc = make_universe_constellation(db, ur, constellation_id=20000099)
+        us = make_universe_system(db, uc, system_id=30000999, name='TestSys')
+        st = make_universe_station(db, us, station_id=60009999)
+        db.session.commit()
+
+        client, user = auth_client
+        user.current_location_station_id = st.id
+        db.session.commit()
+
+        resp = client.get('/users/edit')
+        assert resp.status_code == 200
+
+
+class TestUsersSalesTaxes:
+    def test_get_returns_200(self, auth_client):
+        client, _ = auth_client
+        resp = client.get('/users/sales_taxes')
+        assert resp.status_code == 200
+
+    def test_post_updates_and_redirects(self, db, auth_client):
+        client, user = auth_client
+        resp = client.post('/users/sales_taxes', data={
+            'broker_fee_taxes': '2.0',
+            'sales_taxes': '3.5',
+            'safety_tax': '0.5',
+        })
+        assert resp.status_code == 302
+        db.session.expire(user)
+        assert user.sales_taxes['broker_fee_taxes'] == 2.0
+        assert user.sales_taxes['sales_taxes'] == 3.5
+
+
+class TestUsersIndustryTaxes:
+    def test_get_returns_200(self, auth_client):
+        client, _ = auth_client
+        resp = client.get('/users/industry_taxes')
+        assert resp.status_code == 200
+
+    def test_post_updates_and_redirects(self, db, auth_client):
+        client, user = auth_client
+        resp = client.post('/users/industry_taxes', data={
+            'mfg_sci': '5.0',
+            'mfg_scc': '4.0',
+            'mfg_std': '1.0',
+        })
+        assert resp.status_code == 302
+        db.session.expire(user)
+        assert user.industry_taxes['manufacturing']['system_cost_index'] == 5.0
+
+    def test_invalid_tax_value_defaults_to_zero(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users/industry_taxes', data={'mfg_sci': 'bad_value'})
+        db.session.expire(user)
+        assert user.industry_taxes['manufacturing']['system_cost_index'] == 0.0

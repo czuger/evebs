@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Copy list</h2>
+<h2>Copy list <span class="badge bg-secondary">{{ copy_lists | length }}</span></h2>
 <p class="text-muted small mb-3">Items queued for blueprint copy runs.</p>
 <form action="{{ url_for('copy_lists.edit') }}" method="get">
   <table class="table table-sm">
@@ -27,5 +27,11 @@
     <tr><td colspan="4" class="text-center text-muted">Copy list is empty.</td></tr>
     {% endfor %}
   </table>
+  {% if copy_lists %}
+  <form action="{{ url_for('copy_lists.clear_all') }}" method="post"
+        onsubmit="return confirm('Delete all entries?')">
+    <button type="submit" class="btn btn-outline-danger btn-sm">Delete all</button>
+  </form>
+  {% endif %}
 </form>
 {% endblock %}

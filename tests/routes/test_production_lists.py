@@ -80,6 +80,16 @@ class TestProductionListUpdate:
         db.session.expire(pl)
         assert pl.runs_count == 10
 
+    def test_ignores_invalid_runs_count(self, db, auth_client, seeded):
+        client, user = auth_client
+        pl = make_production_list(db, user, seeded['item'], seeded['hub'], runs_count=3)
+        db.session.commit()
+
+        resp = client.post('/production_lists/update', data={f'runs_count_{pl.id}': 'not_a_number'})
+        assert resp.status_code == 302
+        db.session.expire(pl)
+        assert pl.runs_count == 3
+
     def test_ignores_other_users_entries(self, db, auth_client, seeded):
         from evebs.models import User
         client, user = auth_client

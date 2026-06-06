@@ -34,6 +34,10 @@ class TestTradeHubDetail:
         resp = client.get('/market_data/9999/trade_hub_detail/1')
         assert resp.status_code == 404
 
+    def test_404_for_nonexistent_trade_hub(self, db, client, seeded):
+        resp = client.get(f'/market_data/{seeded["item"].id}/trade_hub_detail/9999')
+        assert resp.status_code == 404
+
     def test_returns_200_for_existing_item_and_hub(self, db, client, seeded):
         resp = client.get(
             f'/market_data/{seeded["item"].id}/trade_hub_detail/{seeded["hub"].id}'

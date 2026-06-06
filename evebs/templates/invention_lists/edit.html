@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Invention list</h2>
+<h2>Invention list <span class="badge bg-secondary">{{ invention_lists | length }}</span></h2>
 <p class="text-muted small mb-3">Items queued for invention runs.</p>
 <form action="{{ url_for('invention_lists.edit') }}" method="get">
   <table class="table table-sm">
@@ -27,5 +27,11 @@
     <tr><td colspan="4" class="text-center text-muted">Invention list is empty.</td></tr>
     {% endfor %}
   </table>
+  {% if invention_lists %}
+  <form action="{{ url_for('invention_lists.clear_all') }}" method="post"
+        onsubmit="return confirm('Delete all entries?')">
+    <button type="submit" class="btn btn-outline-danger btn-sm">Delete all</button>
+  </form>
+  {% endif %}
 </form>
 {% endblock %}
