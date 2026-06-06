@@ -20,9 +20,10 @@ class User(UserMixin, db.Model):
     locked = db.Column(db.Boolean, default=False, nullable=False)
     batch_cap = db.Column(db.Boolean, default=True, nullable=False)
     batch_cap_multiplier = db.Column(db.Integer, default=10, nullable=False)
-    vol_month_pcent = db.Column(db.Integer, default=5, nullable=False)
-    min_pcent_for_advice = db.Column(db.Integer, default=20, nullable=False)
-    min_amount_for_advice = db.Column(db.Integer, default=5000000, nullable=False)
+    sell_orders_filtering = db.Column(db.JSON, nullable=False, default=lambda: {
+        'min_margin_percent': 20,
+        'min_batch_margin_amount': 5_000_000,
+    })
     remove_occuped_places = db.Column(db.Boolean)
     watch_my_prices = db.Column(db.Boolean)
     last_changes_in_choices = db.Column(db.DateTime)

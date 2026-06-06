@@ -17,9 +17,7 @@ from evebs.models.tables.universe_constellation import UniverseConstellation
 from evebs.models.tables.universe_system import UniverseSystem
 from evebs.models.tables.universe_station import UniverseStation
 from evebs.models.tables.universe_structure import UniverseStructure
-from evebs.models.tables.constant import Constant
 from evebs.models.tables.last_update import LastUpdate
-from evebs.models.tables.crontab import Crontab
 
 from evebs.models.tables.bpc_asset import BpcAsset
 from evebs.models.tables.bpc_assets_station import BpcAssetsStation
@@ -53,9 +51,7 @@ __all__ = [
     'UniverseSystem',
     'UniverseStation',
     'UniverseStructure',
-    'Constant',
     'LastUpdate',
-    'Crontab',
     'BpcAsset',
     'BpcAssetsStation',
     'UnknownStructure',

@@ -71,4 +71,5 @@ def remove_check():
         user_id=user.id, universe_system_id=universe_system_id, eve_item_id=eve_item_id
     ).delete()
     db.session.commit()
-    return ('', 204)
+    flash('Removed from production list.', 'success')
+    return redirect(url_for('production_lists.edit'))

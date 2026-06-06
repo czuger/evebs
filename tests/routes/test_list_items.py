@@ -54,7 +54,7 @@ class TestSelectionChange:
 
         client, user = auth_client
         resp = client.post('/list_items/selection_change',
-                           data={'id': item.id, 'check_state': 'true'})
+                           data={'ids': item.id, 'check_state': 'true'})
         assert resp.status_code == 200
         resp_json = resp.get_json()
         assert resp_json == {'ok': True}
@@ -73,7 +73,7 @@ class TestSelectionChange:
         db.session.commit()
 
         resp = client.post('/list_items/selection_change',
-                           data={'id': item.id, 'check_state': 'false'})
+                           data={'ids': item.id, 'check_state': 'false'})
         assert resp.status_code == 200
 
         db.session.expire(user)

@@ -2,8 +2,11 @@ from types import SimpleNamespace
 
 from flask import render_template
 
+_DEFAULT_USER = SimpleNamespace(last_orders_download=None)
+
 
 def _render(app, **ctx):
+    ctx.setdefault('user', _DEFAULT_USER)
     with app.test_request_context('/'):
         return render_template('user_sales_orders/show.html', title='My sales orders', **ctx)
 

@@ -9,27 +9,21 @@
 <form action="{{ url_for('users.update') }}" method="post">
 
   <div class="card mb-3">
-    <div class="card-header">Price advice filters</div>
+    <div class="card-header">Sell orders filters</div>
     <div class="card-body">
       <div class="row">
         <div class="col-12 col-md-4 mb-3">
-          <label for="min_pcent_for_advice" class="form-label">Min margin %</label>
-          <input type="number" name="min_pcent_for_advice" id="min_pcent_for_advice"
-                 value="{{ user.min_pcent_for_advice }}" class="form-control">
+          <label for="min_margin_percent" class="form-label">Min margin %</label>
+          <input type="number" name="min_margin_percent" id="min_margin_percent"
+                 value="{{ (user.sell_orders_filtering or {}).get('min_margin_percent', 20) }}" class="form-control">
           <div class="form-text">Hide items below this margin percentage.</div>
         </div>
         <div class="col-12 col-md-4 mb-3">
-          <label for="min_amount_for_advice" class="form-label">Min margin (ISK)</label>
-          <input type="text" name="min_amount_for_advice" id="min_amount_for_advice"
-                 value="{{ '{:,}'.format(user.min_amount_for_advice).replace(',', ' ') }}"
+          <label for="min_batch_margin_amount" class="form-label">Min batch margin (ISK)</label>
+          <input type="text" name="min_batch_margin_amount" id="min_batch_margin_amount"
+                 value="{{ '{:,}'.format((user.sell_orders_filtering or {}).get('min_batch_margin_amount', 5000000)).replace(',', ' ') }}"
                  class="form-control">
-          <div class="form-text">Hide items below this absolute ISK margin.</div>
-        </div>
-        <div class="col-12 col-md-4 mb-3">
-          <label for="vol_month_pcent" class="form-label">Monthly volume %</label>
-          <input type="number" name="vol_month_pcent" id="vol_month_pcent"
-                 value="{{ user.vol_month_pcent }}" class="form-control">
-          <div class="form-text">Target sell percentage of monthly volume.</div>
+          <div class="form-text">Hide items below this full-batch ISK margin.</div>
         </div>
       </div>
     </div>

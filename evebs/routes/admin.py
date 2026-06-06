@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required, current_user
 
-from evebs.models import UserActivityLog, LastUpdate, Crontab
+from evebs.models import UserActivityLog, LastUpdate
 
 bp = Blueprint('admin', __name__)
 
@@ -21,13 +21,11 @@ def show():
     last_hourly = LastUpdate.query.filter_by(update_type='hourly').first()
     last_daily = LastUpdate.query.filter_by(update_type='daily').first()
     last_weekly = LastUpdate.query.filter_by(update_type='weekly').first()
-    crontabs = Crontab.query.all()
     return render_template('admin/show.html',
                            title='Admin tools',
                            last_hourly=last_hourly,
                            last_daily=last_daily,
-                           last_weekly=last_weekly,
-                           crontabs=crontabs)
+                           last_weekly=last_weekly)
 
 
 @bp.route('/admin_tools/denied')

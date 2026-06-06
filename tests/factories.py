@@ -85,13 +85,6 @@ def make_item(db, item_id=34, name='Tritanium', slug='tritanium',
     return item
 
 
-def make_constant(db, libe, f_value, description=''):
-    from evebs.models import Constant
-    c = Constant(libe=libe, f_value=f_value, description=description)
-    db.session.add(c)
-    db.session.flush()
-    return c
-
 
 def make_sales_final(db, item, trade_hub, volume=100, price=1000.0,
                      day=None, order_id=9001):

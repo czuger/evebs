@@ -58,14 +58,16 @@ def edit():
 def update():
     user = current_user
 
-    raw_amount = request.form.get('min_amount_for_advice', '')
-    raw_amount = raw_amount.replace(' ', '')
+    raw_margin_pcent = request.form.get('min_margin_percent', '').strip()
+    raw_batch_margin = request.form.get('min_batch_margin_amount', '').replace(' ', '')
     raw_margin = request.form.get('sales_orders_show_margin_min', '').strip()
 
     try:
-        user.min_pcent_for_advice = int(request.form.get('min_pcent_for_advice', user.min_pcent_for_advice))
-        user.min_amount_for_advice = int(raw_amount) if raw_amount else user.min_amount_for_advice
-        user.vol_month_pcent = int(request.form.get('vol_month_pcent', user.vol_month_pcent))
+        sof = user.sell_orders_filtering or {}
+        user.sell_orders_filtering = {
+            'min_margin_percent':      int(raw_margin_pcent) if raw_margin_pcent else sof.get('min_margin_percent', 20),
+            'min_batch_margin_amount': int(raw_batch_margin) if raw_batch_margin else sof.get('min_batch_margin_amount', 5_000_000),
+        }
         user.batch_cap = request.form.get('batch_cap') == 'on'
         user.batch_cap_multiplier = int(request.form.get('batch_cap_multiplier', user.batch_cap_multiplier))
         user.watch_my_prices = request.form.get('watch_my_prices') == 'on'

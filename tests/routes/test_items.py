@@ -27,24 +27,3 @@ class TestItemShow:
         resp = client.get(f'/items/{item.id}')
         assert resp.status_code == 200
 
-    def test_taxes_default_when_constant_missing(self, db, client):
-        system = make_universe_system(db)
-        make_trade_hub(db, system)
-        make_item(db, item_id=34, slug='tritanium')
-        db.session.commit()
-
-        # No Constant row seeded — route should fall back to 1.13
-        resp = client.get('/items/tritanium')
-        assert resp.status_code == 200
-
-    def test_with_seeded_constant(self, db, client):
-        from evebs.models import Constant
-        system = make_universe_system(db)
-        make_trade_hub(db, system)
-        make_item(db, item_id=34, slug='tritanium')
-        c = Constant(libe='taxes', f_value=1.10, description='Tax rate')
-        db.session.add(c)
-        db.session.commit()
-
-        resp = client.get('/items/tritanium')
-        assert resp.status_code == 200

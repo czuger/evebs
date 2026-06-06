@@ -67,6 +67,11 @@ JOIN universe_regions ur ON ur.id = uc.universe_region_id
 WHERE uic.user_id    = :user_id
   AND uic.activity_type = 'manufacturing'
   AND ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
+  AND CASE WHEN ls.sell_price > 0
+       THEN (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) / ls.sell_price
+       ELSE 0 END >= :min_margin_pcent
+  AND (b.nb_runs * b.prod_qtt)
+      * (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) >= :min_batch_margin
 ORDER BY margin_full_batch DESC
 """
 
@@ -95,11 +100,17 @@ def show():
             + st.get('safety_tax', 0)
         ) / 100.0
 
+        sof = user.sell_orders_filtering or {}
+        min_margin_pcent = sof.get('min_margin_percent', 20) / 100.0
+        min_batch_margin = sof.get('min_batch_margin_amount', 5_000_000)
+
         params = {
-            'user_id':  user.id,
-            'item_ids': item_ids,
-            'hub_ids':  hub_ids,
-            'sell_fee': sell_fee,
+            'user_id':          user.id,
+            'item_ids':         item_ids,
+            'hub_ids':          hub_ids,
+            'sell_fee':         sell_fee,
+            'min_margin_pcent': min_margin_pcent,
+            'min_batch_margin': min_batch_margin,
         }
         bp_item = bindparam('item_ids', expanding=True)
         bp_hub  = bindparam('hub_ids',  expanding=True)

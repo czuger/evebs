@@ -97,7 +97,7 @@ class TestProductionListUpdate:
 
 
 class TestProductionListRemove:
-    def test_deletes_entry_returns_204(self, db, auth_client, seeded):
+    def test_deletes_entry_and_redirects(self, db, auth_client, seeded):
         client, user = auth_client
         pl = make_production_list(db, user, seeded['item'], seeded['hub'])
         db.session.commit()
@@ -106,7 +106,7 @@ class TestProductionListRemove:
             'universe_system_id': seeded['hub'].id,
             'eve_item_id': seeded['item'].id,
         })
-        assert resp.status_code == 204
+        assert resp.status_code == 302
 
         from evebs.models import ProductionList
         assert ProductionList.query.filter_by(user_id=user.id).count() == 0

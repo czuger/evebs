@@ -2,6 +2,8 @@ import threading
 import pytest
 from werkzeug.serving import make_server
 
+pytest.importorskip('playwright', reason='playwright not installed — skipping e2e tests')
+
 from tests.factories import make_market_group, make_item
 
 
