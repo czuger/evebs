@@ -18,7 +18,6 @@
       <th class="text-end">Sell vol.</th>
       <th class="text-end">Full batch</th>
       <th class="text-end">Batch margin</th>
-      <th></th>
     </tr>
     {% for cp in sell_orders %}
     {% if cp.sell_volume > cp.full_batch_amount * 2 %}
@@ -31,9 +30,11 @@
       <td class="trade_hub_name">{{ cp.trade_hub_name }}</td>
       <td class="item_name">
         <a href="{{ url_for('items.show', slug=cp.item_slug or cp.eve_item_id) }}">{{ cp.item_name }}</a>
+        {% if cp.eve_item_id in sale_order_item_ids %}<img src="https://api.iconify.design/streamline:bag-dollar-solid.svg" width="14" height="14" class="ms-1 opacity-75" data-bs-toggle="tooltip" title="In your sale orders">{% endif %}
+        {% if cp.eve_item_id in active_job_item_ids %}<img src="https://api.iconify.design/streamline:cog-solid.svg" width="14" height="14" class="ms-1 opacity-75" data-bs-toggle="tooltip" title="Active industry job">{% endif %}
       </td>
       <td>
-        {% with item_id = cp.eve_item_id, owned_label = 'ready' %}{% include 'shared/_bp_badges.html' %}{% endwith %}
+        {% with item_id = cp.eve_item_id, owned_label = 'ready', universe_system_id = cp.universe_system_id %}{% include 'shared/_bp_badges.html' %}{% endwith %}
       </td>
       <td class="text-end">
         <a href="{{ url_for('production_costs.show', slug=cp.item_slug or cp.eve_item_id) }}" class="text-decoration-none">
@@ -51,35 +52,9 @@
       <td class="text-end">{{ cp.sell_volume | vol }}</td>
       <td class="text-end">{{ cp.full_batch_amount | vol }}</td>
       <td class="text-end">{{ cp.margin_full_batch | isk }}</td>
-      <td class="text-nowrap">
-        {% if cp.eve_item_id in owned_bp_ids %}
-        <form method="post" action="{{ url_for('production_lists.create') }}" class="d-inline">
-          <input type="hidden" name="eve_item_id" value="{{ cp.eve_item_id }}">
-          <input type="hidden" name="universe_system_id" value="{{ cp.universe_system_id }}">
-          <input type="hidden" name="runs_count" value="1">
-          <button type="submit" class="btn btn-sm btn-outline-primary py-0">+ prod</button>
-        </form>
-        {% endif %}
-        {% if cp.eve_item_id in potential_copy_ids or cp.eve_item_id in potential_copy_invent_ids %}
-        <form method="post" action="{{ url_for('copy_lists.create') }}" class="d-inline">
-          <input type="hidden" name="eve_item_id" value="{{ cp.eve_item_id }}">
-          <input type="hidden" name="universe_system_id" value="{{ cp.universe_system_id }}">
-          <input type="hidden" name="runs_count" value="1">
-          <button type="submit" class="btn btn-sm btn-outline-secondary py-0">+ copy</button>
-        </form>
-        {% endif %}
-        {% if cp.eve_item_id in potential_invent_ids or cp.eve_item_id in potential_copy_invent_ids %}
-        <form method="post" action="{{ url_for('invention_lists.create') }}" class="d-inline">
-          <input type="hidden" name="eve_item_id" value="{{ cp.eve_item_id }}">
-          <input type="hidden" name="universe_system_id" value="{{ cp.universe_system_id }}">
-          <input type="hidden" name="runs_count" value="1">
-          <button type="submit" class="btn btn-sm btn-outline-secondary py-0">+ invent</button>
-        </form>
-        {% endif %}
-      </td>
     </tr>
     {% else %}
-    <tr><td colspan="12" class="text-center text-muted">No sell orders found — sync your blueprints and check your trade hub settings.</td></tr>
+    <tr><td colspan="11" class="text-center text-muted">No sell orders found — sync your blueprints and check your trade hub settings.</td></tr>
     {% endfor %}
   </table>
 </div>

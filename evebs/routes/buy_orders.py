@@ -8,6 +8,8 @@ from sqlalchemy import text, bindparam
 from evebs.extensions import db
 from evebs.models.tables.bpc_asset import BpcAsset
 from evebs.models.tables.eve_item import EveItem
+from evebs.models.tables.industry_job import IndustryJob
+from evebs.models.tables.user_sale_order import UserSaleOrder
 from config import set_logger, PER_PAGE
 from evebs.utils import SimplePagination
 
@@ -135,6 +137,18 @@ def show():
     potential_invent_ids      = {r.eve_item_id for r in potential if r.potential_type == 'invent'}
     potential_copy_invent_ids = {r.eve_item_id for r in potential if r.potential_type == 'copy_invent'}
 
+    sale_order_item_ids = {
+        r.eve_item_id for r in
+        db.session.query(UserSaleOrder.eve_item_id)
+        .filter(UserSaleOrder.user_id == user.id).all()
+    }
+    active_job_item_ids = {
+        r.product_type_id for r in
+        db.session.query(IndustryJob.product_type_id)
+        .filter(IndustryJob.user_id == user.id,
+                IndustryJob.status.in_(['active', 'paused'])).all()
+    }
+
     return render_template(
         'buy_orders/show.html',
         title='Buy orders',
@@ -144,5 +158,7 @@ def show():
         potential_copy_ids=potential_copy_ids,
         potential_invent_ids=potential_invent_ids,
         potential_copy_invent_ids=potential_copy_invent_ids,
+        sale_order_item_ids=sale_order_item_ids,
+        active_job_item_ids=active_job_item_ids,
         user=user,
     )
