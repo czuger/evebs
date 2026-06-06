@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">My industry jobs</h4>
+  <div class="d-flex align-items-center gap-3">
+    {% if user.last_industry_jobs_download %}
+      <small class="text-muted">Last sync: {{ user.last_industry_jobs_download.strftime('%Y-%m-%d %H:%M') }}</small>
+    {% endif %}
+    <form method="post" action="{{ url_for('industry_jobs.refresh') }}">
+      <button type="submit" class="btn btn-sm btn-outline-secondary">Refresh</button>
+    </form>
+  </div>
+</div>
+
+{% if not jobs %}
+  <p class="text-muted">No industry jobs found. Click Refresh to sync from ESI.</p>
+{% else %}
+<div class="table-responsive-md">
+  <table class="table table-sm table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Activity</th>
+        <th>Status</th>
+        <th>Item</th>
+        <th class="text-end">Runs</th>
+        <th class="text-end">Cost</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Time left</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for job in jobs %}
+        {% set item = items_by_type_id.get(job.product_type_id) %}
+        {% set status_class = {
+            'active':    'success',
+            'paused':    'warning',
+            'delivered': 'secondary',
+            'cancelled': 'secondary',
+            'reverted':  'secondary',
+        }.get(job.status, 'secondary') %}
+        <tr>
+          <td>{{ activity_labels.get(job.activity_id, job.activity_id) }}</td>
+          <td><span class="badge bg-{{ status_class }}">{{ job.status }}</span></td>
+          <td>
+            {% if item %}
+              <img src="https://images.evetech.net/types/{{ item.id }}/icon" width="24" height="24" class="me-1">
+              {{ item.name }}
+            {% else %}
+              <span class="text-muted">type {{ job.product_type_id }}</span>
+            {% endif %}
+          </td>
+          <td class="text-end">{{ job.runs }}</td>
+          <td class="text-end">
+            {% if job.cost %}{{ job.cost | isk }}{% else %}—{% endif %}
+          </td>
+          <td>
+            {% if job.start_date %}{{ job.start_date.strftime('%Y-%m-%d %H:%M') }}{% else %}—{% endif %}
+          </td>
+          <td>
+            {% if job.end_date %}{{ job.end_date.strftime('%Y-%m-%d %H:%M') }}{% else %}—{% endif %}
+          </td>
+          <td>
+            {% if job.status == 'active' and job.end_date %}
+              {% set delta = job.end_date - now() %}
+              {% if delta.total_seconds() > 0 %}
+                {% set h = (delta.total_seconds() // 3600) | int %}
+                {% set m = ((delta.total_seconds() % 3600) // 60) | int %}
+                {{ h }}h {{ m }}m
+              {% else %}
+                <span class="text-success">Done</span>
+              {% endif %}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

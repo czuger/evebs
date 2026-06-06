@@ -25,6 +25,7 @@ from evebs.models.tables.unknown_structure import UnknownStructure
 from evebs.models.tables.user_to_user_duplication_request import UserToUserDuplicationRequest
 from evebs.models.tables.user_activity_log import UserActivityLog
 from evebs.models.tables.jita_market_analytics import JitaMarketAnalytics
+from evebs.models.tables.industry_job import IndustryJob, ACTIVITY_LABELS
 from evebs.models.views import (
     UserSaleOrderDetail,
     UserIndustryCost,
@@ -60,4 +61,6 @@ __all__ = [
     'UserSaleOrderDetail',
     'UserIndustryCost',
     'JitaMarketAnalytics',
+    'IndustryJob',
+    'ACTIVITY_LABELS',
 ]

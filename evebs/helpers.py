@@ -12,6 +12,7 @@ def register(app):
         safe_multiply=safe_multiply,
         show_last_update=show_last_update,
         meta_title=meta_title,
+        now=datetime.utcnow,
     )
     app.jinja_env.filters['isk'] = print_isk
     app.jinja_env.filters['pcent'] = print_pcent

@@ -36,6 +36,7 @@ def create_app(config_class=Config):
     from evebs.routes.sell_orders import bp as sell_orders_bp
     from evebs.routes.jita_reactions import bp as jita_reactions_bp
     from evebs.routes.user_industry_costs import bp as user_industry_costs_bp
+    from evebs.routes.industry_jobs import bp as industry_jobs_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
@@ -59,6 +60,7 @@ def create_app(config_class=Config):
     app.register_blueprint(sell_orders_bp)
     app.register_blueprint(jita_reactions_bp)
     app.register_blueprint(user_industry_costs_bp)
+    app.register_blueprint(industry_jobs_bp)
 
     @app.errorhandler(401)
     def unauthorized(_e):

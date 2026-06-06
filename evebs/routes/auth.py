@@ -20,6 +20,7 @@ DEFAULT_SCOPES = ' '.join([
     'esi-characters.read_orders.v1',
     'esi-assets.read_assets.v1',
     'esi-characters.read_blueprints.v1',
+    'esi-industry.read_character_jobs.v1',
 ])
 
 
