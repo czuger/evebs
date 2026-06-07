@@ -72,9 +72,7 @@ def update():
         }
         bof = user.buy_order_filtering or {}
         user.buy_order_filtering = {
-            'batch_cap':              request.form.get('batch_cap') == 'on',
-            'batch_cap_multiplier':   int(request.form.get('batch_cap_multiplier', bof.get('batch_cap_multiplier', 10))),
-            'min_margin_percent':     int(raw_buy_margin_pcent) if raw_buy_margin_pcent else bof.get('min_margin_percent', 20),
+            'min_margin_percent':      int(raw_buy_margin_pcent) if raw_buy_margin_pcent else bof.get('min_margin_percent', 20),
             'min_batch_margin_amount': int(raw_buy_batch_margin) if raw_buy_batch_margin else bof.get('min_batch_margin_amount', 5_000_000),
         }
         user.watch_my_prices = request.form.get('watch_my_prices') == 'on'

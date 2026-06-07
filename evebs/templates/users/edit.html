@@ -30,24 +30,10 @@
   </div>
 
   <div class="card mb-3">
-    <div class="card-header">Buy orders</div>
+    <div class="card-header">Buy orders filters</div>
     <div class="card-body">
       {% set bof = user.buy_order_filtering or {} %}
       <div class="row">
-        <div class="col-12 col-md-4 mb-3">
-          <div class="form-check mt-2">
-            <input type="checkbox" name="batch_cap" id="batch_cap"
-                   class="form-check-input" {% if bof.get('batch_cap', True) %}checked{% endif %}>
-            <label for="batch_cap" class="form-check-label">Batch cap</label>
-          </div>
-          <div class="form-text">Cap the quantity per buy order.</div>
-        </div>
-        <div class="col-12 col-md-4 mb-3">
-          <label for="batch_cap_multiplier" class="form-label">Batch cap multiplier</label>
-          <input type="number" name="batch_cap_multiplier" id="batch_cap_multiplier"
-                 value="{{ bof.get('batch_cap_multiplier', 10) }}" class="form-control">
-          <div class="form-text">Multiply monthly volume to set the cap.</div>
-        </div>
         <div class="col-12 col-md-4 mb-3">
           <label for="buy_min_margin_percent" class="form-label">Min margin %</label>
           <input type="number" name="buy_min_margin_percent" id="buy_min_margin_percent"

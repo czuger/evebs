@@ -3,7 +3,7 @@
   <input type="hidden" name="eve_item_id" value="{{ item_id }}">
   <input type="hidden" name="universe_system_id" value="{{ universe_system_id }}">
   <input type="hidden" name="runs_count" value="1">
-  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You own a blueprint for this item — click to add to production list"><img src="https://api.iconify.design/streamline:ai-chip-spark-remix.svg" width="14" height="14" class="opacity-75"></button>
+  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You own a blueprint for this item — click to add to production list"><img src="https://api.iconify.design/material-symbols:factory.svg" width="14" height="14" class="opacity-75"></button>
 </form>
 {%- endif -%}
 {%- if item_id in potential_copy_ids and item_id not in owned_bp_ids -%}
@@ -11,7 +11,7 @@
   <input type="hidden" name="eve_item_id" value="{{ item_id }}">
   <input type="hidden" name="universe_system_id" value="{{ universe_system_id }}">
   <input type="hidden" name="runs_count" value="1">
-  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You have the BPO — click to add to copy list"><img src="https://api.iconify.design/streamline:add-layer-2-solid.svg" width="14" height="14" class="opacity-75"></button>
+  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You have the BPO — click to add to copy list"><img src="https://api.iconify.design/solar:copy-bold.svg" width="14" height="14" class="opacity-75"></button>
 </form>
 {%- endif -%}
 {%- if item_id in potential_invent_ids -%}
@@ -19,7 +19,7 @@
   <input type="hidden" name="eve_item_id" value="{{ item_id }}">
   <input type="hidden" name="universe_system_id" value="{{ universe_system_id }}">
   <input type="hidden" name="runs_count" value="1">
-  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You have a T1 BPC — click to add to invention list"><img src="https://api.iconify.design/streamline:ai-upscale-spark-solid.svg" width="14" height="14" class="opacity-75"></button>
+  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You have a T1 BPC — click to add to invention list"><img src="https://api.iconify.design/material-symbols:science.svg" width="14" height="14" class="opacity-75"></button>
 </form>
 {%- endif -%}
 {%- if item_id in potential_copy_invent_ids -%}
@@ -27,6 +27,6 @@
   <input type="hidden" name="eve_item_id" value="{{ item_id }}">
   <input type="hidden" name="universe_system_id" value="{{ universe_system_id }}">
   <input type="hidden" name="runs_count" value="1">
-  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You have the T1 BPO — click to add to copy list"><img src="https://api.iconify.design/streamline:ai-redo-spark-solid.svg" width="14" height="14" class="opacity-75"></button>
+  <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You have the T1 BPO — click to add to copy list"><img src="https://api.iconify.design/material-symbols:science-off.svg" width="14" height="14" class="opacity-75"></button>
 </form>
 {%- endif -%}
