@@ -25,6 +25,15 @@
                  class="form-control">
           <div class="form-text">Hide items below this full-batch ISK margin.</div>
         </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="sell_show_selected_items" id="sell_show_selected_items"
+                   class="form-check-input"
+                   {% if (user.sell_orders_filtering or {}).get('show_selected_items', False) %}checked{% endif %}>
+            <label for="sell_show_selected_items" class="form-check-label">Show selected items only</label>
+          </div>
+          <div class="form-text">When on, only show bookmarked items; when off, show all game blueprints.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -46,6 +55,15 @@
                  value="{{ '{:,}'.format(bof.get('min_batch_margin_amount', 5000000)).replace(',', ' ') }}"
                  class="form-control">
           <div class="form-text">Hide items below this full-batch ISK margin.</div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="buy_show_selected_items" id="buy_show_selected_items"
+                   class="form-check-input"
+                   {% if bof.get('show_selected_items', False) %}checked{% endif %}>
+            <label for="buy_show_selected_items" class="form-check-label">Show selected items only</label>
+          </div>
+          <div class="form-text">When on, only show bookmarked items; when off, show all game blueprints.</div>
         </div>
       </div>
     </div>

@@ -69,11 +69,13 @@ def update():
         user.sell_orders_filtering = {
             'min_margin_percent':      int(raw_margin_pcent) if raw_margin_pcent else sof.get('min_margin_percent', 20),
             'min_batch_margin_amount': int(raw_batch_margin) if raw_batch_margin else sof.get('min_batch_margin_amount', 5_000_000),
+            'show_selected_items':     request.form.get('sell_show_selected_items') == 'on',
         }
         bof = user.buy_order_filtering or {}
         user.buy_order_filtering = {
             'min_margin_percent':      int(raw_buy_margin_pcent) if raw_buy_margin_pcent else bof.get('min_margin_percent', 20),
             'min_batch_margin_amount': int(raw_buy_batch_margin) if raw_buy_batch_margin else bof.get('min_batch_margin_amount', 5_000_000),
+            'show_selected_items':     request.form.get('buy_show_selected_items') == 'on',
         }
         user.watch_my_prices = request.form.get('watch_my_prices') == 'on'
         user.remove_occuped_places = request.form.get('remove_occuped_places') == 'on'

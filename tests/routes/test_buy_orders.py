@@ -30,8 +30,8 @@ def seeded(db, user):
     db.session.execute(eve_items_users.insert().values(user_id=user.id, eve_item_id=prod.id))
     db.session.execute(trade_hubs_users.insert().values(user_id=user.id, universe_system_id=system.id))
 
-    # Buy order price=1000 >> total_cost (100*5/10 * 1.10 = 55) → positive margin
-    make_public_trade_order(db, prod, system, order_id=9001, price=1000.0,
+    # Buy order: price=200_000 >> total_cost ≈ 50/unit → batch margin (50 units × ~192k) > 5M default filter
+    make_public_trade_order(db, prod, system, order_id=9001, price=200_000.0,
                             is_buy=True, volume_remain=500)
 
     db.session.commit()

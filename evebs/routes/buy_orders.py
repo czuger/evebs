@@ -6,6 +6,8 @@ from flask_login import login_required, current_user
 from sqlalchemy import text, bindparam
 
 from evebs.extensions import db
+from evebs.models.tables.associations import user_blueprints
+from evebs.models.tables.blueprint import Blueprint as BlueprintModel
 from evebs.models.tables.bpc_asset import BpcAsset
 from evebs.models.tables.eve_item import EveItem
 from evebs.models.tables.industry_job import IndustryJob
@@ -17,21 +19,7 @@ bp = Blueprint('buy_orders', __name__)
 
 _timings = set_logger('timings')
 
-# DISTINCT ON gives the single highest-priced buy order per (item, hub) —
-# its volume_remain is the volume of that one order, not the sum of all orders.
-_SQL = """
-WITH highest_buy AS (
-    SELECT DISTINCT ON (eve_item_id, universe_system_id)
-        eve_item_id,
-        universe_system_id,
-        price        AS buy_price,
-        volume_remain AS buy_volume
-    FROM public_trade_orders
-    WHERE is_buy_order = TRUE
-      AND eve_item_id IN :item_ids
-      AND universe_system_id IN :hub_ids
-    ORDER BY eve_item_id, universe_system_id, price DESC
-)
+_SELECT = """
 SELECT
     uic.item_name,
     uic.item_slug,
@@ -70,6 +58,38 @@ WHERE uic.user_id    = :user_id
 ORDER BY margin_full_batch DESC
 """
 
+# DISTINCT ON gives the single highest-priced buy order per (item, hub) —
+# its volume_remain is the volume of that one order, not the sum of all orders.
+_SQL = """
+WITH highest_buy AS (
+    SELECT DISTINCT ON (eve_item_id, universe_system_id)
+        eve_item_id,
+        universe_system_id,
+        price        AS buy_price,
+        volume_remain AS buy_volume
+    FROM public_trade_orders
+    WHERE is_buy_order = TRUE
+      AND eve_item_id IN :item_ids
+      AND universe_system_id IN :hub_ids
+    ORDER BY eve_item_id, universe_system_id, price DESC
+)
+""" + _SELECT
+
+# show_selected_items=False: no item filter — all game blueprints via user_industry_costs CROSS JOIN
+_SQL_ALL = """
+WITH highest_buy AS (
+    SELECT DISTINCT ON (eve_item_id, universe_system_id)
+        eve_item_id,
+        universe_system_id,
+        price        AS buy_price,
+        volume_remain AS buy_volume
+    FROM public_trade_orders
+    WHERE is_buy_order = TRUE
+      AND universe_system_id IN :hub_ids
+    ORDER BY eve_item_id, universe_system_id, price DESC
+)
+""" + _SELECT
+
 
 @bp.route('/buy_orders')
 @login_required
@@ -77,50 +97,63 @@ def show():
     page = request.args.get('page', 1, type=int)
     user = current_user
 
+    bof = user.buy_order_filtering or {}
+    show_selected = bof.get('show_selected_items', False)
+
     t0 = time.perf_counter()
-    watched_item_ids = [ei.id for ei in user.eve_items if ei.blueprint]
-    hub_ids          = [h.id for h in user.trade_hubs]
+    hub_ids = [h.id for h in user.trade_hubs]
+    if show_selected:
+        item_ids = [ei.id for ei in user.eve_items]
+        should_run = bool(item_ids and hub_ids)
+    else:
+        item_ids = None
+        should_run = bool(hub_ids)
     _timings.info('buy_orders.user_items_and_hubs',
                   extra={'duration_ms': (time.perf_counter() - t0) * 1000,
-                         'n_items': len(watched_item_ids), 'n_hubs': len(hub_ids)})
+                         'n_items': len(item_ids) if item_ids else -1, 'n_hubs': len(hub_ids)})
 
     rows = []
     pagination = None
 
-    if watched_item_ids and hub_ids:
+    if should_run:
         st = user.sales_taxes or {}
         sell_tax = (
             st.get('sales_taxes', 0)
             + st.get('safety_tax', 0)
         ) / 100.0
 
-        bof = user.buy_order_filtering or {}
         min_margin_pcent = bof.get('min_margin_percent', 20) / 100.0
         min_batch_margin = bof.get('min_batch_margin_amount', 5_000_000)
 
+        sql = _SQL if show_selected else _SQL_ALL
         params = {
             'user_id':          user.id,
-            'item_ids':         watched_item_ids,
             'hub_ids':          hub_ids,
             'sell_tax':         sell_tax,
             'min_margin_pcent': min_margin_pcent,
             'min_batch_margin': min_batch_margin,
         }
-        bp_item = bindparam('item_ids', expanding=True)
-        bp_hub  = bindparam('hub_ids',  expanding=True)
+        if show_selected:
+            params['item_ids'] = item_ids
+
+        bp_hub = bindparam('hub_ids', expanding=True)
+        if show_selected:
+            bp_item = bindparam('item_ids', expanding=True)
+            count_stmt = text(f'SELECT COUNT(*) FROM ({sql}) t').bindparams(bp_item, bp_hub)
+            data_stmt  = text(sql + ' LIMIT :limit OFFSET :offset').bindparams(bp_item, bp_hub)
+        else:
+            count_stmt = text(f'SELECT COUNT(*) FROM ({sql}) t').bindparams(bp_hub)
+            data_stmt  = text(sql + ' LIMIT :limit OFFSET :offset').bindparams(bp_hub)
 
         t0 = time.perf_counter()
-        total = db.session.execute(
-            text(f'SELECT COUNT(*) FROM ({_SQL}) t').bindparams(bp_item, bp_hub),
-            params,
-        ).scalar() or 0
+        total = db.session.execute(count_stmt, params).scalar() or 0
         _timings.info('buy_orders.count_query',
                       extra={'duration_ms': (time.perf_counter() - t0) * 1000,
                              'total': total})
 
         t0 = time.perf_counter()
         rows_raw = db.session.execute(
-            text(_SQL + ' LIMIT :limit OFFSET :offset').bindparams(bp_item, bp_hub),
+            data_stmt,
             {**params, 'limit': PER_PAGE, 'offset': (page - 1) * PER_PAGE},
         ).mappings().all()
         _timings.info('buy_orders.main_query',
@@ -137,11 +170,12 @@ def show():
         .filter(BpcAsset.user_id == user.id, BpcAsset.is_potential == True)
         .all()
     )
-    owned_bp_ids          = {b.produced_type_id for b in user.blueprints}
-    t1_bp_ids = {row.id for row in db.session.query(EveItem.id).filter(
-        EveItem.production_level == 1, EveItem.blueprint_id.isnot(None)
-    )}
-    owned_bp_ids |= t1_bp_ids
+    owned_bp_ids = {
+        row.produced_type_id for row in
+        db.session.query(BlueprintModel.produced_type_id)
+        .join(user_blueprints, user_blueprints.c.blueprint_id == BlueprintModel.id)
+        .filter(user_blueprints.c.user_id == user.id)
+    }
     _timings.info('buy_orders.badge_queries',
                   extra={'duration_ms': (time.perf_counter() - t0) * 1000})
     potential_copy_ids        = {r.eve_item_id for r in potential if r.potential_type == 'copy'}

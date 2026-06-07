@@ -27,7 +27,6 @@ class TestUsersUpdate:
         resp = client.post('/users', data={
             'min_margin_percent':         '25',
             'min_batch_margin_amount':    '10000000',
-            'batch_cap_multiplier':       '5',
             'buy_min_margin_percent':     '15',
             'buy_min_batch_margin_amount': '3000000',
         })
@@ -36,21 +35,22 @@ class TestUsersUpdate:
         db.session.expire(user)
         assert user.sell_orders_filtering['min_margin_percent'] == 25
         assert user.sell_orders_filtering['min_batch_margin_amount'] == 10_000_000
-        assert user.buy_order_filtering['batch_cap_multiplier'] == 5
         assert user.buy_order_filtering['min_margin_percent'] == 15
         assert user.buy_order_filtering['min_batch_margin_amount'] == 3_000_000
 
-    def test_enables_batch_cap(self, db, auth_client):
+    def test_enables_show_selected_items(self, db, auth_client):
         client, user = auth_client
-        client.post('/users', data={'batch_cap': 'on'})
+        client.post('/users', data={'sell_show_selected_items': 'on', 'buy_show_selected_items': 'on'})
         db.session.expire(user)
-        assert user.buy_order_filtering['batch_cap'] is True
+        assert user.sell_orders_filtering['show_selected_items'] is True
+        assert user.buy_order_filtering['show_selected_items'] is True
 
-    def test_disables_batch_cap(self, db, auth_client):
+    def test_disables_show_selected_items(self, db, auth_client):
         client, user = auth_client
-        client.post('/users', data={})  # batch_cap absent → 'on' not present
+        client.post('/users', data={})  # both absent → False
         db.session.expire(user)
-        assert user.buy_order_filtering['batch_cap'] is False
+        assert user.sell_orders_filtering['show_selected_items'] is False
+        assert user.buy_order_filtering['show_selected_items'] is False
 
     def test_invalid_input_redirects_without_error(self, db, auth_client):
         client, user = auth_client
