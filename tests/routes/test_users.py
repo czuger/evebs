@@ -25,28 +25,32 @@ class TestUsersUpdate:
     def test_updates_numeric_settings(self, db, auth_client):
         client, user = auth_client
         resp = client.post('/users', data={
-            'min_margin_percent':      '25',
-            'min_batch_margin_amount': '10000000',
-            'batch_cap_multiplier':    '5',
+            'min_margin_percent':         '25',
+            'min_batch_margin_amount':    '10000000',
+            'batch_cap_multiplier':       '5',
+            'buy_min_margin_percent':     '15',
+            'buy_min_batch_margin_amount': '3000000',
         })
         assert resp.status_code == 302
 
         db.session.expire(user)
         assert user.sell_orders_filtering['min_margin_percent'] == 25
         assert user.sell_orders_filtering['min_batch_margin_amount'] == 10_000_000
-        assert user.batch_cap_multiplier == 5
+        assert user.buy_order_filtering['batch_cap_multiplier'] == 5
+        assert user.buy_order_filtering['min_margin_percent'] == 15
+        assert user.buy_order_filtering['min_batch_margin_amount'] == 3_000_000
 
     def test_enables_batch_cap(self, db, auth_client):
         client, user = auth_client
         client.post('/users', data={'batch_cap': 'on'})
         db.session.expire(user)
-        assert user.batch_cap is True
+        assert user.buy_order_filtering['batch_cap'] is True
 
     def test_disables_batch_cap(self, db, auth_client):
         client, user = auth_client
         client.post('/users', data={})  # batch_cap absent → 'on' not present
         db.session.expire(user)
-        assert user.batch_cap is False
+        assert user.buy_order_filtering['batch_cap'] is False
 
     def test_invalid_input_redirects_without_error(self, db, auth_client):
         client, user = auth_client

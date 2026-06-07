@@ -18,8 +18,12 @@ class User(UserMixin, db.Model):
     renew_token = db.Column(db.String)
     admin = db.Column(db.Boolean, default=False, nullable=False)
     locked = db.Column(db.Boolean, default=False, nullable=False)
-    batch_cap = db.Column(db.Boolean, default=True, nullable=False)
-    batch_cap_multiplier = db.Column(db.Integer, default=10, nullable=False)
+    buy_order_filtering = db.Column(db.JSON, nullable=False, default=lambda: {
+        'batch_cap': True,
+        'batch_cap_multiplier': 10,
+        'min_margin_percent': 20,
+        'min_batch_margin_amount': 5_000_000,
+    })
     sell_orders_filtering = db.Column(db.JSON, nullable=False, default=lambda: {
         'min_margin_percent': 20,
         'min_batch_margin_amount': 5_000_000,
