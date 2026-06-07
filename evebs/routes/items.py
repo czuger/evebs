@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, abort
 from flask_login import current_user
 
 from evebs.models import EveItem, UniverseSystem, JitaMarketAnalytics
+from evebs.models.tables.buy_orders_analytic import BuyOrdersAnalytic
 
 bp = Blueprint('items', __name__)
 
@@ -81,12 +82,14 @@ def show(slug):
     item = EveItem.find_by_slug(slug)
     if item is None:
         abort(404)
-    jita     = UniverseSystem.query.filter_by(id=30000142, trade_hub=True).first()
-    mfg      = _manufacturing_context(item)
-    jma_item = JitaMarketAnalytics.query.get(item.id)
+    jita      = UniverseSystem.query.filter_by(id=30000142, trade_hub=True).first()
+    mfg       = _manufacturing_context(item)
+    jma_item  = JitaMarketAnalytics.query.get(item.id)
+    jita_buy  = BuyOrdersAnalytic.query.filter_by(eve_item_id=item.id, universe_system_id=30000142).first()
     return render_template('items/show.html',
                            item=item,
                            jita=jita,
                            mfg=mfg,
                            jma_item=jma_item,
+                           jita_buy=jita_buy,
                            title=item.name)

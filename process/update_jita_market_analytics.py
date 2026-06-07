@@ -106,6 +106,7 @@ def update_jita_market_analytics():
         'jita_market_analytics updated: %d rows total, %d with price_forecast_3d.',
         count, n_forecast,
     )
+    return {'rows': count, 'with_forecast': n_forecast}
 
 
 if __name__ == '__main__':

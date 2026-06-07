@@ -21,7 +21,7 @@ def download(
     forge_only:  bool = False,
     all_at_once: bool = True,
     regions:     str  = 'hub',
-) -> None:
+) -> dict:
     t0 = time.perf_counter()
 
     hub_map, item_map, regions = load_reference_data(essentials, forge_only, regions)
@@ -34,6 +34,7 @@ def download(
     created = updated = touched = 0
     skipped_no_hub = skipped_zero = 0
     sales_created  = 0
+    per_region     = []
 
     for region in regions:
         if all_at_once:
@@ -77,6 +78,13 @@ def download(
         updated       += n_updated
         touched       += n_touched
         sales_created += len(sf_data)
+        per_region.append({
+            'name':    region.name,
+            'pending': len(pending),
+            'created': n_created,
+            'updated': n_updated,
+            'touched': n_touched,
+        })
         logger.debug('%s: +%d new  ~%d updated  =%d unchanged  (%d pending)',
                      region.name, n_created, n_updated, n_touched, len(pending))
 
@@ -96,3 +104,9 @@ def download(
         elapsed, created, updated, touched, deleted, sales_created,
         skipped_no_hub, skipped_zero,
     )
+    return {
+        'created': created, 'updated': updated, 'touched': touched,
+        'deleted': deleted, 'sales_created': sales_created,
+        'skipped_no_hub': skipped_no_hub, 'skipped_zero': skipped_zero,
+        'elapsed': elapsed, 'per_region': per_region,
+    }

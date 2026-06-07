@@ -105,6 +105,13 @@
               <td class="text-end">{{ (jma_item.min_sell_price * mfg.prod_qtt) | isk }}</td>
             </tr>
             {% endif %}
+            {% if jita_buy and jita_buy.approx_max_price %}
+            <tr class="text-muted fw-normal small">
+              <td>Jita max buy</td>
+              <td class="text-end">{{ jita_buy.approx_max_price | isk }}</td>
+              <td class="text-end">{{ (jita_buy.approx_max_price * mfg.prod_qtt) | isk }}</td>
+            </tr>
+            {% endif %}
           </tfoot>
         </table>
       </div>
