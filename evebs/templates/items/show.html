@@ -98,6 +98,13 @@
               <td class="text-end">{{ mfg.unit_total | isk }}</td>
               <td class="text-end">{{ (mfg.unit_total * mfg.prod_qtt) | isk }}</td>
             </tr>
+            {% if jma_item and jma_item.min_sell_price %}
+            <tr class="text-muted fw-normal small">
+              <td>Jita min sell</td>
+              <td class="text-end">{{ jma_item.min_sell_price | isk }}</td>
+              <td class="text-end">{{ (jma_item.min_sell_price * mfg.prod_qtt) | isk }}</td>
+            </tr>
+            {% endif %}
           </tfoot>
         </table>
       </div>

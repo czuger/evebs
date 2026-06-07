@@ -81,10 +81,12 @@ def show(slug):
     item = EveItem.find_by_slug(slug)
     if item is None:
         abort(404)
-    jita = UniverseSystem.query.filter_by(id=30000142, trade_hub=True).first()
-    mfg  = _manufacturing_context(item)
+    jita     = UniverseSystem.query.filter_by(id=30000142, trade_hub=True).first()
+    mfg      = _manufacturing_context(item)
+    jma_item = JitaMarketAnalytics.query.get(item.id)
     return render_template('items/show.html',
                            item=item,
                            jita=jita,
                            mfg=mfg,
+                           jma_item=jma_item,
                            title=item.name)

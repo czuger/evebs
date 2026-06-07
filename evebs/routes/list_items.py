@@ -86,20 +86,31 @@ def selection_change():
 @login_required
 def select_group():
     group_id = request.form.get('group_id', type=int)
+    check_state = request.form.get('check_state', 'true') == 'true'
     group = MarketGroup.query.get_or_404(group_id)
     item_ids = _collect_item_ids(group)
     user_id = current_user.id
-    existing = set(db.session.execute(
-        db.select(eve_items_users.c.eve_item_id).where(
-            eve_items_users.c.user_id == user_id,
-            eve_items_users.c.eve_item_id.in_(item_ids)
-        )
-    ).scalars().all())
-    to_insert = [iid for iid in item_ids if iid not in existing]
-    if to_insert:
+
+    if check_state:
+        existing = set(db.session.execute(
+            db.select(eve_items_users.c.eve_item_id).where(
+                eve_items_users.c.user_id == user_id,
+                eve_items_users.c.eve_item_id.in_(item_ids)
+            )
+        ).scalars().all())
+        to_insert = [iid for iid in item_ids if iid not in existing]
+        if to_insert:
+            db.session.execute(
+                eve_items_users.insert(),
+                [{'user_id': user_id, 'eve_item_id': iid} for iid in to_insert]
+            )
+    else:
         db.session.execute(
-            eve_items_users.insert(),
-            [{'user_id': user_id, 'eve_item_id': iid} for iid in to_insert]
+            eve_items_users.delete().where(
+                eve_items_users.c.user_id == user_id,
+                eve_items_users.c.eve_item_id.in_(item_ids)
+            )
         )
+
     db.session.commit()
     return jsonify({'ok': True, 'count': len(item_ids)})
