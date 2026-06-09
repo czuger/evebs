@@ -1,8 +1,10 @@
-"""Tests for _compute_potentials (pure) and _generate_potential_assets (DB)."""
+"""Tests for _compute_potentials (pure), _generate_potential_assets (DB), and download_my_blueprints (functional)."""
 import pytest
+from datetime import datetime
+from unittest.mock import patch
 
-from esi.download_my_blueprints import _compute_potentials, _generate_potential_assets
-from tests.factories import make_item, make_bpc_asset
+from esi.download_my_blueprints import _compute_potentials, _generate_potential_assets, download_my_blueprints
+from tests.factories import make_item, make_bpc_asset, make_blueprint
 
 
 # ---------------------------------------------------------------------------
@@ -258,3 +260,128 @@ class TestGeneratePotentialAssets:
         other_pots = BpcAsset.query.filter_by(user_id=other.id, is_potential=True).count()
         assert user_pots == 1
         assert other_pots == 0
+
+
+# ---------------------------------------------------------------------------
+# download_my_blueprints — full functional tests, ESI mocked, real DB
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def seeded(db):
+    trit     = make_item(db, item_id=34, slug='tritanium')
+    bp       = make_blueprint(db, trit, blueprint_id=34001)
+    trit_bp  = make_item(db, item_id=34001, slug='tritanium-blueprint')
+    invented = make_item(db, item_id=200, slug='invented-item')
+    db.session.commit()
+    return {'item': trit, 'bp': bp, 'bp_item': trit_bp, 'invented': invented}
+
+
+def _esi_bp_asset(type_id=34001, item_id=1):
+    return {'item_id': item_id, 'type_id': type_id}
+
+
+_MOCK_ACTIVITIES    = {34001: {'can_copy': True, 'invention_products': []}}
+_MOCK_BP_TO_PRODUCED = {34001: 34}
+
+_PATCH_AUTH  = 'esi.client.EsiClient.set_auth_token'
+_PATCH_PAGES = 'esi.client.EsiClient.get_all_pages'
+_PATCH_LOAD  = 'esi.download_my_blueprints._load_blueprint_activities'
+
+
+class TestDownloadMyBlueprints:
+
+    def test_returns_false_when_auth_fails(self, db, user, seeded):
+        with patch(_PATCH_AUTH, return_value=False), \
+             patch(_PATCH_PAGES) as mock_pages:
+            result = download_my_blueprints(user)
+        assert result is False
+        mock_pages.assert_not_called()
+
+    def test_returns_false_when_esi_returns_none(self, db, user, seeded):
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=None), \
+             patch(_PATCH_LOAD) as mock_load:
+            result = download_my_blueprints(user)
+        assert result is False
+        mock_load.assert_not_called()
+
+    def test_returns_true_on_success(self, db, user, seeded):
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            assert download_my_blueprints(user) is True
+
+    def test_populates_user_blueprints(self, db, user, seeded):
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=[_esi_bp_asset(type_id=34001)]), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            download_my_blueprints(user)
+        db.session.refresh(user)
+        assert [bp.id for bp in user.blueprints] == [seeded['bp'].id]
+
+    def test_unknown_type_id_is_filtered(self, db, user, seeded):
+        pages = [_esi_bp_asset(type_id=34001, item_id=1),
+                 _esi_bp_asset(type_id=99999, item_id=2)]
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=pages), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            download_my_blueprints(user)
+        db.session.refresh(user)
+        bp_ids = [bp.id for bp in user.blueprints]
+        assert 99999 not in bp_ids
+        assert bp_ids == [34001]
+
+    def test_stale_user_blueprints_are_replaced(self, db, user, seeded):
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            download_my_blueprints(user)
+        db.session.refresh(user)
+        assert len(user.blueprints) == 1
+
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=[]), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            download_my_blueprints(user)
+        db.session.refresh(user)
+        assert user.blueprints == []
+
+    def test_updates_last_blueprints_download(self, db, user, seeded):
+        before = datetime.utcnow()
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            download_my_blueprints(user)
+        db.session.expire(user)
+        assert user.last_blueprints_download is not None
+        assert user.last_blueprints_download >= before
+
+    def test_generates_copy_potential_for_real_bpo(self, db, user, seeded):
+        make_bpc_asset(db, user, seeded['bp_item'], quantity=1, is_blueprint_copy=False)
+        db.session.commit()
+
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            download_my_blueprints(user)
+
+        from evebs.models import BpcAsset
+        potentials = BpcAsset.query.filter_by(user_id=user.id, is_potential=True).all()
+        assert len(potentials) == 1
+        assert potentials[0].eve_item_id == 34
+        assert potentials[0].potential_type == 'copy'
+
+    def test_duplicate_type_ids_are_deduplicated(self, db, user, seeded):
+        pages = [_esi_bp_asset(type_id=34001, item_id=i) for i in range(3)]
+        with patch(_PATCH_AUTH, return_value=True), \
+             patch(_PATCH_PAGES, return_value=pages), \
+             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
+            download_my_blueprints(user)
+
+        from evebs.models.tables.associations import user_blueprints
+        from sqlalchemy import select
+        rows = db.session.execute(
+            select(user_blueprints).where(user_blueprints.c.user_id == user.id)
+        ).fetchall()
+        assert len(rows) == 1
+        assert rows[0].blueprint_id == 34001
