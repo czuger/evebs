@@ -1,4 +1,4 @@
-import pytest
+from evebs.models import eve_items_users
 
 
 def test_list_items_shows_root_groups(page, live_server_url, root_group):
@@ -49,3 +49,55 @@ def test_deselect_all_unchecks_all_items(auth_page, live_server_url, leaf_group,
         'document.querySelectorAll(".item_checkbox:checked").length === 0'
     )
     assert '0 selected' in auth_page.locator('#selected_count').text_content()
+
+
+def test_select_group_selects_all_sub_items(auth_page, live_server_url, root_group, leaf_group, eve_item, db, user):
+    """Select-all-in-sub-groups button selects every item recursively and turns green."""
+    auth_page.goto(live_server_url + f'/list_items?group_id={root_group.id}')
+
+    btn = auth_page.locator('#select_group_btn')
+    btn.click()
+
+    auth_page.wait_for_function(
+        'document.getElementById("select_group_btn").classList.contains("btn-success")'
+    )
+    assert 'All items selected' in btn.text_content()
+    assert '1' in btn.text_content()
+
+    db.session.expire_all()
+    count = db.session.execute(
+        db.select(db.func.count()).select_from(eve_items_users).where(
+            eve_items_users.c.user_id == user.id,
+            eve_items_users.c.eve_item_id == eve_item.id,
+        )
+    ).scalar()
+    assert count == 1
+
+
+def test_deselect_group_removes_all_sub_items(auth_page, live_server_url, root_group, leaf_group, eve_item, db, user):
+    """Unselect-all-in-sub-groups button removes every item from the watch list."""
+    auth_page.goto(live_server_url + f'/list_items?group_id={root_group.id}')
+
+    select_btn   = auth_page.locator('#select_group_btn')
+    deselect_btn = auth_page.locator('#deselect_group_btn')
+
+    select_btn.click()
+    auth_page.wait_for_function(
+        'document.getElementById("select_group_btn").classList.contains("btn-success")'
+    )
+
+    deselect_btn.click()
+    auth_page.wait_for_function(
+        'document.getElementById("deselect_group_btn").classList.contains("btn-success")'
+    )
+    assert 'All items unselected' in deselect_btn.text_content()
+    assert '1' in deselect_btn.text_content()
+
+    db.session.expire_all()
+    count = db.session.execute(
+        db.select(db.func.count()).select_from(eve_items_users).where(
+            eve_items_users.c.user_id == user.id,
+            eve_items_users.c.eve_item_id == eve_item.id,
+        )
+    ).scalar()
+    assert count == 0
