@@ -12,21 +12,27 @@
     <thead>
       <tr>
         <th></th>
+        <th>Group</th>
+        <th>Invented from</th>
         <th>Blueprint</th>
         <th>Produced item</th>
       </tr>
     </thead>
     <tbody>
-    {% for group_name, bps in grouped %}
-      <tr class="table-secondary">
-        <td colspan="3">
-          <strong>{{ group_name }}</strong>
-          <span class="badge bg-secondary ms-1">{{ bps | length }}</span>
-        </td>
-      </tr>
-      {% for bp in bps %}
+    {% for bp in blueprints %}
       <tr>
         <td style="width:36px"><img src="https://images.evetech.net/types/{{ bp.id }}/bp" width="32" height="32" alt=""></td>
+        <td>{{ bp.eve_item.market_group.name if bp.eve_item and bp.eve_item.market_group else 'Other' }}</td>
+        <td>
+          {% set t1 = invented_from_map.get(bp.id) %}
+          {% if t1 %}
+            {% if t1.eve_item %}
+              <a href="{{ url_for('items.show', slug=t1.eve_item.slug or t1.eve_item.id) }}">{{ t1.name }}</a>
+            {% else %}
+              {{ t1.name }}
+            {% endif %}
+          {% endif %}
+        </td>
         <td>{{ bp.name }}</td>
         <td>
           {% if bp.eve_item %}
@@ -34,13 +40,13 @@
           {% endif %}
         </td>
       </tr>
-      {% endfor %}
     {% else %}
-      <tr><td colspan="3" class="text-center text-muted">No blueprints — click Refresh to fetch from ESI.</td></tr>
+      <tr><td colspan="5" class="text-center text-muted">No blueprints — click Refresh to fetch from ESI.</td></tr>
     {% endfor %}
     </tbody>
   </table>
 </div>
+{% include 'shared/pagination.html' %}
 
 {% if invention_rows %}
 <h6 class="mt-4">Invention potential <span class="badge bg-secondary">{{ invention_rows | length }}</span></h6>
