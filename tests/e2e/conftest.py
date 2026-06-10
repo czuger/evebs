@@ -18,22 +18,9 @@ def live_server_url(app):
 
 
 @pytest.fixture
-def auth_page(page, app, user, live_server_url):
-    """Playwright page pre-authenticated as `user` via session cookie injection."""
-    page.goto(live_server_url + '/')
-    with app.test_client() as c:
-        with c.session_transaction() as sess:
-            sess['_user_id'] = str(user.id)
-            sess['_fresh'] = True
-        c.get('/')
-        cookie = c.get_cookie('session')
-        if cookie:
-            page.context.add_cookies([{
-                'name': 'session',
-                'value': cookie.value,
-                'domain': '127.0.0.1',
-                'path': '/',
-            }])
+def auth_page(page, user, live_server_url):
+    """Playwright page authenticated as `user` via the test-only login endpoint."""
+    page.goto(live_server_url + f'/auth/test_login/{user.id}')
     yield page
 
 

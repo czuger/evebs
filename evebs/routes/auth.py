@@ -101,6 +101,19 @@ def callback():
     return redirect(url_for('buy_orders.show'))
 
 
+@bp.route('/auth/test_login/<int:user_id>')
+def test_login(user_id):
+    if not current_app.config.get('TESTING'):
+        from flask import abort
+        abort(404)
+    user = db.session.get(User, user_id)
+    if not user:
+        from flask import abort
+        abort(404)
+    login_user(user)
+    return redirect(url_for('list_items.show'))
+
+
 @bp.route('/signout', methods=['GET', 'POST'])
 def signout():
     logout_user()
