@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, curren
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
-from evebs.models import BpcAsset, EveItem, UniverseStation, UniverseStructure, UnknownStructure
+from evebs.models import UserAsset, EveItem, UniverseStation, UniverseStructure, UnknownStructure
 
 bp = Blueprint('my_assets', __name__)
 
@@ -73,22 +73,22 @@ def show():
     location_id = request.args.get('location_id', type=int)
 
     query = (
-        db.session.query(BpcAsset, EveItem, UniverseStation, UniverseStructure, UnknownStructure)
-        .join(EveItem, BpcAsset.eve_item_id == EveItem.id)
-        .outerjoin(UniverseStation, BpcAsset.universe_station_id == UniverseStation.id)
-        .outerjoin(UniverseStructure, BpcAsset.universe_structure_id == UniverseStructure.id)
-        .outerjoin(UnknownStructure, BpcAsset.universe_structure_id == UnknownStructure.id)
-        .filter(BpcAsset.user_id == user.id)
+        db.session.query(UserAsset, EveItem, UniverseStation, UniverseStructure, UnknownStructure)
+        .join(EveItem, UserAsset.eve_item_id == EveItem.id)
+        .outerjoin(UniverseStation, UserAsset.universe_station_id == UniverseStation.id)
+        .outerjoin(UniverseStructure, UserAsset.universe_structure_id == UniverseStructure.id)
+        .outerjoin(UnknownStructure, UserAsset.universe_structure_id == UnknownStructure.id)
+        .filter(UserAsset.user_id == user.id)
     )
     if location_id:
         query = query.filter(
-            (BpcAsset.universe_station_id == location_id) |
-            (BpcAsset.universe_structure_id == location_id)
+            (UserAsset.universe_station_id == location_id) |
+            (UserAsset.universe_structure_id == location_id)
         )
     rows = query.order_by(
-        BpcAsset.universe_station_id.nulls_last(),
-        BpcAsset.universe_structure_id.nulls_last(),
-        BpcAsset.parent_esi_item_id.nulls_first(),
+        UserAsset.universe_station_id.nulls_last(),
+        UserAsset.universe_structure_id.nulls_last(),
+        UserAsset.parent_esi_item_id.nulls_first(),
         EveItem.name,
     ).all()
 
@@ -96,20 +96,20 @@ def show():
 
     stations = (
         UniverseStation.query
-        .join(BpcAsset, BpcAsset.universe_station_id == UniverseStation.id)
-        .filter(BpcAsset.user_id == user.id)
+        .join(UserAsset, UserAsset.universe_station_id == UniverseStation.id)
+        .filter(UserAsset.user_id == user.id)
         .distinct().all()
     )
     known_structures = (
         UniverseStructure.query
-        .join(BpcAsset, BpcAsset.universe_structure_id == UniverseStructure.id)
-        .filter(BpcAsset.user_id == user.id)
+        .join(UserAsset, UserAsset.universe_structure_id == UniverseStructure.id)
+        .filter(UserAsset.user_id == user.id)
         .distinct().all()
     )
     unknown_structures = (
         UnknownStructure.query
-        .join(BpcAsset, BpcAsset.universe_structure_id == UnknownStructure.id)
-        .filter(BpcAsset.user_id == user.id)
+        .join(UserAsset, UserAsset.universe_structure_id == UnknownStructure.id)
+        .filter(UserAsset.user_id == user.id)
         .distinct().all()
     )
 

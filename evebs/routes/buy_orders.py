@@ -8,7 +8,7 @@ from sqlalchemy import text, bindparam
 from evebs.extensions import db
 from evebs.models.tables.associations import user_blueprints
 from evebs.models.tables.blueprint import Blueprint as BlueprintModel
-from evebs.models.tables.bpc_asset import BpcAsset
+from evebs.models.tables.user_asset import UserAsset
 from evebs.models.tables.eve_item import EveItem
 from evebs.models.tables.industry_job import IndustryJob
 from evebs.models.tables.user_sale_order import UserSaleOrder
@@ -166,8 +166,8 @@ def show():
 
     t0 = time.perf_counter()
     potential = (
-        db.session.query(BpcAsset.eve_item_id, BpcAsset.potential_type)
-        .filter(BpcAsset.user_id == user.id, BpcAsset.is_potential == True)
+        db.session.query(UserAsset.eve_item_id, UserAsset.potential_type)
+        .filter(UserAsset.user_id == user.id, UserAsset.is_potential == True)
         .all()
     )
     owned_bp_ids = {

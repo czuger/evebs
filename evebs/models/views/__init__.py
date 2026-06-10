@@ -1,4 +1,5 @@
 from evebs.models.views.user_sale_order_detail import UserSaleOrderDetail
 from evebs.models.views.user_industry_cost import UserIndustryCost
+from evebs.models.views.user_blueprint_extended import UserBlueprintExtended
 
-__all__ = ['UserSaleOrderDetail', 'UserIndustryCost']
+__all__ = ['UserSaleOrderDetail', 'UserIndustryCost', 'UserBlueprintExtended']

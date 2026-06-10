@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h5 class="mb-0">My blueprints <span class="badge bg-secondary">{{ total }}</span></h5>
-  <form action="{{ url_for('user_blueprints.refresh') }}" method="post">
-    <button type="submit" class="btn btn-sm btn-primary">Refresh from ESI</button>
-  </form>
-</div>
+<h5 class="mb-3">My blueprints <span class="badge bg-secondary">{{ total }}</span></h5>
 <p class="text-muted small mb-3">Blueprints and reaction formulas owned by your character, synced from ESI. Used to filter the Jita manufacturing and Jita reactions screens.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
@@ -41,45 +36,10 @@
         </td>
       </tr>
     {% else %}
-      <tr><td colspan="5" class="text-center text-muted">No blueprints — click Refresh to fetch from ESI.</td></tr>
+      <tr><td colspan="5" class="text-center text-muted">No blueprints — sync your assets to populate this list.</td></tr>
     {% endfor %}
     </tbody>
   </table>
 </div>
 {% include 'shared/pagination.html' %}
-
-{% if invention_rows %}
-<h6 class="mt-4">Invention potential <span class="badge bg-secondary">{{ invention_rows | length }}</span></h6>
-<p class="text-muted small">T2 blueprints you can invent from your T1 BPOs.</p>
-<div class="table-responsive-md">
-  <table class="table table-sm">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Blueprint</th>
-        <th>Produced item</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for inv_bp, inv_item in invention_rows %}
-    <tr>
-      <td style="width:36px"><img src="https://images.evetech.net/types/{{ inv_bp.id }}/bp" width="32" height="32" alt=""></td>
-      <td>{{ inv_bp.name }}</td>
-      <td><a href="{{ url_for('items.show', slug=inv_item.slug or inv_item.id) }}">{{ inv_item.name }}</a></td>
-      <td>
-        {% if default_hub %}
-        <form method="post" action="{{ url_for('invention_lists.create') }}" class="d-inline">
-          <input type="hidden" name="eve_item_id" value="{{ inv_item.id }}">
-          <input type="hidden" name="universe_system_id" value="{{ default_hub.id }}">
-          <button type="submit" class="btn btn-sm btn-outline-secondary py-0">+ invent</button>
-        </form>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-  </table>
-</div>
-{% endif %}
 {% endblock %}

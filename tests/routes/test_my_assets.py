@@ -2,7 +2,7 @@
 from tests.factories import (
     make_universe_region, make_universe_constellation,
     make_universe_system, make_universe_station, make_universe_structure,
-    make_item, make_bpc_asset,
+    make_item, make_user_asset,
 )
 
 
@@ -50,8 +50,8 @@ class TestMyAssetsFilter:
         item1 = make_item(db, item_id=34, slug='tritanium', name='Tritanium')
         item2 = make_item(db, item_id=35, slug='pyerite', name='Pyerite')
         _, user = auth_client
-        make_bpc_asset(db, user, item1, station=st1)
-        make_bpc_asset(db, user, item2, station=st2)
+        make_user_asset(db, user, item1, station=st1)
+        make_user_asset(db, user, item2, station=st2)
         db.session.commit()
         return st1, st2, item1, item2
 
@@ -81,10 +81,10 @@ class TestMyAssetsFilter:
         unknown_a = UnknownStructure(id=STRUCT_A, name='AA-001')
         unknown_b = UnknownStructure(id=STRUCT_B, name='BB-002')
         db.session.add_all([unknown_a, unknown_b])
-        from evebs.models import BpcAsset
-        db.session.add(BpcAsset(user_id=user.id, eve_item_id=item1.id,
+        from evebs.models import UserAsset
+        db.session.add(UserAsset(user_id=user.id, eve_item_id=item1.id,
                                 universe_structure_id=STRUCT_A, quantity=1, touched=True))
-        db.session.add(BpcAsset(user_id=user.id, eve_item_id=item2.id,
+        db.session.add(UserAsset(user_id=user.id, eve_item_id=item2.id,
                                 universe_structure_id=STRUCT_B, quantity=1, touched=True))
         db.session.commit()
         client, _ = auth_client
@@ -100,7 +100,7 @@ class TestMyAssetsFilter:
         st.name = 'Amarr VIII'
         item = make_item(db, item_id=38, slug='zydrine', name='Zydrine Blueprint')
         _, user = auth_client
-        make_bpc_asset(db, user, item, station=st)
+        make_user_asset(db, user, item, station=st)
         db.session.commit()
         client, _ = auth_client
         resp = client.get('/my_assets')
@@ -130,8 +130,8 @@ class TestLocationEdgeCases:
         item = make_item(db, item_id=55, slug='nocx-struct', name='Noxcium')
         _, user = auth_client
 
-        from evebs.models import BpcAsset
-        db.session.add(BpcAsset(
+        from evebs.models import UserAsset
+        db.session.add(UserAsset(
             user_id=user.id, eve_item_id=item.id,
             universe_structure_id=structure.id, quantity=1, touched=True,
         ))
@@ -146,8 +146,8 @@ class TestLocationEdgeCases:
         item = make_item(db, item_id=56, slug='nocx-noloc', name='Nocxium')
         _, user = auth_client
 
-        from evebs.models import BpcAsset
-        db.session.add(BpcAsset(
+        from evebs.models import UserAsset
+        db.session.add(UserAsset(
             user_id=user.id, eve_item_id=item.id,
             quantity=1, touched=True,
         ))
@@ -168,13 +168,13 @@ class TestBuildGroupsContainer:
         item2 = make_item(db, item_id=61, slug='child-bp', name='Child Blueprint')
         _, user = auth_client
 
-        from evebs.models import BpcAsset
-        db.session.add(BpcAsset(
+        from evebs.models import UserAsset
+        db.session.add(UserAsset(
             user_id=user.id, eve_item_id=item1.id,
             universe_station_id=st.id, esi_item_id=9000000000001,
             quantity=1, touched=True,
         ))
-        db.session.add(BpcAsset(
+        db.session.add(UserAsset(
             user_id=user.id, eve_item_id=item2.id,
             universe_station_id=st.id, esi_item_id=9000000000002,
             parent_esi_item_id=9000000000001,

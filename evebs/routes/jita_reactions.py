@@ -64,6 +64,6 @@ def show():
 @bp.route('/jita_reactions/refresh', methods=['POST'])
 @login_required
 def refresh():
-    from esi.download_my_blueprints import download_my_blueprints
-    download_my_blueprints(current_user)
+    from esi.download_my_assets import DownloadMyAssets
+    DownloadMyAssets().update(current_user)
     return redirect(url_for('jita_reactions.show'))

@@ -95,7 +95,7 @@ class User(UserMixin, db.Model):
     industry_jobs = db.relationship('IndustryJob', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')
     user_sale_orders = db.relationship('UserSaleOrder', back_populates='user', cascade='all, delete-orphan')
-    bpc_assets = db.relationship('BpcAsset', back_populates='user', cascade='all, delete-orphan')
+    user_assets = db.relationship('UserAsset', back_populates='user', cascade='all, delete-orphan')
     bpc_assets_stations = db.relationship('BpcAssetsStation', back_populates='user', cascade='all, delete-orphan')
     eve_items_saved_lists = db.relationship('EveItemsSavedList', back_populates='user', cascade='all, delete-orphan')
 

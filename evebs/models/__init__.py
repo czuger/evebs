@@ -19,7 +19,7 @@ from evebs.models.tables.universe_station import UniverseStation
 from evebs.models.tables.universe_structure import UniverseStructure
 from evebs.models.tables.last_update import LastUpdate
 
-from evebs.models.tables.bpc_asset import BpcAsset
+from evebs.models.tables.user_asset import UserAsset
 from evebs.models.tables.bpc_assets_station import BpcAssetsStation
 from evebs.models.tables.unknown_structure import UnknownStructure
 from evebs.models.tables.user_to_user_duplication_request import UserToUserDuplicationRequest
@@ -29,6 +29,7 @@ from evebs.models.tables.industry_job import IndustryJob, ACTIVITY_LABELS
 from evebs.models.views import (
     UserSaleOrderDetail,
     UserIndustryCost,
+    UserBlueprintExtended,
 )
 
 
@@ -53,13 +54,14 @@ __all__ = [
     'UniverseStation',
     'UniverseStructure',
     'LastUpdate',
-    'BpcAsset',
+    'UserAsset',
     'BpcAssetsStation',
     'UnknownStructure',
     'UserToUserDuplicationRequest',
     'UserActivityLog',
     'UserSaleOrderDetail',
     'UserIndustryCost',
+    'UserBlueprintExtended',
     'JitaMarketAnalytics',
     'IndustryJob',
     'ACTIVITY_LABELS',

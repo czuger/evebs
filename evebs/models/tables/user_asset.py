@@ -3,8 +3,8 @@ from datetime import datetime
 from evebs.extensions import db
 
 
-class BpcAsset(db.Model):
-    __tablename__ = 'bpc_assets'
+class UserAsset(db.Model):
+    __tablename__ = 'user_assets'
 
     id = db.Column(db.BigInteger, primary_key=True)
     universe_station_id = db.Column(db.BigInteger, db.ForeignKey('universe_stations.id'))
@@ -23,4 +23,4 @@ class BpcAsset(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    user = db.relationship('User', back_populates='bpc_assets')
+    user = db.relationship('User', back_populates='user_assets')

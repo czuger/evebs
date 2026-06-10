@@ -1,10 +1,12 @@
-"""Tests for _compute_potentials (pure), _generate_potential_assets (DB), and download_my_blueprints (functional)."""
+"""Tests for _compute_potentials (pure), _generate_potential_assets (DB), and blueprint sync via DownloadMyAssets (functional)."""
 import pytest
 from datetime import datetime
 from unittest.mock import patch
 
-from esi.download_my_blueprints import _compute_potentials, _generate_potential_assets, download_my_blueprints
-from tests.factories import make_item, make_bpc_asset, make_blueprint
+from esi.download_my_assets import (
+    DownloadMyAssets, _compute_potentials, _generate_potential_assets,
+)
+from tests.factories import make_item, make_user_asset, make_blueprint
 
 
 # ---------------------------------------------------------------------------
@@ -16,9 +18,9 @@ def _acts(can_copy=False, invention_products=None):
 
 
 def _potentials(db, user):
-    from evebs.models import BpcAsset
+    from evebs.models import UserAsset
     return {a.eve_item_id: a.potential_type
-            for a in BpcAsset.query.filter_by(user_id=user.id, is_potential=True).all()}
+            for a in UserAsset.query.filter_by(user_id=user.id, is_potential=True).all()}
 
 
 # ---------------------------------------------------------------------------
@@ -149,14 +151,10 @@ class TestGeneratePotentialAssets:
         return make_item(db, item_id=item_id, slug=slug)
 
     def _make_real_bpo(self, db, user, item):
-        return make_bpc_asset(db, user, item, quantity=1, is_blueprint_copy=False)
+        return make_user_asset(db, user, item, quantity=1, is_blueprint_copy=False)
 
     def _make_real_bpc(self, db, user, item):
-        return make_bpc_asset(db, user, item, quantity=1, is_blueprint_copy=True)
-
-    # bp_to_produced maps blueprintTypeID → produced_type_id.
-    # Tests use the same numeric ID for both (simplest valid setup, since
-    # BpcAsset.eve_item_id FK only requires the EveItem to exist).
+        return make_user_asset(db, user, item, quantity=1, is_blueprint_copy=True)
 
     def test_inserts_copy_potential(self, db, user):
         item = self._make_bp_item(db, 100, 'bp-100')
@@ -255,15 +253,15 @@ class TestGeneratePotentialAssets:
         _generate_potential_assets(user, acts, bp_to_produced)
         _generate_potential_assets(other, acts, bp_to_produced)
 
-        from evebs.models import BpcAsset
-        user_pots = BpcAsset.query.filter_by(user_id=user.id, is_potential=True).count()
-        other_pots = BpcAsset.query.filter_by(user_id=other.id, is_potential=True).count()
+        from evebs.models import UserAsset
+        user_pots = UserAsset.query.filter_by(user_id=user.id, is_potential=True).count()
+        other_pots = UserAsset.query.filter_by(user_id=other.id, is_potential=True).count()
         assert user_pots == 1
         assert other_pots == 0
 
 
 # ---------------------------------------------------------------------------
-# download_my_blueprints — full functional tests, ESI mocked, real DB
+# Blueprint sync via DownloadMyAssets — functional tests, ESI mocked, real DB
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
@@ -285,37 +283,16 @@ _MOCK_BP_TO_PRODUCED = {34001: 34}
 
 _PATCH_AUTH  = 'esi.client.EsiClient.set_auth_token'
 _PATCH_PAGES = 'esi.client.EsiClient.get_all_pages'
-_PATCH_LOAD  = 'esi.download_my_blueprints._load_blueprint_activities'
+_PATCH_LOAD  = 'esi.download_my_assets._load_blueprint_activities'
 
 
-class TestDownloadMyBlueprints:
-
-    def test_returns_false_when_auth_fails(self, db, user, seeded):
-        with patch(_PATCH_AUTH, return_value=False), \
-             patch(_PATCH_PAGES) as mock_pages:
-            result = download_my_blueprints(user)
-        assert result is False
-        mock_pages.assert_not_called()
-
-    def test_returns_false_when_esi_returns_none(self, db, user, seeded):
-        with patch(_PATCH_AUTH, return_value=True), \
-             patch(_PATCH_PAGES, return_value=None), \
-             patch(_PATCH_LOAD) as mock_load:
-            result = download_my_blueprints(user)
-        assert result is False
-        mock_load.assert_not_called()
-
-    def test_returns_true_on_success(self, db, user, seeded):
-        with patch(_PATCH_AUTH, return_value=True), \
-             patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
-             patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            assert download_my_blueprints(user) is True
+class TestBlueprintSyncViaDownloadMyAssets:
 
     def test_populates_user_blueprints(self, db, user, seeded):
         with patch(_PATCH_AUTH, return_value=True), \
              patch(_PATCH_PAGES, return_value=[_esi_bp_asset(type_id=34001)]), \
              patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            download_my_blueprints(user)
+            DownloadMyAssets().update(user)
         db.session.refresh(user)
         assert [bp.id for bp in user.blueprints] == [seeded['bp'].id]
 
@@ -325,7 +302,7 @@ class TestDownloadMyBlueprints:
         with patch(_PATCH_AUTH, return_value=True), \
              patch(_PATCH_PAGES, return_value=pages), \
              patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            download_my_blueprints(user)
+            DownloadMyAssets().update(user)
         db.session.refresh(user)
         bp_ids = [bp.id for bp in user.blueprints]
         assert 99999 not in bp_ids
@@ -335,14 +312,14 @@ class TestDownloadMyBlueprints:
         with patch(_PATCH_AUTH, return_value=True), \
              patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
              patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            download_my_blueprints(user)
+            DownloadMyAssets().update(user)
         db.session.refresh(user)
         assert len(user.blueprints) == 1
 
         with patch(_PATCH_AUTH, return_value=True), \
              patch(_PATCH_PAGES, return_value=[]), \
              patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            download_my_blueprints(user)
+            DownloadMyAssets().update(user)
         db.session.refresh(user)
         assert user.blueprints == []
 
@@ -351,22 +328,22 @@ class TestDownloadMyBlueprints:
         with patch(_PATCH_AUTH, return_value=True), \
              patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
              patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            download_my_blueprints(user)
+            DownloadMyAssets().update(user)
         db.session.expire(user)
         assert user.last_blueprints_download is not None
         assert user.last_blueprints_download >= before
 
     def test_generates_copy_potential_for_real_bpo(self, db, user, seeded):
-        make_bpc_asset(db, user, seeded['bp_item'], quantity=1, is_blueprint_copy=False)
+        make_user_asset(db, user, seeded['bp_item'], quantity=1, is_blueprint_copy=False)
         db.session.commit()
 
         with patch(_PATCH_AUTH, return_value=True), \
              patch(_PATCH_PAGES, return_value=[_esi_bp_asset()]), \
              patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            download_my_blueprints(user)
+            DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        potentials = BpcAsset.query.filter_by(user_id=user.id, is_potential=True).all()
+        from evebs.models import UserAsset
+        potentials = UserAsset.query.filter_by(user_id=user.id, is_potential=True).all()
         assert len(potentials) == 1
         assert potentials[0].eve_item_id == 34
         assert potentials[0].potential_type == 'copy'
@@ -376,7 +353,7 @@ class TestDownloadMyBlueprints:
         with patch(_PATCH_AUTH, return_value=True), \
              patch(_PATCH_PAGES, return_value=pages), \
              patch(_PATCH_LOAD, return_value=(_MOCK_ACTIVITIES, _MOCK_BP_TO_PRODUCED)):
-            download_my_blueprints(user)
+            DownloadMyAssets().update(user)
 
         from evebs.models.tables.associations import user_blueprints
         from sqlalchemy import select

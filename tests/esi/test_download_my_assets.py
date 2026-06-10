@@ -7,7 +7,7 @@ from esi.download_my_assets import DownloadMyAssets, STRUCTURE_ID_MIN, _resolve_
 from tests.factories import (
     make_universe_region, make_universe_constellation,
     make_universe_system, make_universe_station, make_universe_structure,
-    make_item, make_bpc_asset,
+    make_item, make_user_asset,
 )
 
 STRUCTURE_ID = STRUCTURE_ID_MIN + 1
@@ -56,8 +56,8 @@ class TestDownloadMyAssets:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        assets = BpcAsset.query.filter_by(user_id=user.id).all()
+        from evebs.models import UserAsset
+        assets = UserAsset.query.filter_by(user_id=user.id).all()
         assert len(assets) == 1
         assert assets[0].quantity == 5
         assert assets[0].eve_item_id == seeded['item'].id
@@ -69,7 +69,7 @@ class TestDownloadMyAssets:
         assert assets[0].is_blueprint_copy is False
 
     def test_updates_quantity_on_existing_asset(self, db, user, seeded):
-        existing = make_bpc_asset(db, user, seeded['item'], quantity=3, esi_item_id=1)
+        existing = make_user_asset(db, user, seeded['item'], quantity=3, esi_item_id=1)
         db.session.commit()
 
         with patch('esi.client.EsiClient.get_all_pages', return_value=[_esi_asset(quantity=10)]), \
@@ -81,7 +81,7 @@ class TestDownloadMyAssets:
         assert existing.touched is True
 
     def test_deletes_assets_not_in_esi_response(self, db, user, seeded):
-        stale = make_bpc_asset(db, user, seeded['item'], quantity=7)
+        stale = make_user_asset(db, user, seeded['item'], quantity=7)
         db.session.commit()
 
         item2 = make_item(db, item_id=35, slug='pyerite')
@@ -92,8 +92,8 @@ class TestDownloadMyAssets:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        ids = [a.eve_item_id for a in BpcAsset.query.filter_by(user_id=user.id).all()]
+        from evebs.models import UserAsset
+        ids = [a.eve_item_id for a in UserAsset.query.filter_by(user_id=user.id).all()]
         assert seeded['item'].id not in ids
         assert item2.id in ids
 
@@ -111,8 +111,8 @@ class TestDownloadMyAssets:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        assert BpcAsset.query.filter_by(user_id=user.id).count() == 0
+        from evebs.models import UserAsset
+        assert UserAsset.query.filter_by(user_id=user.id).count() == 0
 
     def test_updates_download_flags(self, db, user, seeded):
         before = datetime.utcnow()
@@ -130,8 +130,8 @@ class TestDownloadMyAssets:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        asset = BpcAsset.query.filter_by(user_id=user.id).first()
+        from evebs.models import UserAsset
+        asset = UserAsset.query.filter_by(user_id=user.id).first()
         assert asset.is_blueprint_copy is True
 
     def test_same_type_in_two_containers_creates_two_rows(self, db, user, seeded):
@@ -145,8 +145,8 @@ class TestDownloadMyAssets:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        assets = BpcAsset.query.filter_by(user_id=user.id).all()
+        from evebs.models import UserAsset
+        assets = UserAsset.query.filter_by(user_id=user.id).all()
         assert len(assets) == 2
         esi_ids = {a.esi_item_id for a in assets}
         assert esi_ids == {101, 102}
@@ -163,8 +163,8 @@ class TestDownloadMyAssets:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        inner = BpcAsset.query.filter_by(user_id=user.id, esi_item_id=20).first()
+        from evebs.models import UserAsset
+        inner = UserAsset.query.filter_by(user_id=user.id, esi_item_id=20).first()
         assert inner is not None
         assert inner.parent_esi_item_id == 10
         assert inner.universe_station_id == seeded['station'].id
@@ -179,8 +179,8 @@ class TestDownloadMyAssetsStructure:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        assets = BpcAsset.query.filter_by(user_id=user.id).all()
+        from evebs.models import UserAsset
+        assets = UserAsset.query.filter_by(user_id=user.id).all()
         assert len(assets) == 1
         assert assets[0].universe_structure_id == STRUCTURE_ID
         assert assets[0].universe_station_id is None
@@ -191,12 +191,12 @@ class TestDownloadMyAssetsStructure:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset, UniverseStructure, UnknownStructure
+        from evebs.models import UserAsset, UniverseStructure, UnknownStructure
         assert db.session.get(UniverseStructure, STRUCTURE_ID) is None
         unknown = db.session.get(UnknownStructure, STRUCTURE_ID)
         assert unknown is not None
         assert re.match(r'^[A-Z]{2}-\d{3}$', unknown.name)
-        assets = BpcAsset.query.filter_by(user_id=user.id).all()
+        assets = UserAsset.query.filter_by(user_id=user.id).all()
         assert len(assets) == 1
         assert assets[0].universe_structure_id == STRUCTURE_ID
 
@@ -266,7 +266,7 @@ class TestResolveRootLocation:
              patch('esi.client.EsiClient.set_auth_token', return_value=True):
             DownloadMyAssets().update(user)
 
-        from evebs.models import BpcAsset
-        assets = BpcAsset.query.filter_by(user_id=user.id).all()
+        from evebs.models import UserAsset
+        assets = UserAsset.query.filter_by(user_id=user.id).all()
         eve_ids = {a.universe_station_id for a in assets}
         assert seeded['station'].id in eve_ids

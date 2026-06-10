@@ -181,10 +181,10 @@ def make_universe_structure(db, system, structure_id=1_000_000_000_001,
     return s
 
 
-def make_bpc_asset(db, user, item, quantity=5, station=None, esi_item_id=None,
+def make_user_asset(db, user, item, quantity=5, station=None, esi_item_id=None,
                    structure_id=None, is_blueprint_copy=False):
-    from evebs.models import BpcAsset
-    a = BpcAsset(
+    from evebs.models import UserAsset
+    a = UserAsset(
         user_id=user.id,
         eve_item_id=item.id,
         quantity=quantity,

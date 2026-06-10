@@ -2,7 +2,7 @@
 from tests.factories import (
     make_universe_region, make_universe_constellation,
     make_universe_system, make_trade_hub, make_universe_station,
-    make_item, make_blueprint, make_jma, make_production_list, make_bpc_asset,
+    make_item, make_blueprint, make_jma, make_production_list, make_user_asset,
 )
 
 
@@ -52,7 +52,7 @@ class TestComponentsToBuysCompute:
         bp.manufacturing_tree = {'36': {'quantity': 50, 'name': 'Pyerite', 'chain': {}}}
         make_jma(db, mat, min_sell_price=10.0)
         make_production_list(db, user, crafted, hub, runs_count=1)
-        make_bpc_asset(db, user, mat, station=station, quantity=20)
+        make_user_asset(db, user, mat, station=station, quantity=20)
         db.session.commit()
 
         resp = client.get(f'/components_to_buys?station_id={station.id}')

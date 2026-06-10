@@ -8,7 +8,7 @@ from sqlalchemy import func
 from evebs.extensions import db
 from evebs.models import (
     EveItem, JitaMarketAnalytics, ProductionList, BlueprintModification,
-    BpcAsset, UniverseStation, UniverseStructure, UnknownStructure,
+    UserAsset, UniverseStation, UniverseStructure, UnknownStructure,
 )
 
 bp = Blueprint('components_to_buys', __name__)
@@ -89,35 +89,35 @@ def show():
 
     stations = (
         UniverseStation.query
-        .join(BpcAsset, BpcAsset.universe_station_id == UniverseStation.id)
-        .filter(BpcAsset.user_id == user.id)
+        .join(UserAsset, UserAsset.universe_station_id == UniverseStation.id)
+        .filter(UserAsset.user_id == user.id)
         .distinct().all()
     )
     known_structures = (
         UniverseStructure.query
-        .join(BpcAsset, BpcAsset.universe_structure_id == UniverseStructure.id)
-        .filter(BpcAsset.user_id == user.id)
+        .join(UserAsset, UserAsset.universe_structure_id == UniverseStructure.id)
+        .filter(UserAsset.user_id == user.id)
         .distinct().all()
     )
     unknown_structures = (
         UnknownStructure.query
-        .join(BpcAsset, BpcAsset.universe_structure_id == UnknownStructure.id)
-        .filter(BpcAsset.user_id == user.id)
+        .join(UserAsset, UserAsset.universe_structure_id == UnknownStructure.id)
+        .filter(UserAsset.user_id == user.id)
         .distinct().all()
     )
 
     asset_qty = {}
     if station_id:
         rows = (
-            db.session.query(BpcAsset.eve_item_id, func.sum(BpcAsset.quantity))
+            db.session.query(UserAsset.eve_item_id, func.sum(UserAsset.quantity))
             .filter(
-                BpcAsset.user_id == user.id,
+                UserAsset.user_id == user.id,
                 db.or_(
-                    BpcAsset.universe_station_id == station_id,
-                    BpcAsset.universe_structure_id == station_id,
+                    UserAsset.universe_station_id == station_id,
+                    UserAsset.universe_structure_id == station_id,
                 ),
             )
-            .group_by(BpcAsset.eve_item_id)
+            .group_by(UserAsset.eve_item_id)
             .all()
         )
         asset_qty = {row[0]: int(row[1]) for row in rows}
