@@ -55,12 +55,21 @@ class Blueprint(db.Model):
     #   routes/buy_orders.py        — iterates top-level keys to compute live manuf. cost
     #   process/update_blueprints.py — writes this field from manufacturing_tree.json
     manufacturing_tree = db.Column(db.JSON, nullable=True)
+    # ID of the T1 Blueprint whose invention activity produces this T2 blueprint.
+    # NULL for T1/reaction blueprints. FK → blueprints.id (self-referential).
+    is_invented_by = db.Column(db.Integer, db.ForeignKey('blueprints.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     eve_item = db.relationship('EveItem', back_populates='blueprint', uselist=False)
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='blueprint')
     users = db.relationship('User', secondary='user_blueprints', back_populates='blueprints')
+    inventor_blueprint = db.relationship(
+        'Blueprint',
+        foreign_keys=[is_invented_by],
+        remote_side='Blueprint.id',
+        uselist=False,
+    )
 
     @property
     def batch_elements_count(self):
