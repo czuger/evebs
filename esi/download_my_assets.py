@@ -7,7 +7,8 @@ from datetime import datetime
 
 from esi.client import EsiClient
 from evebs.extensions import db
-from evebs.models import UserAsset, EveItem, UniverseStation, UniverseStructure, UnknownStructure
+from evebs.models import Blueprint, UserAsset, EveItem, UniverseStation, UniverseStructure, UnknownStructure
+from evebs.models.tables.associations import user_blueprints
 
 
 def _random_name():
@@ -215,8 +216,6 @@ class DownloadMyAssets:
         UserAsset.query.filter_by(user_id=user.id, touched=False).delete()
 
         # Sync owned blueprints and compute invention potentials from the same ESI page data.
-        from evebs.models import Blueprint
-        from evebs.models.tables.associations import user_blueprints
         known = {bp.id for bp in Blueprint.query.all()}
         bp_ids = list({a['type_id'] for a in pages if a.get('type_id') in known})
 

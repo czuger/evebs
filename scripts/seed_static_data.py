@@ -16,6 +16,14 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from evebs import create_app
+from evebs.extensions import db
+from evebs.models import (
+    UniverseRegion, MarketGroup,
+    UniverseConstellation, UniverseSystem,
+    UniverseStation, EveItem, Blueprint,
+)
+
 DATA_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'data', 'eve_static_data'
@@ -468,14 +476,6 @@ def main():
     if not any(vars(args).values()):
         parser.print_help()
         sys.exit(1)
-
-    from evebs import create_app
-    from evebs.extensions import db
-    from evebs.models import (
-        UniverseRegion, MarketGroup,
-        UniverseConstellation, UniverseSystem,
-        UniverseStation, EveItem, Blueprint,
-    )
 
     app = create_app()
     wall_t0 = time.perf_counter()

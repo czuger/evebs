@@ -13,7 +13,10 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from app import app
 from config import setup_logging
+from evebs.extensions import db
+from evebs.models import Blueprint, EveItem, JitaMarketAnalytics
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -42,7 +45,6 @@ def build_item_map() -> dict:
     Returns:
         Dict mapping int type_id → EveItem instance.
     """
-    from evebs.models import EveItem
     item_map = {ei.id: ei for ei in EveItem.query.all()}
     logger.debug('Item map: %d items loaded.', len(item_map))
     return item_map
@@ -54,7 +56,6 @@ def build_price_map() -> dict:
     Returns:
         Dict mapping int type_id → float min_sell_price.
     """
-    from evebs.models import JitaMarketAnalytics
     price_map = {jma.id: jma.min_sell_price for jma in JitaMarketAnalytics.query.all()}
     logger.debug('Jita price map: %d prices loaded.', len(price_map))
     return price_map
@@ -66,7 +67,6 @@ def build_blueprint_map() -> dict:
     Returns:
         Dict mapping int produced_type_id → Blueprint instance.
     """
-    from evebs.models import Blueprint
     bp_map = {bp.produced_type_id: bp for bp in Blueprint.query.all()}
     logger.debug('Blueprint map: %d blueprints loaded.', len(bp_map))
     return bp_map
@@ -114,9 +114,6 @@ def upsert_blueprints(
     Returns:
         (new_count, updated_count, no_price_count)
     """
-    from evebs.extensions import db
-    from evebs.models import Blueprint
-
     new_count = updated_count = no_price_count = 0
 
     for type_id_str, entry in tree.items():
@@ -233,16 +230,11 @@ def main() -> None:
                         help='Dry-run: print counts without writing.')
     args = parser.parse_args()
 
-    from app import app
-
     with app.app_context():
-        from evebs.extensions import db
-
         tree = load_manufacturing_tree(MANUFACTURING_TREE)
 
         if args.no_op:
             logger.info('Dry-run — manufacturing_tree.json has %d entries.', len(tree))
-            from evebs.models import Blueprint
             logger.info('Blueprints in DB: %d', Blueprint.query.count())
             bp_map = build_blueprint_map()
             invented = update_invented_by(bp_map, dry_run=True)

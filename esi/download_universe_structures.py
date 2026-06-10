@@ -7,6 +7,11 @@ import requests
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from app import app
+from config import setup_logging
+from evebs.extensions import db
+from evebs.models import UniverseStructure, UniverseSystem
+
 logger = logging.getLogger(__name__)
 
 EVEREF_STRUCTURES_URL = 'https://data.everef.net/structures/structures-latest.v2.json'
@@ -14,16 +19,12 @@ EVEREF_STRUCTURES_URL = 'https://data.everef.net/structures/structures-latest.v2
 
 class DownloadUniverseStructures:
     def download(self):
-        from evebs.extensions import db
-        from evebs.models import UniverseStructure
-
         logger.info('Fetching structures from EveRef…')
         resp = requests.get(EVEREF_STRUCTURES_URL, timeout=120)
         resp.raise_for_status()
         data = resp.json()
         logger.info('Downloaded %d structure records', len(data))
 
-        from evebs.models import UniverseSystem
         valid_system_ids = {row.id for row in UniverseSystem.query.with_entities(UniverseSystem.id).all()}
         logger.debug('%d known solar systems loaded', len(valid_system_ids))
 
@@ -69,8 +70,6 @@ class DownloadUniverseStructures:
 
 
 if __name__ == '__main__':
-    from config import setup_logging
     setup_logging()
-    from app import app
     with app.app_context():
         DownloadUniverseStructures().download()

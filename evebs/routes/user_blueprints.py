@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 
 from config import PER_PAGE
+from esi.download_my_assets import _load_blueprint_activities
 from evebs.extensions import db
 from evebs.models import Blueprint as BpModel, EveItem, MarketGroup
 from evebs.utils import SimplePagination
@@ -28,7 +29,6 @@ def show():
 
     invented_from_map = {}
     if blueprints:
-        from esi.download_my_assets import _load_blueprint_activities
         activities, _ = _load_blueprint_activities()
         t2_to_t1 = {
             t2_id: t1_id

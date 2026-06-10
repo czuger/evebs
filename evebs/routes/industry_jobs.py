@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required, current_user
 from sqlalchemy import case, nullslast
 
+from esi.download_my_industry_jobs import DownloadMyIndustryJobs
 from evebs.models import IndustryJob, EveItem, ACTIVITY_LABELS
 
 bp = Blueprint('industry_jobs', __name__)
@@ -48,6 +49,5 @@ def show():
 @bp.route('/industry_jobs/refresh', methods=['POST'])
 @login_required
 def refresh():
-    from esi.download_my_industry_jobs import DownloadMyIndustryJobs
     DownloadMyIndustryJobs().update(current_user)
     return redirect(url_for('industry_jobs.show'))

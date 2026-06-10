@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from urllib.parse import urlencode
 
 import requests
-from flask import Blueprint, current_app, flash, redirect, request, session, url_for
+from flask import Blueprint, abort, current_app, flash, redirect, request, session, url_for
 from flask_login import login_user, logout_user
 
 from evebs.extensions import db
@@ -104,11 +104,9 @@ def callback():
 @bp.route('/auth/test_login/<int:user_id>')
 def test_login(user_id):
     if not current_app.config.get('TESTING'):
-        from flask import abort
         abort(404)
     user = db.session.get(User, user_id)
     if not user:
-        from flask import abort
         abort(404)
     login_user(user)
     return redirect(url_for('list_items.show'))

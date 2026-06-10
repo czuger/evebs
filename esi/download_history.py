@@ -5,12 +5,12 @@ from datetime import datetime, timedelta
 
 from esi.client import EsiClient
 from esi.errors import BadRequest, NotFound
+from evebs.models import MarketGroup, UniverseRegion, UniverseSystem, EveItem
 
 logger = logging.getLogger(__name__)
 
 
 def _ammo_market_group_ids():
-    from evebs.models import MarketGroup
     all_groups = MarketGroup.query.all()
     children_map = {}
     for g in all_groups:
@@ -34,13 +34,11 @@ class DownloadHistory:
         self.essentials = essentials
 
     def download(self):
-        from evebs.models import UniverseRegion
         os.makedirs('data', exist_ok=True)
 
         regions = UniverseRegion.query.all()
 
         if self.essentials:
-            from evebs.models import UniverseSystem, EveItem
             hub_region_ids = {
                 us.universe_constellation.universe_region.id
                 for us in UniverseSystem.query.filter_by(trade_hub=True).all()

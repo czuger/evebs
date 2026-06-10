@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import text, bindparam
 
 from config import PER_PAGE
+from esi.download_my_assets import DownloadMyAssets
 from evebs.extensions import db
 from evebs.utils import SimplePagination
 
@@ -64,6 +65,5 @@ def show():
 @bp.route('/jita_reactions/refresh', methods=['POST'])
 @login_required
 def refresh():
-    from esi.download_my_assets import DownloadMyAssets
     DownloadMyAssets().update(current_user)
     return redirect(url_for('jita_reactions.show'))

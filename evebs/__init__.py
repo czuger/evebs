@@ -1,8 +1,32 @@
 from flask import Flask, redirect, url_for
 from werkzeug.middleware.proxy_fix import ProxyFix
+
 from config import Config
-from evebs.extensions import db, login_manager
 from evebs import helpers
+from evebs.extensions import db, login_manager
+from evebs.routes.admin import bp as admin_bp
+from evebs.routes.auth import bp as auth_bp
+from evebs.routes.buy_orders import bp as buy_orders_bp
+from evebs.routes.choose_trade_hubs import bp as choose_trade_hubs_bp
+from evebs.routes.components_to_buys import bp as components_to_buys_bp
+from evebs.routes.copy_lists import bp as copy_lists_bp
+from evebs.routes.eve_items_saved_lists import bp as eve_items_saved_lists_bp
+from evebs.routes.industry_jobs import bp as industry_jobs_bp
+from evebs.routes.invention_lists import bp as invention_lists_bp
+from evebs.routes.items import bp as items_bp
+from evebs.routes.jita_reactions import bp as jita_reactions_bp
+from evebs.routes.list_items import bp as list_items_bp
+from evebs.routes.main import bp as main_bp
+from evebs.routes.market_data import bp as market_data_bp
+from evebs.routes.market_groups import bp as market_groups_bp
+from evebs.routes.my_assets import bp as my_assets_bp
+from evebs.routes.production_costs import bp as production_costs_bp
+from evebs.routes.production_lists import bp as production_lists_bp
+from evebs.routes.sell_orders import bp as sell_orders_bp
+from evebs.routes.user_blueprints import bp as user_blueprints_bp
+from evebs.routes.user_industry_costs import bp as user_industry_costs_bp
+from evebs.routes.user_sales_orders import bp as user_sales_orders_bp
+from evebs.routes.users import bp as users_bp
 
 
 def create_app(config_class=Config):
@@ -13,30 +37,6 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
 
     helpers.register(app)
-
-    from evebs.routes.auth import bp as auth_bp
-    from evebs.routes.main import bp as main_bp
-    from evebs.routes.buy_orders import bp as buy_orders_bp
-    from evebs.routes.items import bp as items_bp
-    from evebs.routes.list_items import bp as list_items_bp
-    from evebs.routes.production_costs import bp as production_costs_bp
-    from evebs.routes.production_lists import bp as production_lists_bp
-    from evebs.routes.user_sales_orders import bp as user_sales_orders_bp
-    from evebs.routes.users import bp as users_bp
-    from evebs.routes.choose_trade_hubs import bp as choose_trade_hubs_bp
-    from evebs.routes.components_to_buys import bp as components_to_buys_bp
-    from evebs.routes.market_data import bp as market_data_bp
-    from evebs.routes.market_groups import bp as market_groups_bp
-    from evebs.routes.eve_items_saved_lists import bp as eve_items_saved_lists_bp
-    from evebs.routes.my_assets import bp as my_assets_bp
-    from evebs.routes.admin import bp as admin_bp
-    from evebs.routes.user_blueprints import bp as user_blueprints_bp
-    from evebs.routes.invention_lists import bp as invention_lists_bp
-    from evebs.routes.copy_lists import bp as copy_lists_bp
-    from evebs.routes.sell_orders import bp as sell_orders_bp
-    from evebs.routes.jita_reactions import bp as jita_reactions_bp
-    from evebs.routes.user_industry_costs import bp as user_industry_costs_bp
-    from evebs.routes.industry_jobs import bp as industry_jobs_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
@@ -80,5 +80,3 @@ def create_app(config_class=Config):
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     return app
-
-

@@ -35,15 +35,16 @@ parser.add_argument('-u', '--user-id', type=int, required=True,
 args = parser.parse_args()
 
 import redis as redis_lib
+
 from app import app
+from esi.download_my_assets import DownloadMyAssets
+from evebs.extensions import db
+from evebs.models import User
 
 REDIS_KEY = f'assets_sync:{args.user_id}'
 
 with app.app_context():
     r = redis_lib.from_url(app.config['REDIS_URL'])
-
-    from evebs.extensions import db
-    from evebs.models import User
 
     user = db.session.get(User, args.user_id)
     if not user:
@@ -54,7 +55,6 @@ with app.app_context():
     logger.info('Assets sync started for user %s (%s)', args.user_id, user.name)
 
     try:
-        from esi.download_my_assets import DownloadMyAssets
         DownloadMyAssets().update(user)
         r.set(REDIS_KEY, 'done', ex=30)
         logger.info('Assets sync done for user %s (%s)', args.user_id, user.name)

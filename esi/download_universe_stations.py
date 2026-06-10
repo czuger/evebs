@@ -7,17 +7,18 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from app import app
+from config import setup_logging
 from esi.client import EsiClient
 from esi.errors import NotFound
+from evebs.extensions import db
+from evebs.models import UniverseStation
 
 logger = logging.getLogger(__name__)
 
 
 class DownloadUniverseStations:
     def download(self, empty_only=True):
-        from evebs.extensions import db
-        from evebs.models import UniverseStation
-
         query = UniverseStation.query
         if empty_only:
             query = query.filter(UniverseStation.name == '')
@@ -64,8 +65,6 @@ if __name__ == '__main__':
                         help='Update all stations, not just those with empty names.')
     args = parser.parse_args()
 
-    from config import setup_logging
     setup_logging()
-    from app import app
     with app.app_context():
         DownloadUniverseStations().download(empty_only=not args.all)

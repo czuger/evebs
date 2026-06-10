@@ -3,7 +3,10 @@ import argparse
 import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from app import app
 from config import setup_logging
+from esi.download_public_orders import download
+
 setup_logging()
 
 parser = argparse.ArgumentParser(description='Download public market orders from ESI and upsert into DB.')
@@ -17,8 +20,6 @@ parser.add_argument('-r', '--regions', choices=['hub', 'non_hub', 'all'], defaul
                     help='Region scope: hub (default), non_hub, or all.')
 args = parser.parse_args()
 
-from app import app
 with app.app_context():
-    from esi.download_public_orders import download
     download(essentials=args.essentials, forge_only=args.forge,
              all_at_once=args.all_at_once, regions=args.regions)

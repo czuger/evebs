@@ -21,6 +21,8 @@ esi_logger.handlers = list(logger.handlers)
 esi_logger.propagate = False
 
 from app import app
+from esi.download_public_orders.download import download as download_public_orders
+from process.update_jita_market_analytics import update_jita_market_analytics
 
 MIN_LOOP_SECONDS = 60*15  # 15 minutes
 NON_HUB_EVERY = 4 # Every hour
@@ -35,9 +37,6 @@ def _step(label, fn):
 
 
 with app.app_context():
-    from esi.download_public_orders.download import download as download_public_orders
-    from process.update_jita_market_analytics import update_jita_market_analytics
-
     step = 0
     while True:
         step += 1

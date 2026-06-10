@@ -7,14 +7,23 @@ min_sell_price:  P10 ask price at Jita from public_trade_orders (same algorithm 
 price_forecast_3d: volume-weighted linear regression over the last 30 days of
                  daily VWAPs from sales_finals at Jita, evaluated at CURRENT_DATE + 3.
 """
+import argparse
 import logging
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from sqlalchemy import text
+
+from app import app
+from config import setup_logging
+from evebs.extensions import db
+
 logger = logging.getLogger(__name__)
 
 
 def update_jita_market_analytics():
-    from sqlalchemy import text
-    from evebs.extensions import db
-
     db.session.execute(text("""
         INSERT INTO jita_market_analytics (id, min_sell_price, updated_at)
         WITH
@@ -110,11 +119,6 @@ def update_jita_market_analytics():
 
 
 if __name__ == '__main__':
-    import argparse
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from config import setup_logging
     setup_logging()
 
     parser = argparse.ArgumentParser(description='Refresh jita_market_analytics.')
@@ -122,11 +126,8 @@ if __name__ == '__main__':
                         help='Dry-run: print current row count, do not update.')
     args = parser.parse_args()
 
-    from app import app
     with app.app_context():
         if args.no_op:
-            from sqlalchemy import text
-            from evebs.extensions import db
             count = db.session.execute(text('SELECT COUNT(*) FROM jita_market_analytics')).scalar()
             logger.info('Dry-run — jita_market_analytics currently has %d rows.', count)
             sys.exit(0)

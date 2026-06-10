@@ -1,5 +1,9 @@
 import logging
+from datetime import datetime
+
 from esi.client import EsiClient
+from evebs.extensions import db
+from evebs.models import EveItem, UniverseStation, UniverseSystem, UserSaleOrder, ProductionList
 
 logger = logging.getLogger(__name__)
 
@@ -17,15 +21,10 @@ class DownloadMyOrders:
         pages = client.get_all_pages()
         if not pages:
             user.locked = True
-            from evebs.extensions import db
             db.session.commit()
             return
 
         print(pages)
-
-        from evebs.models import EveItem, UniverseStation, UniverseSystem, UserSaleOrder, ProductionList
-        from evebs.extensions import db
-        from datetime import datetime
 
         current_order_ids = [o.id for o in UserSaleOrder.query.filter_by(user_id=user.id).all()]
 

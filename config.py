@@ -3,6 +3,8 @@ import logging
 import logging.handlers
 import os
 
+from pythonjsonlogger import jsonlogger
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -71,7 +73,6 @@ class Config:
 
 
 def _make_rotating_handler(log_dir, filename):
-    from pythonjsonlogger import jsonlogger
     handler = logging.handlers.TimedRotatingFileHandler(
         filename=os.path.join(log_dir, filename),
         when='midnight',

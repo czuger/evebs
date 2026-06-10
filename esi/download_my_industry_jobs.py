@@ -2,6 +2,8 @@ import logging
 from datetime import datetime
 
 from esi.client import EsiClient
+from evebs.extensions import db
+from evebs.models import IndustryJob
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +21,8 @@ class DownloadMyIndustryJobs:
         pages = client.get_all_pages()
         if not pages:
             user.locked = True
-            from evebs.extensions import db
             db.session.commit()
             return
-
-        from evebs.models import IndustryJob
-        from evebs.extensions import db
 
         existing = {j.job_id: j for j in IndustryJob.query.filter_by(user_id=user.id).all()}
         seen_job_ids = set()

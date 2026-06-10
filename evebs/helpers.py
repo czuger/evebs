@@ -2,6 +2,8 @@ from datetime import datetime
 from flask import request
 from markupsafe import Markup
 
+from evebs.models import LastUpdate
+
 
 def register(app):
     app.jinja_env.globals.update(
@@ -77,7 +79,6 @@ def safe_multiply(a, b):
 
 
 def show_last_update(update_type):
-    from evebs.models import LastUpdate
     record = LastUpdate.query.filter_by(update_type=str(update_type)).first()
     if not record:
         return ''

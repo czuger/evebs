@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development rules
 
 - Do not commit unless asked for.
+- All imports must be at the top of the file. Never import inside functions, methods, or conditional blocks.
 - Avoid local imports. Follow PEP 8.
 - NO MONKEYPATCHING EVER
 - When using argparse always add shortcuts for switches (e.g. `--tests` / `-t`).

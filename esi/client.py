@@ -7,7 +7,9 @@ from datetime import datetime, timedelta
 
 import requests
 
+from config import Config
 from esi import errors as esi_errors
+from evebs.extensions import db
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +100,6 @@ class EsiClient:
         return True
 
     def _renew_token(self, user):
-        from config import Config
         client_id = Config.ESI_CLIENT_ID
         secret_key = Config.ESI_SECRET_KEY
         auth = base64.b64encode(f'{client_id}:{secret_key}'.encode()).decode()
@@ -111,7 +112,6 @@ class EsiClient:
             data = resp.json()
             user.token = data['access_token']
             user.expires_on = datetime.utcnow() + timedelta(seconds=data.get('expires_in', 1200))
-            from evebs.extensions import db
             db.session.commit()
 
     def _build_url(self):
