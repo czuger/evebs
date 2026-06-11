@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - All imports must be at the top of the file. Never import inside functions, methods, or conditional blocks.
 - Avoid local imports. Follow PEP 8.
 - NO MONKEYPATCHING EVER
+- No broad exception handling — never `except Exception` (or bare `except`). Catch specific exception types (e.g. `EsiError`, `ValueError`).
 - When using argparse always add shortcuts for switches (e.g. `--tests` / `-t`).
 - Avoid environment variables for runtime config; use script switches instead.
 - Always use `alembic revision -m "..."` to generate a new migration.
@@ -86,7 +87,7 @@ Config files (not in git):
 
 Downloaders:
 - `download_public_orders/` — package; downloads public market orders for all regions
-- `download_history.py` — market price history per region (parallel processes)
+- `download_market_histories.py` — downloads exact ESI market history per region/type (`/types` enumerates type_ids, `/history` fetched per type) into `market_histories`; `-f/--forge` restricts to The Forge
 - `download_markets_prices.py` — global adjusted/average prices
 - `download_universe_regions.py` — region/constellation/system hierarchy
 - `download_universe_stations.py`, `download_universe_structures.py` — station and structure data

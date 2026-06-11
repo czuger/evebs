@@ -1,11 +1,29 @@
 import logging
 
-from evebs.models import UniverseSystem, EveItem, UniverseRegion
-from esi.download_history import _ammo_market_group_ids
+from evebs.models import UniverseSystem, EveItem, UniverseRegion, MarketGroup
 
 logger = logging.getLogger(__name__)
 
 FORGE_REGION_ID = 10000002
+
+
+def _ammo_market_group_ids():
+    all_groups = MarketGroup.query.all()
+    children_map = {}
+    for g in all_groups:
+        children_map.setdefault(g.id, [])
+        if g.parent_id is not None:
+            children_map.setdefault(g.parent_id, []).append(g.id)
+
+    roots = [g.id for g in all_groups if g.name and 'Ammunition' in g.name and g.parent_id is None]
+
+    result = set()
+    stack = list(roots)
+    while stack:
+        gid = stack.pop()
+        result.add(gid)
+        stack.extend(children_map.get(gid, []))
+    return result
 
 
 def load_reference_data(

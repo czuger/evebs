@@ -162,6 +162,26 @@ class TestBuyOrders:
         assert resp.status_code == 200
         assert b'material-symbols:warehouse.svg' in resp.data
 
+    def test_bp_column_shows_manufacturing_and_invention_icons(self, db, auth_client, seeded):
+        """Owning the blueprint AND holding an invention-capable copy (e.g. the
+        Scourge Fury Cruise Missile BP plus a copy) shows both the manufacturing
+        (factory) and invention (science) icons together in the BP column."""
+        from evebs.models.tables.associations import user_blueprints
+        client, user = auth_client
+        # Own the blueprint → manufacturing/factory icon.
+        db.session.execute(user_blueprints.insert().values(
+            user_id=user.id, blueprint_id=seeded['bp'].id))
+        # A copy usable for invention → invention/science icon.
+        asset = make_user_asset(db, user, seeded['prod'])
+        asset.is_potential = True
+        asset.potential_type = 'invent'
+        db.session.commit()
+
+        resp = client.get('/buy_orders')
+        assert resp.status_code == 200
+        assert b'material-symbols:factory.svg' in resp.data
+        assert b'material-symbols:science.svg' in resp.data
+
     def test_highest_buy_order_volume_not_sum(self, db, auth_client, seeded):
         """Buy volume shown is for the single highest-priced order, not the total."""
         client, _ = auth_client

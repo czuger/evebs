@@ -6,7 +6,7 @@
   <button type="submit" class="btn btn-link p-0 border-0 align-baseline" data-bs-toggle="tooltip" title="You own a blueprint for this item — click to add to production list"><img src="https://api.iconify.design/material-symbols:factory.svg" width="14" height="14" class="opacity-75"></button>
 </form>
 {%- endif -%}
-{%- if item_id in potential_copy_ids and item_id not in owned_bp_ids -%}
+{%- if item_id in potential_copy_ids -%}
 <form method="post" action="{{ url_for('copy_lists.create') }}" class="d-inline">
   <input type="hidden" name="eve_item_id" value="{{ item_id }}">
   <input type="hidden" name="universe_system_id" value="{{ universe_system_id }}">
