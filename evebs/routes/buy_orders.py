@@ -19,7 +19,12 @@ bp = Blueprint('buy_orders', __name__)
 
 _timings = set_logger('timings')
 
-_SELECT = """
+# Full-batch amount with optional run-capping. When batch capping is off the
+# caller passes a very large :runs_cap so the CASE is a no-op. CASE (not LEAST)
+# keeps this portable across PostgreSQL (prod) and SQLite (dev/test).
+_BATCH = "(CASE WHEN b.nb_runs > :runs_cap THEN :runs_cap ELSE b.nb_runs END) * b.prod_qtt"
+
+_SELECT = f"""
 SELECT
     uic.item_name,
     uic.item_slug,
@@ -37,8 +42,8 @@ SELECT
          ELSE 0
     END                                                                         AS margin_pcent,
     hb.buy_volume,
-    b.nb_runs * b.prod_qtt                                                      AS full_batch_amount,
-    (b.nb_runs * b.prod_qtt)
+    {_BATCH}                                                                    AS full_batch_amount,
+    ({_BATCH})
         * (hb.buy_price * (1.0 - :sell_tax) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
                                                                                 AS margin_full_batch
 FROM user_industry_costs uic
@@ -53,7 +58,7 @@ WHERE uic.user_id    = :user_id
   AND CASE WHEN hb.buy_price > 0
        THEN (hb.buy_price * (1.0 - :sell_tax) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) / hb.buy_price
        ELSE 0 END >= :min_margin_pcent
-  AND (b.nb_runs * b.prod_qtt)
+  AND ({_BATCH})
       * (hb.buy_price * (1.0 - :sell_tax) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) >= :min_batch_margin
 ORDER BY margin_full_batch DESC
 """
@@ -124,6 +129,7 @@ def show():
 
         min_margin_pcent = bof.get('min_margin_percent', 20) / 100.0
         min_batch_margin = bof.get('min_batch_margin_amount', 5_000_000)
+        runs_cap = bof.get('batch_cap_max_runs', 10) if bof.get('batch_cap') else 10**9
 
         sql = _SQL if show_selected else _SQL_ALL
         params = {
@@ -132,6 +138,7 @@ def show():
             'sell_tax':         sell_tax,
             'min_margin_pcent': min_margin_pcent,
             'min_batch_margin': min_batch_margin,
+            'runs_cap':         runs_cap,
         }
         if show_selected:
             params['item_ids'] = item_ids
@@ -182,6 +189,12 @@ def show():
     potential_invent_ids      = {r.eve_item_id for r in potential if r.potential_type == 'invent'}
     potential_copy_invent_ids = {r.eve_item_id for r in potential if r.potential_type == 'copy_invent'}
 
+    in_stock_item_ids = {
+        r.eve_item_id for r in
+        db.session.query(UserAsset.eve_item_id)
+        .filter(UserAsset.user_id == user.id, UserAsset.is_potential == False).all()
+    }
+
     sale_order_item_ids = {
         r.eve_item_id for r in
         db.session.query(UserSaleOrder.eve_item_id)
@@ -205,6 +218,7 @@ def show():
         potential_copy_ids=potential_copy_ids,
         potential_invent_ids=potential_invent_ids,
         potential_copy_invent_ids=potential_copy_invent_ids,
+        in_stock_item_ids=in_stock_item_ids,
         sale_order_item_ids=sale_order_item_ids,
         active_job_item_ids=active_job_item_ids,
         copying_item_ids=copying_item_ids,

@@ -190,6 +190,12 @@ def show():
     potential_invent_ids      = {r.eve_item_id for r in potential if r.potential_type == 'invent'}
     potential_copy_invent_ids = {r.eve_item_id for r in potential if r.potential_type == 'copy_invent'}
 
+    in_stock_item_ids = {
+        r.eve_item_id for r in
+        db.session.query(UserAsset.eve_item_id)
+        .filter(UserAsset.user_id == user.id, UserAsset.is_potential == False).all()
+    }
+
     sale_order_item_ids = {
         r.eve_item_id for r in
         db.session.query(UserSaleOrder.eve_item_id)
@@ -213,6 +219,7 @@ def show():
         potential_copy_ids=potential_copy_ids,
         potential_invent_ids=potential_invent_ids,
         potential_copy_invent_ids=potential_copy_invent_ids,
+        in_stock_item_ids=in_stock_item_ids,
         sale_order_item_ids=sale_order_item_ids,
         active_job_item_ids=active_job_item_ids,
         copying_item_ids=copying_item_ids,

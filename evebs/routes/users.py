@@ -62,6 +62,7 @@ def update():
     raw_batch_margin = request.form.get('min_batch_margin_amount', '').replace(' ', '')
     raw_buy_margin_pcent = request.form.get('buy_min_margin_percent', '').strip()
     raw_buy_batch_margin = request.form.get('buy_min_batch_margin_amount', '').replace(' ', '')
+    raw_buy_max_runs = request.form.get('buy_batch_cap_max_runs', '').strip()
     raw_margin = request.form.get('sales_orders_show_margin_min', '').strip()
 
     try:
@@ -76,6 +77,8 @@ def update():
             'min_margin_percent':      int(raw_buy_margin_pcent) if raw_buy_margin_pcent else bof.get('min_margin_percent', 20),
             'min_batch_margin_amount': int(raw_buy_batch_margin) if raw_buy_batch_margin else bof.get('min_batch_margin_amount', 5_000_000),
             'show_selected_items':     request.form.get('buy_show_selected_items') == 'on',
+            'batch_cap':               request.form.get('buy_batch_cap') == 'on',
+            'batch_cap_max_runs':      int(raw_buy_max_runs) if raw_buy_max_runs else bof.get('batch_cap_max_runs', 10),
         }
         user.watch_my_prices = request.form.get('watch_my_prices') == 'on'
         user.remove_occuped_places = request.form.get('remove_occuped_places') == 'on'

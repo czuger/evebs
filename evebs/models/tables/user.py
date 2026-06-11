@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     locked = db.Column(db.Boolean, default=False, nullable=False)
     buy_order_filtering = db.Column(db.JSON, nullable=False, default=lambda: {
         'batch_cap': True,
-        'batch_cap_multiplier': 10,
+        'batch_cap_max_runs': 10,
         'min_margin_percent': 20,
         'min_batch_margin_amount': 5_000_000,
     })

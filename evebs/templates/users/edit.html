@@ -65,6 +65,21 @@
           </div>
           <div class="form-text">When on, only show bookmarked items; when off, show all game blueprints.</div>
         </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="buy_batch_cap" id="buy_batch_cap"
+                   class="form-check-input"
+                   {% if bof.get('batch_cap', False) %}checked{% endif %}>
+            <label for="buy_batch_cap" class="form-check-label">Batch cap</label>
+          </div>
+          <div class="form-text">Cap each blueprint's runs when computing full-batch amounts.</div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <label for="buy_batch_cap_max_runs" class="form-label">Batch cap max runs</label>
+          <input type="number" name="buy_batch_cap_max_runs" id="buy_batch_cap_max_runs"
+                 value="{{ bof.get('batch_cap_max_runs', 10) }}" class="form-control">
+          <div class="form-text">Cap each blueprint's runs to this value when computing full-batch amounts.</div>
+        </div>
       </div>
     </div>
   </div>

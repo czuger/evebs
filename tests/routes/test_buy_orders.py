@@ -5,6 +5,7 @@ from tests.factories import (
     make_universe_region, make_universe_constellation,
     make_universe_system, make_trade_hub,
     make_item, make_blueprint, make_jma, make_public_trade_order,
+    make_user_asset,
 )
 
 
@@ -124,6 +125,42 @@ class TestBuyOrders:
         resp = client.get('/buy_orders')
         assert resp.status_code == 200
         assert b'Ammo' not in resp.data
+
+    def test_batch_cap_caps_displayed_full_batch(self, db, auth_client, seeded):
+        """With batch cap on, full batch uses max_runs*prod_qtt instead of nb_runs*prod_qtt."""
+        client, user = auth_client
+        # nb_runs=5, prod_qtt=10 → uncapped batch 50; cap to 3 runs → 30.
+        user.buy_order_filtering = {
+            'batch_cap': True,
+            'batch_cap_max_runs': 3,
+            'min_batch_margin_amount': 0,
+        }
+        db.session.commit()
+        resp = client.get('/buy_orders')
+        assert resp.status_code == 200
+        assert b'30.0' in resp.data       # capped 3 * 10
+        assert b'50.0' not in resp.data    # uncapped 5 * 10 must not appear
+
+    def test_batch_cap_can_drop_row_below_margin_filter(self, db, auth_client, seeded):
+        """Capping runs shrinks the full-batch margin; a row can fall below the filter."""
+        client, user = auth_client
+        # Uncapped batch margin (~9.6M) passes the 5M default; capping to 2 runs
+        # (~3.84M) drops below it.
+        user.buy_order_filtering = {'batch_cap': True, 'batch_cap_max_runs': 2}
+        db.session.commit()
+        resp = client.get('/buy_orders')
+        assert resp.status_code == 200
+        assert b'Ammo' not in resp.data
+
+    def test_warehouse_icon_when_item_in_stock(self, db, auth_client, seeded):
+        """A warehouse icon shows in Usage when the user holds the produced item."""
+        client, user = auth_client
+        assert b'material-symbols:warehouse.svg' not in client.get('/buy_orders').data
+        make_user_asset(db, user, seeded['prod'], quantity=7)
+        db.session.commit()
+        resp = client.get('/buy_orders')
+        assert resp.status_code == 200
+        assert b'material-symbols:warehouse.svg' in resp.data
 
     def test_highest_buy_order_volume_not_sum(self, db, auth_client, seeded):
         """Buy volume shown is for the single highest-priced order, not the total."""
