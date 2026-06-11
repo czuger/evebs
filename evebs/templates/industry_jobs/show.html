@@ -12,6 +12,16 @@
   </div>
 </div>
 
+{% if active_counts_by_label %}
+  {% set activity_colors = {'Manufacturing': 'success', 'Copying': 'primary', 'Invention': 'danger'} %}
+  <div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+    <span class="text-muted small">Active jobs:</span>
+    {% for label, count in active_counts_by_label.items() %}
+      <span class="badge bg-{{ activity_colors.get(label, 'secondary') }}">{{ label }}: {{ count }}</span>
+    {% endfor %}
+  </div>
+{% endif %}
+
 {% if not jobs %}
   <p class="text-muted">No industry jobs found. Click Refresh to sync from ESI.</p>
 {% else %}
@@ -44,7 +54,7 @@
           <td><span class="badge bg-{{ status_class }}">{{ job.status }}</span></td>
           <td>
             {% if item %}
-              <img src="https://images.evetech.net/types/{{ item.id }}/icon" width="24" height="24" class="me-1">
+              <img src="https://images.evetech.net/types/{{ item.id }}/{{ 'icon' if job.activity_id in [1, 9] else 'bp' }}" width="24" height="24" class="me-1">
               {{ item.name }}
             {% else %}
               <span class="text-muted">type {{ job.product_type_id }}</span>
@@ -79,5 +89,6 @@
     </tbody>
   </table>
 </div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
 {% endif %}
 {% endblock %}

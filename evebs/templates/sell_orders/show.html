@@ -7,6 +7,7 @@
     <tr>
       <th>Trade hub</th>
       <th>Item</th>
+      <th class="text-center">Usage</th>
       <th>BP</th>
       <th class="text-end">Cost + tax / unit</th>
       <th class="text-end">Min sell / unit</th>
@@ -30,8 +31,9 @@
       <td class="trade_hub_name">{{ cp.trade_hub_name }}</td>
       <td class="item_name">
         <a href="{{ url_for('items.show', slug=cp.item_slug or cp.eve_item_id) }}">{{ cp.item_name }}</a>
-        {% if cp.eve_item_id in sale_order_item_ids %}<img src="https://api.iconify.design/streamline:bag-dollar-solid.svg" width="14" height="14" class="ms-1 opacity-75" data-bs-toggle="tooltip" title="In your sale orders">{% endif %}
-        {% if cp.eve_item_id in active_job_item_ids %}<img src="https://api.iconify.design/streamline:cog-solid.svg" width="14" height="14" class="ms-1 opacity-75" data-bs-toggle="tooltip" title="Active industry job">{% endif %}
+      </td>
+      <td class="text-nowrap text-center">
+        {% with eve_item_id = cp.eve_item_id %}{% include 'shared/_order_status_icons.html' %}{% endwith %}
       </td>
       <td>
         {% with item_id = cp.eve_item_id, owned_label = 'ready', universe_system_id = cp.universe_system_id %}{% include 'shared/_bp_badges.html' %}{% endwith %}
@@ -54,7 +56,7 @@
       <td class="text-end">{{ cp.margin_full_batch | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="11" class="text-center text-muted">No sell orders found — sync your blueprints and check your trade hub settings.</td></tr>
+    <tr><td colspan="12" class="text-center text-muted">No sell orders found — sync your blueprints and check your trade hub settings.</td></tr>
     {% endfor %}
   </table>
 </div>

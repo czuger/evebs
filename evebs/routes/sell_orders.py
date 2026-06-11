@@ -20,7 +20,7 @@ from evebs.models.tables.user_asset import UserAsset
 from evebs.models.tables.eve_item import EveItem
 from evebs.models.tables.industry_job import IndustryJob
 from evebs.models.tables.user_sale_order import UserSaleOrder
-from evebs.utils import SimplePagination
+from evebs.utils import SimplePagination, active_job_item_sets
 
 bp = Blueprint('sell_orders', __name__)
 
@@ -195,12 +195,14 @@ def show():
         db.session.query(UserSaleOrder.eve_item_id)
         .filter(UserSaleOrder.user_id == user.id).all()
     }
-    active_job_item_ids = {
-        r.product_type_id for r in
-        db.session.query(IndustryJob.product_type_id)
+    active_jobs = (
+        db.session.query(IndustryJob.activity_id,
+                         IndustryJob.product_type_id,
+                         IndustryJob.blueprint_type_id)
         .filter(IndustryJob.user_id == user.id,
                 IndustryJob.status.in_(['active', 'paused'])).all()
-    }
+    )
+    active_job_item_ids, copying_item_ids, inventing_item_ids = active_job_item_sets(active_jobs)
 
     return render_template(
         'sell_orders/show.html',
@@ -213,5 +215,7 @@ def show():
         potential_copy_invent_ids=potential_copy_invent_ids,
         sale_order_item_ids=sale_order_item_ids,
         active_job_item_ids=active_job_item_ids,
+        copying_item_ids=copying_item_ids,
+        inventing_item_ids=inventing_item_ids,
         user=user,
     )
