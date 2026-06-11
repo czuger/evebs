@@ -22,6 +22,7 @@ esi_logger.propagate = False
 
 from app import app
 from esi.download_public_orders.download import download as download_public_orders
+from process.update_blueprints import refresh_blueprint_manufacturing_costs
 from process.update_jita_market_analytics import update_jita_market_analytics
 
 MIN_LOOP_SECONDS = 60*15  # 15 minutes
@@ -46,6 +47,7 @@ with app.app_context():
 
         dl,  t_dl  = _step('download', lambda: download_public_orders(regions=region_scope))
         jma, t_jma = _step('jita_market_analytics', update_jita_market_analytics)
+        bpc, t_bpc = _step('blueprint_costs', refresh_blueprint_manufacturing_costs)
 
         elapsed = time.perf_counter() - t_start
         logger.info('=== Step %d done in %.1fs ===', step, elapsed)
@@ -63,6 +65,9 @@ with app.app_context():
         if jma:
             logger.info('  JMA update (%.1fs): %d rows, %d with price_forecast_3d',
                         t_jma, jma['rows'], jma['with_forecast'])
+        if bpc:
+            logger.info('  Blueprint costs (%.1fs): %d updated, %d no price',
+                        t_bpc, bpc['updated'], bpc['no_price'])
         logger.info('  Total step time: %.1fs', elapsed)
 
         sleep_for = MIN_LOOP_SECONDS - elapsed

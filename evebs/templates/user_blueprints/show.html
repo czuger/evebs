@@ -1,42 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
-<h5 class="mb-3">My blueprints <span class="badge bg-secondary">{{ total }}</span></h5>
+<div class="d-flex align-items-center gap-3 mb-3">
+  <h5 class="mb-0">My blueprints <span class="badge bg-secondary">{{ total }}</span></h5>
+  <form method="get" action="" class="d-flex align-items-center gap-2 ms-auto">
+    <label for="group-select" class="text-muted small mb-0">Group</label>
+    <select id="group-select" name="group" class="form-select form-select-sm" style="width:auto"
+            onchange="this.form.submit()">
+      <option value="">All</option>
+      {% for g in groups %}
+      <option value="{{ g }}" {% if g == selected_group %}selected{% endif %}>{{ g }}</option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
 <p class="text-muted small mb-3">Blueprints and reaction formulas owned by your character, synced from ESI. Used to filter the Jita manufacturing and Jita reactions screens.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <thead>
       <tr>
         <th></th>
-        <th>Group</th>
-        <th>Invented from</th>
         <th>Blueprint</th>
         <th>Produced item</th>
+        <th>Invented from</th>
       </tr>
     </thead>
     <tbody>
     {% for bp in blueprints %}
       <tr>
-        <td style="width:36px"><img src="https://images.evetech.net/types/{{ bp.id }}/bp" width="32" height="32" alt=""></td>
-        <td>{{ bp.eve_item.market_group.name if bp.eve_item and bp.eve_item.market_group else 'Other' }}</td>
+        <td style="width:36px"><img src="https://images.evetech.net/types/{{ bp.blueprint_id }}/bp" width="32" height="32" alt=""></td>
+        <td>{{ bp.blueprint_name }}</td>
         <td>
-          {% set t1 = invented_from_map.get(bp.id) %}
-          {% if t1 %}
-            {% if t1.eve_item %}
-              <a href="{{ url_for('items.show', slug=t1.eve_item.slug or t1.eve_item.id) }}">{{ t1.name }}</a>
-            {% else %}
-              {{ t1.name }}
-            {% endif %}
-          {% endif %}
+          <a href="{{ url_for('items.show', slug=bp.item_slug or bp.produced_type_id) }}">{{ bp.item_name }}</a>
         </td>
-        <td>{{ bp.name }}</td>
         <td>
-          {% if bp.eve_item %}
-          <a href="{{ url_for('items.show', slug=bp.eve_item.slug or bp.eve_item.id) }}">{{ bp.eve_item.name }}</a>
+          {% if bp.invented_from_name %}
+            <a href="{{ url_for('items.show', slug=bp.invented_from_item_slug or bp.is_invented_from_id) }}">{{ bp.invented_from_name }}</a>
           {% endif %}
         </td>
       </tr>
     {% else %}
-      <tr><td colspan="5" class="text-center text-muted">No blueprints — sync your assets to populate this list.</td></tr>
+      <tr><td colspan="4" class="text-center text-muted">No blueprints — sync your assets to populate this list.</td></tr>
     {% endfor %}
     </tbody>
   </table>

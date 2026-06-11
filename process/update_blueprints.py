@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Upsert Blueprint rows from data/manufacturing_tree.json, compute manufacturing_cost,
-and populate is_invented_by from data/eve_static_data/blueprints.jsonl.
+and populate is_invented_from_id from data/eve_static_data/blueprints.jsonl.
 
 manufacturing_cost = SUM(material_quantity × jita_prices.min_sell_price) for each
 blueprint's direct materials.  NULL when any material has no Jita price.
@@ -18,7 +18,6 @@ from config import setup_logging
 from evebs.extensions import db
 from evebs.models import Blueprint, EveItem, JitaMarketAnalytics
 
-setup_logging()
 logger = logging.getLogger(__name__)
 
 MANUFACTURING_TREE = os.path.join(os.path.dirname(__file__), '..', 'data', 'manufacturing_tree.json')
@@ -170,15 +169,17 @@ def upsert_blueprints(
     return new_count, updated_count, no_price_count
 
 
-def update_invented_by(bp_map: dict, *, dry_run: bool = False) -> int:
-    """Populate is_invented_by on T2 Blueprint rows from blueprints.jsonl.
+def update_invented_from(bp_map: dict, *, dry_run: bool = False) -> int:
+    """Populate is_invented_from_id on T2 Blueprint rows from blueprints.jsonl.
 
-    For each SDE blueprint entry that has both a manufacturing and an invention
-    activity, the T1 blueprint's produced_type_id is written as is_invented_by
-    on every T2 blueprint it can invent.
+    In the EVE SDE, invention.products[*].typeID is the type ID of the T2
+    BLUEPRINT ITEM (e.g. "Raptor Blueprint"), not the item it produces (Raptor
+    the ship).  Our bp_map is keyed by produced_type_id (the ship typeID).
+    A first pass therefore builds a blueprint_type_id → produced_type_id index
+    so the second pass can resolve the correct Blueprint row.
 
     Only updates blueprints that already exist in bp_map (i.e. in the DB).
-    Entries with no manufacturing activity (rare edge cases) are skipped.
+    T1 entries with no manufacturing activity are skipped (rare edge cases).
 
     Args:
         bp_map:  int produced_type_id → Blueprint (mutated in-place).
@@ -187,6 +188,21 @@ def update_invented_by(bp_map: dict, *, dry_run: bool = False) -> int:
     Returns:
         Number of Blueprint rows updated.
     """
+    # First pass: build blueprint_type_id → produced_type_id from all mfg entries.
+    bp_type_to_produced: dict[int, int] = {}
+    with open(BLUEPRINTS_JSONL) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            entry = json.loads(line)
+            bp_type_id   = entry.get('_key')
+            mfg_products = entry.get('activities', {}).get('manufacturing', {}).get('products', [])
+            if bp_type_id is not None and mfg_products:
+                bp_type_to_produced[bp_type_id] = mfg_products[0]['typeID']
+
+    # Second pass: for each T1 blueprint that can invent, set is_invented_from_id on
+    # the T2 blueprint rows (looked up via bp_type_to_produced → bp_map).
     updated = 0
     with open(BLUEPRINTS_JSONL) as f:
         for line in f:
@@ -205,26 +221,65 @@ def update_invented_by(bp_map: dict, *, dry_run: bool = False) -> int:
             if not mfg_products or not inv_products:
                 continue
 
-            t1_id = mfg_products[0]['typeID']
+            t1_produced_id = mfg_products[0]['typeID']
+            t1_bp = bp_map.get(t1_produced_id)
+            if t1_bp is None:
+                continue
 
             for product in inv_products:
-                t2_id = product['typeID']
-                bp = bp_map.get(t2_id)
+                t2_bp_type_id  = product['typeID']
+                t2_produced_id = bp_type_to_produced.get(t2_bp_type_id)
+                if t2_produced_id is None:
+                    continue
+                bp = bp_map.get(t2_produced_id)
                 if bp is None:
                     continue
                 if not dry_run:
-                    bp.is_invented_by = t1_id
+                    bp.is_invented_from_id = t1_bp.id
                 updated += 1
                 logger.debug(
-                    'Blueprint %d (%s) is_invented_by → %d.',
-                    t2_id, bp.name, t1_id,
+                    'Blueprint %d (%s) is_invented_from_id → blueprint %d.',
+                    t2_produced_id, bp.name, t1_bp.id,
                 )
 
     return updated
 
 
+def refresh_blueprint_manufacturing_costs() -> dict:
+    """Recompute manufacturing_cost for all blueprints from current Jita prices.
+
+    Iterates every Blueprint that has a manufacturing_tree, recomputes the cost
+    using the current JitaMarketAnalytics prices, and commits.  Does not touch
+    any other fields.
+
+    Returns:
+        {'updated': int, 'no_price': int} — counts of rows written and rows
+        skipped because a required material had no Jita price.
+    """
+    price_map = build_price_map()
+    updated = no_price = 0
+
+    for bp in Blueprint.query.filter(Blueprint.manufacturing_tree.isnot(None)).all():
+        if bp.manufacturing_tree is None:
+            continue
+        cost = compute_cost(bp.manufacturing_tree, price_map)
+        bp.manufacturing_cost = cost
+        if cost is None:
+            no_price += 1
+        else:
+            updated += 1
+
+    db.session.commit()
+    logger.info(
+        'refresh_blueprint_manufacturing_costs: %d updated, %d skipped (no Jita price).',
+        updated, no_price,
+    )
+    return {'updated': updated, 'no_price': no_price}
+
+
 def main() -> None:
     """Parse args, open app context, and run upsert + invention-link passes."""
+    setup_logging()
     parser = argparse.ArgumentParser(description='Upsert blueprints from manufacturing_tree.json.')
     parser.add_argument('-n', '--no-op', action='store_true',
                         help='Dry-run: print counts without writing.')
@@ -237,8 +292,8 @@ def main() -> None:
             logger.info('Dry-run — manufacturing_tree.json has %d entries.', len(tree))
             logger.info('Blueprints in DB: %d', Blueprint.query.count())
             bp_map = build_blueprint_map()
-            invented = update_invented_by(bp_map, dry_run=True)
-            logger.info('Would update is_invented_by on %d blueprints.', invented)
+            invented = update_invented_from(bp_map, dry_run=True)
+            logger.info('Would update is_invented_from_id on %d blueprints.', invented)
             sys.exit(0)
 
         item_map  = build_item_map()
@@ -248,12 +303,12 @@ def main() -> None:
         new_count, updated_count, no_price_count = upsert_blueprints(
             tree, item_map, price_map, bp_map,
         )
-        invented_count = update_invented_by(bp_map)
+        invented_count = update_invented_from(bp_map)
 
         db.session.commit()
         logger.info(
             'Done — Blueprint: %d new, %d updated | %d had no Jita price (manufacturing_cost=NULL) | '
-            '%d is_invented_by links set.',
+            '%d is_invented_from_id links set.',
             new_count, updated_count, no_price_count, invented_count,
         )
 
