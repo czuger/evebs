@@ -2,7 +2,7 @@
 import pytest
 from tests.factories import (
     make_universe_system, make_trade_hub, make_item, make_market_group,
-    make_blueprint, make_jma,
+    make_blueprint, make_jita_min_price,
 )
 
 
@@ -39,7 +39,7 @@ class TestItemManufacturingContext:
         crafted = make_item(db, item_id=35, slug='ammo-items', name='Ammo Items')
         bp = make_blueprint(db, crafted, prod_qtt=10)
         bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
-        make_jma(db, mat, min_sell_price=50.0)
+        make_jita_min_price(db, mat, min_sell_price=50.0)
         db.session.commit()
 
         resp = client.get('/items/ammo-items')
@@ -54,7 +54,7 @@ class TestItemManufacturingContext:
         bp = make_blueprint(db, crafted, prod_qtt=1)
         bp.activity_type = 'reaction'
         bp.manufacturing_tree = {'34': {'quantity': 10, 'name': 'Fullerite', 'chain': {}}}
-        make_jma(db, mat, min_sell_price=100.0)
+        make_jita_min_price(db, mat, min_sell_price=100.0)
         db.session.commit()
 
         client, user = auth_client

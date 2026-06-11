@@ -5,7 +5,7 @@ class UserIndustryCost(db.Model):
     """Read-only SQL view: user_industry_costs.
 
     One row per (user, blueprint) combination. Computes per-unit manufacturing or
-    reaction cost live from JitaMarketAnalytics prices and the user's personal
+    reaction cost live from JitaMinPrice prices and the user's personal
     User.industry_taxes settings.
 
     Only blueprints where EVERY direct material has a JMA price are included

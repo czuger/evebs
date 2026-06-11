@@ -8,7 +8,7 @@ class MarketHistory(db.Model):
 
     Surrogate autoincrement id PK; UNIQUE(region_id, type_id, date) makes inserts
     idempotent. No FKs — type_id is a raw EVE id that need not exist in eve_items
-    (mirrors JitaMarketAnalytics).
+    (mirrors JitaMinPrice).
     """
     __tablename__ = 'market_histories'
 

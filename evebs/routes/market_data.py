@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, abort
 
 from evebs.extensions import db
-from evebs.models import EveItem, UniverseSystem, UniverseStation, JitaMarketAnalytics, PublicTradeOrder
+from evebs.models import EveItem, UniverseSystem, UniverseStation, JitaMinPrice, PublicTradeOrder
 
 bp = Blueprint('market_data', __name__)
 
@@ -9,7 +9,7 @@ bp = Blueprint('market_data', __name__)
 @bp.route('/market_data/<int:item_id>/market_overview/')
 def market_overview(item_id):
     item = EveItem.query.get_or_404(item_id)
-    jma = JitaMarketAnalytics.query.get(item_id)
+    jma = JitaMinPrice.query.get(item_id)
     return render_template('market_data/market_overview.html',
                            item=item,
                            jma=jma,

@@ -65,7 +65,7 @@ python scripts/seed_static_data.py
 - **`evebs/__init__.py`**: App factory (`create_app()`). Registers all blueprints and applies `ProxyFix` + `APPLICATION_ROOT` path-stripping middleware. Blueprint imports live *inside* `_register_blueprints()` (a deliberate exception to the imports-at-top rule) so that importing the `evebs` package from a script does not pull in every route module. Also exposes `create_db_app()` — a minimal config+DB-only app for standalone scripts (no blueprints, no route side-effects).
 - **`evebs/models/`**: SQLAlchemy models split into subdirectories:
   - `tables/` — regular ORM-mapped tables (one file per model)
-  - `views/` — read-only SQL view models (`UserSaleOrderDetail`, `UserIndustryCost`) — do not migrate them; view-backed models carry `__table_args__ = {'info': {'is_view': True}}`
+  - `views/` — read-only SQL view models (`UserSaleOrderDetail`, `UserIndustryCost`, `JitaMinPrice` — the last a materialized view) — do not migrate them; view-backed models carry `__table_args__ = {'info': {'is_view': True}}`
 - **`evebs/extensions.py`**: SQLAlchemy `db` and `login_manager` singletons.
 - **`evebs/helpers.py`**: Jinja2 globals (`print_isk`, `print_pcent`, `print_volume`) — format ISK numbers as 1.2B, 34.5M, etc.
 - **`evebs/utils.py`**: `SimplePagination` helper used by route handlers.
@@ -98,9 +98,9 @@ Downloaders:
 
 Standalone scripts (no longer orchestrated by hourly/daily/weekly wrappers):
 
-- `orders_daemon.py` — long-running daemon; downloads public orders every 15 min, runs `update_jita_market_analytics` after each pass. Trade-hub regions every pass; all regions every 4th pass.
+- `orders_daemon.py` — long-running daemon; downloads public orders every 15 min, runs `update_jita_min_prices` after each pass. Trade-hub regions every pass; all regions every 4th pass.
 - `update_blueprints.py` — upserts `Blueprint` rows from `data/manufacturing_tree.json` and computes `manufacturing_cost` from current Jita prices.
-- `update_jita_market_analytics.py` — updates `jita_market_analytics` table (P10 Jita sell price + 3-day volume-weighted price forecast).
+- `update_jita_min_prices.py` — refreshes the `jita_min_prices` materialized view (P10 Jita sell price per item) via `REFRESH MATERIALIZED VIEW CONCURRENTLY`.
 - `update_public_orders.py` — standalone public order download + price update.
 - `sync_assets.py` — syncs user blueprint/asset data from ESI.
 
@@ -121,16 +121,16 @@ Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials from config JSON under
 - **`UniverseRegion` / `UniverseConstellation` / `UniverseSystem` / `UniverseStation` / `UniverseStructure` / `UnknownStructure`**: Full universe hierarchy.
 - **`User`**: Eve character. JSON columns: `buy_order_filtering`, `sell_orders_filtering`, `industry_taxes` (per-activity SCI/SCC/structure tax rates in plain %), `sales_taxes` (broker fee, sales tax, safety margin). Many-to-many with `EveItem` (watched items), `UniverseSystem` (trade hubs), `Blueprint` (owned blueprints).
 - **`PublicTradeOrder`**: Live market orders downloaded from ESI.
-- **`SalesFinal`**: Historical completed sales at Jita (source for `price_forecast_3d`).
+- **`SalesFinal`**: Historical completed sales at Jita.
 - **`UserSaleOrder`**: User's own active sell orders.
 - **`BpcAsset` / `BpcAssetsStation`**: Blueprint copy assets per user/station.
 - **`ProductionList` / `InventionList` / `CopyList`**: User production planning lists.
 - **`IndustryJob`**: Active industry jobs downloaded from ESI.
-- **`JitaMarketAnalytics`**: Regular table (not a materialized view) — one row per item type. `min_sell_price` (P10 ask) + `price_forecast_3d` (volume-weighted 3-day forecast). Updated by `process/update_jita_market_analytics.py`.
+- **`JitaMinPrice`**: Postgres **materialized view** `jita_min_prices` — one row per item type with `min_sell_price` (P10 Jita ask over `public_trade_orders`). Refreshed by `process/update_jita_min_prices.py`. View-backed model under `evebs/models/views/`.
 - **`BuyOrdersAnalytic`**: Per-item/hub computed buy-order analytics.
 - **`EveItemsSavedList`**: User-saved item ID lists (JSON column).
 - **`LastUpdate`**: Process heartbeat timestamps.
-- **SQL views** (`UserSaleOrderDetail`, `UserIndustryCost`): defined in migrations, never migrated directly.
+- **SQL views** (`UserSaleOrderDetail`, `UserIndustryCost`) and the **materialized view** `jita_min_prices` (`JitaMinPrice`): defined in migrations, never migrated directly.
 
 ## Tests
 

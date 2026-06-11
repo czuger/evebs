@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import app
 from config import setup_logging
 from evebs.extensions import db
-from evebs.models import Blueprint, EveItem, JitaMarketAnalytics
+from evebs.models import Blueprint, EveItem, JitaMinPrice
 
 logger = logging.getLogger(__name__)
 
@@ -50,12 +50,12 @@ def build_item_map() -> dict:
 
 
 def build_price_map() -> dict:
-    """Query all JitaMarketAnalytics rows and index min_sell_price by type_id.
+    """Query all JitaMinPrice rows and index min_sell_price by type_id.
 
     Returns:
         Dict mapping int type_id → float min_sell_price.
     """
-    price_map = {jma.id: jma.min_sell_price for jma in JitaMarketAnalytics.query.all()}
+    price_map = {jma.id: jma.min_sell_price for jma in JitaMinPrice.query.all()}
     logger.debug('Jita price map: %d prices loaded.', len(price_map))
     return price_map
 
@@ -249,7 +249,7 @@ def refresh_blueprint_manufacturing_costs() -> dict:
     """Recompute manufacturing_cost for all blueprints from current Jita prices.
 
     Iterates every Blueprint that has a manufacturing_tree, recomputes the cost
-    using the current JitaMarketAnalytics prices, and commits.  Does not touch
+    using the current JitaMinPrice prices, and commits.  Does not touch
     any other fields.
 
     Returns:

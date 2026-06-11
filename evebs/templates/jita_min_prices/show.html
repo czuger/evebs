@@ -1,20 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h2 class="mb-0">Jita market analytics</h2>
+  <h2 class="mb-0">Jita min prices</h2>
   <form method="get" class="d-flex" role="search">
     <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm me-2" placeholder="Search item name">
     <button type="submit" class="btn btn-outline-secondary btn-sm">Search</button>
   </form>
 </div>
-<p class="text-muted small mb-3">P10 Jita sell price and 3-day volume-weighted forecast per item, computed by the analytics job.</p>
+<p class="text-muted small mb-3">P10 Jita sell price per item, from the jita_min_prices materialized view.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <tr>
       <th>Item</th>
       <th>Market group</th>
       <th class="text-end">Min sell price</th>
-      <th class="text-end">3-day forecast</th>
       <th>Updated</th>
     </tr>
     {% for r in rows %}
@@ -24,11 +23,10 @@
       </td>
       <td>{{ r.market_group_name }}</td>
       <td class="text-end">{{ r.min_sell_price | isk if r.min_sell_price is not none else '—' }}</td>
-      <td class="text-end">{{ r.price_forecast_3d | isk if r.price_forecast_3d is not none else '—' }}</td>
       <td>{{ r.updated_at.strftime('%Y-%m-%d %H:%M') if r.updated_at else '—' }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="5" class="text-center text-muted">
+    <tr><td colspan="4" class="text-center text-muted">
       {% if q %}No items match "{{ q }}".{% else %}No analytics data yet.{% endif %}
     </td></tr>
     {% endfor %}

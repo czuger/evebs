@@ -4,8 +4,8 @@ import pytest
 from tests.factories import (
     make_universe_region, make_universe_constellation,
     make_universe_system, make_trade_hub,
-    make_item, make_blueprint, make_jma, make_public_trade_order,
-    make_user_asset,
+    make_item, make_blueprint, make_jita_min_price, make_public_trade_order,
+    make_user_asset, remove_jita_min_price,
 )
 
 
@@ -24,8 +24,8 @@ def seeded(db, user):
     bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
 
     # UserIndustryCost view requires JMA for BOTH the material and the produced item.
-    make_jma(db, mat,  min_sell_price=5.0)     # material price → cost computation
-    make_jma(db, prod, min_sell_price=2000.0)  # produced item → view JOIN requirement
+    make_jita_min_price(db, mat,  min_sell_price=5.0)     # material price → cost computation
+    make_jita_min_price(db, prod, min_sell_price=2000.0)  # produced item → view JOIN requirement
 
     from evebs.models.tables.associations import eve_items_users, trade_hubs_users
     db.session.execute(eve_items_users.insert().values(user_id=user.id, eve_item_id=prod.id))
@@ -98,8 +98,7 @@ class TestBuyOrders:
     def test_no_row_when_material_has_no_jma_price(self, db, auth_client, seeded):
         """Blueprint whose material lacks a JMA price is excluded by the view."""
         client, _ = auth_client
-        from evebs.models import JitaMarketAnalytics
-        db.session.delete(db.session.get(JitaMarketAnalytics, 34))
+        remove_jita_min_price(db, seeded['mat'])
         db.session.commit()
         resp = client.get('/buy_orders')
         assert resp.status_code == 200

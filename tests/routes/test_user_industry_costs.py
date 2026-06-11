@@ -3,7 +3,7 @@ import pytest
 
 from tests.factories import (
     make_universe_region, make_universe_constellation, make_universe_system,
-    make_item, make_blueprint, make_jma,
+    make_item, make_blueprint, make_jita_min_price, remove_jita_min_price,
 )
 
 
@@ -22,9 +22,9 @@ def seeded(db):
     bp_rxn.activity_type = 'reaction'
     bp_rxn.manufacturing_tree = {'34': {'quantity': 400, 'name': 'Tritanium', 'chain': {}}}
 
-    make_jma(db, mat, min_sell_price=5.0)
-    make_jma(db, prod_mfg, min_sell_price=200.0)
-    make_jma(db, prod_rxn, min_sell_price=80.0)
+    make_jita_min_price(db, mat, min_sell_price=5.0)
+    make_jita_min_price(db, prod_mfg, min_sell_price=200.0)
+    make_jita_min_price(db, prod_rxn, min_sell_price=80.0)
 
     db.session.commit()
     return {'mat': mat, 'prod_mfg': prod_mfg, 'prod_rxn': prod_rxn}
@@ -73,8 +73,7 @@ class TestUserIndustryCosts:
 
     def test_item_missing_jma_price_excluded(self, db, auth_client, seeded):
         """Blueprint whose material has no JMA price must not appear."""
-        from evebs.models import JitaMarketAnalytics
-        db.session.delete(db.session.get(JitaMarketAnalytics, 34))
+        remove_jita_min_price(db, seeded['mat'])
         db.session.commit()
         client, _ = auth_client
         resp = client.get('/user_industry_costs/manufacturing')

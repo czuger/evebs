@@ -1,7 +1,7 @@
 """Tests for evebs/routes/production_costs.py."""
 import pytest
 
-from tests.factories import make_item, make_blueprint, make_jma
+from tests.factories import make_item, make_blueprint, make_jita_min_price
 
 
 class TestProductionCostsShow:
@@ -36,7 +36,7 @@ class TestProductionCostsMaterials:
         crafted = make_item(db, item_id=35, slug='ammo-pc', name='Ammo PC')
         bp = make_blueprint(db, crafted, prod_qtt=10)
         bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
-        make_jma(db, mat, min_sell_price=50.0)
+        make_jita_min_price(db, mat, min_sell_price=50.0)
         db.session.commit()
 
         resp = client.get('/production_costs/ammo-pc')
@@ -49,7 +49,7 @@ class TestProductionCostsMaterials:
         bp = make_blueprint(db, crafted, prod_qtt=1)
         bp.activity_type = 'reaction'
         bp.manufacturing_tree = {'36': {'quantity': 10, 'name': 'Fullerite', 'chain': {}}}
-        make_jma(db, mat, min_sell_price=100.0)
+        make_jita_min_price(db, mat, min_sell_price=100.0)
         db.session.commit()
 
         client, user = auth_client
@@ -66,7 +66,7 @@ class TestProductionCostsMaterials:
         crafted = make_item(db, item_id=39, slug='bc-pc', name='Battlecruiser PC')
         bp = make_blueprint(db, crafted, prod_qtt=1)
         bp.manufacturing_tree = {'38': {'quantity': 20, 'name': 'Noxcium', 'chain': {}}}
-        make_jma(db, mat, min_sell_price=200.0)
+        make_jita_min_price(db, mat, min_sell_price=200.0)
         db.session.commit()
 
         client, user = auth_client

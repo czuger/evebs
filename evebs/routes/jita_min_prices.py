@@ -8,14 +8,14 @@ from config import PER_PAGE
 from evebs.extensions import db
 from evebs.utils import SimplePagination
 
-bp = Blueprint('jita_market_analytics', __name__)
+bp = Blueprint('jita_min_prices', __name__)
 
 _SELECT = """
     SELECT
         ei.id AS item_id, ei.name AS item_name, ei.slug AS item_slug,
         COALESCE(mg.name, '') AS market_group_name,
-        jma.min_sell_price, jma.price_forecast_3d, jma.updated_at
-    FROM jita_market_analytics jma
+        jma.min_sell_price, jma.updated_at
+    FROM jita_min_prices jma
     JOIN eve_items ei ON ei.id = jma.id
     LEFT JOIN market_groups mg ON mg.id = ei.market_group_id
 """
@@ -25,7 +25,7 @@ _ORDER = """
 """
 
 
-@bp.route('/jita_market_analytics')
+@bp.route('/jita_min_prices')
 @login_required
 def show():
     page = request.args.get('page', 1, type=int)
@@ -51,7 +51,7 @@ def show():
     pagination = SimplePagination(page, PER_PAGE, total) if total else None
 
     return render_template(
-        'jita_market_analytics/show.html',
+        'jita_min_prices/show.html',
         rows=rows,
         pagination=pagination,
         q=q,

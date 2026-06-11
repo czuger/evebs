@@ -23,7 +23,7 @@ esi_logger.propagate = False
 from app import app
 from esi.download_public_orders.download import download as download_public_orders
 from process.update_blueprints import refresh_blueprint_manufacturing_costs
-from process.update_jita_market_analytics import update_jita_market_analytics
+from process.update_jita_min_prices import update_jita_min_prices
 
 MIN_LOOP_SECONDS = 60*15  # 15 minutes
 NON_HUB_EVERY = 4 # Every hour
@@ -46,7 +46,7 @@ with app.app_context():
         t_start = time.perf_counter()
 
         dl,  t_dl  = _step('download', lambda: download_public_orders(regions=region_scope))
-        jma, t_jma = _step('jita_market_analytics', update_jita_market_analytics)
+        jma, t_jma = _step('jita_min_prices', update_jita_min_prices)
         bpc, t_bpc = _step('blueprint_costs', refresh_blueprint_manufacturing_costs)
 
         elapsed = time.perf_counter() - t_start
@@ -63,8 +63,7 @@ with app.app_context():
             logger.info('    Sales recorded: %d  |  Skipped: %d no-hub  %d zero-volume',
                         dl['sales_created'], dl['skipped_no_hub'], dl['skipped_zero'])
         if jma:
-            logger.info('  JMA update (%.1fs): %d rows, %d with price_forecast_3d',
-                        t_jma, jma['rows'], jma['with_forecast'])
+            logger.info('  Jita min prices refresh (%.1fs): %d rows', t_jma, jma['rows'])
         if bpc:
             logger.info('  Blueprint costs (%.1fs): %d updated, %d no price',
                         t_bpc, bpc['updated'], bpc['no_price'])

@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from tests.factories import make_item, make_blueprint, make_jma
+from tests.factories import make_item, make_blueprint, make_jita_min_price
 
 
 def _write_blueprints_jsonl(path, entries):
@@ -45,7 +45,7 @@ class TestRefreshBlueprintManufacturingCosts:
         item = make_item(db, item_id=100, name='Widget', slug='widget')
         bp = make_blueprint(db, item)
         bp.manufacturing_tree = {'34': {'name': 'Tritanium', 'quantity': 10, 'chain': {}}}
-        make_jma(db, mat, min_sell_price=500.0)
+        make_jita_min_price(db, mat, min_sell_price=500.0)
         db.session.commit()
 
         from process.update_blueprints import refresh_blueprint_manufacturing_costs
@@ -93,8 +93,8 @@ class TestRefreshBlueprintManufacturingCosts:
             '34': {'name': 'Tritanium', 'quantity': 10, 'chain': {}},
             '35': {'name': 'Pyerite',   'quantity': 5,  'chain': {}},
         }
-        make_jma(db, mat1, min_sell_price=100.0)
-        make_jma(db, mat2, min_sell_price=200.0)
+        make_jita_min_price(db, mat1, min_sell_price=100.0)
+        make_jita_min_price(db, mat2, min_sell_price=200.0)
         db.session.commit()
 
         from process.update_blueprints import refresh_blueprint_manufacturing_costs

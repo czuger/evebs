@@ -2,12 +2,13 @@
 import json
 from datetime import date, datetime
 
+from sqlalchemy import text
+
 from evebs.models import (
     Blueprint,
     EveItem,
     EveItemsSavedList,
     IndustryJob,
-    JitaMarketAnalytics,
     MarketGroup,
     ProductionList,
     PublicTradeOrder,
@@ -20,6 +21,8 @@ from evebs.models import (
     UserAsset,
     UserSaleOrder,
 )
+
+JITA_SYSTEM_ID = 30000142
 
 
 def make_universe_region(db, region_id=10000002, name='The Forge'):
@@ -202,11 +205,49 @@ def make_user_asset(db, user, item, quantity=5, station=None, esi_item_id=None,
     return a
 
 
-def make_jma(db, item, min_sell_price=1000.0):
-    jma = JitaMarketAnalytics(id=item.id, min_sell_price=min_sell_price)
-    db.session.add(jma)
+def _ensure_jita_system(db):
+    if db.session.get(UniverseSystem, JITA_SYSTEM_ID) is None:
+        db.session.add(UniverseSystem(id=JITA_SYSTEM_ID, name='Jita', security_status=0.9))
+        db.session.flush()
+
+
+def _delete_jita_sell_orders(db, item):
+    db.session.execute(
+        text('DELETE FROM public_trade_orders WHERE eve_item_id = :iid '
+             'AND universe_system_id = :sid AND is_buy_order = FALSE'),
+        {'iid': item.id, 'sid': JITA_SYSTEM_ID})
+
+
+def make_jita_min_price(db, item, min_sell_price=1000.0):
+    """Set the item's Jita P10 min sell price (jita_min_prices materialized view) by
+    seeding a single Jita sell order at that price and refreshing the view. A lone order
+    makes the P10 resolve to exactly `min_sell_price`. Replaces any prior Jita sell order
+    for the item so repeated calls overwrite the price."""
+    _ensure_jita_system(db)
+    _delete_jita_sell_orders(db, item)
+    o = PublicTradeOrder(
+        order_id=9_000_000_000 + item.id,
+        universe_system_id=JITA_SYSTEM_ID,
+        eve_item_id=item.id,
+        is_buy_order=False,
+        end_time=datetime(2026, 12, 31),
+        price=min_sell_price,
+        range='region',
+        volume_remain=1_000_000,
+        volume_total=1_000_000,
+        min_volume=1,
+    )
+    db.session.add(o)
     db.session.flush()
-    return jma
+    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_min_prices'))
+    return o
+
+
+def remove_jita_min_price(db, item):
+    """Drop the item's Jita price (delete its Jita sell order) and refresh the view."""
+    _delete_jita_sell_orders(db, item)
+    db.session.flush()
+    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_min_prices'))
 
 
 def make_saved_list(db, user, description='My List', item_ids=None):

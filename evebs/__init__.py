@@ -66,7 +66,7 @@ def _register_blueprints(app):
     from evebs.routes.industry_jobs import bp as industry_jobs_bp
     from evebs.routes.invention_lists import bp as invention_lists_bp
     from evebs.routes.items import bp as items_bp
-    from evebs.routes.jita_market_analytics import bp as jita_market_analytics_bp
+    from evebs.routes.jita_min_prices import bp as jita_min_prices_bp
     from evebs.routes.jita_reactions import bp as jita_reactions_bp
     from evebs.routes.list_items import bp as list_items_bp
     from evebs.routes.main import bp as main_bp
@@ -101,7 +101,7 @@ def _register_blueprints(app):
     app.register_blueprint(invention_lists_bp)
     app.register_blueprint(copy_lists_bp)
     app.register_blueprint(sell_orders_bp)
-    app.register_blueprint(jita_market_analytics_bp)
+    app.register_blueprint(jita_min_prices_bp)
     app.register_blueprint(jita_reactions_bp)
     app.register_blueprint(user_industry_costs_bp)
     app.register_blueprint(industry_jobs_bp)

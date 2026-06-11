@@ -24,7 +24,7 @@ _SQL = """
     FROM blueprints b
     JOIN eve_items ei ON ei.id = b.produced_type_id
     LEFT JOIN market_groups mg ON mg.id = ei.market_group_id
-    JOIN jita_market_analytics jma ON jma.id = b.produced_type_id
+    JOIN jita_min_prices jma ON jma.id = b.produced_type_id
     WHERE b.activity_type = 'reaction'
       AND b.manufacturing_cost IS NOT NULL
       AND jma.min_sell_price IS NOT NULL

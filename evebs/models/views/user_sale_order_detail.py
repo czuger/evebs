@@ -17,8 +17,8 @@ class UserSaleOrderDetail(db.Model):
       - eve_items             – item name
       - blueprints            – manufacturing_cost, prod_qtt
       - universe_*            – for human-readable trade hub name
-      - jita_market_analytics – Jita min_sell_price (LEFT JOIN — nullable),
-                                updated by process/update_jita_market_analytics.py
+      - jita_min_prices       – Jita min_sell_price (LEFT JOIN — nullable),
+                                refreshed by process/update_jita_min_prices.py
 
     Key derived columns:
       cost                   = blueprints.manufacturing_cost / prod_qtt

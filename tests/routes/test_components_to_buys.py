@@ -2,7 +2,7 @@
 from tests.factories import (
     make_universe_region, make_universe_constellation,
     make_universe_system, make_trade_hub, make_universe_station,
-    make_item, make_blueprint, make_jma, make_production_list, make_user_asset,
+    make_item, make_blueprint, make_jita_min_price, make_production_list, make_user_asset,
 )
 
 
@@ -31,7 +31,7 @@ class TestComponentsToBuysCompute:
         crafted = make_item(db, item_id=35, slug='ammo-ctb', name='Ammo CTB')
         bp = make_blueprint(db, crafted, prod_qtt=10)
         bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
-        make_jma(db, mat, min_sell_price=50.0)
+        make_jita_min_price(db, mat, min_sell_price=50.0)
         make_production_list(db, user, crafted, hub, runs_count=2)
         db.session.commit()
 
@@ -50,7 +50,7 @@ class TestComponentsToBuysCompute:
         crafted = make_item(db, item_id=37, slug='charge-ctb', name='Charge CTB')
         bp = make_blueprint(db, crafted, prod_qtt=5)
         bp.manufacturing_tree = {'36': {'quantity': 50, 'name': 'Pyerite', 'chain': {}}}
-        make_jma(db, mat, min_sell_price=10.0)
+        make_jita_min_price(db, mat, min_sell_price=10.0)
         make_production_list(db, user, crafted, hub, runs_count=1)
         make_user_asset(db, user, mat, station=station, quantity=20)
         db.session.commit()

@@ -7,7 +7,7 @@ from sqlalchemy import func
 
 from evebs.extensions import db
 from evebs.models import (
-    EveItem, JitaMarketAnalytics, ProductionList, BlueprintModification,
+    EveItem, JitaMinPrice, ProductionList, BlueprintModification,
     UserAsset, UniverseStation, UniverseStructure, UnknownStructure,
 )
 
@@ -60,7 +60,7 @@ def _compute_components(user) -> list:
     # Bulk-load EveItems and Jita prices in one query each
     item_map = {ei.id: ei for ei in EveItem.query.filter(EveItem.id.in_(mat_ids)).all()}
     jma_map = {jma.id: jma.min_sell_price
-               for jma in JitaMarketAnalytics.query.filter(JitaMarketAnalytics.id.in_(mat_ids)).all()}
+               for jma in JitaMinPrice.query.filter(JitaMinPrice.id.in_(mat_ids)).all()}
 
     results = []
     for mat_id, qty_needed in material_qtys.items():

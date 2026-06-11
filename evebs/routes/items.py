@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from flask import Blueprint, render_template, abort
 from flask_login import current_user
 
-from evebs.models import EveItem, UniverseSystem, JitaMarketAnalytics
+from evebs.models import EveItem, UniverseSystem, JitaMinPrice
 from evebs.models.tables.buy_orders_analytic import BuyOrdersAnalytic
 
 bp = Blueprint('items', __name__)
@@ -22,7 +22,7 @@ def _manufacturing_context(item):
     mat_ids  = [int(k) for k in chain]
     item_map = {ei.id: ei for ei in EveItem.query.filter(EveItem.id.in_(mat_ids)).all()}
     jma_map  = {jma.id: jma.min_sell_price
-                for jma in JitaMarketAnalytics.query.filter(JitaMarketAnalytics.id.in_(mat_ids)).all()}
+                for jma in JitaMinPrice.query.filter(JitaMinPrice.id.in_(mat_ids)).all()}
 
     materials = []
     for mat_id_str, mat_data in chain.items():
@@ -84,7 +84,7 @@ def show(slug):
         abort(404)
     jita      = UniverseSystem.query.filter_by(id=30000142, trade_hub=True).first()
     mfg       = _manufacturing_context(item)
-    jma_item  = JitaMarketAnalytics.query.get(item.id)
+    jma_item  = JitaMinPrice.query.get(item.id)
     jita_buy  = BuyOrdersAnalytic.query.filter_by(eve_item_id=item.id, universe_system_id=30000142).first()
     return render_template('items/show.html',
                            item=item,
