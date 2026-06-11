@@ -9,10 +9,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
-from app import app
-from config import setup_logging, set_logger
+from config import set_logger
 from esi.client import EsiClient
 from esi.errors import BadRequest, EsiError, NotFound
+from evebs import create_db_app
 from evebs.extensions import db
 from evebs.models import UniverseRegion, MarketHistory
 
@@ -133,15 +133,16 @@ def download_market_histories(forge_only=False):
 
 
 def main():
-    setup_logging()
-
+    # No setup_logging() / full app: this script logs only to its own
+    # logs/download_market_histories.log (set_logger above) and runs against a DB-only
+    # app, so it never imports blueprints or opens logs/timings.log. See CLAUDE.md.
     parser = argparse.ArgumentParser(
         description='Download exact per-region market history from ESI into market_histories.')
     parser.add_argument('-f', '--forge', action='store_true',
                         help='Download The Forge (Jita) region only.')
     args = parser.parse_args()
 
-    with app.app_context():
+    with create_db_app().app_context():
         download_market_histories(forge_only=args.forge)
 
 

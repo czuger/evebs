@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Avoid local imports. Follow PEP 8.
 - NO MONKEYPATCHING EVER
 - No broad exception handling — never `except Exception` (or bare `except`). Catch specific exception types (e.g. `EsiError`, `ValueError`).
+- Standalone scripts must NOT build the full web app (`from app import app` or `create_app()`). That imports every blueprint, some of which open web log files at import time (e.g. `logs/timings.log`) and fail under a script's user/permissions in production. Instead use `from evebs import create_db_app` and `with create_db_app().app_context(): ...` for DB access, and do not call `setup_logging()` (it also opens `logs/timings.log`); use `set_logger('<script>')` for the script's own dedicated log file.
 - When using argparse always add shortcuts for switches (e.g. `--tests` / `-t`).
 - Avoid environment variables for runtime config; use script switches instead.
 - Always use `alembic revision -m "..."` to generate a new migration.
@@ -61,7 +62,7 @@ python scripts/seed_static_data.py
 
 ### Flask App (`evebs/`)
 
-- **`evebs/__init__.py`**: App factory (`create_app()`). Registers all blueprints and applies `ProxyFix` + `APPLICATION_ROOT` path-stripping middleware.
+- **`evebs/__init__.py`**: App factory (`create_app()`). Registers all blueprints and applies `ProxyFix` + `APPLICATION_ROOT` path-stripping middleware. Blueprint imports live *inside* `_register_blueprints()` (a deliberate exception to the imports-at-top rule) so that importing the `evebs` package from a script does not pull in every route module. Also exposes `create_db_app()` — a minimal config+DB-only app for standalone scripts (no blueprints, no route side-effects).
 - **`evebs/models/`**: SQLAlchemy models split into subdirectories:
   - `tables/` — regular ORM-mapped tables (one file per model)
   - `views/` — read-only SQL view models (`UserSaleOrderDetail`, `UserIndustryCost`) — do not migrate them; view-backed models carry `__table_args__ = {'info': {'is_view': True}}`
