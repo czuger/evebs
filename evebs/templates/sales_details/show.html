@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="d-flex align-items-center gap-3 my-4">
+  <img src="https://imageserver.eveonline.com/Type/{{ item.id }}_64.png" alt="{{ item.name }}" class="rounded">
+  <div>
+    <h1 class="mb-0"><a href="{{ url_for('items.show', slug=item.slug or item.id) }}" class="text-decoration-none">{{ item.name }}</a> — Sales details</h1>
+    <p class="text-muted small mb-0 mt-1">{{ total }} recorded sale{{ 's' if total != 1 }} (sales_finals), most recent first.</p>
+  </div>
+</div>
+
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm align-middle">
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>Trade hub</th>
+        <th class="text-end">Price</th>
+        <th class="text-end">Volume</th>
+        <th class="text-end">Order ID</th>
+        <th>Created at</th>
+        <th>Updated at</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>{{ r.day }}</td>
+        <td>{{ r.universe_system.name if r.universe_system else r.universe_system_id }}</td>
+        <td class="text-end font-monospace">{{ r.price | isk }}</td>
+        <td class="text-end font-monospace">{{ r.volume | vol }}</td>
+        <td class="text-end font-monospace">{{ r.order_id }}</td>
+        <td class="text-nowrap small text-muted">{{ r.created_at.strftime('%Y-%m-%d %H:%M') if r.created_at else '—' }}</td>
+        <td class="text-nowrap small text-muted">{{ r.updated_at.strftime('%Y-%m-%d %H:%M') if r.updated_at else '—' }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No recorded sales for this item.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+{% endblock %}

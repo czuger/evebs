@@ -77,6 +77,7 @@ def _register_blueprints(app):
     from evebs.routes.my_assets import bp as my_assets_bp
     from evebs.routes.production_costs import bp as production_costs_bp
     from evebs.routes.production_lists import bp as production_lists_bp
+    from evebs.routes.sales_details import bp as sales_details_bp
     from evebs.routes.sell_orders import bp as sell_orders_bp
     from evebs.routes.user_blueprints import bp as user_blueprints_bp
     from evebs.routes.user_industry_costs import bp as user_industry_costs_bp
@@ -102,6 +103,7 @@ def _register_blueprints(app):
     app.register_blueprint(user_blueprints_bp)
     app.register_blueprint(invention_lists_bp)
     app.register_blueprint(copy_lists_bp)
+    app.register_blueprint(sales_details_bp)
     app.register_blueprint(sell_orders_bp)
     app.register_blueprint(jita_min_prices_bp)
     app.register_blueprint(price_spreads_bp)
