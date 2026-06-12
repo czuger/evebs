@@ -6,16 +6,17 @@
     <button type="submit" class="btn btn-outline-secondary btn-sm">Refresh reaction formulas</button>
   </form>
 </div>
-<p class="text-muted small mb-3">Your reaction formulas' profitability at Jita, computed live from current Jita prices.</p>
+<p class="text-muted small mb-3">All reactions' profitability at Jita, computed live from current Jita prices and your personal tax settings.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <tr>
       <th>Item</th>
+      <th class="text-center">Owned</th>
       <th>Market group</th>
-      <th class="text-end">Reaction cost</th>
-      <th class="text-end">Est. sell price</th>
-      <th class="text-end">Sell tax</th>
-      <th class="text-end">Benefit</th>
+      <th class="text-end">Reaction cost / item</th>
+      <th class="text-end">Est. sell price / item</th>
+      <th class="text-end">Sell tax / item</th>
+      <th class="text-end">Benefit per batch</th>
     </tr>
     {% for jr in rows %}
     {% if jr.benefit > 0 %}
@@ -28,6 +29,12 @@
       <td class="item_name">
         <a href="{{ url_for('items.show', slug=jr.item_slug or jr.item_id) }}">{{ jr.item_name }}</a>
       </td>
+      <td class="text-center">
+        {% if jr.blueprint_id in owned_bp_ids %}
+        <img src="https://api.iconify.design/streamline-ultimate:chemical-hexagon-1.svg" width="16" height="16"
+             class="opacity-75" data-bs-toggle="tooltip" title="You own this reaction blueprint">
+        {% endif %}
+      </td>
       <td>{{ jr.market_group_name }}</td>
       <td class="text-end">
         <a href="{{ url_for('production_costs.show', slug=jr.item_slug or jr.item_id) }}" class="text-decoration-none">{{ jr.reaction_cost | isk }}</a>
@@ -39,9 +46,10 @@
       <td class="text-end">{{ jr.benefit | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="6" class="text-center text-muted">No data — sync your reaction formulas first.</td></tr>
+    <tr><td colspan="7" class="text-center text-muted">No reactions found — check that Jita prices are loaded.</td></tr>
     {% endfor %}
   </table>
 </div>
 {% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+<script>document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el))</script>
 {% endblock %}
