@@ -16,6 +16,7 @@
       <th class="text-end">Forecast (3d)</th>
       <th class="text-end">Spread</th>
       <th class="text-center">Trend</th>
+      <th>Method</th>
     </tr>
     {% for r in rows %}
     <tr>
@@ -34,9 +35,10 @@
           <span class="badge bg-secondary">→ Flat</span>
         {% endif %}
       </td>
+      <td class="text-muted small">{{ r.method }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="5" class="text-center text-muted">
+    <tr><td colspan="6" class="text-center text-muted">
       {% if q %}No items match "{{ q }}".{% else %}No spread data yet.{% endif %}
     </td></tr>
     {% endfor %}

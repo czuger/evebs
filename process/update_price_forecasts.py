@@ -5,8 +5,8 @@ Source: market_histories for The Forge (region 10000002), last 90 days of daily 
 Tiered by how many days of data an item has:
   - >= 14 days : volume-weighted linear regression (SQL), evaluated at CURRENT_DATE + 3.
   - <  14 days : fall back to the current jita_min_prices.min_sell_price.
-(The >= 90-day Prophet tier is a planned phase-2 upgrade; it will overwrite the `linear`
-rows for that subset with method='prophet'.)
+The >= 90-day tier is upgraded to Prophet by process/update_prophet_forecasts.py, which
+runs this baseline first and then overwrites those rows with method='prophet'.
 """
 import argparse
 import os
