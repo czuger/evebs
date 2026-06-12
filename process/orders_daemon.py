@@ -24,6 +24,7 @@ from app import app
 from esi.download_public_orders.download import download as download_public_orders
 from process.update_blueprints import refresh_blueprint_manufacturing_costs
 from process.update_jita_min_prices import update_jita_min_prices
+from process.update_price_forecasts import refresh_forecast_mvs
 
 MIN_LOOP_SECONDS = 60*15  # 15 minutes
 NON_HUB_EVERY = 4 # Every hour
@@ -48,6 +49,7 @@ with app.app_context():
         dl,  t_dl  = _step('download', lambda: download_public_orders(regions=region_scope))
         jma, t_jma = _step('jita_min_prices', update_jita_min_prices)
         bpc, t_bpc = _step('blueprint_costs', refresh_blueprint_manufacturing_costs)
+        fmv, t_fmv = _step('forecast_mvs', refresh_forecast_mvs)
 
         elapsed = time.perf_counter() - t_start
         logger.info('=== Step %d done in %.1fs ===', step, elapsed)
@@ -67,6 +69,9 @@ with app.app_context():
         if bpc:
             logger.info('  Blueprint costs (%.1fs): %d updated, %d no price',
                         t_bpc, bpc['updated'], bpc['no_price'])
+        if fmv:
+            logger.info('  Forecast MVs (%.1fs): price %d items, volume %d items',
+                        t_fmv, fmv['price_items'], fmv['vol_items'])
         logger.info('  Total step time: %.1fs', elapsed)
 
         sleep_for = MIN_LOOP_SECONDS - elapsed

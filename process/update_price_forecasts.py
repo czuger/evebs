@@ -73,18 +73,30 @@ WHERE COALESCE(l.lin_forecast, j.min_sell_price) IS NOT NULL
 """
 
 
+def refresh_forecast_mvs():
+    """Refresh the dual-window (7d + 30d) linear-regression forecast MVs (price + volume,
+    non-concurrent) from sales_finals. Returns the per-MV item counts. Cheap enough to run
+    every orders-daemon pass; does NOT touch the jita_price_forecasts table or Prophet rows."""
+    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_price_forecast_linear_regression'))
+    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_volume_forecast_linear_regression'))
+    db.session.commit()
+
+    price_items = db.session.execute(
+        text('SELECT COUNT(DISTINCT type_id) FROM jita_price_forecast_linear_regression')).scalar()
+    vol_items = db.session.execute(
+        text('SELECT COUNT(DISTINCT type_id) FROM jita_volume_forecast_linear_regression')).scalar()
+    logger.info('forecast MVs refreshed: price %d items, volume %d items.', price_items, vol_items)
+    return {'price_items': price_items, 'vol_items': vol_items}
+
+
 def update_price_forecasts():
-    """Recompute the jita_price_forecasts table and refresh the
-    jita_price_forecast_linear_regression materialized view. Returns counts."""
+    """Recompute the jita_price_forecasts table and refresh the forecast materialized views.
+    Returns counts."""
     db.session.execute(text('DELETE FROM jita_price_forecasts'))
     db.session.execute(text(_SQL), {'forge_region_id': FORGE_REGION_ID})
     db.session.commit()
 
-    # Refresh the dual-window (7d + 30d) linear-regression forecast MVs (price + volume,
-    # non-concurrent).
-    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_price_forecast_linear_regression'))
-    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_volume_forecast_linear_regression'))
-    db.session.commit()
+    mvs = refresh_forecast_mvs()
 
     counts = dict(db.session.execute(
         text('SELECT method, COUNT(*) FROM jita_price_forecasts GROUP BY method')
@@ -92,15 +104,10 @@ def update_price_forecasts():
     linear = counts.get('linear', 0)
     min_price = counts.get('min_price', 0)
     total = linear + min_price
-    price_items = db.session.execute(
-        text('SELECT COUNT(DISTINCT type_id) FROM jita_price_forecast_linear_regression')).scalar()
-    vol_items = db.session.execute(
-        text('SELECT COUNT(DISTINCT type_id) FROM jita_volume_forecast_linear_regression')).scalar()
-    logger.info('jita_price_forecasts updated: %d rows (%d linear, %d min_price); '
-                'forecast MVs refreshed: price %d items, volume %d items.',
-                total, linear, min_price, price_items, vol_items)
+    logger.info('jita_price_forecasts updated: %d rows (%d linear, %d min_price).',
+                total, linear, min_price)
     return {'rows': total, 'linear': linear, 'min_price': min_price,
-            'price_items': price_items, 'vol_items': vol_items}
+            'price_items': mvs['price_items'], 'vol_items': mvs['vol_items']}
 
 
 def main():

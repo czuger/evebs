@@ -1,11 +1,18 @@
 """Tests for process/update_price_forecasts.py — the tiered 3-day forecast table."""
 from datetime import date, timedelta
 
-from process.update_price_forecasts import update_price_forecasts, FORGE_REGION_ID
+from sqlalchemy import text
+
+from process.update_price_forecasts import (
+    update_price_forecasts, refresh_forecast_mvs, FORGE_REGION_ID,
+)
 from evebs.models import JitaPriceForecast
-from tests.factories import make_item, make_market_history, make_jita_min_price
+from tests.factories import (
+    make_item, make_market_history, make_jita_min_price, make_universe_system, make_sales_final,
+)
 
 _EPOCH = date(1970, 1, 1)
+JITA = 30000142
 
 
 def _epoch_days(d):
@@ -69,3 +76,28 @@ class TestUpdatePriceForecasts:
         update_price_forecasts()
 
         assert db.session.get(JitaPriceForecast, 37) is None
+
+
+class TestRefreshForecastMvs:
+    def test_refreshes_mvs_from_sales_finals(self, db):
+        """refresh_forecast_mvs rebuilds both forecast MVs from Jita sales_finals."""
+        jita = make_universe_system(db, system_id=JITA, name='Jita')
+        item = make_item(db, item_id=34, name='Tritanium', slug='tritanium')
+        today = date.today()
+        oid = 5000
+        for i in range(6):
+            d = today - timedelta(days=6 - i)
+            make_sales_final(db, item, jita, day=d, volume=1000 + 100 * i,
+                             price=100.0 + 5.0 * i, order_id=oid)
+            oid += 1
+        db.session.commit()
+
+        result = refresh_forecast_mvs()
+        assert result['price_items'] >= 1
+        assert result['vol_items'] >= 1
+
+        # MVs are freshly rebuilt: the furthest forecast day is CURRENT_DATE + 3.
+        max_day = db.session.execute(text(
+            'SELECT MAX(forecast_date) FROM jita_price_forecast_linear_regression '
+            'WHERE type_id = :t'), {'t': item.id}).scalar()
+        assert max_day == today + timedelta(days=3)
