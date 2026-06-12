@@ -32,7 +32,11 @@ from evebs.models.views import (
     UserBlueprintExtended,
     JitaPriceSpread,
 )
-from evebs.models.materialized_views import JitaMinPrice
+from evebs.models.materialized_views import (
+    JitaMinPrice,
+    JitaPriceForecastLinearRegression,
+    JitaVolumeForecastLinearRegression,
+)
 
 
 __all__ = [
@@ -65,6 +69,8 @@ __all__ = [
     'UserBlueprintExtended',
     'JitaPriceSpread',
     'JitaMinPrice',
+    'JitaPriceForecastLinearRegression',
+    'JitaVolumeForecastLinearRegression',
     'MarketHistory',
     'JitaPriceForecast',
     'IndustryJob',

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% macro conf_badge(c) -%}
+  {%- if c == 'high' %}<span class="badge bg-success">high</span>
+  {%- elif c == 'medium' %}<span class="badge bg-warning text-dark">medium</span>
+  {%- elif c %}<span class="badge bg-secondary">low</span>
+  {%- else %}—{% endif -%}
+{%- endmacro %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">Price forecasts</h2>
+  <form method="get" class="d-flex" role="search">
+    <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm me-2" placeholder="Search item name">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">Search</button>
+  </form>
+</div>
+<p class="text-muted small mb-3">Linear-regression forecasts at the +7d horizon from Jita completed sales (volume-weighted price; daily volume), trained over two windows: 7-day and 30-day. |Spread| / |Spread %| compare the 30-day vs 7-day forecast.</p>
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm align-middle">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="text-center border-start" colspan="6">Price (+7d)</th>
+        <th class="text-center border-start" colspan="4">Volume (+7d)</th>
+      </tr>
+      <tr>
+        <th>Item</th>
+        <th class="text-end border-start">7d win</th>
+        <th class="text-end">30d win</th>
+        <th class="text-end">|Spread|</th>
+        <th class="text-end">|Spread %|</th>
+        <th class="text-center">conf 7d</th>
+        <th class="text-center">conf 30d</th>
+        <th class="text-end border-start">7d win</th>
+        <th class="text-end">30d win</th>
+        <th class="text-center">conf 7d</th>
+        <th class="text-center">conf 30d</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for r in rows %}
+    <tr>
+      <td class="item_name">
+        <a href="{{ url_for('price_forecasts.show', item_id=r.item_id) }}">{{ r.item_name }}</a>
+      </td>
+      <td class="text-end font-monospace border-start">{{ r.price_7d | isk if r.price_7d is not none else '—' }}</td>
+      <td class="text-end font-monospace">{{ r.price_30d | isk if r.price_30d is not none else '—' }}</td>
+      <td class="text-end font-monospace">{{ r.spread | isk if r.spread is not none else '—' }}</td>
+      <td class="text-end font-monospace">{{ r.spread_pct | pcent if r.spread_pct is not none else '—' }}</td>
+      <td class="text-center">{{ conf_badge(r.price_conf_7d) }}</td>
+      <td class="text-center">{{ conf_badge(r.price_conf_30d) }}</td>
+      <td class="text-end font-monospace border-start">{{ r.vol_7d | vol if r.vol_7d is not none else '—' }}</td>
+      <td class="text-end font-monospace">{{ r.vol_30d | vol if r.vol_30d is not none else '—' }}</td>
+      <td class="text-center">{{ conf_badge(r.vol_conf_7d) }}</td>
+      <td class="text-center">{{ conf_badge(r.vol_conf_30d) }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="11" class="text-center text-muted">
+      {% if q %}No items match "{{ q }}".{% else %}No forecast data yet.{% endif %}
+    </td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+{% endblock %}

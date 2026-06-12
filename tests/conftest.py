@@ -24,9 +24,11 @@ def truncate_all_tables(db):
     if db.engine.dialect.name == 'postgresql':
         names = ', '.join(f'"{t.name}"' for t in tables)
         db.session.execute(text(f'TRUNCATE {names} RESTART IDENTITY CASCADE'))
-        # jita_min_prices is a materialized view over public_trade_orders (excluded from
-        # the TRUNCATE above as a view) — refresh it so a prior test's prices don't leak.
+        # Materialized views (excluded from the TRUNCATE as views) — refresh them so a
+        # prior test's data doesn't leak.
         db.session.execute(text('REFRESH MATERIALIZED VIEW jita_min_prices'))
+        db.session.execute(text('REFRESH MATERIALIZED VIEW jita_price_forecast_linear_regression'))
+        db.session.execute(text('REFRESH MATERIALIZED VIEW jita_volume_forecast_linear_regression'))
     else:
         for table in reversed(tables):
             db.session.execute(table.delete())

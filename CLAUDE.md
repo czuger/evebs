@@ -13,6 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - When using argparse always add shortcuts for switches (e.g. `--tests` / `-t`).
 - Avoid environment variables for runtime config; use script switches instead.
 - Always use `alembic revision -m "..."` to generate a new migration.
+- Refresh materialized views with plain `REFRESH MATERIALIZED VIEW <name>` — never `CONCURRENTLY`. It briefly takes an ACCESS EXCLUSIVE lock but needs no unique index and runs inside the normal session transaction (`db.session.execute(...)` + `commit()`), with no AUTOCOMMIT connection.
 
 ## Overview
 
@@ -70,7 +71,7 @@ blueprints, manufacturable, reaction-involved, or input materials of those bluep
 - **`evebs/__init__.py`**: App factory (`create_app()`). Registers all blueprints and applies `ProxyFix` + `APPLICATION_ROOT` path-stripping middleware. Blueprint imports live *inside* `_register_blueprints()` (a deliberate exception to the imports-at-top rule) so that importing the `evebs` package from a script does not pull in every route module. Also exposes `create_db_app()` — a minimal config+DB-only app for standalone scripts (no blueprints, no route side-effects).
 - **`evebs/models/`**: SQLAlchemy models split into subdirectories:
   - `tables/` — regular ORM-mapped tables (one file per model)
-  - `views/` — read-only SQL view models (`UserSaleOrderDetail`, `UserIndustryCost`); `materialized_views/` — materialized-view models (`JitaMinPrice`) — do not migrate either; both carry `__table_args__ = {'info': {'is_view': True}}`
+  - `views/` — read-only SQL view models (`UserSaleOrderDetail`, `UserIndustryCost`); `materialized_views/` — materialized-view models (`JitaMinPrice`, `JitaPriceForecastLinearRegression`) — do not migrate either; both carry `__table_args__ = {'info': {'is_view': True}}`
 - **`evebs/extensions.py`**: SQLAlchemy `db` and `login_manager` singletons.
 - **`evebs/helpers.py`**: Jinja2 globals (`print_isk`, `print_pcent`, `print_volume`) — format ISK numbers as 1.2B, 34.5M, etc.
 - **`evebs/utils.py`**: `SimplePagination` helper used by route handlers.
@@ -105,8 +106,8 @@ Standalone scripts (no longer orchestrated by hourly/daily/weekly wrappers):
 
 - `orders_daemon.py` — long-running daemon; downloads public orders every 15 min, runs `update_jita_min_prices` after each pass. Trade-hub regions every pass; all regions every 4th pass.
 - `update_blueprints.py` — upserts `Blueprint` rows from `data/manufacturing_tree.json` and computes `manufacturing_cost` from current Jita prices.
-- `update_jita_min_prices.py` — refreshes the `jita_min_prices` materialized view (P10 Jita sell price per item) via `REFRESH MATERIALIZED VIEW CONCURRENTLY`.
-- `update_price_forecasts.py` — recomputes the `jita_price_forecasts` table (3-day price forecast per item) from `market_histories` (The Forge): volume-weighted SQL linear regression for items with ≥14 days, `jita_min_prices` fallback below that.
+- `update_jita_min_prices.py` — refreshes the `jita_min_prices` materialized view (P10 Jita sell price per item).
+- `update_price_forecasts.py` — recomputes the `jita_price_forecasts` table (3-day price forecast per item) from `market_histories` (The Forge): volume-weighted SQL linear regression for items with ≥14 days, `jita_min_prices` fallback below that. Also refreshes the `jita_price_forecast_linear_regression` materialized view (7d/30d daily forecasts + confidence).
 - `update_prophet_forecasts.py` — upgrades the ≥90-day tier: runs the SQL baseline above, then fits Facebook Prophet serially on each ≥90-day item's daily Forge `average` series and overwrites those rows with `method='prophet'` (progress + ETA logged every 100 items). Heavy dependency (prophet/pandas/Stan); a full run is ~tens of minutes. Standalone — not in the orders daemon.
 - `update_public_orders.py` — standalone public order download + price update.
 - `sync_assets.py` — syncs user blueprint/asset data from ESI.
@@ -135,6 +136,7 @@ Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials from config JSON under
 - **`IndustryJob`**: Active industry jobs downloaded from ESI.
 - **`JitaMinPrice`**: Postgres **materialized view** `jita_min_prices` — one row per item type with `min_sell_price` (P10 Jita ask over `public_trade_orders`). Refreshed by `process/update_jita_min_prices.py`. View-backed model under `evebs/models/views/`.
 - **`JitaPriceForecast`**: Regular table `jita_price_forecasts` — one row per item type with `price_forecast_3d` (3-day Jita price forecast) and `method` (`prophet`/`linear`/`min_price`). Built by `process/update_price_forecasts.py` (SQL) and upgraded for the ≥90-day tier by `process/update_prophet_forecasts.py` (Prophet).
+- **`JitaPriceForecastLinearRegression`** / **`JitaVolumeForecastLinearRegression`**: Postgres **materialized views** `jita_price_forecast_linear_regression` / `jita_volume_forecast_linear_regression` — one row per (item, forecast_date) for the next 7 days. Each item is fitted with **two** linear regressions (`regr_*`) over Jita `sales_finals`: a **7-day** and a **30-day** training window (the price MV regresses the volume-weighted daily price `SUM(volume*price)/SUM(volume)`, the volume MV the daily `SUM(volume)`). Columns `forecast_7d`/`forecast_30d` (each window's daily forecast), `spread` (`|forecast_30d − forecast_7d|`) / `spread_percent` (rel. to 30d, abs), and per-window `slope_*`/`intercept_*`/`r2_*`/`n_*`/`confidence_*` (`confidence_7d`: high r²≥0.85 & n≥5 / medium r²≥0.60 & n≥3; `confidence_30d`: high n≥20 / medium n≥10). Refreshed by `process/update_price_forecasts.py`. Both shown on the `/price_forecasts` screen — list at the +7d horizon (both windows + spread + confidences), per-item detail with dual-window charts.
 - **`JitaPriceSpread`**: Read-only SQL view `jita_price_spreads` joining `jita_min_prices` + `jita_price_forecasts` + `eve_items` — `spread`/`spread_pcent` (forecast vs current), `direction` (`up`/`down`/`flat`, ±2% band) and `is_hard` (|spread| ≥ 10%). Shown on the `/price_spreads` page.
 - **`BuyOrdersAnalytic`**: Per-item/hub computed buy-order analytics.
 - **`EveItemsSavedList`**: User-saved item ID lists (JSON column).

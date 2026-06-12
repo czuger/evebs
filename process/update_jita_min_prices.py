@@ -20,10 +20,10 @@ logger = set_logger('update_jita_min_prices')
 
 
 def update_jita_min_prices():
-    # REFRESH ... CONCURRENTLY needs the unique index (ix_jita_min_prices_id) and cannot
-    # run inside a transaction block — use an AUTOCOMMIT connection.
-    with db.engine.connect().execution_options(isolation_level='AUTOCOMMIT') as conn:
-        conn.execute(text('REFRESH MATERIALIZED VIEW CONCURRENTLY jita_min_prices'))
+    # Plain (non-concurrent) refresh — see CLAUDE.md. Briefly locks the view but needs no
+    # unique index or AUTOCOMMIT connection, and runs fine inside the session transaction.
+    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_min_prices'))
+    db.session.commit()
 
     count = db.session.execute(text('SELECT COUNT(*) FROM jita_min_prices')).scalar()
     logger.info('jita_min_prices refreshed: %d rows.', count)

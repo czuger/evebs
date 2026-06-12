@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% macro conf_badge(c) -%}
+  {%- if c == 'high' %}<span class="badge bg-success">high</span>
+  {%- elif c == 'medium' %}<span class="badge bg-warning text-dark">medium</span>
+  {%- else %}<span class="badge bg-secondary">low</span>{% endif -%}
+{%- endmacro %}
+{% macro window_card(label, conf, r2, n) -%}
+  <div class="card h-100"><div class="card-body py-2">
+    <div class="fw-semibold mb-1">{{ label }} {{ conf_badge(conf) }}</div>
+    <div class="text-muted small">
+      r² {{ '%.3f' % r2 if r2 is not none else '—' }} · n {{ n if n is not none else '—' }}
+    </div>
+  </div></div>
+{%- endmacro %}
+{% macro window_cards(m) -%}
+  <div class="row g-2 mb-3">
+    {% if m %}
+    <div class="col-6">{{ window_card('7-day window', m.confidence_7d, m.r2_7d, m.n_7d) }}</div>
+    <div class="col-6">{{ window_card('30-day window', m.confidence_30d, m.r2_30d, m.n_30d) }}</div>
+    {% else %}
+    <div class="col-12"><div class="card"><div class="card-body py-2">
+      <span class="badge bg-secondary">no data</span>
+    </div></div></div>
+    {% endif %}
+  </div>
+{%- endmacro %}
+{% block content %}
+
+<div class="d-flex align-items-center gap-3 my-4">
+  <img src="https://imageserver.eveonline.com/Type/{{ item.id }}_64.png" alt="{{ item.name }}" class="rounded">
+  <div>
+    <h1 class="mb-0"><a href="{{ url_for('items.show', slug=item.slug or item.id) }}" class="text-decoration-none">{{ item.name }}</a> — Forecast</h1>
+    <p class="text-muted small mb-0 mt-1">Linear regression over Jita completed sales (volume-weighted price &amp; daily volume), trained over a 7-day and a 30-day window.</p>
+  </div>
+</div>
+
+<div class="row g-4">
+
+  <div class="col-lg-6">
+    {{ window_cards(price_metrics) }}
+    {% if price_series %}
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">Price forecast (next 7 days)</div>
+      <div class="card-body"><div style="height:260px"><canvas id="priceChart"></canvas></div></div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm table-hover">
+        <thead><tr><th>Date</th><th class="text-end">7d win</th><th class="text-end">30d win</th><th class="text-end">|Spread|</th></tr></thead>
+        <tbody>
+          {% for r in price_rows %}
+          <tr><td>{{ r.forecast_date }}</td>
+              <td class="text-end font-monospace">{{ r.forecast_7d | isk if r.forecast_7d is not none else '—' }}</td>
+              <td class="text-end font-monospace">{{ r.forecast_30d | isk if r.forecast_30d is not none else '—' }}</td>
+              <td class="text-end font-monospace">{{ r.spread | isk if r.spread is not none else '—' }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}<p class="text-muted">No price forecast available.</p>{% endif %}
+  </div>
+
+  <div class="col-lg-6">
+    {{ window_cards(vol_metrics) }}
+    {% if vol_series %}
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">Volume forecast (next 7 days)</div>
+      <div class="card-body"><div style="height:260px"><canvas id="volChart"></canvas></div></div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm table-hover">
+        <thead><tr><th>Date</th><th class="text-end">7d win</th><th class="text-end">30d win</th><th class="text-end">|Spread|</th></tr></thead>
+        <tbody>
+          {% for r in vol_rows %}
+          <tr><td>{{ r.forecast_date }}</td>
+              <td class="text-end font-monospace">{{ r.forecast_7d | vol if r.forecast_7d is not none else '—' }}</td>
+              <td class="text-end font-monospace">{{ r.forecast_30d | vol if r.forecast_30d is not none else '—' }}</td>
+              <td class="text-end font-monospace">{{ r.spread | vol if r.spread is not none else '—' }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}<p class="text-muted">No volume forecast available.</p>{% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}{% if price_series or vol_series %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+  const opts = (yLabel) => ({
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, position: 'bottom' } },
+    scales: { y: { title: { display: true, text: yLabel } }, x: { ticks: { maxTicksLimit: 7 } } },
+  });
+  const dualData = (series) => ({
+    labels: series.map(d => d.date),
+    datasets: [
+      { label: '7-day window',  data: series.map(d => d.w7),  borderColor: '#0d6efd', borderWidth: 1.5, pointRadius: 0, tension: 0.1 },
+      { label: '30-day window', data: series.map(d => d.w30), borderColor: '#fd7e14', borderWidth: 1.5, pointRadius: 0, tension: 0.1, borderDash: [5, 4] },
+    ],
+  });
+  const P = {{ price_series | tojson }};
+  if (P.length) new Chart(document.getElementById('priceChart'), {
+    type: 'line', data: dualData(P), options: opts('Price (ISK)'),
+  });
+  const V = {{ vol_series | tojson }};
+  if (V.length) new Chart(document.getElementById('volChart'), {
+    type: 'line', data: dualData(V), options: opts('Volume'),
+  });
+</script>
+{% endif %}{% endblock %}
