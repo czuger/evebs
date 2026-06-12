@@ -105,6 +105,38 @@ class TestRefreshBlueprintManufacturingCosts:
 
 
 # ---------------------------------------------------------------------------
+# upsert_blueprints — create-path uses the blueprint-type id, not the product id
+# ---------------------------------------------------------------------------
+
+class TestUpsertBlueprintsCreatePath:
+    def test_reaction_created_with_formula_type_id(self, db):
+        """A new reaction blueprint is keyed by its reaction-formula type id (not the product)."""
+        product = make_item(db, item_id=16679, name='Fullerides', slug='fullerides')
+        formula = make_item(db, item_id=46209, name='Fullerides Reaction Formula',
+                            slug='fullerides-reaction-formula')
+        db.session.commit()
+
+        tree = {'16679': {'name': 'Fullerides', 'activity_type': 'reaction',
+                          'manufacturing_level': 1, 'prod_qty': 3000, 'chain': {}}}
+        item_map = {16679: product, 46209: formula}
+
+        from process.update_blueprints import upsert_blueprints
+        from evebs.models import Blueprint
+        new, updated, _ = upsert_blueprints(
+            tree, item_map, price_map={}, bp_map={}, bp_type_map={16679: 46209})
+        db.session.commit()
+
+        assert new == 1 and updated == 0
+        bp = db.session.get(Blueprint, 46209)
+        assert bp is not None
+        assert bp.produced_type_id == 16679
+        assert bp.name == 'Fullerides Reaction Formula'
+        assert db.session.get(Blueprint, 16679) is None        # not keyed by the product
+        db.session.refresh(product)
+        assert product.blueprint_id == 46209
+
+
+# ---------------------------------------------------------------------------
 # update_invented_from
 #
 # In the EVE SDE, invention.products[].typeID is the T2 BLUEPRINT item typeID

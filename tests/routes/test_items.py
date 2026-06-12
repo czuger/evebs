@@ -66,6 +66,22 @@ class TestItemManufacturingContext:
         assert b'Blueprint type ID' in resp.data
         assert b'77777' in resp.data
 
+    def test_reaction_product_produced_by_formula(self, db, client):
+        """A reaction product shows 'Produced by <Reaction Formula>' with the formula type id."""
+        product = make_item(db, item_id=16679, slug='fullerides', name='Fullerides')
+        make_item(db, item_id=46209, slug='fullerides-reaction-formula',
+                  name='Fullerides Reaction Formula')
+        bp = make_blueprint(db, product, blueprint_id=46209)
+        bp.activity_type = 'reaction'
+        db.session.commit()
+
+        resp = client.get('/items/fullerides')
+        assert resp.status_code == 200
+        assert b'Produced by' in resp.data
+        assert b'Fullerides Reaction Formula' in resp.data
+        assert b'Type/46209_64.png' in resp.data       # formula blueprint icon
+        assert b'46209' in resp.data                   # blueprint type id
+
     def test_product_keeps_produced_by_when_blueprint_invented(self, db, client):
         system = make_universe_system(db)
         make_trade_hub(db, system)

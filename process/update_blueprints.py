@@ -71,6 +71,32 @@ def build_blueprint_map() -> dict:
     return bp_map
 
 
+def build_blueprint_type_map() -> dict:
+    """Map produced_type_id → blueprint-type id (the blueprint item's own typeID) from the SDE.
+
+    The manufacturing tree is keyed by produced_type_id and does not carry the blueprint's
+    own type id, so new Blueprint rows would otherwise be created with id = produced_type_id
+    (correct for nothing — a blueprint's id is the BPO / reaction-formula typeID). This map
+    lets the create-path use the right id.
+
+    Returns:
+        Dict mapping int produced_type_id → int blueprint_type_id (the `_key`).
+    """
+    type_map: dict[int, int] = {}
+    with open(BLUEPRINTS_JSONL) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            obj = json.loads(line)
+            act = obj.get('activities', {})
+            recipe = act.get('manufacturing') or act.get('reaction')
+            products = recipe.get('products', []) if recipe else []
+            if products and obj.get('_key') is not None:
+                type_map[products[0]['typeID']] = obj['_key']
+    return type_map
+
+
 def compute_cost(chain: dict, price_map: dict) -> float | None:
     """Compute total manufacturing cost from direct materials and Jita prices.
 
@@ -95,6 +121,7 @@ def upsert_blueprints(
     item_map: dict,
     price_map: dict,
     bp_map: dict,
+    bp_type_map: dict,
     *,
     dry_run: bool = False,
 ) -> tuple[int, int, int]:
@@ -104,11 +131,12 @@ def upsert_blueprints(
     existing ones.  Also sets production_level and blueprint_id on EveItem.
 
     Args:
-        tree:      manufacturing_tree.json content (str type_id → entry).
-        item_map:  int type_id → EveItem.
-        price_map: int type_id → float Jita price.
-        bp_map:    int produced_type_id → Blueprint (mutated in-place).
-        dry_run:   When True, compute counts but do not add/flush anything.
+        tree:        manufacturing_tree.json content (str type_id → entry).
+        item_map:    int type_id → EveItem.
+        price_map:   int type_id → float Jita price.
+        bp_map:      int produced_type_id → Blueprint (mutated in-place).
+        bp_type_map: int produced_type_id → int blueprint_type_id (the blueprint's own typeID).
+        dry_run:     When True, compute counts but do not add/flush anything.
 
     Returns:
         (new_count, updated_count, no_price_count)
@@ -141,10 +169,15 @@ def upsert_blueprints(
             )
             updated_count += 1
         else:
-            bp_name = produced_item.name if produced_item else f'Unknown ({produced_type_id})'
+            # The blueprint's own typeID (BPO / reaction-formula), not the product's.
+            blueprint_type_id = bp_type_map.get(produced_type_id, produced_type_id)
+            bp_item = item_map.get(blueprint_type_id)
+            bp_name = (bp_item.name if bp_item
+                       else produced_item.name if produced_item
+                       else f'Unknown ({blueprint_type_id})')
             if not dry_run:
                 bp = Blueprint(
-                    id                 = produced_type_id,
+                    id                 = blueprint_type_id,
                     produced_type_id   = produced_type_id,
                     nb_runs            = 1,
                     prod_qtt           = prod_qty,
@@ -157,8 +190,8 @@ def upsert_blueprints(
                 db.session.flush()
                 bp_map[produced_type_id] = bp
             logger.debug(
-                'Created blueprint %d (%s): prod_qtt=%d, cost=%s.',
-                produced_type_id, bp_name, prod_qty, manufacturing_cost,
+                'Created blueprint %d (%s): produced=%d, prod_qtt=%d, cost=%s.',
+                blueprint_type_id, bp_name, produced_type_id, prod_qty, manufacturing_cost,
             )
             new_count += 1
 
@@ -296,12 +329,13 @@ def main() -> None:
             logger.info('Would update is_invented_from_id on %d blueprints.', invented)
             sys.exit(0)
 
-        item_map  = build_item_map()
-        price_map = build_price_map()
-        bp_map    = build_blueprint_map()
+        item_map    = build_item_map()
+        price_map   = build_price_map()
+        bp_map      = build_blueprint_map()
+        bp_type_map = build_blueprint_type_map()
 
         new_count, updated_count, no_price_count = upsert_blueprints(
-            tree, item_map, price_map, bp_map,
+            tree, item_map, price_map, bp_map, bp_type_map,
         )
         invented_count = update_invented_from(bp_map)
 
