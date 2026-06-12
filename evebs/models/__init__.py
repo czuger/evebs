@@ -25,13 +25,15 @@ from evebs.models.tables.unknown_structure import UnknownStructure
 from evebs.models.tables.user_to_user_duplication_request import UserToUserDuplicationRequest
 from evebs.models.tables.user_activity_log import UserActivityLog
 from evebs.models.tables.market_history import MarketHistory
+from evebs.models.tables.jita_price_forecast import JitaPriceForecast
 from evebs.models.tables.industry_job import IndustryJob, ACTIVITY_LABELS
 from evebs.models.views import (
     UserSaleOrderDetail,
     UserIndustryCost,
     UserBlueprintExtended,
-    JitaMinPrice,
+    JitaPriceSpread,
 )
+from evebs.models.materialized_views import JitaMinPrice
 
 
 __all__ = [
@@ -63,8 +65,10 @@ __all__ = [
     'UserSaleOrderDetail',
     'UserIndustryCost',
     'UserBlueprintExtended',
+    'JitaPriceSpread',
     'JitaMinPrice',
     'MarketHistory',
+    'JitaPriceForecast',
     'IndustryJob',
     'ACTIVITY_LABELS',
 ]

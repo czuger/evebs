@@ -65,7 +65,7 @@ python scripts/seed_static_data.py
 - **`evebs/__init__.py`**: App factory (`create_app()`). Registers all blueprints and applies `ProxyFix` + `APPLICATION_ROOT` path-stripping middleware. Blueprint imports live *inside* `_register_blueprints()` (a deliberate exception to the imports-at-top rule) so that importing the `evebs` package from a script does not pull in every route module. Also exposes `create_db_app()` — a minimal config+DB-only app for standalone scripts (no blueprints, no route side-effects).
 - **`evebs/models/`**: SQLAlchemy models split into subdirectories:
   - `tables/` — regular ORM-mapped tables (one file per model)
-  - `views/` — read-only SQL view models (`UserSaleOrderDetail`, `UserIndustryCost`, `JitaMinPrice` — the last a materialized view) — do not migrate them; view-backed models carry `__table_args__ = {'info': {'is_view': True}}`
+  - `views/` — read-only SQL view models (`UserSaleOrderDetail`, `UserIndustryCost`); `materialized_views/` — materialized-view models (`JitaMinPrice`) — do not migrate either; both carry `__table_args__ = {'info': {'is_view': True}}`
 - **`evebs/extensions.py`**: SQLAlchemy `db` and `login_manager` singletons.
 - **`evebs/helpers.py`**: Jinja2 globals (`print_isk`, `print_pcent`, `print_volume`) — format ISK numbers as 1.2B, 34.5M, etc.
 - **`evebs/utils.py`**: `SimplePagination` helper used by route handlers.
@@ -101,6 +101,7 @@ Standalone scripts (no longer orchestrated by hourly/daily/weekly wrappers):
 - `orders_daemon.py` — long-running daemon; downloads public orders every 15 min, runs `update_jita_min_prices` after each pass. Trade-hub regions every pass; all regions every 4th pass.
 - `update_blueprints.py` — upserts `Blueprint` rows from `data/manufacturing_tree.json` and computes `manufacturing_cost` from current Jita prices.
 - `update_jita_min_prices.py` — refreshes the `jita_min_prices` materialized view (P10 Jita sell price per item) via `REFRESH MATERIALIZED VIEW CONCURRENTLY`.
+- `update_price_forecasts.py` — recomputes the `jita_price_forecasts` table (3-day price forecast per item) from `market_histories` (The Forge): volume-weighted SQL linear regression for items with ≥14 days, `jita_min_prices` fallback below that. (Prophet for the ≥90-day tier is a planned phase-2 upgrade.)
 - `update_public_orders.py` — standalone public order download + price update.
 - `sync_assets.py` — syncs user blueprint/asset data from ESI.
 
@@ -127,10 +128,12 @@ Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials from config JSON under
 - **`ProductionList` / `InventionList` / `CopyList`**: User production planning lists.
 - **`IndustryJob`**: Active industry jobs downloaded from ESI.
 - **`JitaMinPrice`**: Postgres **materialized view** `jita_min_prices` — one row per item type with `min_sell_price` (P10 Jita ask over `public_trade_orders`). Refreshed by `process/update_jita_min_prices.py`. View-backed model under `evebs/models/views/`.
+- **`JitaPriceForecast`**: Regular table `jita_price_forecasts` — one row per item type with `price_forecast_3d` (3-day Jita price forecast) and `method` (`linear`/`min_price`). Recomputed by `process/update_price_forecasts.py` from `market_histories`.
+- **`JitaPriceSpread`**: Read-only SQL view `jita_price_spreads` joining `jita_min_prices` + `jita_price_forecasts` + `eve_items` — `spread`/`spread_pcent` (forecast vs current), `direction` (`up`/`down`/`flat`, ±2% band) and `is_hard` (|spread| ≥ 10%). Shown on the `/price_spreads` page.
 - **`BuyOrdersAnalytic`**: Per-item/hub computed buy-order analytics.
 - **`EveItemsSavedList`**: User-saved item ID lists (JSON column).
 - **`LastUpdate`**: Process heartbeat timestamps.
-- **SQL views** (`UserSaleOrderDetail`, `UserIndustryCost`) and the **materialized view** `jita_min_prices` (`JitaMinPrice`): defined in migrations, never migrated directly.
+- **SQL views** (`UserSaleOrderDetail`, `UserIndustryCost`, `JitaPriceSpread`) and the **materialized view** `jita_min_prices` (`JitaMinPrice`): defined in migrations, never migrated directly.
 
 ## Tests
 

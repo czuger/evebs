@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">Price spreads</h2>
+  <form method="get" class="d-flex" role="search">
+    <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm me-2" placeholder="Search item name">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">Search</button>
+  </form>
+</div>
+<p class="text-muted small mb-3">3-day forecast vs current Jita min sell price — spread and predicted trend.</p>
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm">
+    <tr>
+      <th>Item</th>
+      <th class="text-end">Current</th>
+      <th class="text-end">Forecast (3d)</th>
+      <th class="text-end">Spread</th>
+      <th class="text-center">Trend</th>
+    </tr>
+    {% for r in rows %}
+    <tr>
+      <td class="item_name">
+        <a href="{{ url_for('items.show', slug=r.item_slug or r.id) }}">{{ r.item_name }}</a>
+      </td>
+      <td class="text-end">{{ r.min_sell_price | isk if r.min_sell_price is not none else '—' }}</td>
+      <td class="text-end">{{ r.price_forecast_3d | isk if r.price_forecast_3d is not none else '—' }}</td>
+      <td class="text-end">{{ r.spread_pcent | pcent if r.spread_pcent is not none else '—' }}</td>
+      <td class="text-center">
+        {% if r.direction == 'up' %}
+          <span class="badge bg-success">{% if r.is_hard %}▲▲ Rising hard{% else %}▲ Rising{% endif %}</span>
+        {% elif r.direction == 'down' %}
+          <span class="badge bg-danger">{% if r.is_hard %}▼▼ Falling hard{% else %}▼ Falling{% endif %}</span>
+        {% else %}
+          <span class="badge bg-secondary">→ Flat</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted">
+      {% if q %}No items match "{{ q }}".{% else %}No spread data yet.{% endif %}
+    </td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+{% endblock %}

@@ -9,7 +9,9 @@ from evebs.models import (
     EveItem,
     EveItemsSavedList,
     IndustryJob,
+    JitaPriceForecast,
     MarketGroup,
+    MarketHistory,
     ProductionList,
     PublicTradeOrder,
     SalesFinal,
@@ -162,6 +164,23 @@ def make_public_trade_order(db, item, trade_hub, order_id=1001, price=5000.0,
     return o
 
 
+def make_market_history(db, item, hist_date, region_id=10000002, average=100.0,
+                        volume=1000, highest=None, lowest=None, order_count=None):
+    h = MarketHistory(
+        region_id=region_id,
+        type_id=item.id,
+        date=hist_date,
+        average=average,
+        highest=highest if highest is not None else average,
+        lowest=lowest if lowest is not None else average,
+        order_count=order_count,
+        volume=volume,
+    )
+    db.session.add(h)
+    db.session.flush()
+    return h
+
+
 def make_user_sale_order(db, user, item, trade_hub, price=10000.0):
     o = UserSaleOrder(
         user_id=user.id,
@@ -248,6 +267,13 @@ def remove_jita_min_price(db, item):
     _delete_jita_sell_orders(db, item)
     db.session.flush()
     db.session.execute(text('REFRESH MATERIALIZED VIEW jita_min_prices'))
+
+
+def make_jita_price_forecast(db, item, price_forecast_3d=100.0, method='linear'):
+    f = JitaPriceForecast(id=item.id, price_forecast_3d=price_forecast_3d, method=method)
+    db.session.add(f)
+    db.session.flush()
+    return f
 
 
 def make_saved_list(db, user, description='My List', item_ids=None):
