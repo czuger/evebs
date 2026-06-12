@@ -40,7 +40,7 @@
     {{ window_cards(price_metrics) }}
     {% if price_series %}
     <div class="card mb-3">
-      <div class="card-header fw-semibold">Price forecast (next 7 days)</div>
+      <div class="card-header fw-semibold">Price forecast (next 3 days)</div>
       <div class="card-body"><div style="height:260px"><canvas id="priceChart"></canvas></div></div>
     </div>
     <div class="table-responsive">
@@ -63,7 +63,7 @@
     {{ window_cards(vol_metrics) }}
     {% if vol_series %}
     <div class="card mb-3">
-      <div class="card-header fw-semibold">Volume forecast (next 7 days)</div>
+      <div class="card-header fw-semibold">Volume forecast (next 3 days)</div>
       <div class="card-body"><div style="height:260px"><canvas id="volChart"></canvas></div></div>
     </div>
     <div class="table-responsive">

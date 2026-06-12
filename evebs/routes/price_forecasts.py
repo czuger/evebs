@@ -13,25 +13,25 @@ from evebs.utils import SimplePagination
 
 bp = FlaskBlueprint('price_forecasts', __name__)
 
-# One row per item, taken at the +7d horizon (where the two training windows diverge most).
+# One row per item, taken at the +3d horizon (where the two training windows diverge most).
 # Each forecast MV trains a 7-day and a 30-day regression; `f7`/`f30` are those windows'
-# forecasts for CURRENT_DATE + 7, with |Spread| / |Spread %| (30d vs 7d) and per-window
+# forecasts for CURRENT_DATE + 3, with |Spread| / |Spread %| (30d vs 7d) and per-window
 # confidence. Ordered by smallest spread % first.
 _LIST = """
     WITH p AS (
         SELECT type_id,
-            MAX(forecast_7d)     FILTER (WHERE forecast_date = CURRENT_DATE + 7) AS f7,
-            MAX(forecast_30d)    FILTER (WHERE forecast_date = CURRENT_DATE + 7) AS f30,
-            MAX(spread)          FILTER (WHERE forecast_date = CURRENT_DATE + 7) AS spread,
-            MAX(spread_percent)  FILTER (WHERE forecast_date = CURRENT_DATE + 7) AS spread_pct,
+            MAX(forecast_7d)     FILTER (WHERE forecast_date = CURRENT_DATE + 3) AS f7,
+            MAX(forecast_30d)    FILTER (WHERE forecast_date = CURRENT_DATE + 3) AS f30,
+            MAX(spread)          FILTER (WHERE forecast_date = CURRENT_DATE + 3) AS spread,
+            MAX(spread_percent)  FILTER (WHERE forecast_date = CURRENT_DATE + 3) AS spread_pct,
             MAX(confidence_7d)  AS conf_7d,
             MAX(confidence_30d) AS conf_30d
         FROM jita_price_forecast_linear_regression GROUP BY type_id
     ),
     v AS (
         SELECT type_id,
-            MAX(forecast_7d)  FILTER (WHERE forecast_date = CURRENT_DATE + 7) AS f7,
-            MAX(forecast_30d) FILTER (WHERE forecast_date = CURRENT_DATE + 7) AS f30,
+            MAX(forecast_7d)  FILTER (WHERE forecast_date = CURRENT_DATE + 3) AS f7,
+            MAX(forecast_30d) FILTER (WHERE forecast_date = CURRENT_DATE + 3) AS f30,
             MAX(confidence_7d)  AS conf_7d,
             MAX(confidence_30d) AS conf_30d
         FROM jita_volume_forecast_linear_regression GROUP BY type_id

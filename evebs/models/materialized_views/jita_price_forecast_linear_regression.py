@@ -4,7 +4,7 @@ from evebs.extensions import db
 class JitaPriceForecastLinearRegression(db.Model):
     """Read-only Postgres materialized view `jita_price_forecast_linear_regression`.
 
-    One row per (type_id, forecast_date) for the next 7 days. Two linear regressions are run
+    One row per (type_id, forecast_date) for the next 3 days. Two linear regressions are run
     per item over the volume-weighted daily price (`SUM(volume*price)/SUM(volume)`) of Jita
     `sales_finals`: a **7-day** training window and a **30-day** training window. Each window
     yields a daily forecast (`forecast_7d` / `forecast_30d`), slope/intercept/r²/n and a

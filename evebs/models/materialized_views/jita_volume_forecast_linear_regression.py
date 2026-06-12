@@ -6,7 +6,7 @@ class JitaVolumeForecastLinearRegression(db.Model):
 
     Like `jita_price_forecast_linear_regression` but forecasts daily traded **volume**
     (`SUM(volume)` per day) from Jita `sales_finals`; no price. Two training windows per item
-    (7-day and 30-day), each yielding a daily forecast for the next 7 days plus
+    (7-day and 30-day), each yielding a daily forecast for the next 3 days plus
     slope/intercept/r²/n and a confidence. `spread`/`spread_percent` compare the two windows.
     Refreshed (non-concurrently) by `process/update_price_forecasts.py`.
     """

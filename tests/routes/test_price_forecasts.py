@@ -38,11 +38,11 @@ class TestPriceForecasts:
         db.session.commit()
         _refresh(db)
 
-        # Both windows populated for the item.
+        # Both windows populated for the item at the +3d horizon (the furthest forecast day).
         row = db.session.execute(text(
             'SELECT forecast_7d, forecast_30d, spread, spread_percent '
             'FROM jita_price_forecast_linear_regression '
-            'WHERE type_id = :t AND forecast_date = CURRENT_DATE + 7'), {'t': item.id}).first()
+            'WHERE type_id = :t AND forecast_date = CURRENT_DATE + 3'), {'t': item.id}).first()
         assert row is not None
         assert row.forecast_7d is not None and row.forecast_30d is not None
         assert row.spread >= 0 and row.spread_percent >= 0
@@ -50,7 +50,7 @@ class TestPriceForecasts:
         resp = client.get('/price_forecasts')
         assert resp.status_code == 200
         assert b'Tritanium' in resp.data
-        assert b'Price (+7d)' in resp.data and b'Volume (+7d)' in resp.data   # both column groups
+        assert b'Price (+3d)' in resp.data and b'Volume (+3d)' in resp.data   # both column groups
         assert b'|Spread %|' in resp.data
         assert b'7d win' in resp.data and b'30d win' in resp.data
 
@@ -60,8 +60,8 @@ class TestPriceForecasts:
         assert b'volChart' in resp.data
         assert b'7-day window' in resp.data
         assert b'30-day window' in resp.data
-        assert b'Price forecast (next 7 days)' in resp.data
-        assert b'Volume forecast (next 7 days)' in resp.data
+        assert b'Price forecast (next 3 days)' in resp.data
+        assert b'Volume forecast (next 3 days)' in resp.data
 
     def test_redirects_unauthenticated(self, db, client):
         resp = client.get('/price_forecasts')
