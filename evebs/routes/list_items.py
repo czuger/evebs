@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, request, jsonify, abort
+from flask import Blueprint as FlaskBlueprint, render_template, request, jsonify, abort
 from flask_login import current_user, login_required
 
 from evebs.extensions import db
 from evebs.models import EveItem, MarketGroup, eve_items_users
 
-bp = Blueprint('list_items', __name__)
+bp = FlaskBlueprint('list_items', __name__)
 
 
 def _collect_item_ids(group):

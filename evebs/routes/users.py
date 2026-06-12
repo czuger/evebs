@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from esi.client import EsiClient
 from evebs.extensions import db
 from evebs.models import UniverseStation
 
-bp = Blueprint('users', __name__)
+bp = FlaskBlueprint('users', __name__)
 
 
 def _parse_taxes(form):

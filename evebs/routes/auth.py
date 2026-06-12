@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 from urllib.parse import urlencode
 
 import requests
-from flask import Blueprint, abort, current_app, flash, redirect, request, session, url_for
+from flask import Blueprint as FlaskBlueprint, abort, current_app, flash, redirect, request, session, url_for
 from flask_login import login_user, logout_user
 
 from evebs.extensions import db
 from evebs.models import MarketGroup, UniverseSystem, User
 
-bp = Blueprint('auth', __name__)
+bp = FlaskBlueprint('auth', __name__)
 
 EVE_AUTH_URL  = 'https://login.eveonline.com/v2/oauth/authorize'
 EVE_TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'

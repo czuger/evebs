@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint as FlaskBlueprint, render_template
 from evebs.models import MarketGroup
 
-bp = Blueprint('market_groups', __name__)
+bp = FlaskBlueprint('market_groups', __name__)
 
 
 @bp.route('/market_groups')

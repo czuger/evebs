@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint as FlaskBlueprint, render_template, redirect, url_for
 from flask_login import login_required, current_user
 
 from evebs.models import UserActivityLog, LastUpdate
 
-bp = Blueprint('admin', __name__)
+bp = FlaskBlueprint('admin', __name__)
 
 
 def require_admin():

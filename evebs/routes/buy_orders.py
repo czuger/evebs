@@ -1,7 +1,7 @@
 import time
 from types import SimpleNamespace
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint as FlaskBlueprint, render_template, request
 from flask_login import login_required, current_user
 from sqlalchemy import text, bindparam
 
@@ -15,7 +15,7 @@ from evebs.models.tables.user_sale_order import UserSaleOrder
 from config import set_logger, PER_PAGE
 from evebs.utils import SimplePagination, active_job_item_sets
 
-bp = Blueprint('buy_orders', __name__)
+bp = FlaskBlueprint('buy_orders', __name__)
 
 _timings = set_logger('timings')
 

@@ -1,11 +1,11 @@
 import json
-from flask import Blueprint, render_template, request, redirect, url_for, abort, flash
+from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, abort, flash
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
 from evebs.models import EveItemsSavedList, EveItem
 
-bp = Blueprint('eve_items_saved_lists', __name__)
+bp = FlaskBlueprint('eve_items_saved_lists', __name__)
 
 
 @bp.route('/eve_items_saved_lists')

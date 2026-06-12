@@ -1,11 +1,11 @@
 from types import SimpleNamespace
 
-from flask import Blueprint, render_template, abort
+from flask import Blueprint as FlaskBlueprint, render_template, abort
 from flask_login import current_user
 
 from evebs.models import EveItem, JitaMinPrice
 
-bp = Blueprint('production_costs', __name__)
+bp = FlaskBlueprint('production_costs', __name__)
 
 _DEFAULT_MFG_TAXES = {'system_cost_index': 5.0, 'scc_tax': 4.0, 'standard_tax': 1.0}
 _DEFAULT_RXN_TAXES = {'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 1.0}

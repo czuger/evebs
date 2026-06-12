@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint as FlaskBlueprint, render_template, request
 from flask_login import login_required
 
 from config import PER_PAGE
 from evebs.models import JitaPriceSpread
 from evebs.utils import SimplePagination
 
-bp = Blueprint('price_spreads', __name__)
+bp = FlaskBlueprint('price_spreads', __name__)
 
 
 @bp.route('/price_spreads')

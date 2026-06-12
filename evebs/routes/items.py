@@ -1,12 +1,22 @@
+from datetime import date, timedelta
 from types import SimpleNamespace
 
-from flask import Blueprint, render_template, abort
+from flask import Blueprint as FlaskBlueprint, render_template, abort
 from flask_login import current_user
 
-from evebs.models import EveItem, UniverseSystem, JitaMinPrice
+from evebs.models import EveItem, UniverseSystem, JitaMinPrice, MarketHistory
+from evebs.models.tables.blueprint import Blueprint as BlueprintModel
 from evebs.models.tables.buy_orders_analytic import BuyOrdersAnalytic
 
-bp = Blueprint('items', __name__)
+bp = FlaskBlueprint('items', __name__)
+
+FORGE_REGION_ID = 10000002
+
+
+def _bp_display_name(bp_obj):
+    """A blueprint's market name (e.g. 'Gram II Blueprint') from its Blueprint row."""
+    n = (bp_obj.name if bp_obj else '') or ''
+    return n if n.lower().endswith('blueprint') else f'{n} Blueprint'
 
 _DEFAULT_MFG_TAXES = {'system_cost_index': 5.0, 'scc_tax': 4.0, 'standard_tax': 1.0}
 _DEFAULT_RXN_TAXES = {'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 1.0}
@@ -86,10 +96,43 @@ def show(slug):
     mfg       = _manufacturing_context(item)
     jma_item  = JitaMinPrice.query.get(item.id)
     jita_buy  = BuyOrdersAnalytic.query.filter_by(eve_item_id=item.id, universe_system_id=30000142).first()
+
+    # "Produced by" — the blueprint that makes this item (when it is a product).
+    bp_item = bp_name = None
+    # "Invented by" — when this item IS a T2 blueprint that was invented from a T1 one.
+    invented = None
+    if item.blueprint:
+        bp_item = EveItem.query.get(item.blueprint.id)   # the "X Blueprint" market item
+        bp_name = bp_item.name if bp_item else _bp_display_name(item.blueprint)
+    else:
+        this_bp = BlueprintModel.query.get(item.id)      # is this item itself a blueprint?
+        if this_bp and this_bp.is_invented_from_id:
+            src_item = EveItem.query.get(this_bp.is_invented_from_id)
+            src_name = (src_item.name if src_item
+                        else _bp_display_name(BlueprintModel.query.get(this_bp.is_invented_from_id)))
+            invented = SimpleNamespace(
+                id=this_bp.is_invented_from_id,
+                name=src_name,
+                slug=src_item.slug if src_item else None,
+            )
+
+    cutoff = date.today() - timedelta(days=365)
+    hist_rows = (MarketHistory.query
+                 .filter(MarketHistory.region_id == FORGE_REGION_ID,
+                         MarketHistory.type_id == item.id,
+                         MarketHistory.date >= cutoff)
+                 .order_by(MarketHistory.date).all())
+    history = [{'date': h.date.isoformat(), 'average': h.average, 'volume': h.volume}
+               for h in hist_rows]
+
     return render_template('items/show.html',
                            item=item,
                            jita=jita,
                            mfg=mfg,
                            jma_item=jma_item,
                            jita_buy=jita_buy,
+                           bp_item=bp_item,
+                           bp_name=bp_name,
+                           invented=invented,
+                           history=history,
                            title=item.name)

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint as FlaskBlueprint, render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from sqlalchemy import case, nullslast, func
 
@@ -7,7 +7,7 @@ from esi.download_my_industry_jobs import DownloadMyIndustryJobs
 from evebs.models import IndustryJob, EveItem, ACTIVITY_LABELS
 from evebs.utils import SimplePagination
 
-bp = Blueprint('industry_jobs', __name__)
+bp = FlaskBlueprint('industry_jobs', __name__)
 
 
 @bp.route('/industry_jobs')

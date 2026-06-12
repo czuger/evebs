@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, abort
+from flask import Blueprint as FlaskBlueprint, render_template, abort
 
 from evebs.extensions import db
 from evebs.models import EveItem, UniverseSystem, UniverseStation, JitaMinPrice, PublicTradeOrder
 
-bp = Blueprint('market_data', __name__)
+bp = FlaskBlueprint('market_data', __name__)
 
 
 @bp.route('/market_data/<int:item_id>/market_overview/')

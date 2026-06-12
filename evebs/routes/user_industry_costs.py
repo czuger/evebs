@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint as FlaskBlueprint, render_template, request
 from flask_login import login_required, current_user
 from sqlalchemy import text
 
@@ -8,7 +8,7 @@ from config import PER_PAGE
 from evebs.extensions import db
 from evebs.utils import SimplePagination
 
-bp = Blueprint('user_industry_costs', __name__)
+bp = FlaskBlueprint('user_industry_costs', __name__)
 
 _SQL = """
     SELECT

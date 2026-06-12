@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from config import PER_PAGE
@@ -6,7 +6,7 @@ from esi.download_my_orders import DownloadMyOrders
 from evebs.extensions import db
 from evebs.models import UserSaleOrderDetail, User
 
-bp = Blueprint('user_sales_orders', __name__)
+bp = FlaskBlueprint('user_sales_orders', __name__)
 
 
 @bp.route('/user_sales_orders')

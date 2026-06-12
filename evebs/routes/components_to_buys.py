@@ -1,7 +1,7 @@
 import math
 from types import SimpleNamespace
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint as FlaskBlueprint, render_template, request
 from flask_login import login_required, current_user
 from sqlalchemy import func
 
@@ -11,7 +11,7 @@ from evebs.models import (
     UserAsset, UniverseStation, UniverseStructure, UnknownStructure,
 )
 
-bp = Blueprint('components_to_buys', __name__)
+bp = FlaskBlueprint('components_to_buys', __name__)
 
 
 def _compute_components(user) -> list:

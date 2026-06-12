@@ -12,6 +12,23 @@
     {% if item.faction %}
     <span class="badge bg-warning text-dark ms-2">Faction</span>
     {% endif %}
+    {% if item.blueprint %}
+    <div class="d-flex align-items-center gap-2 mt-1">
+      <span class="text-muted small">Produced by</span>
+      <img src="https://imageserver.eveonline.com/Type/{{ item.blueprint.id }}_64.png"
+           alt="" width="24" height="24" class="rounded">
+      <a href="{{ url_for('items.show', slug=bp_item.slug if bp_item and bp_item.slug else item.blueprint.id) }}"
+         class="text-decoration-none">{{ bp_name }}</a>
+    </div>
+    {% elif invented %}
+    <div class="d-flex align-items-center gap-2 mt-1">
+      <span class="text-muted small">Invented by</span>
+      <img src="https://imageserver.eveonline.com/Type/{{ invented.id }}_64.png"
+           alt="" width="24" height="24" class="rounded">
+      <a href="{{ url_for('items.show', slug=invented.slug or invented.id) }}"
+         class="text-decoration-none">{{ invented.name }}</a>
+    </div>
+    {% endif %}
   </div>
 </div>
 
@@ -40,67 +57,20 @@
         <table class="table table-sm mb-0">
           <thead>
             <tr>
-              <th>Material</th>
-              <th class="text-end">Jita price</th>
-              <th class="text-end">Qty (batch)</th>
-              <th class="text-end">Total (batch)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for m in mfg.materials %}
-            {% if m.eve_item %}
-            <tr>
-              <td><a href="{{ url_for('items.show', slug=m.eve_item.slug or m.eve_item.id) }}">{{ m.eve_item.name }}</a></td>
-              <td class="text-end">{{ m.jita_price | isk }}</td>
-              <td class="text-end">{{ m.required_qtt | vol }}</td>
-              <td class="text-end">{{ ((m.jita_price or 0) * m.required_qtt) | isk }}</td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <div class="table-responsive">
-        <table class="table table-sm mb-0">
-          <thead>
-            <tr>
               <th></th>
               <th class="text-end">Per unit</th>
               <th class="text-end">Per batch ({{ mfg.prod_qtt | vol }})</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="fw-semibold">
             <tr>
-              <td>Material cost</td>
-              <td class="text-end">{{ mfg.unit_mat_cost | isk }}</td>
-              <td class="text-end">{{ mfg.batch_mat_cost | isk }}</td>
-            </tr>
-            <tr class="text-muted small">
-              <td class="ps-3">System cost index ({{ mfg.sci }} %)</td>
-              <td class="text-end">{{ mfg.unit_sci_cost | isk }}</td>
-              <td class="text-end">{{ (mfg.unit_sci_cost * mfg.prod_qtt) | isk }}</td>
-            </tr>
-            <tr class="text-muted small">
-              <td class="ps-3">SCC tax ({{ mfg.scc }} %)</td>
-              <td class="text-end">{{ mfg.unit_scc_cost | isk }}</td>
-              <td class="text-end">{{ (mfg.unit_scc_cost * mfg.prod_qtt) | isk }}</td>
-            </tr>
-            <tr class="text-muted small">
-              <td class="ps-3">{{ mfg.act_tax_label }} ({{ mfg.act_tax }} %)</td>
-              <td class="text-end">{{ mfg.unit_act_cost | isk }}</td>
-              <td class="text-end">{{ (mfg.unit_act_cost * mfg.prod_qtt) | isk }}</td>
-            </tr>
-          </tbody>
-          <tfoot class="table-group-divider fw-semibold">
-            <tr>
-              <td>Total cost</td>
+              <td><a href="{{ url_for('production_costs.show', slug=item.slug or item.id) }}" class="text-decoration-none">Total cost</a></td>
               <td class="text-end">{{ mfg.unit_total | isk }}</td>
               <td class="text-end">{{ (mfg.unit_total * mfg.prod_qtt) | isk }}</td>
             </tr>
             {% if jma_item and jma_item.min_sell_price %}
             <tr class="text-muted fw-normal small">
-              <td>Jita min sell</td>
+              <td>{% if jita %}<a href="{{ url_for('market_data.trade_hub_detail', item_id=item.id, trade_hub_id=jita.id) }}" class="text-decoration-none">Jita min sell</a>{% else %}Jita min sell{% endif %}</td>
               <td class="text-end">{{ jma_item.min_sell_price | isk }}</td>
               <td class="text-end">{{ (jma_item.min_sell_price * mfg.prod_qtt) | isk }}</td>
             </tr>
@@ -112,20 +82,65 @@
               <td class="text-end">{{ (jita_buy.approx_max_price * mfg.prod_qtt) | isk }}</td>
             </tr>
             {% endif %}
-          </tfoot>
+          </tbody>
         </table>
       </div>
     </div>
     {% endif %}
 
+    {% if history %}
+    <div class="card mb-4">
+      <div class="card-header fw-semibold">Price history — The Forge</div>
+      <div class="card-body">
+        <div style="height:300px"><canvas id="priceHistoryChart"></canvas></div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-header fw-semibold">External links</div>
+      <div class="list-group list-group-flush">
+        <a href="https://everef.net/type/{{ item.id }}" rel="noopener" target="_blank"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          everef.net <i class="fas fa-external-link-alt text-muted small"></i>
+        </a>
+        <a href="https://www.adam4eve.eu/commodity.php?typeID={{ item.id }}" rel="noopener" target="_blank"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          Adam4EVE <i class="fas fa-external-link-alt text-muted small"></i>
+        </a>
+        <a href="https://evemarketbrowser.com/region/0/type/{{ item.id }}" rel="noopener" target="_blank"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          EVE Market Browser <i class="fas fa-external-link-alt text-muted small"></i>
+        </a>
+        <a href="https://evetycoon.com/market/{{ item.id }}" rel="noopener" target="_blank"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          EVE Tycoon <i class="fas fa-external-link-alt text-muted small"></i>
+        </a>
+        <a href="https://www.jita.space/market/{{ item.id }}" rel="noopener" target="_blank"
+           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          jita.space <i class="fas fa-external-link-alt text-muted small"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-lg-4">
+
     <div class="card">
       <div class="card-header fw-semibold">Properties</div>
       <div class="card-body">
-        <div class="row row-cols-2 row-cols-md-3 g-3">
+        <div class="row row-cols-2 g-3">
           <div class="col">
             <div class="text-muted small">Type ID</div>
             <div class="font-monospace">{{ item.id }}</div>
           </div>
+          {% if item.blueprint %}
+          <div class="col">
+            <div class="text-muted small">Blueprint type ID</div>
+            <div class="font-monospace">{{ item.blueprint.id }}</div>
+          </div>
+          {% endif %}
           {% if item.market_group %}
           <div class="col">
             <div class="text-muted small">Market group</div>
@@ -166,56 +181,35 @@
 
   </div>
 
-  <div class="col-lg-4">
-
-    <div class="card mb-4">
-      <div class="card-header fw-semibold">Tools</div>
-      <div class="list-group list-group-flush">
-        {% if not item.base_item and item.blueprint %}
-
-        <a href="{{ url_for('production_costs.show', slug=item.slug or item.id) }}"
-           class="list-group-item list-group-item-action">
-          <i class="fas fa-industry me-2"></i>Production cost
-        </a>
-        {% endif %}
-        <a href="{{ url_for('market_data.trade_hub_detail', item_id=item.id, trade_hub_id=jita.id) }}"
-           class="list-group-item list-group-item-action">
-          <i class="fas fa-tag me-2"></i>Jita min price
-        </a>
-        <a href="{{ url_for('market_data.market_overview', item_id=item.id) }}"
-           class="list-group-item list-group-item-action">
-          <i class="fas fa-globe me-2"></i>Markets overview
-        </a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header fw-semibold">External links</div>
-      <div class="list-group list-group-flush">
-        <a href="https://everef.net/type/{{ item.id }}" rel="noopener" target="_blank"
-           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-          everef.net <i class="fas fa-external-link-alt text-muted small"></i>
-        </a>
-        <a href="https://www.adam4eve.eu/commodity.php?typeID={{ item.id }}" rel="noopener" target="_blank"
-           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-          Adam4EVE <i class="fas fa-external-link-alt text-muted small"></i>
-        </a>
-        <a href="https://evemarketbrowser.com/region/0/type/{{ item.id }}" rel="noopener" target="_blank"
-           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-          EVE Market Browser <i class="fas fa-external-link-alt text-muted small"></i>
-        </a>
-        <a href="https://evetycoon.com/market/{{ item.id }}" rel="noopener" target="_blank"
-           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-          EVE Tycoon <i class="fas fa-external-link-alt text-muted small"></i>
-        </a>
-        <a href="https://www.jita.space/market/{{ item.id }}" rel="noopener" target="_blank"
-           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-          jita.space <i class="fas fa-external-link-alt text-muted small"></i>
-        </a>
-      </div>
-    </div>
-
-  </div>
-
 </div>
 {% endblock %}
+
+{% block scripts %}{% if history %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+  const H = {{ history | tojson }};
+  new Chart(document.getElementById('priceHistoryChart'), {
+    data: {
+      labels: H.map(d => d.date),
+      datasets: [
+        { type: 'line', label: 'Avg price', yAxisID: 'y',
+          data: H.map(d => d.average),
+          borderColor: '#0d6efd', borderWidth: 1.5, pointRadius: 0, tension: 0.1 },
+        { type: 'bar', label: 'Volume', yAxisID: 'y1',
+          data: H.map(d => d.volume),
+          backgroundColor: 'rgba(108,117,125,0.3)' },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y:  { position: 'left',  title: { display: true, text: 'Price (ISK)' } },
+        y1: { position: 'right', grid: { drawOnChartArea: false },
+              title: { display: true, text: 'Volume' } },
+        x:  { ticks: { maxTicksLimit: 12 } },
+      },
+    },
+  });
+</script>
+{% endif %}{% endblock %}

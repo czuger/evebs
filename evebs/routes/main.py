@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint as FlaskBlueprint, render_template, redirect, url_for
 from flask_login import current_user
 
-bp = Blueprint('main', __name__)
+bp = FlaskBlueprint('main', __name__)
 
 
 @bp.route('/')

@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint as FlaskBlueprint, render_template, request
 from flask_login import login_required, current_user
 from config import PER_PAGE
 from evebs.models import UserBlueprintExtended
 from evebs.utils import SimplePagination
 
-bp = Blueprint('user_blueprints', __name__)
+bp = FlaskBlueprint('user_blueprints', __name__)
 
 
 @bp.route('/user_blueprints')

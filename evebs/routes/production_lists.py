@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
 from evebs.models import ProductionList, EveItem
 
-bp = Blueprint('production_lists', __name__)
+bp = FlaskBlueprint('production_lists', __name__)
 
 
 @bp.route('/production_lists/edit')

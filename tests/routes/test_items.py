@@ -1,8 +1,10 @@
 """Tests for evebs/routes/items.py."""
+from datetime import date, timedelta
+
 import pytest
 from tests.factories import (
     make_universe_system, make_trade_hub, make_item, make_market_group,
-    make_blueprint, make_jita_min_price,
+    make_blueprint, make_jita_min_price, make_market_history,
 )
 
 
@@ -32,7 +34,7 @@ class TestItemShow:
 
 
 class TestItemManufacturingContext:
-    def test_renders_materials_from_blueprint_tree(self, db, client):
+    def test_renders_total_cost_without_material_breakdown(self, db, client):
         system = make_universe_system(db)
         make_trade_hub(db, system)
         mat = make_item(db, item_id=34, slug='trit-items', name='Tritanium')
@@ -44,7 +46,82 @@ class TestItemManufacturingContext:
 
         resp = client.get('/items/ammo-items')
         assert resp.status_code == 200
-        assert b'Tritanium' in resp.data
+        assert b'Ammo Items' in resp.data
+        assert b'Total cost' in resp.data
+        # The per-material breakdown table is removed.
+        assert b'Qty (batch)' not in resp.data
+
+    def test_shows_producing_blueprint(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        crafted = make_item(db, item_id=35, slug='gram-ii', name='Gram II')
+        bp = make_blueprint(db, crafted, blueprint_id=77777)
+        db.session.commit()
+
+        resp = client.get('/items/gram-ii')
+        assert resp.status_code == 200
+        assert b'Produced by' in resp.data
+        assert b'Gram II Blueprint' in resp.data
+        assert b'Type/77777_64.png' in resp.data       # blueprint icon
+        assert b'Blueprint type ID' in resp.data
+        assert b'77777' in resp.data
+
+    def test_product_keeps_produced_by_when_blueprint_invented(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        crafted = make_item(db, item_id=35, slug='gram-ii', name='Gram II')
+        bp = make_blueprint(db, crafted, blueprint_id=77777)
+        bp.is_invented_from_id = 12345      # T2 blueprint, invented from a T1 one
+        db.session.commit()
+
+        resp = client.get('/items/gram-ii')   # the product page
+        assert resp.status_code == 200
+        assert b'Produced by' in resp.data
+        assert b'Invented by' not in resp.data
+
+    def test_blueprint_item_shows_invented_by(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        product = make_item(db, item_id=35, slug='gram-ii', name='Gram II')
+        make_item(db, item_id=1000, slug='gram-i-bp', name='Gram I Blueprint')      # source T1 bp item
+        make_item(db, item_id=2000, slug='gram-ii-bp', name='Gram II Blueprint')    # the T2 bp item
+        bp = make_blueprint(db, product, blueprint_id=2000)   # Blueprint 2000 produces Gram II
+        bp.is_invented_from_id = 1000
+        db.session.commit()
+
+        resp = client.get('/items/gram-ii-bp')   # the T2 blueprint's own page
+        assert resp.status_code == 200
+        assert b'Invented by' in resp.data
+        assert b'Gram I Blueprint' in resp.data
+        assert b'Type/1000_64.png' in resp.data
+        assert b'Produced by' not in resp.data
+
+    def test_price_history_chart_rendered(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        item = make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        today = date.today()
+        for i in range(5):
+            make_market_history(db, item, hist_date=today - timedelta(days=i),
+                                region_id=10000002, average=10.0 + i, volume=1000 + i)
+        db.session.commit()
+
+        resp = client.get('/items/tritanium')
+        assert resp.status_code == 200
+        assert b'priceHistoryChart' in resp.data
+        assert b'chart.js' in resp.data
+
+    def test_no_chart_without_forge_history(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        item = make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        # History only in another region must not produce a chart.
+        make_market_history(db, item, hist_date=date.today(), region_id=10000043)
+        db.session.commit()
+
+        resp = client.get('/items/tritanium')
+        assert resp.status_code == 200
+        assert b'priceHistoryChart' not in resp.data
 
     def test_reaction_blueprint_with_user_industry_taxes(self, db, auth_client):
         system = make_universe_system(db)

@@ -8,7 +8,7 @@ floor and waits for a buyer — the achievable price is higher, but not guarante
 import time
 from types import SimpleNamespace
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint as FlaskBlueprint, render_template, request
 from flask_login import login_required, current_user
 from sqlalchemy import text, bindparam
 
@@ -22,7 +22,7 @@ from evebs.models.tables.industry_job import IndustryJob
 from evebs.models.tables.user_sale_order import UserSaleOrder
 from evebs.utils import SimplePagination, active_job_item_sets
 
-bp = Blueprint('sell_orders', __name__)
+bp = FlaskBlueprint('sell_orders', __name__)
 
 _timings = set_logger('timings')
 
