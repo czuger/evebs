@@ -13,6 +13,23 @@ from evebs.utils import SimplePagination
 
 bp = FlaskBlueprint('price_forecasts', __name__)
 
+JITA_SYSTEM_ID = 30000142
+
+# Collected daily Jita sales over the last 30 days (the forecast training window) — the
+# volume-weighted daily price and total daily volume the regressions are fitted on.
+_HISTORY = """
+    SELECT day,
+        SUM(volume * price) / NULLIF(SUM(volume), 0) AS price,
+        AVG(price)                                   AS price_raw,
+        SUM(volume)                                  AS volume
+    FROM sales_finals
+    WHERE universe_system_id = :jita
+      AND eve_item_id = :item_id
+      AND day >= CURRENT_DATE - INTERVAL '30 days'
+    GROUP BY day
+    ORDER BY day
+"""
+
 # One row per item, taken at the +3d horizon (where the two training windows diverge most).
 # Each forecast MV trains a 7-day and a 30-day regression; `f7`/`f30` are those windows'
 # forecasts for CURRENT_DATE + 3, with |Spread| / |Spread %| (30d vs 7d) and per-window
@@ -94,10 +111,18 @@ def show(item_id):
                     for r in price_rows]
     vol_series = [{'date': r.forecast_date.isoformat(), 'w7': r.forecast_7d, 'w30': r.forecast_30d}
                   for r in vol_rows]
+
+    history = db.session.execute(
+        text(_HISTORY), {'jita': JITA_SYSTEM_ID, 'item_id': item_id}).mappings().all()
+    hist_price_series = [{'date': h['day'].isoformat(), 'v': h['price'], 'raw': h['price_raw']}
+                         for h in history]
+    hist_vol_series = [{'date': h['day'].isoformat(), 'v': h['volume']} for h in history]
+
     return render_template('price_forecasts/show.html',
                            item=item,
                            price_rows=price_rows, vol_rows=vol_rows,
                            price_metrics=price_rows[0] if price_rows else None,
                            vol_metrics=vol_rows[0] if vol_rows else None,
                            price_series=price_series, vol_series=vol_series,
+                           hist_price_series=hist_price_series, hist_vol_series=hist_vol_series,
                            title=f'Price and volume forecast for {item.name}')

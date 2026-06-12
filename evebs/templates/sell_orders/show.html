@@ -1,22 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Sell orders</h2>
-<p class="text-muted small mb-3">Items you own blueprints for with a profitable sell order at your selected trade hubs — costs use your personal <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a> and fees use your <a href="{{ url_for('users.sales_taxes') }}">sales tax settings</a>.</p>
+<p class="text-muted small mb-3">Items you own blueprints for that are profitable against the 3-day Jita price forecast — costs use your personal <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a> and fees use your <a href="{{ url_for('users.sales_taxes') }}">sales tax settings</a>.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <tr>
-      <th>Trade hub</th>
       <th>Item</th>
       <th class="text-center">Usage</th>
       <th>BP</th>
       <th class="text-end">Cost + tax / unit</th>
-      <th class="text-end">Min sell / unit</th>
+      <th class="text-end">Forecast price / unit</th>
       {% set st = user.sales_taxes or {} %}
       <th class="text-end" data-bs-toggle="tooltip" data-bs-placement="top"
           title="Broker: {{ st.get('broker_fee_taxes', 0) }}% + Sales tax: {{ st.get('sales_taxes', 0) }}% + Safety: {{ st.get('safety_tax', 0) }}% = {{ st.get('broker_fee_taxes', 0) + st.get('sales_taxes', 0) + st.get('safety_tax', 0) }}%">Sell fee / unit ⓘ</th>
       <th class="text-end">Margin / unit</th>
       <th class="text-end">Margin %</th>
-      <th class="text-end">Sell vol.</th>
+      <th class="text-end">Forecast vol.</th>
       <th class="text-end">Full batch</th>
       <th class="text-end">Batch margin</th>
     </tr>
@@ -28,7 +27,6 @@
     {% else %}
     <tr class="table-warning">
     {% endif %}
-      <td class="trade_hub_name">{{ cp.trade_hub_name }}</td>
       <td class="item_name">
         <a href="{{ url_for('items.show', slug=cp.item_slug or cp.eve_item_id) }}">{{ cp.item_name }}</a>
       </td>
@@ -44,7 +42,7 @@
         </a>
       </td>
       <td class="text-end">
-        <a href="{{ url_for('market_data.trade_hub_detail', item_id=cp.eve_item_id, trade_hub_id=cp.universe_system_id) }}" class="text-decoration-none">
+        <a href="{{ url_for('price_forecasts.show', item_id=cp.eve_item_id) }}" class="text-decoration-none">
           {{ cp.sell_price | isk }}
         </a>
       </td>
@@ -56,7 +54,7 @@
       <td class="text-end">{{ cp.margin_full_batch | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="12" class="text-center text-muted">No sell orders found — sync your blueprints and check your trade hub settings.</td></tr>
+    <tr><td colspan="11" class="text-center text-muted">No sell orders found — sync your blueprints and check your industry/sales tax settings.</td></tr>
     {% endfor %}
   </table>
 </div>

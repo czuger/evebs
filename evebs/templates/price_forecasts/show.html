@@ -83,15 +83,35 @@
   </div>
 
 </div>
+
+<h2 class="h5 mt-5 mb-3">Collected Jita sales (last 30 days)</h2>
+<div class="row g-4">
+  <div class="col-lg-6">
+    {% if hist_price_series %}
+    <div class="card">
+      <div class="card-header fw-semibold">Collected price (daily, volume-weighted &amp; raw)</div>
+      <div class="card-body"><div style="height:260px"><canvas id="histPriceChart"></canvas></div></div>
+    </div>
+    {% else %}<p class="text-muted">No collected price data.</p>{% endif %}
+  </div>
+  <div class="col-lg-6">
+    {% if hist_vol_series %}
+    <div class="card">
+      <div class="card-header fw-semibold">Collected volume (daily total)</div>
+      <div class="card-body"><div style="height:260px"><canvas id="histVolChart"></canvas></div></div>
+    </div>
+    {% else %}<p class="text-muted">No collected volume data.</p>{% endif %}
+  </div>
+</div>
 {% endblock %}
 
-{% block scripts %}{% if price_series or vol_series %}
+{% block scripts %}{% if price_series or vol_series or hist_price_series or hist_vol_series %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script>
-  const opts = (yLabel) => ({
+  const opts = (yLabel, maxTicks) => ({
     responsive: true, maintainAspectRatio: false,
     plugins: { legend: { display: true, position: 'bottom' } },
-    scales: { y: { title: { display: true, text: yLabel } }, x: { ticks: { maxTicksLimit: 7 } } },
+    scales: { y: { title: { display: true, text: yLabel } }, x: { ticks: { maxTicksLimit: maxTicks || 7 } } },
   });
   const dualData = (series) => ({
     labels: series.map(d => d.date),
@@ -100,6 +120,11 @@
       { label: '30-day window', data: series.map(d => d.w30), borderColor: '#fd7e14', borderWidth: 1.5, pointRadius: 0, tension: 0.1, borderDash: [5, 4] },
     ],
   });
+  const singleData = (series, label, color) => ({
+    labels: series.map(d => d.date),
+    datasets: [{ label: label, data: series.map(d => d.v), borderColor: color, backgroundColor: color + '22',
+                 borderWidth: 1.5, pointRadius: 0, tension: 0.1, fill: true }],
+  });
   const P = {{ price_series | tojson }};
   if (P.length) new Chart(document.getElementById('priceChart'), {
     type: 'line', data: dualData(P), options: opts('Price (ISK)'),
@@ -107,6 +132,19 @@
   const V = {{ vol_series | tojson }};
   if (V.length) new Chart(document.getElementById('volChart'), {
     type: 'line', data: dualData(V), options: opts('Volume'),
+  });
+  const HP = {{ hist_price_series | tojson }};
+  if (HP.length) new Chart(document.getElementById('histPriceChart'), {
+    type: 'line',
+    data: { labels: HP.map(d => d.date), datasets: [
+      { label: 'Volume-weighted', data: HP.map(d => d.v),   borderColor: '#0d6efd', backgroundColor: '#0d6efd22', borderWidth: 1.5, pointRadius: 0, tension: 0.1, fill: true },
+      { label: 'Raw (unweighted)', data: HP.map(d => d.raw), borderColor: '#6c757d', borderWidth: 1.5, pointRadius: 0, tension: 0.1, borderDash: [5, 4] },
+    ] },
+    options: opts('Price (ISK)', 10),
+  });
+  const HV = {{ hist_vol_series | tojson }};
+  if (HV.length) new Chart(document.getElementById('histVolChart'), {
+    type: 'line', data: singleData(HV, 'Collected volume', '#198754'), options: opts('Volume', 10),
   });
 </script>
 {% endif %}{% endblock %}

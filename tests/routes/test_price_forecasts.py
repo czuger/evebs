@@ -62,6 +62,10 @@ class TestPriceForecasts:
         assert b'30-day window' in resp.data
         assert b'Price forecast (next 3 days)' in resp.data
         assert b'Volume forecast (next 3 days)' in resp.data
+        # Collected-sales history charts at the bottom.
+        assert b'Collected Jita sales (last 30 days)' in resp.data
+        assert b'histPriceChart' in resp.data
+        assert b'histVolChart' in resp.data
 
     def test_redirects_unauthenticated(self, db, client):
         resp = client.get('/price_forecasts')

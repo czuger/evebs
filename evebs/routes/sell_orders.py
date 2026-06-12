@@ -1,9 +1,11 @@
-"""Sell orders: margin based on the lowest sell order price in public_trade_orders,
-net of the user's personal sales_taxes settings (broker fee + sales tax + safety margin).
+"""Sell orders: margin based on the 3-day Jita **price forecast** (the 7-day-window
+`forecast_7d` from `jita_price_forecast_linear_regression`), net of the user's personal
+sales_taxes settings (broker fee + sales tax + safety margin). The "Forecast vol." column
+shows the matching Jita **volume forecast** (`jita_volume_forecast_linear_regression`).
 
-Contrast with buy_orders which uses the highest buy order price (instant sell to an
-existing buy order). Here the user places a sell order at or below the current market
-floor and waits for a buyer — the achievable price is higher, but not guaranteed.
+Forward-looking and Jita-only: rows are the items the user owns a manufacturing blueprint
+for that have a Jita forecast — there is no per-hub / live-market dependency here (contrast
+with buy_orders, which uses the highest live buy order in public_trade_orders).
 """
 import time
 from types import SimpleNamespace
@@ -26,76 +28,49 @@ bp = FlaskBlueprint('sell_orders', __name__)
 
 _timings = set_logger('timings')
 
-_SELECT = """
+# `sell_price` / `sell_volume` are the Jita 3-day forecast (price / volume) `forecast_7d`
+# values at the +3d horizon — kept under those aliases so the template stays simple.
+# `{item_filter}` is empty, or restricts to the user's selected items when show_selected.
+JITA_SYSTEM_ID = 30000142
+
+_SQL = """
 SELECT
     uic.item_name,
     uic.item_slug,
     uic.produced_type_id                                                         AS eve_item_id,
-    us.name || ' (' || ur.name || ')'                                            AS trade_hub_name,
-    ls.universe_system_id,
+    {jita}                                                                       AS universe_system_id,
     uic.mat_cost_per_unit + uic.ind_tax_per_unit                                AS total_cost_per_unit,
-    ls.sell_price,
-    ls.sell_price * :sell_fee                                                    AS sell_fee_per_unit,
-    ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
+    pf.forecast_7d                                                               AS sell_price,
+    pf.forecast_7d * :sell_fee                                                   AS sell_fee_per_unit,
+    pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
                                                                                  AS margin_per_unit,
-    CASE WHEN ls.sell_price > 0
-         THEN (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
-              / ls.sell_price
+    CASE WHEN pf.forecast_7d > 0
+         THEN (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+              / pf.forecast_7d
          ELSE 0
     END                                                                          AS margin_pcent,
-    ls.sell_volume,
+    COALESCE(vf.forecast_7d, 0)                                                  AS sell_volume,
     b.nb_runs * b.prod_qtt                                                       AS full_batch_amount,
     (b.nb_runs * b.prod_qtt)
-        * (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+        * (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
                                                                                  AS margin_full_batch
 FROM user_industry_costs uic
-JOIN lowest_sell ls ON ls.eve_item_id = uic.produced_type_id
 JOIN blueprints b ON b.id = uic.blueprint_id
-JOIN universe_systems us ON us.id = ls.universe_system_id
-JOIN universe_constellations uc ON uc.id = us.universe_constellation_id
-JOIN universe_regions ur ON ur.id = uc.universe_region_id
+JOIN jita_price_forecast_linear_regression pf
+    ON pf.type_id = uic.produced_type_id AND pf.forecast_date = CURRENT_DATE + 3
+LEFT JOIN jita_volume_forecast_linear_regression vf
+    ON vf.type_id = uic.produced_type_id AND vf.forecast_date = CURRENT_DATE + 3
 WHERE uic.user_id    = :user_id
   AND uic.activity_type = 'manufacturing'
-  AND ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
-  AND CASE WHEN ls.sell_price > 0
-       THEN (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) / ls.sell_price
+  {item_filter}
+  AND pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
+  AND CASE WHEN pf.forecast_7d > 0
+       THEN (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) / pf.forecast_7d
        ELSE 0 END >= :min_margin_pcent
   AND (b.nb_runs * b.prod_qtt)
-      * (ls.sell_price * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) >= :min_batch_margin
+      * (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) >= :min_batch_margin
 ORDER BY margin_full_batch DESC
 """
-
-# DISTINCT ON gives the single lowest-priced sell order per (item, hub) —
-# that is the current market floor, the best price achievable by undercutting.
-_SQL = """
-WITH lowest_sell AS (
-    SELECT DISTINCT ON (eve_item_id, universe_system_id)
-        eve_item_id,
-        universe_system_id,
-        price         AS sell_price,
-        volume_remain AS sell_volume
-    FROM public_trade_orders
-    WHERE is_buy_order = FALSE
-      AND eve_item_id IN :item_ids
-      AND universe_system_id IN :hub_ids
-    ORDER BY eve_item_id, universe_system_id, price ASC
-)
-""" + _SELECT
-
-# show_selected_items=False: no item filter — all game blueprints via user_industry_costs CROSS JOIN
-_SQL_ALL = """
-WITH lowest_sell AS (
-    SELECT DISTINCT ON (eve_item_id, universe_system_id)
-        eve_item_id,
-        universe_system_id,
-        price         AS sell_price,
-        volume_remain AS sell_volume
-    FROM public_trade_orders
-    WHERE is_buy_order = FALSE
-      AND universe_system_id IN :hub_ids
-    ORDER BY eve_item_id, universe_system_id, price ASC
-)
-""" + _SELECT
 
 
 @bp.route('/sell_orders')
@@ -108,16 +83,15 @@ def show():
     show_selected = sof.get('show_selected_items', False)
 
     t0 = time.perf_counter()
-    hub_ids = [h.id for h in user.trade_hubs]
     if show_selected:
         item_ids = [ei.id for ei in user.eve_items]
-        should_run = bool(item_ids and hub_ids)
+        should_run = bool(item_ids)
     else:
         item_ids = None
-        should_run = bool(hub_ids)
-    _timings.info('sell_orders.user_items_and_hubs',
+        should_run = True
+    _timings.info('sell_orders.user_items',
                   extra={'duration_ms': (time.perf_counter() - t0) * 1000,
-                         'n_items': len(item_ids) if item_ids else -1, 'n_hubs': len(hub_ids)})
+                         'n_items': len(item_ids) if item_ids else -1})
 
     rows = []
     pagination = None
@@ -133,25 +107,23 @@ def show():
         min_margin_pcent = sof.get('min_margin_percent', 20) / 100.0
         min_batch_margin = sof.get('min_batch_margin_amount', 5_000_000)
 
-        sql = _SQL if show_selected else _SQL_ALL
+        item_filter = 'AND uic.produced_type_id IN :item_ids' if show_selected else ''
+        sql = _SQL.format(jita=JITA_SYSTEM_ID, item_filter=item_filter)
         params = {
             'user_id':          user.id,
-            'hub_ids':          hub_ids,
             'sell_fee':         sell_fee,
             'min_margin_pcent': min_margin_pcent,
             'min_batch_margin': min_batch_margin,
         }
+
         if show_selected:
             params['item_ids'] = item_ids
-
-        bp_hub = bindparam('hub_ids', expanding=True)
-        if show_selected:
             bp_item = bindparam('item_ids', expanding=True)
-            count_stmt = text(f'SELECT COUNT(*) FROM ({sql}) t').bindparams(bp_item, bp_hub)
-            data_stmt  = text(sql + ' LIMIT :limit OFFSET :offset').bindparams(bp_item, bp_hub)
+            count_stmt = text(f'SELECT COUNT(*) FROM ({sql}) t').bindparams(bp_item)
+            data_stmt  = text(sql + ' LIMIT :limit OFFSET :offset').bindparams(bp_item)
         else:
-            count_stmt = text(f'SELECT COUNT(*) FROM ({sql}) t').bindparams(bp_hub)
-            data_stmt  = text(sql + ' LIMIT :limit OFFSET :offset').bindparams(bp_hub)
+            count_stmt = text(f'SELECT COUNT(*) FROM ({sql}) t')
+            data_stmt  = text(sql + ' LIMIT :limit OFFSET :offset')
 
         t0 = time.perf_counter()
         total = db.session.execute(count_stmt, params).scalar() or 0
