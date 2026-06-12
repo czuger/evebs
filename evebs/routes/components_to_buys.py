@@ -7,7 +7,7 @@ from sqlalchemy import func
 
 from evebs.extensions import db
 from evebs.models import (
-    EveItem, JitaMinPrice, ProductionList, BlueprintModification,
+    EveItem, JitaMinPrice, ProductionList, ReactionList, BlueprintModification,
     UserAsset, UniverseStation, UniverseStructure, UnknownStructure,
 )
 
@@ -18,11 +18,12 @@ TECH2_MATERIAL_FACTOR = 0.98
 
 
 def _compute_components(user) -> list:
-    """Aggregate direct materials needed for the user's active production runs.
+    """Aggregate direct materials needed for the user's active production + reaction runs.
 
-    Applies per-user blueprint modification factors (material efficiency).
-    Material chain is read from Blueprint.manufacturing_tree (JSONB column),
-    populated by process/update_blueprints.py.
+    Applies per-user blueprint modification factors (material efficiency) and the Tech II 2%
+    reduction for manufacturing; reaction-list entries apply the user's reaction
+    material_consumption modifier (<= 0). Material chain is read from
+    Blueprint.manufacturing_tree (JSONB column), populated by process/update_blueprints.py.
     Returns a list of SimpleNamespace with eve_item_id, eve_item_name, qtt_to_buy,
     total_cost, required_volume, base_item — matching the template's expected shape.
     """
@@ -32,7 +33,13 @@ def _compute_components(user) -> list:
         .filter(ProductionList.runs_count > 0)
         .all()
     )
-    if not production_lists:
+    reaction_lists = (
+        ReactionList.query
+        .filter_by(user_id=user.id)
+        .filter(ReactionList.runs_count > 0)
+        .all()
+    )
+    if not production_lists and not reaction_lists:
         return []
 
     # Build per-blueprint modification factor map
@@ -40,8 +47,10 @@ def _compute_components(user) -> list:
         bm.blueprint_id: bm.percent_modification_value
         for bm in BlueprintModification.query.filter_by(user_id=user.id).all()
     }
+    # Reaction material-consumption modifier (always <= 0 → a reduction).
+    rxn_factor = 1.0 + (user.reaction_modifications or {}).get('material_consumption', 0) / 100.0
 
-    # Aggregate required quantities per material across all production list entries
+    # Aggregate required quantities per material across all production + reaction entries.
     material_qtys: dict[int, int] = {}
     for pl in production_lists:
         item = pl.eve_item
@@ -56,6 +65,18 @@ def _compute_components(user) -> list:
         for mat_id_str, mat_data in chain.items():
             mat_id = int(mat_id_str)
             qty = math.ceil(mat_data['quantity'] * pl.runs_count * mod)
+            material_qtys[mat_id] = material_qtys.get(mat_id, 0) + qty
+
+    for rl in reaction_lists:
+        item = rl.eve_item
+        if not item or not item.blueprint_id or not item.blueprint:
+            continue
+        chain = item.blueprint.manufacturing_tree
+        if not chain:
+            continue
+        for mat_id_str, mat_data in chain.items():
+            mat_id = int(mat_id_str)
+            qty = math.ceil(mat_data['quantity'] * rl.runs_count * rxn_factor)
             material_qtys[mat_id] = material_qtys.get(mat_id, 0) + qty
 
     if not material_qtys:

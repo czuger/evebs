@@ -37,7 +37,26 @@ def _parse_taxes(form):
         'time_research':     {'system_cost_index': pct('ter_sci'), 'scc_tax': pct('ter_scc'), 'time_tax': pct('ter_tax')},
         'copying':           {'system_cost_index': pct('cpy_sci'), 'scc_tax': pct('cpy_scc'), 'copying_tax': pct('cpy_tax')},
         'invention':         {'system_cost_index': pct('inv_sci'), 'scc_tax': pct('inv_scc'), 'invention_tax': pct('inv_tax')},
-        'reaction':          {'system_cost_index': pct('rxn_sci'), 'scc_tax': pct('rxn_scc'), 'reaction_tax': pct('rxn_tax')},
+    }
+
+
+def _parse_reaction_modifications(form):
+    """Build a User.reaction_modifications dict from a submitted HTML form.
+
+    system_cost_index / scc_tax / reaction_tax are plain percentages (5.0 = 5 %).
+    material_consumption is a material-usage modifier that must be <= 0 (a reduction);
+    any positive value is clamped to 0. Missing/non-numeric fields default to 0.0.
+    """
+    def pct(key):
+        try:
+            return float(form.get(key) or 0)
+        except (ValueError, TypeError):
+            return 0.0
+    return {
+        'system_cost_index':    pct('rxn_sci'),
+        'scc_tax':              pct('rxn_scc'),
+        'reaction_tax':         pct('rxn_tax'),
+        'material_consumption': min(pct('rxn_material_consumption'), 0.0),
     }
 
 
@@ -141,6 +160,23 @@ def update_industry_taxes():
     db.session.commit()
     flash('Industry taxes updated.')
     return redirect(url_for('users.industry_taxes'))
+
+
+@bp.route('/users/reaction_modifications')
+@login_required
+def reaction_modifications():
+    return render_template('users/reaction_modifications.html',
+                           title='Reaction modifications',
+                           user=current_user)
+
+
+@bp.route('/users/reaction_modifications', methods=['POST'])
+@login_required
+def update_reaction_modifications():
+    current_user.reaction_modifications = _parse_reaction_modifications(request.form)
+    db.session.commit()
+    flash('Reaction modifications updated.')
+    return redirect(url_for('users.reaction_modifications'))
 
 
 @bp.route('/users/sync_location', methods=['POST'])

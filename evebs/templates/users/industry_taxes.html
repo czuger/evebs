@@ -19,7 +19,6 @@
   {% set inv = it.get('invention', {}) %}
   {% set mer = it.get('material_research', {}) %}
   {% set ter = it.get('time_research', {}) %}
-  {% set rxn = it.get('reaction', {}) %}
 
   <div class="card mb-3">
     <div class="card-header fw-semibold">Manufacturing</div>
@@ -143,28 +142,8 @@
     </div>
   </div>
 
-  <div class="card mb-3">
-    <div class="card-header fw-semibold">Reaction</div>
-    <div class="card-body">
-      <div class="row g-3">
-        <div class="col-12 col-md-4">
-          <label class="form-label">System cost index %</label>
-          <input type="number" name="rxn_sci" step="0.01" min="0" max="100" class="form-control"
-                 value="{{ rxn.get('system_cost_index', 5.0) }}">
-        </div>
-        <div class="col-12 col-md-4">
-          <label class="form-label">SCC tax %</label>
-          <input type="number" name="rxn_scc" step="0.01" min="0" max="100" class="form-control"
-                 value="{{ rxn.get('scc_tax', 4.0) }}">
-        </div>
-        <div class="col-12 col-md-4">
-          <label class="form-label">Reaction tax %</label>
-          <input type="number" name="rxn_tax" step="0.01" min="0" max="100" class="form-control"
-                 value="{{ rxn.get('reaction_tax', 1.0) }}">
-        </div>
-      </div>
-    </div>
-  </div>
+  <p class="text-muted small">Reaction settings have moved to
+    <a href="{{ url_for('users.reaction_modifications') }}">Reaction modifications</a>.</p>
 
   <div class="mb-4">
     <button type="submit" class="btn btn-primary">Save</button>

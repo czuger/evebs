@@ -27,6 +27,7 @@
             <a class="dropdown-item" href="{{ url_for('industry_jobs.show') }}">My industry jobs</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{ url_for('production_lists.edit') }}">Production list</a>
+            <a class="dropdown-item" href="{{ url_for('reaction_lists.edit') }}">Reaction list</a>
             <a class="dropdown-item" href="{{ url_for('invention_lists.edit') }}">Invention list</a>
             <a class="dropdown-item" href="{{ url_for('copy_lists.edit') }}">Copy list</a>
             <div class="dropdown-divider"></div>
@@ -58,6 +59,7 @@
           <div class="dropdown-menu">
             <a class="dropdown-item" href="{{ url_for('users.edit') }}">Settings</a>
             <a class="dropdown-item" href="{{ url_for('users.industry_taxes') }}">Industry taxes</a>
+            <a class="dropdown-item" href="{{ url_for('users.reaction_modifications') }}">Reaction modifications</a>
             <a class="dropdown-item" href="{{ url_for('users.sales_taxes') }}">Sales taxes</a>
           </div>
         </li>

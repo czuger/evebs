@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-3">
+  <div class="col">
+    <h3>Reaction modifications — {{ current_user.name }}</h3>
+    <p class="text-muted small">
+      Tax values in plain percent (e.g. 5 = 5 %). System cost index + SCC + reaction tax make up
+      the reaction job tax.<br>
+      <strong>Material consumption</strong> is a material-usage modifier applied when computing
+      components to buy for reactions. It must be <strong>negative</strong> (a reduction); positive
+      values are stored as 0.
+    </p>
+  </div>
+</div>
+
+<form action="{{ url_for('users.update_reaction_modifications') }}" method="post">
+  {% set rm = user.reaction_modifications or {} %}
+
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Reaction</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-3">
+          <label class="form-label">System cost index %</label>
+          <input type="number" name="rxn_sci" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ rm.get('system_cost_index', 5) }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">SCC tax %</label>
+          <input type="number" name="rxn_scc" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ rm.get('scc_tax', 4) }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Reaction tax %</label>
+          <input type="number" name="rxn_tax" step="0.01" min="0" max="100" class="form-control"
+                 value="{{ rm.get('reaction_tax', 1) }}">
+        </div>
+        <div class="col-12 col-md-3">
+          <label class="form-label">Material consumption %</label>
+          <input type="number" name="rxn_material_consumption" step="0.01" max="0" class="form-control"
+                 value="{{ rm.get('material_consumption', 0) }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>
+{% endblock %}

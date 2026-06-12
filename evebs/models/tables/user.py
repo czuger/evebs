@@ -61,17 +61,25 @@ class User(UserMixin, db.Model):
     #   invention      → invention_tax
     #   material_research → material_tax
     #   time_research     → time_tax
-    #   reaction          → reaction_tax
     #
     # Edited via /users/edit and saved by _parse_taxes() in routes/users.py.
     # Default values represent a quiet high-sec NPC station (5 % SCI, 4 % SCC, 1 % activity).
+    # Reaction settings live in their own `reaction_modifications` column (below).
     industry_taxes = db.Column(db.JSON, nullable=False, default=lambda: {
         'manufacturing':     {'system_cost_index': 5.0, 'scc_tax': 4.0, 'standard_tax': 1.0, 'capital_tax': 1.0},
         'material_research': {'system_cost_index': 5.0, 'scc_tax': 4.0, 'material_tax': 1.0},
         'time_research':     {'system_cost_index': 5.0, 'scc_tax': 4.0, 'time_tax': 1.0},
         'copying':           {'system_cost_index': 5.0, 'scc_tax': 4.0, 'copying_tax': 1.0},
         'invention':         {'system_cost_index': 5.0, 'scc_tax': 4.0, 'invention_tax': 1.0},
-        'reaction':          {'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 1.0},
+    })
+
+    # Per-user reaction configuration (plain %, e.g. 5.0 = 5 %), edited on
+    # /users/reaction_modifications. system_cost_index + scc_tax + reaction_tax form the
+    # reaction job tax; material_consumption is a material-usage modifier that is always
+    # <= 0 (a reduction — positive values are clamped to 0) and is applied when computing
+    # components to buy for reactions.
+    reaction_modifications = db.Column(db.JSON, nullable=False, default=lambda: {
+        'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 1.0, 'material_consumption': 0,
     })
 
     # Per-user sell-order fee configuration (plain %, e.g. 2 = 2 %).
@@ -90,6 +98,7 @@ class User(UserMixin, db.Model):
     trade_hubs = db.relationship('UniverseSystem', secondary=trade_hubs_users, back_populates='users')
     blueprints = db.relationship('Blueprint', secondary=user_blueprints, back_populates='users')
     production_lists = db.relationship('ProductionList', back_populates='user', cascade='all, delete-orphan')
+    reaction_lists = db.relationship('ReactionList', back_populates='user', cascade='all, delete-orphan')
     invention_lists = db.relationship('InventionList', back_populates='user', cascade='all, delete-orphan')
     copy_lists = db.relationship('CopyList', back_populates='user', cascade='all, delete-orphan')
     industry_jobs = db.relationship('IndustryJob', back_populates='user', cascade='all, delete-orphan')

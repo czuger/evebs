@@ -66,6 +66,28 @@ class TestComponentsToBuysCompute:
         # T2: ceil(100 * 2 * 0.98) = 196 ; T1: 100 * 2 = 200 ; aggregated across both = 396
         assert rows[34].qtt_to_buy == 396
 
+    def test_reaction_applies_material_consumption(self, db, auth_client):
+        """A reaction-list entry reduces materials by the user's material_consumption modifier."""
+        from evebs.routes.components_to_buys import _compute_components
+        from tests.factories import make_item as _mk
+        from evebs.models import ReactionList
+        _, user = auth_client
+        user.reaction_modifications = {'system_cost_index': 5, 'scc_tax': 4,
+                                       'reaction_tax': 1, 'material_consumption': -2}
+
+        mat = _mk(db, item_id=34, slug='hydro', name='Hydrogen')
+        prod = _mk(db, item_id=16679, slug='fullerides', name='Fullerides')
+        bp = make_blueprint(db, prod, blueprint_id=46209, prod_qtt=3000)
+        bp.activity_type = 'reaction'
+        bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Hydrogen', 'chain': {}}}
+        make_jita_min_price(db, mat, min_sell_price=5.0)
+        db.session.add(ReactionList(user_id=user.id, eve_item_id=prod.id, runs_count=2))
+        db.session.commit()
+
+        rows = {r.eve_item_id: r for r in _compute_components(user)}
+        # ceil(100 * 2 * (1 + (-2)/100)) = ceil(200 * 0.98) = 196
+        assert rows[34].qtt_to_buy == 196
+
     def test_station_filter_queries_bpc_assets(self, db, auth_client):
         client, user = auth_client
         ur = make_universe_region(db, region_id=10000099)

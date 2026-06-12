@@ -96,8 +96,10 @@ class TestRefreshForecastMvs:
         assert result['price_items'] >= 1
         assert result['vol_items'] >= 1
 
-        # MVs are freshly rebuilt: the furthest forecast day is CURRENT_DATE + 3.
+        # MVs are freshly rebuilt: the furthest forecast day is the DB's CURRENT_DATE + 3
+        # (use the server's date, not the local one, to avoid client/server date skew).
         max_day = db.session.execute(text(
             'SELECT MAX(forecast_date) FROM jita_price_forecast_linear_regression '
             'WHERE type_id = :t'), {'t': item.id}).scalar()
-        assert max_day == today + timedelta(days=3)
+        db_today = db.session.execute(text('SELECT CURRENT_DATE')).scalar()
+        assert max_day == db_today + timedelta(days=3)

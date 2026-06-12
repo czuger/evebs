@@ -124,3 +124,34 @@ class TestUsersIndustryTaxes:
         client.post('/users/industry_taxes', data={'mfg_sci': 'bad_value'})
         db.session.expire(user)
         assert user.industry_taxes['manufacturing']['system_cost_index'] == 0.0
+
+    def test_industry_taxes_no_longer_holds_reaction(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users/industry_taxes', data={'mfg_sci': '5.0'})
+        db.session.expire(user)
+        assert 'reaction' not in user.industry_taxes
+
+
+class TestUsersReactionModifications:
+    def test_get_returns_200(self, auth_client):
+        client, _ = auth_client
+        assert client.get('/users/reaction_modifications').status_code == 200
+
+    def test_post_updates_and_redirects(self, db, auth_client):
+        client, user = auth_client
+        resp = client.post('/users/reaction_modifications', data={
+            'rxn_sci': '5.0', 'rxn_scc': '4.0', 'rxn_tax': '2.0',
+            'rxn_material_consumption': '-2.5',
+        })
+        assert resp.status_code == 302
+        db.session.expire(user)
+        assert user.reaction_modifications['reaction_tax'] == 2.0
+        assert user.reaction_modifications['material_consumption'] == -2.5
+
+    def test_positive_material_consumption_clamped_to_zero(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users/reaction_modifications', data={
+            'rxn_sci': '5', 'rxn_scc': '4', 'rxn_tax': '1', 'rxn_material_consumption': '3',
+        })
+        db.session.expire(user)
+        assert user.reaction_modifications['material_consumption'] == 0.0

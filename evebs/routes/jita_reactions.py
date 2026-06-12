@@ -16,7 +16,10 @@ JITA_SYSTEM_ID = 30000142
 # Per-item: reaction cost = material cost + the user's reaction industry taxes
 # (user_industry_costs); est. sell price = the lowest live Jita sell order (read straight from
 # public_trade_orders, like buy_orders); sell tax = est. price × the user's sales_taxes
-# (broker + sales + safety). Benefit is per batch: prod_qtt × (net sell price − reaction cost).
+# (broker + sales + safety). Benefit is per batch: LEAST(prod_qtt, sold_7d) × (net sell price −
+# reaction cost) — the batch output is capped by units actually sold at Jita in the last 7 days.
+# tendency compares the +3d price forecast against the current price: up / down beyond ±10%,
+# otherwise flat.
 _SQL = """
     WITH lowest_sell AS (
         SELECT DISTINCT ON (eve_item_id)
@@ -26,6 +29,13 @@ _SQL = """
         WHERE is_buy_order = FALSE
           AND universe_system_id = 30000142
         ORDER BY eve_item_id, price ASC
+    ),
+    sold AS (
+        SELECT eve_item_id, SUM(volume) AS sold_7d
+        FROM sales_finals
+        WHERE universe_system_id = 30000142
+          AND day >= CURRENT_DATE - INTERVAL '7 days'
+        GROUP BY eve_item_id
     )
     SELECT
         ei.id AS item_id, ei.name AS item_name, ei.slug AS item_slug,
@@ -34,13 +44,23 @@ _SQL = """
         uic.mat_cost_per_unit + uic.ind_tax_per_unit          AS reaction_cost,
         ls.sell_price                                         AS estimated_selling_price,
         ls.sell_price * :sell_fee                             AS selling_tax,
-        b.prod_qtt * (ls.sell_price * (1.0 - :sell_fee)
+        COALESCE(s.sold_7d, 0)::bigint                        AS sold_7d,
+        CASE
+            WHEN pf.forecast_7d IS NULL OR ls.sell_price <= 0 THEN 'flat'
+            WHEN pf.forecast_7d > ls.sell_price * 1.10        THEN 'up'
+            WHEN pf.forecast_7d < ls.sell_price * 0.90        THEN 'down'
+            ELSE 'flat'
+        END                                                   AS tendency,
+        LEAST(b.prod_qtt, COALESCE(s.sold_7d, 0)) * (ls.sell_price * (1.0 - :sell_fee)
                       - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) AS benefit
     FROM user_industry_costs uic
     JOIN blueprints b ON b.id = uic.blueprint_id
     JOIN eve_items ei ON ei.id = uic.produced_type_id
     LEFT JOIN market_groups mg ON mg.id = ei.market_group_id
     JOIN lowest_sell ls ON ls.eve_item_id = uic.produced_type_id
+    LEFT JOIN sold s ON s.eve_item_id = uic.produced_type_id
+    LEFT JOIN jita_price_forecast_linear_regression pf
+        ON pf.type_id = uic.produced_type_id AND pf.forecast_date = CURRENT_DATE + 3
     WHERE uic.user_id = :user_id
       AND uic.activity_type = 'reaction'
     ORDER BY benefit DESC

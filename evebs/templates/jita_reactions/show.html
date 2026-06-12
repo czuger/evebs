@@ -15,8 +15,10 @@
       <th>Market group</th>
       <th class="text-end">Reaction cost / item</th>
       <th class="text-end">Est. sell price / item</th>
+      <th class="text-center">Tendency</th>
       <th class="text-end">Sell tax / item</th>
-      <th class="text-end">Benefit per batch</th>
+      <th class="text-end">Sold (7d)</th>
+      <th class="text-end" data-bs-toggle="tooltip" title="Batch output capped by units sold at Jita in the last 7 days">Benefit per batch</th>
     </tr>
     {% for jr in rows %}
     {% if jr.benefit > 0 %}
@@ -31,8 +33,14 @@
       </td>
       <td class="text-center">
         {% if jr.blueprint_id in owned_bp_ids %}
-        <img src="https://api.iconify.design/streamline-ultimate:chemical-hexagon-1.svg" width="16" height="16"
-             class="opacity-75" data-bs-toggle="tooltip" title="You own this reaction blueprint">
+        <form method="post" action="{{ url_for('reaction_lists.create') }}" class="d-inline">
+          <input type="hidden" name="eve_item_id" value="{{ jr.item_id }}">
+          <input type="hidden" name="runs_count" value="1">
+          <button type="submit" class="btn btn-link p-0 border-0 align-baseline"
+                  data-bs-toggle="tooltip" title="You own this reaction blueprint — click to add to reaction list">
+            <img src="https://api.iconify.design/streamline-ultimate:chemical-hexagon-1.svg" width="16" height="16" class="opacity-75">
+          </button>
+        </form>
         {% endif %}
       </td>
       <td>{{ jr.market_group_name }}</td>
@@ -42,11 +50,21 @@
       <td class="text-end">
         <a href="{{ url_for('market_data.trade_hub_detail', item_id=jr.item_id, trade_hub_id=30000142) }}" class="text-decoration-none">{{ jr.estimated_selling_price | isk }}</a>
       </td>
+      <td class="text-center">
+        {% if jr.tendency == 'up' %}
+        <span class="text-success" data-bs-toggle="tooltip" title="Forecast &gt; +10% vs current price">&#9650;</span>
+        {% elif jr.tendency == 'down' %}
+        <span class="text-danger" data-bs-toggle="tooltip" title="Forecast &lt; -10% vs current price">&#9660;</span>
+        {% else %}
+        <span class="text-muted" data-bs-toggle="tooltip" title="Stable (within ±10%)">–</span>
+        {% endif %}
+      </td>
       <td class="text-end">{{ jr.selling_tax | isk }}</td>
+      <td class="text-end">{{ jr.sold_7d | vol }}</td>
       <td class="text-end">{{ jr.benefit | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="7" class="text-center text-muted">No reactions found — check that Jita prices are loaded.</td></tr>
+    <tr><td colspan="9" class="text-center text-muted">No reactions found — check that Jita prices are loaded.</td></tr>
     {% endfor %}
   </table>
 </div>

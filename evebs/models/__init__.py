@@ -7,6 +7,7 @@ from evebs.models.tables.blueprint_modification import BlueprintModification
 from evebs.models.tables.public_trade_order import PublicTradeOrder
 from evebs.models.tables.sales_final import SalesFinal
 from evebs.models.tables.production_list import ProductionList
+from evebs.models.tables.reaction_list import ReactionList
 from evebs.models.tables.invention_list import InventionList
 from evebs.models.tables.copy_list import CopyList
 from evebs.models.tables.user_sale_order import UserSaleOrder
@@ -49,6 +50,7 @@ __all__ = [
     'PublicTradeOrder',
     'SalesFinal',
     'ProductionList',
+    'ReactionList',
     'InventionList',
     'CopyList',
     'UserSaleOrder',
