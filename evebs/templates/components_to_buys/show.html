@@ -65,6 +65,12 @@
     {% else %}
     <tr><td colspan="{{ 6 if selected_station_id else 4 }}" class="text-center text-muted">Nothing to buy.</td></tr>
     {% endfor %}
+    {% if components %}
+    <tr class="fw-semibold border-top">
+      <td colspan="{{ 5 if selected_station_id else 3 }}" class="text-end">Total required volume</td>
+      <td class="text-end">{{ components | sum(attribute='required_volume') | vol }}</td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 

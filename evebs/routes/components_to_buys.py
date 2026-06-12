@@ -13,6 +13,9 @@ from evebs.models import (
 
 bp = FlaskBlueprint('components_to_buys', __name__)
 
+# Tech II blueprints (invented from a T1) consume 2% fewer materials.
+TECH2_MATERIAL_FACTOR = 0.98
+
 
 def _compute_components(user) -> list:
     """Aggregate direct materials needed for the user's active production runs.
@@ -48,6 +51,8 @@ def _compute_components(user) -> list:
         if not chain:
             continue
         mod = mods.get(item.blueprint_id, 1.0)
+        if item.blueprint.is_invented_from_id is not None:   # Tech II: 2% material reduction
+            mod *= TECH2_MATERIAL_FACTOR
         for mat_id_str, mat_data in chain.items():
             mat_id = int(mat_id_str)
             qty = math.ceil(mat_data['quantity'] * pl.runs_count * mod)
