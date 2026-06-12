@@ -5,7 +5,6 @@ from evebs.models.tables.blueprint import Blueprint
 from evebs.models.tables.eve_item import EveItem
 from evebs.models.tables.blueprint_modification import BlueprintModification
 from evebs.models.tables.public_trade_order import PublicTradeOrder
-from evebs.models.tables.buy_orders_analytic import BuyOrdersAnalytic
 from evebs.models.tables.sales_final import SalesFinal
 from evebs.models.tables.production_list import ProductionList
 from evebs.models.tables.invention_list import InventionList
@@ -44,7 +43,6 @@ __all__ = [
     'EveItem',
     'BlueprintModification',
     'PublicTradeOrder',
-    'BuyOrdersAnalytic',
     'SalesFinal',
     'ProductionList',
     'InventionList',

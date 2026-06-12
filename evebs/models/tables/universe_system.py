@@ -24,7 +24,6 @@ class UniverseSystem(db.Model):
     universe_stations = db.relationship('UniverseStation', back_populates='universe_system')
     users = db.relationship('User', secondary='trade_hubs_users', back_populates='trade_hubs')
     public_trade_orders = db.relationship('PublicTradeOrder', back_populates='universe_system')
-    buy_orders_analytics = db.relationship('BuyOrdersAnalytic', back_populates='universe_system')
     production_lists = db.relationship('ProductionList', back_populates='universe_system')
     invention_lists = db.relationship('InventionList', back_populates='universe_system')
     copy_lists = db.relationship('CopyList', back_populates='universe_system')

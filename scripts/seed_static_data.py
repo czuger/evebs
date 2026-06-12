@@ -437,7 +437,6 @@ _CHILD_TABLES = [
     'user_assets',
     'public_trade_orders',
     'sales_finals',
-    'buy_orders_analytics',
 ]
 
 

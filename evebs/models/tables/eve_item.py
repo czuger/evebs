@@ -28,7 +28,6 @@ class EveItem(db.Model):
     market_group = db.relationship('MarketGroup', back_populates='eve_items')
     blueprint = db.relationship('Blueprint', back_populates='eve_item')
     sales_finals = db.relationship('SalesFinal', back_populates='eve_item', cascade='all, delete-orphan')
-    buy_orders_analytics = db.relationship('BuyOrdersAnalytic', back_populates='eve_item', cascade='all, delete-orphan')
     public_trade_orders = db.relationship('PublicTradeOrder', back_populates='eve_item', cascade='all, delete-orphan')
 
     @property

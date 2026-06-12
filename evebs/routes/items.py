@@ -3,14 +3,15 @@ from types import SimpleNamespace
 
 from flask import Blueprint as FlaskBlueprint, render_template, abort
 from flask_login import current_user
+from sqlalchemy import func
 
-from evebs.models import EveItem, UniverseSystem, JitaMinPrice, MarketHistory
+from evebs.models import EveItem, UniverseSystem, JitaMinPrice, MarketHistory, PublicTradeOrder
 from evebs.models.tables.blueprint import Blueprint as BlueprintModel
-from evebs.models.tables.buy_orders_analytic import BuyOrdersAnalytic
 
 bp = FlaskBlueprint('items', __name__)
 
 FORGE_REGION_ID = 10000002
+JITA_SYSTEM_ID = 30000142
 
 
 def _bp_display_name(bp_obj):
@@ -92,10 +93,22 @@ def show(slug):
     item = EveItem.find_by_slug(slug)
     if item is None:
         abort(404)
-    jita      = UniverseSystem.query.filter_by(id=30000142, trade_hub=True).first()
+    jita      = UniverseSystem.query.filter_by(id=JITA_SYSTEM_ID, trade_hub=True).first()
     mfg       = _manufacturing_context(item)
     jma_item  = JitaMinPrice.query.get(item.id)
-    jita_buy  = BuyOrdersAnalytic.query.filter_by(eve_item_id=item.id, universe_system_id=30000142).first()
+
+    # Market price summary (None → shown as "—"). Jita min sell is the P10 ask analytic; the
+    # other three are live min sell / max buy straight from public_trade_orders.
+    jita_min_sell = jma_item.min_sell_price if jma_item else None
+    jita_max_buy  = (PublicTradeOrder.query
+                     .filter_by(eve_item_id=item.id, is_buy_order=True, universe_system_id=JITA_SYSTEM_ID)
+                     .with_entities(func.max(PublicTradeOrder.price)).scalar())
+    universe_min_sell = (PublicTradeOrder.query
+                         .filter_by(eve_item_id=item.id, is_buy_order=False)
+                         .with_entities(func.min(PublicTradeOrder.price)).scalar())
+    universe_max_buy  = (PublicTradeOrder.query
+                         .filter_by(eve_item_id=item.id, is_buy_order=True)
+                         .with_entities(func.max(PublicTradeOrder.price)).scalar())
 
     # "Produced by" — the blueprint that makes this item (when it is a product).
     bp_item = bp_name = None
@@ -129,8 +142,10 @@ def show(slug):
                            item=item,
                            jita=jita,
                            mfg=mfg,
-                           jma_item=jma_item,
-                           jita_buy=jita_buy,
+                           jita_min_sell=jita_min_sell,
+                           jita_max_buy=jita_max_buy,
+                           universe_min_sell=universe_min_sell,
+                           universe_max_buy=universe_max_buy,
                            bp_item=bp_item,
                            bp_name=bp_name,
                            invented=invented,

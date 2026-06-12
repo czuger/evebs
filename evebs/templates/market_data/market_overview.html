@@ -1,27 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{{ item.name }} - Market overview</h2>
-<p class="text-muted small mb-3">Jita P10 min sell price benchmark.</p>
-{% if jma %}
-<div class="row g-3 mb-4">
-  <div class="col-sm-6">
-    <div class="card text-center">
-      <div class="card-body py-2">
-        <div class="text-muted small">Jita min sell price</div>
-        <div class="fw-semibold font-monospace">{{ jma.min_sell_price | isk }}</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6">
-    <div class="card text-center">
-      <div class="card-body py-2">
-        <div class="text-muted small">Last updated</div>
-        <div class="text-muted small font-monospace">{{ jma.updated_at.strftime('%Y-%m-%d %H:%M') if jma.updated_at else '—' }}</div>
-      </div>
-    </div>
+
+<div class="d-flex align-items-center gap-3 my-4">
+  <img src="https://imageserver.eveonline.com/Type/{{ item.id }}_64.png"
+       alt="{{ item.name }}" class="rounded">
+  <div>
+    <h1 class="mb-0">{{ item.name }} — Market overview</h1>
+    <p class="text-muted small mb-0 mt-1">Best buy and sell orders across all regions — updated every ~15 minutes from ESI.</p>
   </div>
 </div>
-{% else %}
-<p class="text-muted">No Jita market data available for this item.</p>
-{% endif %}
+
+{% include 'market_data/_order_tables.html' %}
 {% endblock %}

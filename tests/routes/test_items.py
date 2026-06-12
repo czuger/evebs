@@ -4,7 +4,7 @@ from datetime import date, timedelta
 import pytest
 from tests.factories import (
     make_universe_system, make_trade_hub, make_item, make_market_group,
-    make_blueprint, make_jita_min_price, make_market_history,
+    make_blueprint, make_jita_min_price, make_market_history, make_public_trade_order,
 )
 
 
@@ -47,7 +47,7 @@ class TestItemManufacturingContext:
         resp = client.get('/items/ammo-items')
         assert resp.status_code == 200
         assert b'Ammo Items' in resp.data
-        assert b'Total cost' in resp.data
+        assert b'Production cost' in resp.data
         # The per-material breakdown table is removed.
         assert b'Qty (batch)' not in resp.data
 
@@ -95,6 +95,31 @@ class TestItemManufacturingContext:
         assert b'Gram I Blueprint' in resp.data
         assert b'Type/1000_64.png' in resp.data
         assert b'Produced by' not in resp.data
+
+    def test_market_prices_shown_for_blueprint_with_no_data(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        item = make_item(db, item_id=2000, slug='gram-ii-bp', name='Gram II Blueprint')
+        db.session.commit()
+
+        resp = client.get('/items/gram-ii-bp')
+        assert resp.status_code == 200
+        # All four market price rows show even with no blueprint/manufacturing and no data.
+        for label in (b'Jita min sell', b'Jita max buy', b'Universe min sell', b'Universe max buy'):
+            assert label in resp.data
+        assert b'\xe2\x80\x94' in resp.data   # em dash "—" placeholder for missing data
+
+    def test_universe_prices_link_to_market_overview(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        item = make_item(db, item_id=34, slug='trit')
+        make_public_trade_order(db, item, system, order_id=1, price=123.0, is_buy=False)
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'Universe min sell' in resp.data
+        assert b'market_overview' in resp.data
 
     def test_price_history_chart_rendered(self, db, client):
         system = make_universe_system(db)
