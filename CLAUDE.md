@@ -55,8 +55,13 @@ alembic upgrade head
 
 # Utility scripts
 python scripts/create_user_and_db.py
-python scripts/seed_static_data.py
+python scripts/seed_static_data.py           # --all also prunes eve_items (see below)
 ```
+
+`seed_static_data.py --all` (or `--prune-items`) prunes `eve_items` down to items that are
+blueprints, manufacturable, reaction-involved, or input materials of those blueprints
+(keep-set computed from `blueprints.jsonl`); everything else and its FK-dependent rows
+(public_trade_orders, sales_finals, user_assets, production/sale lists, etc.) are deleted.
 
 ## Architecture
 
@@ -116,7 +121,7 @@ Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials from config JSON under
 
 ## Key Data Model
 
-- **`EveItem`**: An in-game item. `slug` is used for URL-friendly IDs. `base_item=True` marks raw materials.
+- **`EveItem`**: An in-game item. `slug` is used for URL-friendly IDs. `base_item=True` marks raw materials. After seeding, `eve_items` is pruned (by `seed_static_data.py`) to only blueprints, manufacturable/reaction products, and their input materials.
 - **`Blueprint`**: Crafting recipe. Key fields: `produced_type_id`, `nb_runs`, `prod_qtt`, `activity_type` (`manufacturing`/`reaction`/etc.), `manufacturing_cost`, and `manufacturing_tree` (JSON — recursive BOM, top-level keys are direct materials used in cost calculation; nested `chain` is for display only).
 - **`BlueprintModification`**: Per-user ME/TE bonuses on a blueprint.
 - **`UniverseSystem`**: Solar system. `trade_hub=True` marks market hubs; Jita is system ID `30000142`.

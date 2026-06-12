@@ -16,6 +16,8 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from sqlalchemy import text
+
 from evebs import create_app
 from evebs.extensions import db
 from evebs.models import (
@@ -423,6 +425,83 @@ def seed_blueprints(db, Blueprint, EveItem):
          f'|  {_fmt(unknown_products)} unknown product items')
 
 
+# Child tables with an eve_item_id FK (Postgres-default RESTRICT — the ORM
+# delete-orphan cascade does not apply to bulk SQL deletes, so clear them explicitly,
+# children before eve_items).
+_CHILD_TABLES = [
+    'eve_items_users',
+    'production_lists',
+    'copy_lists',
+    'invention_lists',
+    'user_sale_orders',
+    'user_assets',
+    'public_trade_orders',
+    'sales_finals',
+    'buy_orders_analytics',
+]
+
+
+def _blueprint_keep_ids():
+    """Type ids to keep: every blueprint item, its product(s), and its input materials.
+
+    The union of every blueprint's direct materials covers materials at all BOM depths
+    (each intermediate is itself a product; each raw leaf is a direct input of some
+    blueprint). Mirrors seed_blueprints' `activity = mfg or rxn` selection.
+    """
+    keep = set()
+    for obj in _jsonl('blueprints.jsonl'):
+        activity = (obj.get('activities', {}).get('manufacturing')
+                    or obj.get('activities', {}).get('reaction'))
+        if not activity:
+            continue
+        keep.add(obj['_key'])                                            # blueprint item
+        keep.update(p['typeID'] for p in activity.get('products', []))   # product(s)
+        keep.update(m['typeID'] for m in activity.get('materials', []))  # input materials
+    return keep
+
+
+def _prune_to_keep(db, keep_ids):
+    """Delete every eve_items row whose id is not in keep_ids, plus its FK children.
+
+    Runs in a single transaction (the ON COMMIT DROP temp table stays valid until commit).
+    Returns {table: rows_removed}.
+    """
+    db.session.execute(text('CREATE TEMP TABLE _keep_ids (id BIGINT PRIMARY KEY) ON COMMIT DROP'))
+    ids = list(keep_ids)
+    for i in range(0, len(ids), COMMIT_EVERY):
+        db.session.execute(
+            text('INSERT INTO _keep_ids (id) VALUES (:id) ON CONFLICT DO NOTHING'),
+            [{'id': x} for x in ids[i:i + COMMIT_EVERY]],
+        )
+
+    removed = {}
+    for tbl in _CHILD_TABLES:
+        removed[tbl] = db.session.execute(
+            text(f'DELETE FROM {tbl} WHERE eve_item_id NOT IN (SELECT id FROM _keep_ids)')
+        ).rowcount
+    removed['eve_items'] = db.session.execute(
+        text('DELETE FROM eve_items WHERE id NOT IN (SELECT id FROM _keep_ids)')
+    ).rowcount
+    db.session.commit()
+    return removed
+
+
+def seed_prune_items(db, EveItem):
+    done = _step('Prune items  (keep only blueprint / manufacturable / reaction-involved items)')
+    keep = _blueprint_keep_ids()
+    before = EveItem.query.count()
+    print(f'    keep set: {_fmt(len(keep))} type ids (products + materials + blueprints)  |  '
+          f'eve_items before: {_fmt(before)}')
+
+    removed = _prune_to_keep(db, keep)
+
+    after = EveItem.query.count()
+    children = '  '.join(f'{t}={_fmt(n)}' for t, n in removed.items()
+                         if t != 'eve_items' and n)
+    done(f'EveItem: {_fmt(removed["eve_items"])} removed, {_fmt(after)} kept (was {_fmt(before)})'
+         + (f'  |  children removed: {children}' if children else ''))
+
+
 def seed_trade_hubs(db, UniverseSystem):
     done = _step('Trade hubs  (hardcoded list → UniverseSystem.trade_hub)')
     existing = {us.id: us for us in UniverseSystem.query.all()}
@@ -470,6 +549,7 @@ def main():
     parser.add_argument('--stations',      action='store_true', help='Seed UniverseStation (requires --universe first)')
     parser.add_argument('--items',         action='store_true', help='Seed EveItem (requires --market-groups first)')
     parser.add_argument('--blueprints',    action='store_true', help='Seed Blueprint (requires --items first)')
+    parser.add_argument('--prune-items',   action='store_true', help='Remove EveItems that are not blueprints / manufacturable / reaction-involved / their materials (requires --items + --blueprints data)')
     parser.add_argument('--trade-hubs',    action='store_true', help='Seed TradeHub (requires --regions first)')
     args = parser.parse_args()
 
@@ -487,6 +567,7 @@ def main():
         do_stations      = args.all or args.stations
         do_items         = args.all or args.items
         do_blueprints    = args.all or args.blueprints
+        do_prune         = args.all or args.prune_items
         do_trade_hubs    = args.all or args.trade_hubs
 
         if do_regions:
@@ -501,6 +582,8 @@ def main():
             seed_items(db, EveItem, MarketGroup)
         if do_blueprints:
             seed_blueprints(db, Blueprint, EveItem)
+        if do_prune:
+            seed_prune_items(db, EveItem)
         if do_trade_hubs:
             seed_trade_hubs(db, UniverseSystem)
 
