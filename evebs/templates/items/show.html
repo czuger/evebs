@@ -102,22 +102,6 @@
     </div>
     {% endif %}
 
-    <div class="card">
-      <div class="card-header fw-semibold">External links</div>
-      <div class="card-body d-flex flex-wrap gap-2">
-        <a href="https://everef.net/type/{{ item.id }}" rel="noopener" target="_blank"
-           class="btn btn-sm btn-outline-secondary">everef.net</a>
-        <a href="https://www.adam4eve.eu/commodity.php?typeID={{ item.id }}" rel="noopener" target="_blank"
-           class="btn btn-sm btn-outline-secondary">Adam4EVE</a>
-        <a href="https://evemarketbrowser.com/region/0/type/{{ item.id }}" rel="noopener" target="_blank"
-           class="btn btn-sm btn-outline-secondary">EVE Market Browser</a>
-        <a href="https://evetycoon.com/market/{{ item.id }}" rel="noopener" target="_blank"
-           class="btn btn-sm btn-outline-secondary">EVE Tycoon</a>
-        <a href="https://www.jita.space/market/{{ item.id }}" rel="noopener" target="_blank"
-           class="btn btn-sm btn-outline-secondary">jita.space</a>
-      </div>
-    </div>
-
   </div>
 
   <div class="col-lg-4">
@@ -171,6 +155,30 @@
             <div>{{ item.mass }} kg</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-header fw-semibold">Internal links</div>
+      <div class="card-body d-flex flex-wrap gap-2">
+        <a href="{{ url_for('price_forecasts.show', item_id=item.id) }}"
+           class="btn btn-sm btn-outline-secondary">Price forecast</a>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-header fw-semibold">External links</div>
+      <div class="card-body d-flex flex-wrap gap-2">
+        <a href="https://everef.net/type/{{ item.id }}" rel="noopener" target="_blank"
+           class="btn btn-sm btn-outline-secondary">everef.net</a>
+        <a href="https://www.adam4eve.eu/commodity.php?typeID={{ item.id }}" rel="noopener" target="_blank"
+           class="btn btn-sm btn-outline-secondary">Adam4EVE</a>
+        <a href="https://evemarketbrowser.com/region/0/type/{{ item.id }}" rel="noopener" target="_blank"
+           class="btn btn-sm btn-outline-secondary">EVE Market Browser</a>
+        <a href="https://evetycoon.com/market/{{ item.id }}" rel="noopener" target="_blank"
+           class="btn btn-sm btn-outline-secondary">EVE Tycoon</a>
+        <a href="https://www.jita.space/market/{{ item.id }}" rel="noopener" target="_blank"
+           class="btn btn-sm btn-outline-secondary">jita.space</a>
       </div>
     </div>
 
