@@ -485,20 +485,52 @@ def _prune_to_keep(db, keep_ids):
     return removed
 
 
-def seed_prune_items(db, EveItem):
+def _prune_empty_market_groups(db):
+    """Delete market groups whose whole subtree holds no eve_items. Groups that contain
+    items and all their ancestors are kept so the navigation hierarchy stays intact.
+    Returns the number of groups removed."""
+    parent_of = {gid: pid for gid, pid in
+                 db.session.execute(text('SELECT id, parent_id FROM market_groups')).all()}
+    with_items = {r[0] for r in db.session.execute(
+        text('SELECT DISTINCT market_group_id FROM eve_items WHERE market_group_id IS NOT NULL')).all()}
+
+    keep = set()
+    for gid in with_items:
+        cur = gid
+        while cur is not None and cur not in keep:
+            keep.add(cur)
+            cur = parent_of.get(cur)
+
+    db.session.execute(text('CREATE TEMP TABLE _keep_groups (id INTEGER PRIMARY KEY) ON COMMIT DROP'))
+    kids = list(keep)
+    for i in range(0, len(kids), COMMIT_EVERY):
+        db.session.execute(text('INSERT INTO _keep_groups (id) VALUES (:id) ON CONFLICT DO NOTHING'),
+                           [{'id': x} for x in kids[i:i + COMMIT_EVERY]])
+    # market_groups.parent_id is a plain (NO ACTION) FK, so deleting a whole empty subtree
+    # in one statement is fine — the check runs once the statement is done.
+    removed = db.session.execute(
+        text('DELETE FROM market_groups WHERE id NOT IN (SELECT id FROM _keep_groups)')).rowcount
+    db.session.commit()
+    return removed
+
+
+def seed_prune_items(db, EveItem, MarketGroup):
     done = _step('Prune items  (keep only blueprint / manufacturable / reaction-involved items)')
     keep = _blueprint_keep_ids()
     before = EveItem.query.count()
+    groups_before = MarketGroup.query.count()
     print(f'    keep set: {_fmt(len(keep))} type ids (products + materials + blueprints)  |  '
           f'eve_items before: {_fmt(before)}')
 
     removed = _prune_to_keep(db, keep)
+    groups_removed = _prune_empty_market_groups(db)
 
     after = EveItem.query.count()
     children = '  '.join(f'{t}={_fmt(n)}' for t, n in removed.items()
                          if t != 'eve_items' and n)
     done(f'EveItem: {_fmt(removed["eve_items"])} removed, {_fmt(after)} kept (was {_fmt(before)})'
-         + (f'  |  children removed: {children}' if children else ''))
+         + (f'  |  children removed: {children}' if children else '')
+         + f'  |  empty market groups removed: {_fmt(groups_removed)} (was {_fmt(groups_before)})')
 
 
 def seed_trade_hubs(db, UniverseSystem):
@@ -582,7 +614,7 @@ def main():
         if do_blueprints:
             seed_blueprints(db, Blueprint, EveItem)
         if do_prune:
-            seed_prune_items(db, EveItem)
+            seed_prune_items(db, EveItem, MarketGroup)
         if do_trade_hubs:
             seed_trade_hubs(db, UniverseSystem)
 

@@ -1,11 +1,11 @@
 """Tests for the eve_items prune in scripts/seed_static_data.py (_prune_to_keep)."""
 from evebs.models import (
-    EveItem, ProductionList, PublicTradeOrder, SalesFinal, UserSaleOrder, UserAsset,
+    EveItem, MarketGroup, ProductionList, PublicTradeOrder, SalesFinal, UserSaleOrder, UserAsset,
 )
 from evebs.models.tables.associations import eve_items_users
-from scripts.seed_static_data import _prune_to_keep
+from scripts.seed_static_data import _prune_to_keep, _prune_empty_market_groups
 from tests.factories import (
-    make_item, make_universe_system, make_production_list,
+    make_item, make_market_group, make_universe_system, make_production_list,
     make_public_trade_order, make_sales_final, make_user_sale_order, make_user_asset,
 )
 
@@ -48,3 +48,20 @@ class TestPruneToKeep:
 
         # The kept item and its child survive.
         assert ProductionList.query.filter_by(eve_item_id=keep_id).count() == 1
+
+
+class TestPruneEmptyMarketGroups:
+    def test_removes_groups_with_no_items_keeps_ancestors(self, db):
+        root = make_market_group(db, group_id=1, name='Root')
+        mid = make_market_group(db, group_id=2, name='Mid', parent=root)
+        leaf = make_market_group(db, group_id=3, name='Leaf', parent=mid)
+        make_market_group(db, group_id=4, name='EmptyChild', parent=root)   # no items
+        make_market_group(db, group_id=5, name='OrphanEmpty')               # no items, no parent
+        make_item(db, item_id=34, slug='trit', market_group=leaf)
+        db.session.commit()
+
+        removed = _prune_empty_market_groups(db)
+
+        assert removed == 2
+        # Group with the item plus its ancestor chain survive; the empty ones are gone.
+        assert {g.id for g in MarketGroup.query.all()} == {1, 2, 3}
