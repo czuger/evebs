@@ -137,8 +137,8 @@
   if (HP.length) new Chart(document.getElementById('histPriceChart'), {
     type: 'line',
     data: { labels: HP.map(d => d.date), datasets: [
-      { label: 'Volume-weighted', data: HP.map(d => d.v),   borderColor: '#0d6efd', backgroundColor: '#0d6efd22', borderWidth: 1.5, pointRadius: 0, tension: 0.1, fill: true },
-      { label: 'Raw (unweighted)', data: HP.map(d => d.raw), borderColor: '#6c757d', borderWidth: 1.5, pointRadius: 0, tension: 0.1, borderDash: [5, 4] },
+      { label: 'Volume-weighted', data: HP.map(d => d.v),   borderColor: '#6c757d', backgroundColor: '#6c757d22', borderWidth: 1.5, pointRadius: 0, tension: 0.1, fill: true, borderDash: [2, 3] },
+      { label: 'Raw (unweighted)', data: HP.map(d => d.raw), borderColor: '#0d6efd', borderWidth: 1.5, pointRadius: 0, tension: 0.1 },
     ] },
     options: opts('Price (ISK)', 10),
   });
