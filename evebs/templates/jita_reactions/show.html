@@ -35,7 +35,7 @@
         {% if jr.blueprint_id in owned_bp_ids %}
         <form method="post" action="{{ url_for('reaction_lists.create') }}" class="d-inline">
           <input type="hidden" name="eve_item_id" value="{{ jr.item_id }}">
-          <input type="hidden" name="runs_count" value="1">
+          <input type="hidden" name="runs_count" value="10">
           <button type="submit" class="btn btn-link p-0 border-0 align-baseline"
                   data-bs-toggle="tooltip" title="You own this reaction blueprint — click to add to reaction list">
             <img src="https://api.iconify.design/streamline-ultimate:chemical-hexagon-1.svg" width="16" height="16" class="opacity-75">

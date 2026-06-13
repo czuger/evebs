@@ -1,33 +1,62 @@
 {% extends 'base.html' %}
+
+{% macro render_node(node) %}
+<li>
+  {% if node.is_reaction %}
+  <span class="d-inline-flex align-items-center gap-1">
+    <input type="checkbox" name="sub_item" value="{{ node.item_id }}" id="sub_{{ node.item_id }}">
+    <input type="hidden" name="sub_runs_{{ node.item_id }}" value="{{ node.runs }}">
+    <a href="{{ url_for('items.show', slug=node.item_id) }}" target="_blank" rel="noopener" class="fw-semibold">{{ node.name }}</a>
+    <label for="sub_{{ node.item_id }}" class="text-muted small">× {{ node.runs }} runs ({{ node.units | round | int }} units)</label>
+  </span>
+  {% else %}
+  <span class="text-muted">
+    <a href="{{ url_for('items.show', slug=node.item_id) }}" target="_blank" rel="noopener" class="text-muted">{{ node.name }}</a>
+    <span class="small">({{ node.units | round | int }} units)</span>
+  </span>
+  {% endif %}
+  {% if node.children %}
+  <ul>{% for c in node.children %}{{ render_node(c) }}{% endfor %}</ul>
+  {% endif %}
+</li>
+{% endmacro %}
+
 {% block content %}
-<h2>Reaction list <span class="badge bg-secondary">{{ reaction_lists | length }}</span></h2>
-<p class="text-muted small mb-3">Reactions you plan to run and how many runs — drives the Components to buy list (with your reaction material-consumption modifier applied).</p>
+<h2>Reaction list <span class="badge bg-secondary">{{ entries | length }}</span></h2>
+<p class="text-muted small mb-3">Reactions you plan to run and how many runs — drives the Components to buy list (with your reaction material-consumption modifier applied). Use <strong>Decompose</strong> to add a reaction's sub-reactions if you'd rather make them than buy them.</p>
 <form action="{{ url_for('reaction_lists.update') }}" method="post">
-  <table class="table">
+  <table class="table align-middle">
     <tr>
       <th>Item</th>
       <th>Runs</th>
       <th></th>
+      <th></th>
     </tr>
-    {% for rl in reaction_lists %}
+    {% for e in entries %}
     <tr>
-      <td><a href="{{ url_for('items.show', slug=rl.eve_item.slug or rl.eve_item.id) }}">{{ rl.eve_item.name }}</a></td>
+      <td><a href="{{ url_for('items.show', slug=e.rl.eve_item.slug or e.rl.eve_item.id) }}">{{ e.rl.eve_item.name }}</a></td>
       <td>
-        <input type="number" name="runs_count_{{ rl.id }}" value="{{ rl.runs_count or 0 }}"
+        <input type="number" name="runs_count_{{ e.rl.id }}" value="{{ e.rl.runs_count or 0 }}"
                min="0" class="form-control form-control-sm" style="width:80px">
       </td>
       <td>
+        {% if e.has_reactions %}
+        <button class="btn btn-sm btn-outline-secondary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#decomp-{{ e.rl.id }}">Decompose</button>
+        {% endif %}
+      </td>
+      <td>
         <form action="{{ url_for('reaction_lists.remove_check') }}" method="post" style="display:inline">
-          <input type="hidden" name="eve_item_id" value="{{ rl.eve_item_id }}">
+          <input type="hidden" name="eve_item_id" value="{{ e.rl.eve_item_id }}">
           <button type="submit" class="btn btn-sm btn-danger">×</button>
         </form>
       </td>
     </tr>
     {% else %}
-    <tr><td colspan="3" class="text-center text-muted">Reaction list is empty.</td></tr>
+    <tr><td colspan="4" class="text-center text-muted">Reaction list is empty.</td></tr>
     {% endfor %}
   </table>
-  {% if reaction_lists %}
+  {% if entries %}
   <div class="d-flex gap-2">
     <button type="submit" class="btn btn-primary">Save runs</button>
     <form action="{{ url_for('reaction_lists.clear_all') }}" method="post"
@@ -37,4 +66,20 @@
   </div>
   {% endif %}
 </form>
+
+{% for e in entries if e.has_reactions %}
+<div class="collapse mt-3" id="decomp-{{ e.rl.id }}">
+  <div class="card">
+    <div class="card-header fw-semibold">Decompose {{ e.rl.eve_item.name }} — pick sub-reactions to make</div>
+    <div class="card-body">
+      <form action="{{ url_for('reaction_lists.add_subreactions') }}" method="post">
+        <ul class="mb-3">
+          {% for n in e.tree %}{{ render_node(n) }}{% endfor %}
+        </ul>
+        <button type="submit" class="btn btn-sm btn-primary">Add selected sub-reactions</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
