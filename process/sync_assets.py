@@ -59,5 +59,8 @@ with app.app_context():
         r.set(REDIS_KEY, 'done', ex=30)
         logger.info('Assets sync done for user %s (%s)', args.user_id, user.name)
     except Exception as e:
+        # Last-resort sink for this background job: record the failure so the foreground
+        # can flash it (the user never sees this subprocess's stderr).
         logger.error('Assets sync failed for user %s: %s', args.user_id, e, exc_info=True)
         r.set(REDIS_KEY, 'error', ex=30)
+        r.set(f'assets_sync_error:{args.user_id}', str(e) or e.__class__.__name__, ex=300)

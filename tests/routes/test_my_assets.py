@@ -108,6 +108,23 @@ class TestMyAssetsFilter:
         assert b'Zydrine Blueprint' in resp.data
 
 
+class TestSyncErrorFlash:
+    def test_recorded_sync_error_flashes_once(self, app, db, auth_client):
+        client, user = auth_client
+        from evebs.routes.my_assets import _redis, _error_key
+        with app.app_context():
+            r = _redis()
+            r.set(_error_key(user.id), 'ESI token refresh failed', ex=60)
+
+        body = client.get('/my_assets').get_data(as_text=True)
+        assert 'Asset sync failed: ESI token refresh failed' in body
+        assert 'alert-danger' in body
+
+        # One-time: the next request no longer shows it.
+        body2 = client.get('/my_assets').get_data(as_text=True)
+        assert 'Asset sync failed' not in body2
+
+
 class TestSyncStatus:
     def test_returns_idle_when_no_sync_running(self, auth_client):
         client, _ = auth_client

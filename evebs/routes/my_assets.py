@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 import redis as redis_lib
-from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, current_app, jsonify
+from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, current_app, jsonify, flash
 from flask_login import login_required, current_user
 
 from evebs.extensions import db
@@ -18,6 +18,27 @@ def _redis():
 
 def _sync_key(user_id):
     return f'assets_sync:{user_id}'
+
+
+def _error_key(user_id):
+    return f'assets_sync_error:{user_id}'
+
+
+@bp.before_app_request
+def _flash_asset_sync_error():
+    """Surface a failed background asset sync (recorded in Redis by sync_assets.py) as a
+    one-time flash on the user's next request, since the subprocess can't warn the UI."""
+    if not current_user.is_authenticated:
+        return
+    try:
+        r = _redis()
+        key = _error_key(current_user.id)
+        msg = r.get(key)
+        if msg:
+            r.delete(key)
+            flash(f'Asset sync failed: {msg.decode()}', 'error')
+    except redis_lib.RedisError:
+        pass
 
 
 def _location_label(station, structure, unknown):
