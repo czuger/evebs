@@ -12,6 +12,7 @@ bp = FlaskBlueprint('items', __name__)
 
 FORGE_REGION_ID = 10000002
 JITA_SYSTEM_ID = 30000142
+MAX_RECIPROCAL = 40
 
 
 def _bp_display_name(bp_obj):
@@ -129,6 +130,36 @@ def show(slug):
                 slug=src_item.slug if src_item else None,
             )
 
+    # "is involved in production of" — products whose recipe uses this item as a direct
+    # material (reciprocal of "Produced by"). Top-level keys of manufacturing_tree are the
+    # direct materials, so a row matches when str(item.id) is one of them.
+    prod_bps = (BlueprintModel.query
+                .filter(BlueprintModel.manufacturing_tree[str(item.id)].isnot(None))
+                .all())
+    prod_ids   = [b.produced_type_id for b in prod_bps]
+    prod_items = {ei.id: ei for ei in EveItem.query.filter(EveItem.id.in_(prod_ids)).all()}
+    produces = sorted(
+        (SimpleNamespace(id=ei.id, name=ei.name, slug=ei.slug)
+         for pid in prod_ids if (ei := prod_items.get(pid))),
+        key=lambda p: p.name,
+    )
+    produces_more = max(0, len(produces) - MAX_RECIPROCAL)
+    produces = produces[:MAX_RECIPROCAL]
+
+    # "is involved in invention of" — T2 blueprints invented from this item (reciprocal of
+    # "Invented by"). Non-empty only when this item is itself a T1 blueprint.
+    inv_bps  = BlueprintModel.query.filter_by(is_invented_from_id=item.id).all()
+    inv_items = {ei.id: ei
+                 for ei in EveItem.query.filter(EveItem.id.in_([b.id for b in inv_bps])).all()}
+    invents = sorted(
+        (SimpleNamespace(
+            id=b.id,
+            name=(ei.name if (ei := inv_items.get(b.id)) else _bp_display_name(b)),
+            slug=(ei.slug if (ei := inv_items.get(b.id)) else None),
+         ) for b in inv_bps),
+        key=lambda v: v.name,
+    )
+
     cutoff = date.today() - timedelta(days=365)
     hist_rows = (MarketHistory.query
                  .filter(MarketHistory.region_id == FORGE_REGION_ID,
@@ -149,5 +180,8 @@ def show(slug):
                            bp_item=bp_item,
                            bp_name=bp_name,
                            invented=invented,
+                           produces=produces,
+                           produces_more=produces_more,
+                           invents=invents,
                            history=history,
                            title=item.name)

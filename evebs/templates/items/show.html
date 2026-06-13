@@ -29,6 +29,21 @@
          class="text-decoration-none">{{ invented.name }}</a>
     </div>
     {% endif %}
+    {% if produces %}
+    <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
+      <span class="text-muted small">is involved in production of</span>
+      {% for p in produces %}<a href="{{ url_for('items.show', slug=p.slug or p.id) }}"
+         class="text-decoration-none">{{ p.name }}</a>{{ "," if not loop.last }}{% endfor %}
+      {% if produces_more %}<span class="text-muted small">+{{ produces_more }} more</span>{% endif %}
+    </div>
+    {% endif %}
+    {% if invents %}
+    <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
+      <span class="text-muted small">is involved in invention of</span>
+      {% for v in invents %}<a href="{{ url_for('items.show', slug=v.slug or v.id) }}"
+         class="text-decoration-none">{{ v.name }}</a>{{ "," if not loop.last }}{% endfor %}
+    </div>
+    {% endif %}
   </div>
 </div>
 

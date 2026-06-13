@@ -184,3 +184,62 @@ class TestItemManufacturingContext:
         resp = client.get('/items/c60-items')
         assert resp.status_code == 200
 
+
+class TestItemReciprocity:
+    def test_shows_products_using_item_as_material(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        mat = make_item(db, item_id=34, slug='trit', name='Tritanium')
+        prod = make_item(db, item_id=35, slug='ammo', name='Ammo')
+        bp = make_blueprint(db, prod)
+        bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'is involved in production of' in resp.data
+        assert b'href="/items/ammo"' in resp.data
+
+    def test_nested_only_material_not_listed(self, db, client):
+        """An item used only deep in the nested chain (not a direct material) is not listed."""
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        deep = make_item(db, item_id=34, slug='trit', name='Tritanium')
+        prod = make_item(db, item_id=35, slug='ammo', name='Ammo')
+        bp = make_blueprint(db, prod)
+        bp.manufacturing_tree = {
+            '99': {'quantity': 5, 'name': 'Intermediate',
+                   'chain': {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}},
+        }
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'is involved in production of' not in resp.data
+
+    def test_shows_t2_blueprints_invented_from_item(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        t1_bp = make_item(db, item_id=1000, slug='gram-i-bp', name='Gram I Blueprint')
+        t2_bp = make_item(db, item_id=2000, slug='gram-ii-bp', name='Gram II Blueprint')
+        product = make_item(db, item_id=35, slug='gram-ii', name='Gram II')
+        bp = make_blueprint(db, product, blueprint_id=2000)   # Blueprint 2000 produces Gram II
+        bp.is_invented_from_id = 1000
+        db.session.commit()
+
+        resp = client.get('/items/gram-i-bp')   # the T1 blueprint's page
+        assert resp.status_code == 200
+        assert b'is involved in invention of' in resp.data
+        assert b'href="/items/gram-ii-bp"' in resp.data
+
+    def test_plain_item_shows_neither_row(self, db, client):
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        make_item(db, item_id=34, slug='trit', name='Tritanium')
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'is involved in production of' not in resp.data
+        assert b'is involved in invention of' not in resp.data
+
