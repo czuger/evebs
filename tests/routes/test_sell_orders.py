@@ -73,4 +73,6 @@ class TestSellOrdersShow:
         assert b'Ammo Sell' in body
         assert b'Forecast price / unit' in body
         assert b'Forecast vol.' in body
+        assert b'Tendency' in body
+        assert b'Sold (7d)' in body
         assert b'<th>Trade hub</th>' not in body   # hub column dropped

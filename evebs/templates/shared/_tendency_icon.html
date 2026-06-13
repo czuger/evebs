@@ -1,0 +1,11 @@
+{%- if tendency == 'up' -%}
+<span class="text-success" data-bs-toggle="tooltip" title="Forecast &gt; +5% vs current price">&#9650;</span>
+{%- elif tendency == 'slow_up' -%}
+<span class="text-success" data-bs-toggle="tooltip" title="Slow growth (+0.1% to +5%)">&#9651;</span>
+{%- elif tendency == 'down' -%}
+<span class="text-danger" data-bs-toggle="tooltip" title="Forecast &lt; -5% vs current price">&#9660;</span>
+{%- elif tendency == 'slow_down' -%}
+<span class="text-danger" data-bs-toggle="tooltip" title="Slow decline (-5% to -0.1%)">&#9661;</span>
+{%- else -%}
+<span class="text-muted" data-bs-toggle="tooltip" title="Stable (within ±0.1%)">–</span>
+{%- endif -%}

@@ -92,3 +92,27 @@ class TestJitaReactionsShow:
         body = client.get('/jita_reactions').get_data(as_text=True)
         assert 'Fullerite Up' in body
         assert '&#9650;' in body            # up arrow rendered
+
+    def test_tendency_slow_up_within_inner_band(self, db, auth_client):
+        """Tendency is 'slow_up' (△) when the forecast is +0.1%..+5% above the current price."""
+        client, user = auth_client
+        jita = make_universe_system(db, system_id=JITA, name='Jita')
+        mat = make_item(db, item_id=34, slug='hydro2', name='Hydrogen')
+        prod = make_item(db, item_id=35, slug='fullerite-slow', name='Fullerite Slow')
+        bp = make_blueprint(db, prod, blueprint_id=20035, nb_runs=1, prod_qtt=10)
+        bp.activity_type = 'reaction'
+        bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Hydrogen', 'chain': {}}}
+        make_jita_min_price(db, mat, min_sell_price=5.0)
+        make_jita_min_price(db, prod, min_sell_price=980.0)   # current ≈ 0.98 × forecast
+        # Flat Jita sales at 1000 → forecast ≈ 1000; 1000 / 980 ≈ 1.02 → slow_up.
+        today = date.today()
+        for i in range(6):
+            make_sales_final(db, prod, jita, day=today - timedelta(days=6 - i),
+                             volume=1000, price=1000.0, order_id=950 + i)
+        db.session.commit()
+        _refresh_price_forecast(db)
+
+        body = client.get('/jita_reactions').get_data(as_text=True)
+        assert 'Fullerite Slow' in body
+        assert '&#9651;' in body            # hollow up triangle (slow growth)
+        assert '&#9650;' not in body        # not the strong up arrow

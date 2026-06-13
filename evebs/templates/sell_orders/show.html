@@ -10,19 +10,21 @@
       <th>BP</th>
       <th class="text-end">Cost + tax / unit</th>
       <th class="text-end">Forecast price / unit</th>
+      <th class="text-center">Tendency</th>
       {% set st = user.sales_taxes or {} %}
       <th class="text-end" data-bs-toggle="tooltip" data-bs-placement="top"
           title="Broker: {{ st.get('broker_fee_taxes', 0) }}% + Sales tax: {{ st.get('sales_taxes', 0) }}% + Safety: {{ st.get('safety_tax', 0) }}% = {{ st.get('broker_fee_taxes', 0) + st.get('sales_taxes', 0) + st.get('safety_tax', 0) }}%">Sell fee / unit ⓘ</th>
       <th class="text-end">Margin / unit</th>
       <th class="text-end">Margin %</th>
       <th class="text-end">Forecast vol.</th>
-      <th class="text-end">Full batch</th>
+      <th class="text-end">Sold (7d)</th>
+      <th class="text-end" data-bs-toggle="tooltip" title="Production batch capped by the forecast volume">Full batch</th>
       <th class="text-end">Batch margin</th>
     </tr>
     {% for cp in sell_orders %}
-    {% if cp.sell_volume > cp.full_batch_amount * 2 %}
+    {% if cp.sell_volume > cp.full_batch_raw * 2 %}
     <tr class="table-success">
-    {% elif cp.sell_volume < cp.full_batch_amount %}
+    {% elif cp.sell_volume < cp.full_batch_raw %}
     <tr class="table-danger">
     {% else %}
     <tr class="table-warning">
@@ -46,15 +48,19 @@
           {{ cp.sell_price | isk }}
         </a>
       </td>
+      <td class="text-center">
+        {% with tendency = cp.tendency %}{% include 'shared/_tendency_icon.html' %}{% endwith %}
+      </td>
       <td class="text-end">{{ cp.sell_fee_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_pcent | pcent }}</td>
       <td class="text-end">{{ cp.sell_volume | vol }}</td>
+      <td class="text-end">{{ cp.sold_7d | vol }}</td>
       <td class="text-end">{{ cp.full_batch_amount | vol }}</td>
       <td class="text-end">{{ cp.margin_full_batch | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="11" class="text-center text-muted">No sell orders found — sync your blueprints and check your industry/sales tax settings.</td></tr>
+    <tr><td colspan="13" class="text-center text-muted">No sell orders found — sync your blueprints and check your industry/sales tax settings.</td></tr>
     {% endfor %}
   </table>
 </div>

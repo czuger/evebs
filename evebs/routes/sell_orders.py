@@ -50,8 +50,18 @@ SELECT
          ELSE 0
     END                                                                          AS margin_pcent,
     COALESCE(vf.forecast_7d, 0)                                                  AS sell_volume,
-    b.nb_runs * b.prod_qtt                                                       AS full_batch_amount,
-    (b.nb_runs * b.prod_qtt)
+    COALESCE(s.sold_7d, 0)::bigint                                               AS sold_7d,
+    CASE
+        WHEN ls.price IS NULL OR ls.price <= 0     THEN 'flat'
+        WHEN pf.forecast_7d > ls.price * 1.05      THEN 'up'
+        WHEN pf.forecast_7d > ls.price * 1.001     THEN 'slow_up'
+        WHEN pf.forecast_7d < ls.price * 0.95      THEN 'down'
+        WHEN pf.forecast_7d < ls.price * 0.999     THEN 'slow_down'
+        ELSE 'flat'
+    END                                                                          AS tendency,
+    b.nb_runs * b.prod_qtt                                                       AS full_batch_raw,
+    LEAST(b.nb_runs * b.prod_qtt, COALESCE(vf.forecast_7d, 0))                   AS full_batch_amount,
+    LEAST(b.nb_runs * b.prod_qtt, COALESCE(vf.forecast_7d, 0))
         * (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
                                                                                  AS margin_full_batch
 FROM user_industry_costs uic
@@ -60,6 +70,18 @@ JOIN jita_price_forecast_linear_regression pf
     ON pf.type_id = uic.produced_type_id AND pf.forecast_date = CURRENT_DATE + 3
 LEFT JOIN jita_volume_forecast_linear_regression vf
     ON vf.type_id = uic.produced_type_id AND vf.forecast_date = CURRENT_DATE + 3
+LEFT JOIN (
+    SELECT eve_item_id, SUM(volume) AS sold_7d
+    FROM sales_finals
+    WHERE universe_system_id = 30000142 AND day >= CURRENT_DATE - INTERVAL '7 days'
+    GROUP BY eve_item_id
+) s ON s.eve_item_id = uic.produced_type_id
+LEFT JOIN (
+    SELECT DISTINCT ON (eve_item_id) eve_item_id, price
+    FROM public_trade_orders
+    WHERE is_buy_order = FALSE AND universe_system_id = 30000142
+    ORDER BY eve_item_id, price ASC
+) ls ON ls.eve_item_id = uic.produced_type_id
 WHERE uic.user_id    = :user_id
   AND uic.activity_type = 'manufacturing'
   {item_filter}

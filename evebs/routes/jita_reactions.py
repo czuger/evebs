@@ -18,8 +18,8 @@ JITA_SYSTEM_ID = 30000142
 # public_trade_orders, like buy_orders); sell tax = est. price × the user's sales_taxes
 # (broker + sales + safety). Benefit is per batch: LEAST(prod_qtt, sold_7d) × (net sell price −
 # reaction cost) — the batch output is capped by units actually sold at Jita in the last 7 days.
-# tendency compares the +3d price forecast against the current price: up / down beyond ±10%,
-# otherwise flat.
+# tendency compares the +3d price forecast against the current price: up / down beyond ±5%,
+# slow_up / slow_down beyond ±0.1%, otherwise flat.
 _SQL = """
     WITH lowest_sell AS (
         SELECT DISTINCT ON (eve_item_id)
@@ -47,8 +47,10 @@ _SQL = """
         COALESCE(s.sold_7d, 0)::bigint                        AS sold_7d,
         CASE
             WHEN pf.forecast_7d IS NULL OR ls.sell_price <= 0 THEN 'flat'
-            WHEN pf.forecast_7d > ls.sell_price * 1.10        THEN 'up'
-            WHEN pf.forecast_7d < ls.sell_price * 0.90        THEN 'down'
+            WHEN pf.forecast_7d > ls.sell_price * 1.05        THEN 'up'
+            WHEN pf.forecast_7d > ls.sell_price * 1.001       THEN 'slow_up'
+            WHEN pf.forecast_7d < ls.sell_price * 0.95        THEN 'down'
+            WHEN pf.forecast_7d < ls.sell_price * 0.999       THEN 'slow_down'
             ELSE 'flat'
         END                                                   AS tendency,
         LEAST(b.prod_qtt, COALESCE(s.sold_7d, 0)) * (ls.sell_price * (1.0 - :sell_fee)

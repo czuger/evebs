@@ -51,13 +51,7 @@
         <a href="{{ url_for('market_data.trade_hub_detail', item_id=jr.item_id, trade_hub_id=30000142) }}" class="text-decoration-none">{{ jr.estimated_selling_price | isk }}</a>
       </td>
       <td class="text-center">
-        {% if jr.tendency == 'up' %}
-        <span class="text-success" data-bs-toggle="tooltip" title="Forecast &gt; +10% vs current price">&#9650;</span>
-        {% elif jr.tendency == 'down' %}
-        <span class="text-danger" data-bs-toggle="tooltip" title="Forecast &lt; -10% vs current price">&#9660;</span>
-        {% else %}
-        <span class="text-muted" data-bs-toggle="tooltip" title="Stable (within ±10%)">–</span>
-        {% endif %}
+        {% with tendency = jr.tendency %}{% include 'shared/_tendency_icon.html' %}{% endwith %}
       </td>
       <td class="text-end">{{ jr.selling_tax | isk }}</td>
       <td class="text-end">{{ jr.sold_7d | vol }}</td>
