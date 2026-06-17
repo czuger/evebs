@@ -5,6 +5,7 @@ import pytest
 from tests.factories import (
     make_universe_system, make_trade_hub, make_item, make_market_group,
     make_blueprint, make_jita_min_price, make_market_history, make_public_trade_order,
+    make_user_asset,
 )
 
 
@@ -137,6 +138,44 @@ class TestItemManufacturingContext:
         assert b'Universe min sell' in resp.data
         assert b'market_overview' in resp.data
 
+    def test_material_modifications_link_for_manufacturing_item(self, db, auth_client):
+        client, _user = auth_client
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        item = make_item(db, item_id=34, slug='trit')
+        bp = make_blueprint(db, item)
+        bp.activity_type = 'manufacturing'
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'blueprint_modifications' in resp.data
+
+    def test_no_material_modifications_link_for_t2_item(self, db, auth_client):
+        client, _user = auth_client
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        item = make_item(db, item_id=34, slug='trit')
+        bp = make_blueprint(db, item)
+        bp.activity_type = 'manufacturing'
+        bp.is_invented_from_id = 35   # T2: invented from a T1 blueprint
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'blueprint_modifications' not in resp.data
+
+    def test_no_material_modifications_link_for_non_manufacturing_item(self, db, auth_client):
+        client, _user = auth_client
+        system = make_universe_system(db)
+        make_trade_hub(db, system)
+        item = make_item(db, item_id=34, slug='trit')   # raw material, no blueprint
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'blueprint_modifications' not in resp.data
+
     def test_price_history_chart_rendered(self, db, client):
         system = make_universe_system(db)
         make_trade_hub(db, system)
@@ -242,4 +281,71 @@ class TestItemReciprocity:
         assert resp.status_code == 200
         assert b'is involved in production of' not in resp.data
         assert b'is involved in invention of' not in resp.data
+
+
+class TestItemOwnership:
+    def test_card_hidden_when_logged_out(self, db, client):
+        make_item(db, item_id=34, slug='trit', name='Tritanium')
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'Your ownership' not in resp.data
+
+    def test_asset_owned_shows_yes(self, db, auth_client):
+        client, user = auth_client
+        item = make_item(db, item_id=34, slug='trit', name='Tritanium')
+        make_user_asset(db, user, item, quantity=1200)
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'Your ownership' in resp.data
+        assert b'In assets' in resp.data
+        assert b'<span class="badge bg-success">Yes</span>' in resp.data
+
+    def test_asset_not_owned_shows_no(self, db, auth_client):
+        client, user = auth_client
+        make_item(db, item_id=34, slug='trit', name='Tritanium')
+        db.session.commit()
+
+        resp = client.get('/items/trit')
+        assert resp.status_code == 200
+        assert b'In assets' in resp.data
+        assert b'<span class="badge bg-secondary">No</span>' in resp.data
+
+    def test_blueprint_owned_shows_line(self, db, auth_client):
+        client, user = auth_client
+        item = make_item(db, item_id=35, slug='ammo', name='Ammo')
+        bp = make_blueprint(db, item)
+        user.blueprints.append(bp)
+        db.session.commit()
+
+        resp = client.get('/items/ammo')
+        assert resp.status_code == 200
+        assert b'Blueprint owned' in resp.data
+
+    def test_blueprint_not_owned_hides_line(self, db, auth_client):
+        client, user = auth_client
+        item = make_item(db, item_id=35, slug='ammo', name='Ammo')
+        make_blueprint(db, item)
+        db.session.commit()
+
+        resp = client.get('/items/ammo')
+        assert resp.status_code == 200
+        assert b'Blueprint owned' not in resp.data
+
+    def test_invention_blueprint_owned_shows_line(self, db, auth_client):
+        client, user = auth_client
+        t1_product = make_item(db, item_id=1000, slug='gram-i', name='Gram I')
+        t1_bp = make_blueprint(db, t1_product, blueprint_id=1000)
+        product = make_item(db, item_id=35, slug='gram-ii', name='Gram II')
+        t2_bp = make_blueprint(db, product, blueprint_id=2000)
+        t2_bp.is_invented_from_id = t1_bp.id
+        user.blueprints.append(t1_bp)
+        db.session.commit()
+
+        resp = client.get('/items/gram-ii')
+        assert resp.status_code == 200
+        assert b'Invention blueprint owned' in resp.data
 

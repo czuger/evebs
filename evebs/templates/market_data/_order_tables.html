@@ -56,7 +56,12 @@
             <tr{% if loop.first %} class="table-danger"{% endif %}>
               <td class="text-end font-monospace">{{ order.price | isk }}</td>
               <td class="text-end font-monospace">{{ order.volume_remain | vol }}</td>
-              {% if show_system %}<td class="small">{{ system_map.get(order.universe_system_id, '—') }}</td>{% endif %}
+              {% if show_system %}
+              <td class="small">
+                {% set sys_name = system_map.get(order.universe_system_id) %}
+                {% if sys_name %}<a href="{{ url_for('market_data.trade_hub_detail', item_id=item.id, trade_hub_id=order.universe_system_id) }}">{{ sys_name }}</a>{% else %}—{% endif %}
+              </td>
+              {% endif %}
               <td class="text-muted small"
                   {% if station %}data-bs-toggle="tooltip" title="{{ station }}"{% endif %}>
                 {{ station | truncate(32, True) if station else '—' }}
@@ -97,7 +102,12 @@
               <td class="text-end font-monospace">{{ order.volume_remain | vol }}</td>
               <td class="text-end font-monospace text-muted">{{ order.min_volume | vol }}</td>
               <td><span class="badge bg-light text-dark border">{{ order.range }}</span></td>
-              {% if show_system %}<td class="small">{{ system_map.get(order.universe_system_id, '—') }}</td>{% endif %}
+              {% if show_system %}
+              <td class="small">
+                {% set sys_name = system_map.get(order.universe_system_id) %}
+                {% if sys_name %}<a href="{{ url_for('market_data.trade_hub_detail', item_id=item.id, trade_hub_id=order.universe_system_id) }}">{{ sys_name }}</a>{% else %}—{% endif %}
+              </td>
+              {% endif %}
               <td class="text-muted small"
                   {% if station %}data-bs-toggle="tooltip" title="{{ station }}"{% endif %}>
                 {{ station | truncate(32, True) if station else '—' }}

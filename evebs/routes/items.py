@@ -5,7 +5,9 @@ from flask import Blueprint as FlaskBlueprint, render_template, abort
 from flask_login import current_user
 from sqlalchemy import func
 
-from evebs.models import EveItem, UniverseSystem, JitaMinPrice, MarketHistory, PublicTradeOrder
+from evebs.extensions import db
+from evebs.models import EveItem, UniverseSystem, JitaMinPrice, MarketHistory, PublicTradeOrder, UserAsset
+from evebs.models.tables.associations import user_blueprints
 from evebs.models.tables.blueprint import Blueprint as BlueprintModel
 
 bp = FlaskBlueprint('items', __name__)
@@ -160,6 +162,19 @@ def show(slug):
         key=lambda v: v.name,
     )
 
+    # User-specific ownership indicators (only meaningful when logged in).
+    has_asset = has_blueprint = has_inv_blueprint = False
+    if current_user.is_authenticated:
+        has_asset = db.session.query(UserAsset.id).filter_by(
+            user_id=current_user.id, eve_item_id=item.id).first() is not None
+        if item.blueprint_id:
+            has_blueprint = db.session.query(user_blueprints.c.id).filter_by(
+                user_id=current_user.id, blueprint_id=item.blueprint_id).first() is not None
+        if item.blueprint and item.blueprint.is_invented_from_id:
+            has_inv_blueprint = db.session.query(user_blueprints.c.id).filter_by(
+                user_id=current_user.id,
+                blueprint_id=item.blueprint.is_invented_from_id).first() is not None
+
     cutoff = date.today() - timedelta(days=365)
     hist_rows = (MarketHistory.query
                  .filter(MarketHistory.region_id == FORGE_REGION_ID,
@@ -183,5 +198,8 @@ def show(slug):
                            produces=produces,
                            produces_more=produces_more,
                            invents=invents,
+                           has_asset=has_asset,
+                           has_blueprint=has_blueprint,
+                           has_inv_blueprint=has_inv_blueprint,
                            history=history,
                            title=item.name)
