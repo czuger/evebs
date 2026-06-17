@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h2 class="mb-0">Trade hubs</h2>
+  <span class="text-muted small">
+    <span id="hub-count">{{ user_trade_hubs_ids | length }}</span> of
+    {{ (inner_trade_hubs | length) + (outer_trade_hubs | length) }} selected
+  </span>
+</div>
+<p class="text-muted small mb-3">Pick the hubs to monitor — changes save instantly.</p>
+
+<div class="row g-3">
+  {% for group_title, group_hubs in [('Main hubs', inner_trade_hubs), ('Other hubs', outer_trade_hubs)] %}
+  <div class="col-12 col-lg-6">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <span class="fw-semibold">{{ group_title }}</span>
+        <button type="button" class="btn btn-sm btn-outline-secondary select-all-btn">Select all</button>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for th in group_hubs %}
+        <li class="list-group-item">
+          <div class="form-check mb-0">
+            <input type="checkbox" class="form-check-input trade-hub-checkbox"
+                   id="th_{{ th.id }}" value="{{ th.id }}"
+                   {% if th.id in user_trade_hubs_ids %}checked{% endif %}>
+            <label class="form-check-label d-flex justify-content-between w-100" for="th_{{ th.id }}">
+              <span>{{ th.name }}</span>
+              {% if th.universe_constellation and th.universe_constellation.universe_region %}
+              <span class="text-muted small">{{ th.universe_constellation.universe_region.name }}</span>
+              {% endif %}
+            </label>
+          </div>
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted small">No hubs.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const countEl = document.getElementById('hub-count');
+function refreshCount() {
+  countEl.textContent = document.querySelectorAll('.trade-hub-checkbox:checked').length;
+}
+function saveHub(cb) {
+  fetch('{{ url_for("users.update_trade_hubs") }}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'id=' + encodeURIComponent(cb.value) + '&check_state=' + encodeURIComponent(cb.checked)
+  }).catch(function() { alert('Update failed.'); });
+}
+document.querySelectorAll('.trade-hub-checkbox').forEach(function(cb) {
+  cb.addEventListener('change', function() { saveHub(cb); refreshCount(); });
+});
+document.querySelectorAll('.select-all-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const boxes = btn.closest('.card').querySelectorAll('.trade-hub-checkbox');
+    const turnOn = Array.from(boxes).some(function(cb) { return !cb.checked; });
+    boxes.forEach(function(cb) {
+      if (cb.checked !== turnOn) { cb.checked = turnOn; saveHub(cb); }
+    });
+    refreshCount();
+  });
+});
+</script>
+{% endblock %}

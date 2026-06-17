@@ -60,7 +60,6 @@ def _register_blueprints(app):
     from evebs.routes.auth import bp as auth_bp
     from evebs.routes.blueprint_modifications import bp as blueprint_modifications_bp
     from evebs.routes.buy_orders import bp as buy_orders_bp
-    from evebs.routes.choose_trade_hubs import bp as choose_trade_hubs_bp
     from evebs.routes.components_to_buys import bp as components_to_buys_bp
     from evebs.routes.copy_lists import bp as copy_lists_bp
     from evebs.routes.eve_items_saved_lists import bp as eve_items_saved_lists_bp
@@ -97,7 +96,6 @@ def _register_blueprints(app):
     app.register_blueprint(reaction_lists_bp)
     app.register_blueprint(user_sales_orders_bp)
     app.register_blueprint(users_bp)
-    app.register_blueprint(choose_trade_hubs_bp)
     app.register_blueprint(blueprint_modifications_bp)
     app.register_blueprint(components_to_buys_bp)
     app.register_blueprint(market_data_bp)

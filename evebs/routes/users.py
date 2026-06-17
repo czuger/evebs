@@ -1,9 +1,9 @@
-from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint as FlaskBlueprint, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
 
 from esi.client import EsiClient
 from evebs.extensions import db
-from evebs.models import UniverseStation
+from evebs.models import UniverseStation, UniverseSystem
 
 bp = FlaskBlueprint('users', __name__)
 
@@ -92,6 +92,9 @@ def update():
             'show_selected_items':     request.form.get('sell_show_selected_items') == 'on',
             'hide_low_confidence':     request.form.get('sell_hide_low_confidence') == 'on',
         }
+        user.trade_route_filtering = {
+            'buy_orders_only': request.form.get('trade_buy_orders_only') == 'on',
+        }
         bof = user.buy_order_filtering or {}
         user.buy_order_filtering = {
             'min_margin_percent':      int(raw_buy_margin_pcent) if raw_buy_margin_pcent else bof.get('min_margin_percent', 20),
@@ -129,6 +132,44 @@ def _parse_sales_taxes(form):
         'sales_taxes':      pct('sales_taxes'),
         'safety_tax':       pct('safety_tax'),
     }
+
+
+@bp.route('/users/trade_hubs')
+@login_required
+def trade_hubs():
+    user = current_user
+    inner = (UniverseSystem.query
+             .filter_by(trade_hub=True, is_inner=True)
+             .order_by(UniverseSystem.name)
+             .all())
+    outer = (UniverseSystem.query
+             .filter_by(trade_hub=True, is_inner=False)
+             .order_by(UniverseSystem.name)
+             .all())
+    return render_template('users/trade_hubs.html',
+                           title='Choose trade hubs to monitor',
+                           inner_trade_hubs=inner,
+                           outer_trade_hubs=outer,
+                           user_trade_hubs_ids=set(user.trade_hub_ids),
+                           user=user)
+
+
+@bp.route('/users/trade_hubs/update', methods=['POST'])
+@login_required
+def update_trade_hubs():
+    user = current_user
+    trade_hub_id = request.form.get('id', type=int)
+    check_state = request.form.get('check_state') == 'true'
+    hub = db.session.get(UniverseSystem, trade_hub_id)
+    if hub is None or not hub.trade_hub:
+        abort(404)
+    if check_state:
+        if hub not in user.trade_hubs:
+            user.trade_hubs.append(hub)
+    elif hub in user.trade_hubs:
+        user.trade_hubs.remove(hub)
+    db.session.commit()
+    return ('', 200)
 
 
 @bp.route('/users/sales_taxes')

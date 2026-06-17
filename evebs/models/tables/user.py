@@ -28,6 +28,9 @@ class User(UserMixin, db.Model):
         'min_margin_percent': 20,
         'min_batch_margin_amount': 5_000_000,
     })
+    trade_route_filtering = db.Column(db.JSON, nullable=False, default=lambda: {
+        'buy_orders_only': False,
+    })
     remove_occuped_places = db.Column(db.Boolean)
     watch_my_prices = db.Column(db.Boolean)
     last_changes_in_choices = db.Column(db.DateTime)
@@ -101,6 +104,7 @@ class User(UserMixin, db.Model):
     reaction_lists = db.relationship('ReactionList', back_populates='user', cascade='all, delete-orphan')
     invention_lists = db.relationship('InventionList', back_populates='user', cascade='all, delete-orphan')
     copy_lists = db.relationship('CopyList', back_populates='user', cascade='all, delete-orphan')
+    trade_route_buys = db.relationship('TradeRouteBuy', back_populates='user', cascade='all, delete-orphan')
     industry_jobs = db.relationship('IndustryJob', back_populates='user', cascade='all, delete-orphan')
     blueprint_modifications = db.relationship('BlueprintModification', back_populates='user', cascade='all, delete-orphan')
     user_sale_orders = db.relationship('UserSaleOrder', back_populates='user', cascade='all, delete-orphan')

@@ -52,6 +52,18 @@ class TestUsersUpdate:
         assert user.sell_orders_filtering['show_selected_items'] is False
         assert user.buy_order_filtering['show_selected_items'] is False
 
+    def test_enables_trade_route_buy_orders_only(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users', data={'trade_buy_orders_only': 'on'})
+        db.session.expire(user)
+        assert user.trade_route_filtering['buy_orders_only'] is True
+
+    def test_disables_trade_route_buy_orders_only(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users', data={})  # absent → False
+        db.session.expire(user)
+        assert user.trade_route_filtering['buy_orders_only'] is False
+
     def test_enables_hide_low_confidence(self, db, auth_client):
         client, user = auth_client
         client.post('/users', data={'sell_hide_low_confidence': 'on'})

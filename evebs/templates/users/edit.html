@@ -48,6 +48,21 @@
   </div>
 
   <div class="card mb-3">
+    <div class="card-header">Trade route filters</div>
+    <div class="card-body">
+      <div class="col-12 col-md-4 mb-3">
+        <div class="form-check mt-2">
+          <input type="checkbox" name="trade_buy_orders_only" id="trade_buy_orders_only"
+                 class="form-check-input"
+                 {% if (user.trade_route_filtering or {}).get('buy_orders_only', False) %}checked{% endif %}>
+          <label for="trade_buy_orders_only" class="form-check-label">Buy orders only</label>
+        </div>
+        <div class="form-text">When on, Trade routes shows only buy-order exits (instant sale into a buy order).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
     <div class="card-header">Buy orders filters</div>
     <div class="card-body">
       {% set bof = user.buy_order_filtering or {} %}

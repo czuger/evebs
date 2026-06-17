@@ -10,6 +10,7 @@ from evebs.models.tables.production_list import ProductionList
 from evebs.models.tables.reaction_list import ReactionList
 from evebs.models.tables.invention_list import InventionList
 from evebs.models.tables.copy_list import CopyList
+from evebs.models.tables.trade_route_buy import TradeRouteBuy
 from evebs.models.tables.user_sale_order import UserSaleOrder
 from evebs.models.tables.eve_items_saved_list import EveItemsSavedList
 from evebs.models.tables.universe_region import UniverseRegion
@@ -53,6 +54,7 @@ __all__ = [
     'ReactionList',
     'InventionList',
     'CopyList',
+    'TradeRouteBuy',
     'UserSaleOrder',
     'EveItemsSavedList',
     'UniverseRegion',

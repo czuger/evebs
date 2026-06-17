@@ -1,4 +1,4 @@
-"""Tests for evebs/routes/choose_trade_hubs.py."""
+"""Tests for the trade-hub picker on the users blueprint (users.trade_hubs)."""
 import pytest
 from tests.factories import make_universe_system, make_trade_hub
 
@@ -13,32 +13,32 @@ def hubs(db):
     return {'outer': outer, 'inner': inner}
 
 
-class TestChooseTradeHubsEdit:
+class TestTradeHubsEdit:
     def test_redirects_unauthenticated(self, client):
-        resp = client.get('/choose_trade_hubs/edit')
+        resp = client.get('/users/trade_hubs')
         assert resp.status_code == 302
 
     def test_returns_200_when_authenticated(self, auth_client):
         client, _ = auth_client
-        resp = client.get('/choose_trade_hubs/edit')
+        resp = client.get('/users/trade_hubs')
         assert resp.status_code == 200
 
     def test_shows_trade_hubs(self, db, auth_client, hubs):
         client, _ = auth_client
-        resp = client.get('/choose_trade_hubs/edit')
+        resp = client.get('/users/trade_hubs')
         assert resp.status_code == 200
         assert b'Jita' in resp.data
         assert b'Perimeter' in resp.data
 
 
-class TestChooseTradeHubsUpdate:
+class TestTradeHubsUpdate:
     def test_redirects_unauthenticated(self, client, db):
-        resp = client.post('/choose_trade_hubs/update', data={'id': 1, 'check_state': 'true'})
+        resp = client.post('/users/trade_hubs/update', data={'id': 1, 'check_state': 'true'})
         assert resp.status_code == 302
 
     def test_adds_hub_to_user(self, db, auth_client, hubs):
         client, user = auth_client
-        resp = client.post('/choose_trade_hubs/update', data={
+        resp = client.post('/users/trade_hubs/update', data={
             'id': hubs['outer'].id,
             'check_state': 'true',
         })
@@ -52,7 +52,7 @@ class TestChooseTradeHubsUpdate:
         user.trade_hubs.append(hubs['outer'])
         db.session.commit()
 
-        resp = client.post('/choose_trade_hubs/update', data={
+        resp = client.post('/users/trade_hubs/update', data={
             'id': hubs['outer'].id,
             'check_state': 'false',
         })
@@ -63,5 +63,5 @@ class TestChooseTradeHubsUpdate:
 
     def test_404_for_nonexistent_hub(self, db, auth_client):
         client, _ = auth_client
-        resp = client.post('/choose_trade_hubs/update', data={'id': 9999, 'check_state': 'true'})
+        resp = client.post('/users/trade_hubs/update', data={'id': 9999, 'check_state': 'true'})
         assert resp.status_code == 404

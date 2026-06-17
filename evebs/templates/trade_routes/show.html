@@ -3,14 +3,14 @@
 <h2>Trade routes</h2>
 <p class="text-muted small mb-3">
   Buy at a hub's lowest sell price, haul one {{ cargo_m3 | int }} m³ cargo hold to another of your
-  <a href="{{ url_for('choose_trade_hubs.edit') }}">selected trade hubs</a>, then exit by filling a
+  <a href="{{ url_for('users.trade_hubs') }}">selected trade hubs</a>, then exit by filling a
   <strong>buy order</strong> (instant sale) or placing a <strong>sell order</strong>. Profit uses your
   <a href="{{ url_for('users.industry_taxes') }}">sales tax settings</a>. Ranked by total profit per trip.
 </p>
 
 {% if hub_count < 2 %}
 <div class="alert alert-info">
-  Select at least two <a href="{{ url_for('choose_trade_hubs.edit') }}">trade hubs</a> to find routes between them.
+  Select at least two <a href="{{ url_for('users.trade_hubs') }}">trade hubs</a> to find routes between them.
 </div>
 {% else %}
 <form method="get" class="row g-2 align-items-center mb-3">
@@ -30,18 +30,27 @@
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <tr>
+      <th class="text-center">Save</th>
       <th>Item</th>
       <th>From</th>
       <th class="text-end">Buy @</th>
       <th>To</th>
       <th class="text-end">Sell @</th>
       <th class="text-center">Exit</th>
+      <th class="text-end" data-bs-toggle="tooltip" title="Avg units sold per day at the destination over the last 30 days">Dst daily sold</th>
       <th class="text-end">Qty</th>
       <th class="text-end">Profit / unit</th>
       <th class="text-end">Total profit</th>
     </tr>
     {% for r in routes %}
     <tr>
+      <td class="text-center">
+        <input type="checkbox" class="form-check-input save-route"
+               data-item="{{ r.eve_item_id }}" data-src="{{ r.src_hub_id }}"
+               data-dst="{{ r.dst_hub_id }}" data-daily="{{ r.daily_sold | int }}"
+               data-qty="{{ r.qty | int }}"
+               {% if (r.eve_item_id, r.src_hub_id, r.dst_hub_id) in saved_keys %}checked{% endif %}>
+      </td>
       <td><a href="{{ url_for('items.show', slug=r.item_slug or r.eve_item_id) }}">{{ r.item_name }}</a></td>
       <td>
         <a href="{{ url_for('market_data.trade_hub_detail', item_id=r.eve_item_id, trade_hub_id=r.src_hub_id) }}"
@@ -66,15 +75,38 @@
         <span class="badge bg-primary">Sell order</span>
         {% endif %}
       </td>
+      <td class="text-end">{{ r.daily_sold | int }}</td>
       <td class="text-end">{{ r.qty | int }}</td>
       <td class="text-end">{{ r.profit_per_unit | isk }}</td>
       <td class="text-end fw-semibold">{{ r.total_profit | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="9" class="text-center text-muted">No profitable trade routes.</td></tr>
+    <tr><td colspan="11" class="text-center text-muted">No profitable trade routes.</td></tr>
     {% endfor %}
   </table>
 </div>
 {% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.save-route').forEach(function(cb) {
+  cb.addEventListener('change', function() {
+    const daily = parseInt(cb.dataset.daily, 10) || 0;
+    const qtyCap = parseInt(cb.dataset.qty, 10) || 1;
+    const qty = Math.max(1, Math.min(Math.floor(daily / 3), qtyCap));
+    fetch('{{ url_for("trade_routes.save_toggle") }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'item_id=' + encodeURIComponent(cb.dataset.item)
+          + '&src_hub_id=' + encodeURIComponent(cb.dataset.src)
+          + '&dst_hub_id=' + encodeURIComponent(cb.dataset.dst)
+          + '&qty=' + encodeURIComponent(qty)
+          + '&check_state=' + encodeURIComponent(cb.checked)
+    }).then(function(r) { if (!r.ok) { cb.checked = !cb.checked; alert('Save failed.'); } })
+      .catch(function() { cb.checked = !cb.checked; alert('Save failed.'); });
+  });
+});
+</script>
 {% endblock %}

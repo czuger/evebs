@@ -34,10 +34,6 @@
             <a class="dropdown-item" href="{{ url_for('components_to_buys.show') }}">Components to buy</a>
           </div>
         </li>
-        <li class="nav-item">
-          <a class="nav-link{% if '/choose_trade_hubs' in request.path %} active{% endif %}"
-             href="{{ url_for('choose_trade_hubs.edit') }}">Trade hubs</a>
-        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Earnings</a>
           <div class="dropdown-menu">
@@ -45,6 +41,7 @@
             <a class="dropdown-item" href="{{ url_for('sell_orders.show') }}">Sell orders</a>
             <a class="dropdown-item" href="{{ url_for('user_sales_orders.show') }}">My sale orders</a>
             <a class="dropdown-item" href="{{ url_for('trade_routes.show') }}">Trade routes</a>
+            <a class="dropdown-item" href="{{ url_for('trade_routes.saved') }}">Trade buy list</a>
             <div class="dropdown-divider"></div>
 <a class="dropdown-item" href="{{ url_for('jita_reactions.show') }}">Jita reactions</a>
             <a class="dropdown-item" href="{{ url_for('jita_min_prices.show') }}">Jita min prices</a>
@@ -59,6 +56,7 @@
              href="#" role="button" data-bs-toggle="dropdown">User</a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="{{ url_for('users.edit') }}">Settings</a>
+            <a class="dropdown-item" href="{{ url_for('users.trade_hubs') }}">Trade hubs</a>
             <a class="dropdown-item" href="{{ url_for('users.industry_taxes') }}">Industry taxes</a>
             <a class="dropdown-item" href="{{ url_for('users.reaction_modifications') }}">Reaction modifications</a>
             <a class="dropdown-item" href="{{ url_for('users.sales_taxes') }}">Sales taxes</a>

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1">
+  <h2 class="mb-0">Trade buy list</h2>
+  {% if buys %}
+  <button type="button" id="delete-all" class="btn btn-sm btn-outline-danger">Delete all</button>
+  {% endif %}
+</div>
+<p class="text-muted small mb-3">Routes you saved from
+  <a href="{{ url_for('trade_routes.show') }}">Trade routes</a>. Quantities save on change.</p>
+
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm align-middle">
+    <tr>
+      <th>Item</th>
+      <th>Buy hub</th>
+      <th>Sell hub</th>
+      <th class="text-end">Qty</th>
+      <th></th>
+    </tr>
+    {% for b in buys %}
+    <tr data-id="{{ b.id }}">
+      <td><a href="{{ url_for('items.show', slug=(b.eve_item.slug if b.eve_item else b.eve_item_id) or b.eve_item_id) }}">{{ b.eve_item.name if b.eve_item else b.eve_item_id }}</a></td>
+      <td>{{ b.src_hub.name if b.src_hub else b.src_hub_id }}</td>
+      <td>{{ b.dst_hub.name if b.dst_hub else b.dst_hub_id }}</td>
+      <td class="text-end">
+        <input type="number" min="1" value="{{ b.quantity }}"
+               class="form-control form-control-sm text-end buy-qty" style="max-width: 7rem; display:inline-block">
+      </td>
+      <td class="text-end">
+        <button type="button" class="btn btn-sm btn-outline-danger buy-delete">Delete</button>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted">No saved routes yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% if buys %}
+<div class="mt-3">
+  <button class="btn btn-sm btn-outline-secondary" type="button"
+    onclick="document.getElementById('eve-text').classList.toggle('d-none')">
+    Show as text (EVE paste)
+  </button>
+  <div id="eve-text" class="d-none mt-2">
+    <textarea id="eve-textarea" class="form-control font-monospace" rows="{{ [buys | length, 5] | max }}" readonly>{% for b in buys %}{{ (b.eve_item.name if b.eve_item else b.eve_item_id) }}	{{ b.quantity }}
+{% endfor %}</textarea>
+    <button class="btn btn-sm btn-outline-secondary mt-1" type="button"
+      onclick="navigator.clipboard.writeText(document.getElementById('eve-textarea').value)">Copy</button>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function post(url, body) {
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body
+  });
+}
+document.querySelectorAll('.buy-qty').forEach(function(inp) {
+  inp.addEventListener('change', function() {
+    const id = inp.closest('tr').dataset.id;
+    const qty = Math.max(1, parseInt(inp.value, 10) || 1);
+    inp.value = qty;
+    post('{{ url_for("trade_routes.saved_update") }}', 'id=' + id + '&qty=' + qty)
+      .then(function(r) { if (!r.ok) alert('Update failed.'); })
+      .catch(function() { alert('Update failed.'); });
+  });
+});
+document.querySelectorAll('.buy-delete').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const tr = btn.closest('tr');
+    post('{{ url_for("trade_routes.saved_delete") }}', 'id=' + tr.dataset.id)
+      .then(function(r) { if (r.ok) { tr.remove(); } else { alert('Delete failed.'); } })
+      .catch(function() { alert('Delete failed.'); });
+  });
+});
+const deleteAll = document.getElementById('delete-all');
+if (deleteAll) {
+  deleteAll.addEventListener('click', function() {
+    if (!confirm('Delete all saved routes?')) return;
+    post('{{ url_for("trade_routes.saved_delete_all") }}', '')
+      .then(function(r) { if (r.ok) { location.reload(); } else { alert('Delete failed.'); } })
+      .catch(function() { alert('Delete failed.'); });
+  });
+}
+</script>
+{% endblock %}
