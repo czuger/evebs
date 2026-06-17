@@ -90,6 +90,7 @@ def update():
             'min_margin_percent':      int(raw_margin_pcent) if raw_margin_pcent else sof.get('min_margin_percent', 20),
             'min_batch_margin_amount': int(raw_batch_margin) if raw_batch_margin else sof.get('min_batch_margin_amount', 5_000_000),
             'show_selected_items':     request.form.get('sell_show_selected_items') == 'on',
+            'hide_low_confidence':     request.form.get('sell_hide_low_confidence') == 'on',
         }
         bof = user.buy_order_filtering or {}
         user.buy_order_filtering = {

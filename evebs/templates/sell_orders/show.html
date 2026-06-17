@@ -47,6 +47,10 @@
         <a href="{{ url_for('price_forecasts.show', item_id=cp.eve_item_id) }}" class="text-decoration-none">
           {{ cp.sell_price | isk }}
         </a>
+        {% if cp.price_conf_7d == 'low' or cp.price_conf_30d == 'low' %}
+        <i class="fas fa-exclamation-triangle text-warning ms-1" data-bs-toggle="tooltip"
+           title="Low-confidence price forecast (7d: {{ cp.price_conf_7d or '—' }}, 30d: {{ cp.price_conf_30d or '—' }})"></i>
+        {% endif %}
       </td>
       <td class="text-center">
         {% with tendency = cp.tendency %}{% include 'shared/_tendency_icon.html' %}{% endwith %}
@@ -54,7 +58,12 @@
       <td class="text-end">{{ cp.sell_fee_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_pcent | pcent }}</td>
-      <td class="text-end">{{ cp.sell_volume | vol }}</td>
+      <td class="text-end">{{ cp.sell_volume | vol }}
+        {% if cp.vol_conf_7d == 'low' or cp.vol_conf_30d == 'low' %}
+        <i class="fas fa-exclamation-triangle text-warning ms-1" data-bs-toggle="tooltip"
+           title="Low-confidence volume forecast (7d: {{ cp.vol_conf_7d or '—' }}, 30d: {{ cp.vol_conf_30d or '—' }})"></i>
+        {% endif %}
+      </td>
       <td class="text-end">{{ cp.sold_7d | vol }}</td>
       <td class="text-end">{{ cp.full_batch_amount | vol }}</td>
       <td class="text-end">{{ cp.margin_full_batch | isk }}</td>

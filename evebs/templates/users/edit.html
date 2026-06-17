@@ -34,6 +34,15 @@
           </div>
           <div class="form-text">When on, only show bookmarked items; when off, show all game blueprints.</div>
         </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-check mt-2">
+            <input type="checkbox" name="sell_hide_low_confidence" id="sell_hide_low_confidence"
+                   class="form-check-input"
+                   {% if (user.sell_orders_filtering or {}).get('hide_low_confidence', False) %}checked{% endif %}>
+            <label for="sell_hide_low_confidence" class="form-check-label">Hide low-confidence forecasts</label>
+          </div>
+          <div class="form-text">When on, hide items whose 7d or 30d price forecast confidence is low.</div>
+        </div>
       </div>
     </div>
   </div>

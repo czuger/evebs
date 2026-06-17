@@ -76,3 +76,69 @@ class TestSellOrdersShow:
         assert b'Tendency' in body
         assert b'Sold (7d)' in body
         assert b'<th>Trade hub</th>' not in body   # hub column dropped
+
+    def _seed_priced_item(self, db, user, n_days):
+        user.sell_orders_filtering = {'min_margin_percent': 0, 'min_batch_margin_amount': 0}
+        jita = make_universe_system(db, system_id=JITA, name='Jita')
+        mat = make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        prod = make_item(db, item_id=35, slug='ammo-sell', name='Ammo Sell')
+        bp = make_blueprint(db, prod, blueprint_id=10035, nb_runs=1, prod_qtt=10)
+        bp.activity_type = 'manufacturing'
+        bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
+        make_jita_min_price(db, mat, min_sell_price=5.0)
+        make_jita_min_price(db, prod, min_sell_price=900.0)
+        _seed_sales(db, prod, jita, n_days=n_days)
+        db.session.commit()
+        _refresh(db)
+
+    def test_low_confidence_forecast_shows_warning(self, db, auth_client):
+        """Few days of history → low 30d-window confidence → warning icon next to forecasts."""
+        client, user = auth_client
+        self._seed_priced_item(db, user, n_days=6)   # n_30d = 6 (< 10) → 'low'
+
+        resp = client.get('/sell_orders')
+        assert resp.status_code == 200
+        assert b'fa-exclamation-triangle' in resp.data
+
+    def test_high_confidence_forecast_has_no_warning(self, db, auth_client):
+        """Plenty of clean history → confidence not 'low' → no warning icon."""
+        client, user = auth_client
+        self._seed_priced_item(db, user, n_days=14)  # n_30d = 14 (>= 10), clean trend
+
+        resp = client.get('/sell_orders')
+        assert resp.status_code == 200
+        assert b'fa-exclamation-triangle' not in resp.data
+
+    def test_hide_low_confidence_filter_excludes_row(self, db, auth_client):
+        """With the filter on, a low-confidence item is dropped from the output."""
+        client, user = auth_client
+        self._seed_priced_item(db, user, n_days=6)   # low 30d confidence
+        user.sell_orders_filtering = {**user.sell_orders_filtering, 'hide_low_confidence': True}
+        db.session.commit()
+
+        resp = client.get('/sell_orders')
+        assert resp.status_code == 200
+        assert b'Ammo Sell' not in resp.data
+        assert b'fa-exclamation-triangle' not in resp.data
+
+    def test_low_confidence_kept_when_filter_off(self, db, auth_client):
+        """Same data, filter off → the low-confidence item still appears (with warning)."""
+        client, user = auth_client
+        self._seed_priced_item(db, user, n_days=6)
+        user.sell_orders_filtering = {**user.sell_orders_filtering, 'hide_low_confidence': False}
+        db.session.commit()
+
+        resp = client.get('/sell_orders')
+        assert resp.status_code == 200
+        assert b'Ammo Sell' in resp.data
+
+    def test_hide_low_confidence_keeps_high_confidence_row(self, db, auth_client):
+        """With the filter on, a high-confidence item is retained."""
+        client, user = auth_client
+        self._seed_priced_item(db, user, n_days=14)  # not low
+        user.sell_orders_filtering = {**user.sell_orders_filtering, 'hide_low_confidence': True}
+        db.session.commit()
+
+        resp = client.get('/sell_orders')
+        assert resp.status_code == 200
+        assert b'Ammo Sell' in resp.data

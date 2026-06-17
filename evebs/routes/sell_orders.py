@@ -41,6 +41,8 @@ SELECT
     {jita}                                                                       AS universe_system_id,
     uic.mat_cost_per_unit + uic.ind_tax_per_unit                                AS total_cost_per_unit,
     pf.forecast_7d                                                               AS sell_price,
+    pf.confidence_7d                                                             AS price_conf_7d,
+    pf.confidence_30d                                                            AS price_conf_30d,
     pf.forecast_7d * :sell_fee                                                   AS sell_fee_per_unit,
     pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
                                                                                  AS margin_per_unit,
@@ -50,6 +52,8 @@ SELECT
          ELSE 0
     END                                                                          AS margin_pcent,
     COALESCE(vf.forecast_7d, 0)                                                  AS sell_volume,
+    vf.confidence_7d                                                             AS vol_conf_7d,
+    vf.confidence_30d                                                            AS vol_conf_30d,
     COALESCE(s.sold_7d, 0)::bigint                                               AS sold_7d,
     CASE
         WHEN ls.price IS NULL OR ls.price <= 0     THEN 'flat'
@@ -85,6 +89,7 @@ LEFT JOIN (
 WHERE uic.user_id    = :user_id
   AND uic.activity_type = 'manufacturing'
   {item_filter}
+  {confidence_filter}
   AND pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
   AND CASE WHEN pf.forecast_7d > 0
        THEN (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) / pf.forecast_7d
@@ -130,7 +135,12 @@ def show():
         min_batch_margin = sof.get('min_batch_margin_amount', 5_000_000)
 
         item_filter = 'AND uic.produced_type_id IN :item_ids' if show_selected else ''
-        sql = _SQL.format(jita=JITA_SYSTEM_ID, item_filter=item_filter)
+        confidence_filter = (
+            "AND pf.confidence_7d <> 'low' AND pf.confidence_30d <> 'low'"
+            if sof.get('hide_low_confidence', False) else ''
+        )
+        sql = _SQL.format(jita=JITA_SYSTEM_ID, item_filter=item_filter,
+                          confidence_filter=confidence_filter)
         params = {
             'user_id':          user.id,
             'sell_fee':         sell_fee,

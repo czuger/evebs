@@ -52,6 +52,18 @@ class TestUsersUpdate:
         assert user.sell_orders_filtering['show_selected_items'] is False
         assert user.buy_order_filtering['show_selected_items'] is False
 
+    def test_enables_hide_low_confidence(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users', data={'sell_hide_low_confidence': 'on'})
+        db.session.expire(user)
+        assert user.sell_orders_filtering['hide_low_confidence'] is True
+
+    def test_disables_hide_low_confidence(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users', data={})  # absent → False
+        db.session.expire(user)
+        assert user.sell_orders_filtering['hide_low_confidence'] is False
+
     def test_invalid_input_redirects_without_error(self, db, auth_client):
         client, user = auth_client
         original = (user.sell_orders_filtering or {}).get('min_margin_percent', 20)
