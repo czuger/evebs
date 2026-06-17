@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Trade routes</h2>
+<p class="text-muted small mb-3">
+  Buy at a hub's lowest sell price, haul one {{ cargo_m3 | int }} m³ cargo hold to another of your
+  <a href="{{ url_for('choose_trade_hubs.edit') }}">selected trade hubs</a>, then exit by filling a
+  <strong>buy order</strong> (instant sale) or placing a <strong>sell order</strong>. Profit uses your
+  <a href="{{ url_for('users.industry_taxes') }}">sales tax settings</a>. Ranked by total profit per trip.
+</p>
+
+{% if hub_count < 2 %}
+<div class="alert alert-info">
+  Select at least two <a href="{{ url_for('choose_trade_hubs.edit') }}">trade hubs</a> to find routes between them.
+</div>
+{% else %}
+<form method="get" class="row g-2 align-items-center mb-3">
+  <div class="col-auto">
+    <label for="route" class="col-form-label">Route</label>
+  </div>
+  <div class="col-auto">
+    <select id="route" name="route" class="form-select form-select-sm" onchange="this.form.submit()">
+      <option value="">All routes</option>
+      {% for opt in route_options %}
+      <option value="{{ opt.value }}"{% if opt.value == selected_route %} selected{% endif %}>{{ opt.label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <noscript><div class="col-auto"><button type="submit" class="btn btn-sm btn-primary">Apply</button></div></noscript>
+</form>
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm">
+    <tr>
+      <th>Item</th>
+      <th>From</th>
+      <th class="text-end">Buy @</th>
+      <th>To</th>
+      <th class="text-end">Sell @</th>
+      <th class="text-center">Exit</th>
+      <th class="text-end">Qty</th>
+      <th class="text-end">Profit / unit</th>
+      <th class="text-end">Total profit</th>
+    </tr>
+    {% for r in routes %}
+    <tr>
+      <td><a href="{{ url_for('items.show', slug=r.item_slug or r.eve_item_id) }}">{{ r.item_name }}</a></td>
+      <td>
+        <a href="{{ url_for('market_data.trade_hub_detail', item_id=r.eve_item_id, trade_hub_id=r.src_hub_id) }}"
+           class="text-decoration-none">{{ hubs.get(r.src_hub_id, r.src_hub_id) }}</a>
+      </td>
+      <td class="text-end">
+        <a href="{{ url_for('market_data.trade_hub_detail', item_id=r.eve_item_id, trade_hub_id=r.src_hub_id) }}"
+           class="text-decoration-none">{{ r.buy_price | isk }}</a>
+      </td>
+      <td>
+        <a href="{{ url_for('market_data.trade_hub_detail', item_id=r.eve_item_id, trade_hub_id=r.dst_hub_id) }}"
+           class="text-decoration-none">{{ hubs.get(r.dst_hub_id, r.dst_hub_id) }}</a>
+      </td>
+      <td class="text-end">
+        <a href="{{ url_for('market_data.trade_hub_detail', item_id=r.eve_item_id, trade_hub_id=r.dst_hub_id) }}"
+           class="text-decoration-none">{{ r.sell_price | isk }}</a>
+      </td>
+      <td class="text-center">
+        {% if r.exit_type == 'buy' %}
+        <span class="badge bg-success">Buy order</span>
+        {% else %}
+        <span class="badge bg-primary">Sell order</span>
+        {% endif %}
+      </td>
+      <td class="text-end">{{ r.qty | int }}</td>
+      <td class="text-end">{{ r.profit_per_unit | isk }}</td>
+      <td class="text-end fw-semibold">{{ r.total_profit | isk }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="9" class="text-center text-muted">No profitable trade routes.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+{% endif %}
+{% endblock %}
