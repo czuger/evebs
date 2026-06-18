@@ -15,10 +15,34 @@ def register(app):
         show_last_update=show_last_update,
         meta_title=meta_title,
         now=datetime.utcnow,
+        prediction_quality=prediction_quality,
+        price_direction_tendency=price_direction_tendency,
     )
     app.jinja_env.filters['isk'] = print_isk
     app.jinja_env.filters['pcent'] = print_pcent
     app.jinja_env.filters['vol'] = print_volume
+
+
+def prediction_quality(pct):
+    """Map a spread percentage (fraction) to a forecast-quality label."""
+    if pct is None:
+        return 'Unknown'
+    if pct < 0.10:
+        return 'Very Stable'
+    if pct < 0.30:
+        return 'Normal'
+    if pct < 0.50:
+        return 'Uncertain'
+    return 'Highly Volatile'
+
+
+_PRICE_DIRECTION_TENDENCY = {1: 'up', 2: 'slow_up', -1: 'down', -2: 'slow_down', 0: 'flat'}
+
+
+def price_direction_tendency(code):
+    """Map a MarketProphetForecast.price_direction code to a tendency string for
+    shared/_tendency_icon.html ('up'/'slow_up'/'flat'/'down'/'slow_down'); '' when unknown."""
+    return _PRICE_DIRECTION_TENDENCY.get(code, '')
 
 
 def _current_page(path):

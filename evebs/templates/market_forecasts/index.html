@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% macro quality_icon(label) -%}
+  {%- if label == 'Very Stable' %}<i class="fas fa-check-circle text-success" data-bs-toggle="tooltip" title="{{ label }}"></i>
+  {%- elif label == 'Normal' %}<i class="fas fa-circle text-primary" data-bs-toggle="tooltip" title="{{ label }}"></i>
+  {%- elif label == 'Uncertain' %}<i class="fas fa-exclamation-circle text-warning" data-bs-toggle="tooltip" title="{{ label }}"></i>
+  {%- elif label == 'Highly Volatile' %}<i class="fas fa-bolt text-danger" data-bs-toggle="tooltip" title="{{ label }}"></i>
+  {%- else %}<i class="fas fa-question-circle text-muted" data-bs-toggle="tooltip" title="{{ label }}"></i>{% endif -%}
+{%- endmacro %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">Market forecasts</h2>
+  <form method="get" class="d-flex" role="search">
+    <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm me-2" placeholder="Search item name">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">Search</button>
+  </form>
+</div>
+<p class="text-muted small mb-3">Prophet 5-day forecasts for The Forge — nearest-day predicted average price, lowest price and volume. Ordered by predicted volume.</p>
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm align-middle">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th class="text-end">Forecast day</th>
+        <th class="text-end">Avg price</th>
+        <th class="text-end">Lowest price</th>
+        <th class="text-end">Highest price</th>
+        <th class="text-end">Volume</th>
+        <th class="text-center">Direction</th>
+        <th class="text-center">Quality</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for r in rows %}
+    <tr>
+      <td class="item_name">
+        <a href="{{ url_for('market_forecasts.show', type_id=r.item_id) }}">{{ r.item_name }}</a>
+      </td>
+      <td class="text-end">{{ r.forecast_date }}</td>
+      <td class="text-end font-monospace">{{ r.avg_predicted | isk if r.avg_predicted is not none else '—' }}</td>
+      <td class="text-end font-monospace">{{ r.low_predicted | isk if r.low_predicted is not none else '—' }}</td>
+      <td class="text-end font-monospace">{{ r.high_predicted | isk if r.high_predicted is not none else '—' }}</td>
+      <td class="text-end font-monospace">{{ r.vol_predicted | vol if r.vol_predicted is not none else '—' }}</td>
+      <td class="text-center">{% with tendency = price_direction_tendency(r.price_direction) %}{% include 'shared/_tendency_icon.html' %}{% endwith %}</td>
+      <td class="text-center">{{ quality_icon(prediction_quality(r.price_spread_pct)) }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8" class="text-center text-muted">
+      {% if q %}No items match "{{ q }}".{% else %}No forecast data yet.{% endif %}
+    </td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+<script>document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el))</script>
+{% endblock %}

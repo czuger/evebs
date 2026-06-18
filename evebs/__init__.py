@@ -73,6 +73,7 @@ def _register_blueprints(app):
     from evebs.routes.list_items import bp as list_items_bp
     from evebs.routes.main import bp as main_bp
     from evebs.routes.market_data import bp as market_data_bp
+    from evebs.routes.market_forecasts import bp as market_forecasts_bp
     from evebs.routes.market_groups import bp as market_groups_bp
     from evebs.routes.my_assets import bp as my_assets_bp
     from evebs.routes.production_costs import bp as production_costs_bp
@@ -99,6 +100,7 @@ def _register_blueprints(app):
     app.register_blueprint(blueprint_modifications_bp)
     app.register_blueprint(components_to_buys_bp)
     app.register_blueprint(market_data_bp)
+    app.register_blueprint(market_forecasts_bp)
     app.register_blueprint(market_groups_bp)
     app.register_blueprint(eve_items_saved_lists_bp)
     app.register_blueprint(my_assets_bp)

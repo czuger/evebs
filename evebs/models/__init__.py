@@ -27,6 +27,8 @@ from evebs.models.tables.user_to_user_duplication_request import UserToUserDupli
 from evebs.models.tables.user_activity_log import UserActivityLog
 from evebs.models.tables.market_history import MarketHistory
 from evebs.models.tables.jita_price_forecast import JitaPriceForecast
+from evebs.models.tables.market_prophet_forecast import MarketProphetForecast
+from evebs.models.tables.market_prophet_forecast_error import MarketProphetForecastErrors
 from evebs.models.tables.industry_job import IndustryJob, ACTIVITY_LABELS
 from evebs.models.views import (
     UserSaleOrderDetail,
@@ -77,6 +79,8 @@ __all__ = [
     'JitaVolumeForecastLinearRegression',
     'MarketHistory',
     'JitaPriceForecast',
+    'MarketProphetForecast',
+    'MarketProphetForecastErrors',
     'IndustryJob',
     'ACTIVITY_LABELS',
 ]

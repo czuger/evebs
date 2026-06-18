@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Avoid local imports. Follow PEP 8.
 - NO MONKEYPATCHING EVER
 - No broad exception handling — never `except Exception` (or bare `except`). Catch specific exception types (e.g. `EsiError`, `ValueError`).
+- Never use `datetime.utcnow()` (deprecated). Use timezone-aware `datetime.now(UTC)` (`from datetime import UTC, datetime`); for column defaults use `default=lambda: datetime.now(UTC)`.
 - Standalone scripts must NOT build the full web app (`from app import app` or `create_app()`). That imports every blueprint, some of which open web log files at import time (e.g. `logs/timings.log`) and fail under a script's user/permissions in production. Instead use `from evebs import create_db_app` and `with create_db_app().app_context(): ...` for DB access, and do not call `setup_logging()` (it also opens `logs/timings.log`); use `set_logger('<script>')` for the script's own dedicated log file.
 - When using argparse always add shortcuts for switches (e.g. `--tests` / `-t`).
 - Avoid environment variables for runtime config; use script switches instead.

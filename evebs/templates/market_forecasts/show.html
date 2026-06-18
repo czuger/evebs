@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center gap-3 my-3">
+  <img src="https://imageserver.eveonline.com/Type/{{ type_id }}_64.png"
+       alt="{{ item.name if item else type_id }}" class="rounded">
+  <div class="flex-grow-1">
+    <h2 class="mb-0">{{ item.name if item else type_id }} — Market forecast</h2>
+    <p class="text-muted small mb-0 mt-1">
+      Prophet forecast for The Forge over the next {{ forecast_rows | length or 5 }} days
+      at {{ (confidence * 100) | round(0) | int }}% confidence
+      {% if meta and meta.generated_at %}(generated {{ meta.generated_at.strftime('%Y-%m-%d') }}){% endif %}.
+      {% if has_forecast %}Prediction quality:
+      <strong>{{ prediction_quality(quality_pct) }}</strong>.{% endif %}
+      The shaded band is the lower/upper confidence interval.
+    </p>
+  </div>
+</div>
+
+{% if not has_forecast %}
+<div class="alert alert-warning">
+  No forecast at {{ (confidence * 100) | round(0) | int }}% confidence
+  {% if error %}— {{ error.reason }}{% endif %}.
+</div>
+{% else %}
+<div class="row g-3">
+  <div class="col-12 col-lg-6">
+    <div class="card"><div class="card-header fw-semibold">Average price (ISK)</div>
+      <div class="card-body"><div style="height:260px"><canvas id="avgChart"></canvas></div></div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6">
+    <div class="card"><div class="card-header fw-semibold">Lowest price (ISK)</div>
+      <div class="card-body"><div style="height:260px"><canvas id="lowChart"></canvas></div></div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6">
+    <div class="card"><div class="card-header fw-semibold">Highest price (ISK)</div>
+      <div class="card-body"><div style="height:260px"><canvas id="highChart"></canvas></div></div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6">
+    <div class="card"><div class="card-header fw-semibold">Volume</div>
+      <div class="card-body"><div style="height:260px">
+        {% if vol_series %}<canvas id="volChart"></canvas>{% else %}
+        <p class="text-muted small mb-0">No volume forecast for this item.</p>{% endif %}
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="table-responsive-md mt-3">
+  <table class="table table-sm align-middle">
+    <thead><tr>
+      <th>Day</th><th class="text-end">Avg</th><th class="text-end">Low</th><th class="text-end">High</th>
+      <th class="text-end">Price spread %</th><th class="text-end">Volume</th><th class="text-center">Direction</th>
+    </tr></thead>
+    <tbody>
+    {% for r in forecast_rows %}
+    <tr>
+      <td>{{ r.forecast_date }}</td>
+      <td class="text-end font-monospace">{{ r.avg_predicted | isk }}</td>
+      <td class="text-end font-monospace">{{ r.low_predicted | isk }}</td>
+      <td class="text-end font-monospace">{{ r.high_predicted | isk }}</td>
+      <td class="text-end font-monospace">{{ r.price_spread_pct | pcent }}</td>
+      <td class="text-end font-monospace">{{ r.vol_predicted | vol }}</td>
+      <td class="text-center">{% with tendency = price_direction_tendency(r.price_direction) %}{% include 'shared/_tendency_icon.html' %}{% endwith %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}{% if has_forecast %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+  const opts = (yLabel) => ({
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, position: 'bottom' } },
+    scales: { y: { title: { display: true, text: yLabel } }, x: { ticks: { maxTicksLimit: 7 } } },
+  });
+  // Combine actual history (solid) with the forecast (dotted line + confidence band).
+  const comboData = (hist, fc, label, color) => {
+    const H = hist.length;
+    const labels = hist.map(d => d.date).concat(fc.map(d => d.date));
+    const nulls = (n) => Array(n).fill(null);
+    // Forecast predicted bridged from the last history point so the dotted line connects.
+    const fcPred = nulls(Math.max(H - 1, 0))
+      .concat(H ? [hist[H - 1].v] : [])
+      .concat(fc.map(d => d.p));
+    return {
+      labels: labels,
+      datasets: [
+        { label: 'lower', data: nulls(H).concat(fc.map(d => d.lo)), borderColor: 'transparent', pointRadius: 0, fill: false },
+        { label: 'upper', data: nulls(H).concat(fc.map(d => d.hi)), borderColor: 'transparent', pointRadius: 0,
+          backgroundColor: color + '22', fill: '-1' },
+        { label: label + ' (history)', data: hist.map(d => d.v).concat(nulls(fc.length)),
+          borderColor: color, borderWidth: 1.5, pointRadius: 0, tension: 0.1 },
+        { label: label + ' (forecast)', data: fcPred, borderColor: color, borderWidth: 1.5,
+          borderDash: [5, 4], pointRadius: 0, tension: 0.1 },
+      ],
+    };
+  };
+  const mk = (id, hist, fc, label, color, yLabel) => {
+    if (fc.length) new Chart(document.getElementById(id),
+      { type: 'line', data: comboData(hist, fc, label, color), options: opts(yLabel) });
+  };
+  mk('avgChart', {{ hist_avg | tojson }}, {{ avg_series | tojson }}, 'Avg price', '#0d6efd', 'Price (ISK)');
+  mk('lowChart', {{ hist_low | tojson }}, {{ low_series | tojson }}, 'Lowest price', '#fd7e14', 'Price (ISK)');
+  mk('highChart', {{ hist_high | tojson }}, {{ high_series | tojson }}, 'Highest price', '#dc3545', 'Price (ISK)');
+  mk('volChart', {{ hist_vol | tojson }}, {{ vol_series | tojson }}, 'Volume', '#198754', 'Volume');
+</script>
+{% endif %}{% endblock %}
