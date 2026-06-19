@@ -40,62 +40,49 @@ SELECT
     uic.produced_type_id                                                         AS eve_item_id,
     {jita}                                                                       AS universe_system_id,
     uic.mat_cost_per_unit + uic.ind_tax_per_unit                                AS total_cost_per_unit,
-    pf.forecast_7d                                                               AS sell_price,
-    pf.confidence_7d                                                             AS price_conf_7d,
-    pf.confidence_30d                                                            AS price_conf_30d,
-    pf.forecast_7d * :sell_fee                                                   AS sell_fee_per_unit,
-    pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
+    mpf.avg_predicted                                                            AS sell_price,
+    mpf.price_spread_pct                                                         AS price_spread_pct,
+    mpf.price_direction                                                          AS price_direction,
+    mpf.avg_predicted * :sell_fee                                                AS sell_fee_per_unit,
+    mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
                                                                                  AS margin_per_unit,
-    CASE WHEN pf.forecast_7d > 0
-         THEN (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
-              / pf.forecast_7d
+    CASE WHEN mpf.avg_predicted > 0
+         THEN (mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+              / mpf.avg_predicted
          ELSE 0
     END                                                                          AS margin_pcent,
-    COALESCE(vf.forecast_7d, 0)                                                  AS sell_volume,
-    vf.confidence_7d                                                             AS vol_conf_7d,
-    vf.confidence_30d                                                            AS vol_conf_30d,
+    mpf.vol_predicted                                                            AS sell_volume,
     COALESCE(s.sold_7d, 0)::bigint                                               AS sold_7d,
-    CASE
-        WHEN ls.price IS NULL OR ls.price <= 0     THEN 'flat'
-        WHEN pf.forecast_7d > ls.price * 1.05      THEN 'up'
-        WHEN pf.forecast_7d > ls.price * 1.001     THEN 'slow_up'
-        WHEN pf.forecast_7d < ls.price * 0.95      THEN 'down'
-        WHEN pf.forecast_7d < ls.price * 0.999     THEN 'slow_down'
-        ELSE 'flat'
-    END                                                                          AS tendency,
     b.nb_runs * b.prod_qtt                                                       AS full_batch_raw,
-    LEAST(b.nb_runs * b.prod_qtt, COALESCE(vf.forecast_7d, 0))                   AS full_batch_amount,
-    LEAST(b.nb_runs * b.prod_qtt, COALESCE(vf.forecast_7d, 0))
-        * (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+    LEAST(b.nb_runs * b.prod_qtt, mpf.vol_predicted)                             AS full_batch_amount,
+    LEAST(b.nb_runs * b.prod_qtt, mpf.vol_predicted)
+        * (mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
                                                                                  AS margin_full_batch
 FROM user_industry_costs uic
 JOIN blueprints b ON b.id = uic.blueprint_id
-JOIN jita_price_forecast_linear_regression pf
-    ON pf.type_id = uic.produced_type_id AND pf.forecast_date = CURRENT_DATE + 3
-LEFT JOIN jita_volume_forecast_linear_regression vf
-    ON vf.type_id = uic.produced_type_id AND vf.forecast_date = CURRENT_DATE + 3
+JOIN (
+    SELECT DISTINCT ON (type_id)
+           type_id, avg_predicted, vol_predicted, price_spread_pct, price_direction
+    FROM market_prophet_forecasts
+    WHERE region_id = 10000002 AND confidence = 0.95
+    ORDER BY type_id, forecast_date DESC
+) mpf ON mpf.type_id = uic.produced_type_id
 LEFT JOIN (
     SELECT eve_item_id, SUM(volume) AS sold_7d
     FROM sales_finals
     WHERE universe_system_id = 30000142 AND day >= CURRENT_DATE - INTERVAL '7 days'
     GROUP BY eve_item_id
 ) s ON s.eve_item_id = uic.produced_type_id
-LEFT JOIN (
-    SELECT DISTINCT ON (eve_item_id) eve_item_id, price
-    FROM public_trade_orders
-    WHERE is_buy_order = FALSE AND universe_system_id = 30000142
-    ORDER BY eve_item_id, price ASC
-) ls ON ls.eve_item_id = uic.produced_type_id
 WHERE uic.user_id    = :user_id
   AND uic.activity_type = 'manufacturing'
   {item_filter}
-  {confidence_filter}
-  AND pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
-  AND CASE WHEN pf.forecast_7d > 0
-       THEN (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) / pf.forecast_7d
+  {quality_filter}
+  AND mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit) > 0
+  AND CASE WHEN mpf.avg_predicted > 0
+       THEN (mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) / mpf.avg_predicted
        ELSE 0 END >= :min_margin_pcent
   AND (b.nb_runs * b.prod_qtt)
-      * (pf.forecast_7d * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) >= :min_batch_margin
+      * (mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) >= :min_batch_margin
 ORDER BY margin_full_batch DESC
 """
 
@@ -135,12 +122,14 @@ def show():
         min_batch_margin = sof.get('min_batch_margin_amount', 5_000_000)
 
         item_filter = 'AND uic.produced_type_id IN :item_ids' if show_selected else ''
-        confidence_filter = (
-            "AND pf.confidence_7d <> 'low' AND pf.confidence_30d <> 'low'"
+        # "low confidence" now means low forecast quality: Uncertain/Highly Volatile is
+        # price_spread_pct >= 0.30 (see prediction_quality).
+        quality_filter = (
+            'AND mpf.price_spread_pct < 0.30'
             if sof.get('hide_low_confidence', False) else ''
         )
         sql = _SQL.format(jita=JITA_SYSTEM_ID, item_filter=item_filter,
-                          confidence_filter=confidence_filter)
+                          quality_filter=quality_filter)
         params = {
             'user_id':          user.id,
             'sell_fee':         sell_fee,

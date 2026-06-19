@@ -39,9 +39,9 @@
             <input type="checkbox" name="sell_hide_low_confidence" id="sell_hide_low_confidence"
                    class="form-check-input"
                    {% if (user.sell_orders_filtering or {}).get('hide_low_confidence', False) %}checked{% endif %}>
-            <label for="sell_hide_low_confidence" class="form-check-label">Hide low-confidence forecasts</label>
+            <label for="sell_hide_low_confidence" class="form-check-label">Hide low-quality forecasts</label>
           </div>
-          <div class="form-text">When on, hide items whose 7d or 30d price forecast confidence is low.</div>
+          <div class="form-text">When on, hide items whose forecast quality is Uncertain or Highly Volatile.</div>
         </div>
       </div>
     </div>

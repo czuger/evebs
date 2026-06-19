@@ -36,3 +36,7 @@ if [ "$RESTART_DAEMON" = true ]; then
   ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose down app-eve-dominion-public-orders-daemon-downloader"
   ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up app-eve-dominion-public-orders-daemon-downloader -d --build"
 fi
+
+# Recreating app-twitter gives it a new IP; nginx caches the old upstream IP, so reload
+# it to re-resolve (otherwise /twitter/ returns "Host is unreachable" until next reload).
+ssh nuc150 "docker exec nginx-proxy nginx -s reload"

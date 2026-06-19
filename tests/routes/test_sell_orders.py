@@ -1,72 +1,57 @@
 """Tests for evebs/routes/sell_orders.py.
 
-The route values items against the 3-day Jita price forecast
-(jita_price_forecast_linear_regression.forecast_7d at CURRENT_DATE + 3) and shows the
-matching Jita volume forecast — it no longer depends on trade hubs or live sell orders.
+The route values items against MarketProphetForecast (region The Forge, confidence 0.95):
+avg_predicted → forecast price, vol_predicted → forecast volume, taken from the last
+forecast day. The low-quality warning/filter is driven by price_spread_pct (>= 0.30 =
+Uncertain/Highly Volatile) and the Tendency column by price_direction.
 """
 from datetime import date, timedelta
 
-from sqlalchemy import text
+from evebs.models import MarketProphetForecast
+from tests.factories import make_item, make_blueprint, make_jita_min_price
 
-from tests.factories import (
-    make_universe_system, make_item, make_blueprint, make_jita_min_price, make_sales_final,
-)
-
-JITA = 30000142
+FORGE = 10000002
 
 
-def _refresh(db):
-    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_price_forecast_linear_regression'))
-    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_volume_forecast_linear_regression'))
+def _seed_forecast(db, item, price_spread_pct=0.1, price_direction=1, avg=1000.0, vol=2000.0):
+    start = date.today()
+    for i in range(5):
+        db.session.add(MarketProphetForecast(
+            region_id=FORGE, type_id=item.id, confidence=0.95,
+            forecast_date=start + timedelta(days=i + 1),
+            avg_predicted=avg, avg_lower=avg - 50, avg_upper=avg + 50,
+            low_predicted=avg - 100, low_lower=avg - 150, low_upper=avg - 50,
+            high_predicted=avg + 100, high_lower=avg + 50, high_upper=avg + 150,
+            vol_predicted=vol, vol_lower=vol - 100, vol_upper=vol + 100,
+            price_spread=200.0, price_spread_pct=price_spread_pct,
+            price_direction=price_direction))
     db.session.commit()
-
-
-def _seed_sales(db, item, jita, n_days=6, base_price=1000.0, p_slope=10.0, base_vol=2000):
-    """Two Jita sales per day over the last n_days with a clean upward price/volume trend."""
-    today = date.today()
-    oid = item.id * 1000
-    for i in range(n_days):
-        d = today - timedelta(days=n_days - i)
-        for vol, bump in ((base_vol + 100 * i, 0.0), (base_vol // 2, 2.0)):
-            make_sales_final(db, item, jita, day=d, volume=vol,
-                             price=base_price + p_slope * i + bump, order_id=oid)
-            oid += 1
 
 
 class TestSellOrdersShow:
     def test_redirects_unauthenticated(self, client):
-        resp = client.get('/sell_orders')
-        assert resp.status_code == 302
+        assert client.get('/sell_orders').status_code == 302
 
     def test_returns_200_with_nothing_seeded(self, auth_client):
         client, _ = auth_client
-        resp = client.get('/sell_orders')
-        assert resp.status_code == 200
+        assert client.get('/sell_orders').status_code == 200
 
-    def test_lists_item_priced_against_forecast(self, db, auth_client):
-        """A manufacturable item with a Jita forecast appears, priced from forecast_7d, with
-        no trade-hub column."""
-        client, user = auth_client
+    def _seed_priced_item(self, db, user, price_spread_pct=0.1, price_direction=1):
         user.sell_orders_filtering = {'min_margin_percent': 0, 'min_batch_margin_amount': 0}
-
-        jita = make_universe_system(db, system_id=JITA, name='Jita')
         mat = make_item(db, item_id=34, slug='tritanium', name='Tritanium')
         prod = make_item(db, item_id=35, slug='ammo-sell', name='Ammo Sell')
         bp = make_blueprint(db, prod, blueprint_id=10035, nb_runs=1, prod_qtt=10)
         bp.activity_type = 'manufacturing'
         bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
-        make_jita_min_price(db, mat, min_sell_price=5.0)     # materials priced -> uic row exists
-        make_jita_min_price(db, prod, min_sell_price=900.0)  # product priced -> view's jma_prod join
-        _seed_sales(db, prod, jita)                          # Jita forecast for the product
+        make_jita_min_price(db, mat, min_sell_price=5.0)      # materials priced → uic row exists
+        make_jita_min_price(db, prod, min_sell_price=900.0)   # product priced → view join
+        _seed_forecast(db, prod, price_spread_pct=price_spread_pct, price_direction=price_direction)
         db.session.commit()
-        _refresh(db)
+        return prod
 
-        # Forecast values the route should surface at the +3d horizon.
-        price_fc = db.session.execute(text(
-            'SELECT forecast_7d FROM jita_price_forecast_linear_regression '
-            'WHERE type_id = :t AND forecast_date = CURRENT_DATE + 3'), {'t': prod.id}).scalar()
-        assert price_fc is not None and price_fc > 0
-
+    def test_lists_item_priced_against_forecast(self, db, auth_client):
+        client, user = auth_client
+        self._seed_priced_item(db, user)
         resp = client.get('/sell_orders')
         assert resp.status_code == 200
         body = resp.data
@@ -75,70 +60,46 @@ class TestSellOrdersShow:
         assert b'Forecast vol.' in body
         assert b'Tendency' in body
         assert b'Sold (7d)' in body
-        assert b'<th>Trade hub</th>' not in body   # hub column dropped
+        assert b'&#9650;' in body                  # price_direction=1 → up tendency
+        assert b'/market_forecasts/35' in body     # price links to the forecast detail
 
-    def _seed_priced_item(self, db, user, n_days):
-        user.sell_orders_filtering = {'min_margin_percent': 0, 'min_batch_margin_amount': 0}
-        jita = make_universe_system(db, system_id=JITA, name='Jita')
-        mat = make_item(db, item_id=34, slug='tritanium', name='Tritanium')
-        prod = make_item(db, item_id=35, slug='ammo-sell', name='Ammo Sell')
-        bp = make_blueprint(db, prod, blueprint_id=10035, nb_runs=1, prod_qtt=10)
-        bp.activity_type = 'manufacturing'
-        bp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
-        make_jita_min_price(db, mat, min_sell_price=5.0)
-        make_jita_min_price(db, prod, min_sell_price=900.0)
-        _seed_sales(db, prod, jita, n_days=n_days)
-        db.session.commit()
-        _refresh(db)
-
-    def test_low_confidence_forecast_shows_warning(self, db, auth_client):
-        """Few days of history → low 30d-window confidence → warning icon next to forecasts."""
+    def test_low_quality_shows_warning(self, db, auth_client):
         client, user = auth_client
-        self._seed_priced_item(db, user, n_days=6)   # n_30d = 6 (< 10) → 'low'
-
+        self._seed_priced_item(db, user, price_spread_pct=0.4)   # Uncertain
         resp = client.get('/sell_orders')
         assert resp.status_code == 200
         assert b'fa-exclamation-triangle' in resp.data
 
-    def test_high_confidence_forecast_has_no_warning(self, db, auth_client):
-        """Plenty of clean history → confidence not 'low' → no warning icon."""
+    def test_high_quality_has_no_warning(self, db, auth_client):
         client, user = auth_client
-        self._seed_priced_item(db, user, n_days=14)  # n_30d = 14 (>= 10), clean trend
-
+        self._seed_priced_item(db, user, price_spread_pct=0.05)  # Very Stable
         resp = client.get('/sell_orders')
         assert resp.status_code == 200
         assert b'fa-exclamation-triangle' not in resp.data
 
-    def test_hide_low_confidence_filter_excludes_row(self, db, auth_client):
-        """With the filter on, a low-confidence item is dropped from the output."""
+    def test_hide_low_quality_filter_excludes_row(self, db, auth_client):
         client, user = auth_client
-        self._seed_priced_item(db, user, n_days=6)   # low 30d confidence
+        self._seed_priced_item(db, user, price_spread_pct=0.4)
         user.sell_orders_filtering = {**user.sell_orders_filtering, 'hide_low_confidence': True}
         db.session.commit()
-
         resp = client.get('/sell_orders')
         assert resp.status_code == 200
         assert b'Ammo Sell' not in resp.data
-        assert b'fa-exclamation-triangle' not in resp.data
 
-    def test_low_confidence_kept_when_filter_off(self, db, auth_client):
-        """Same data, filter off → the low-confidence item still appears (with warning)."""
+    def test_low_quality_kept_when_filter_off(self, db, auth_client):
         client, user = auth_client
-        self._seed_priced_item(db, user, n_days=6)
+        self._seed_priced_item(db, user, price_spread_pct=0.4)
         user.sell_orders_filtering = {**user.sell_orders_filtering, 'hide_low_confidence': False}
         db.session.commit()
-
         resp = client.get('/sell_orders')
         assert resp.status_code == 200
         assert b'Ammo Sell' in resp.data
 
-    def test_hide_low_confidence_keeps_high_confidence_row(self, db, auth_client):
-        """With the filter on, a high-confidence item is retained."""
+    def test_hide_low_quality_keeps_high_quality_row(self, db, auth_client):
         client, user = auth_client
-        self._seed_priced_item(db, user, n_days=14)  # not low
+        self._seed_priced_item(db, user, price_spread_pct=0.05)
         user.sell_orders_filtering = {**user.sell_orders_filtering, 'hide_low_confidence': True}
         db.session.commit()
-
         resp = client.get('/sell_orders')
         assert resp.status_code == 200
         assert b'Ammo Sell' in resp.data

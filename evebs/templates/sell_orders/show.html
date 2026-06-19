@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Sell orders</h2>
-<p class="text-muted small mb-3">Items you own blueprints for that are profitable against the 3-day Jita price forecast — costs use your personal <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a> and fees use your <a href="{{ url_for('users.sales_taxes') }}">sales tax settings</a>.</p>
+<p class="text-muted small mb-3">Items you own blueprints for that are profitable against the Prophet 5-day Jita price forecast (last day) — costs use your personal <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a> and fees use your <a href="{{ url_for('users.sales_taxes') }}">sales tax settings</a>.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <tr>
@@ -44,26 +44,22 @@
         </a>
       </td>
       <td class="text-end">
-        <a href="{{ url_for('price_forecasts.show', item_id=cp.eve_item_id) }}" class="text-decoration-none">
+        <a href="{{ url_for('market_forecasts.show', type_id=cp.eve_item_id) }}" class="text-decoration-none">
           {{ cp.sell_price | isk }}
         </a>
-        {% if cp.price_conf_7d == 'low' or cp.price_conf_30d == 'low' %}
+        {% set quality = prediction_quality(cp.price_spread_pct) %}
+        {% if quality in ['Uncertain', 'Highly Volatile'] %}
         <i class="fas fa-exclamation-triangle text-warning ms-1" data-bs-toggle="tooltip"
-           title="Low-confidence price forecast (7d: {{ cp.price_conf_7d or '—' }}, 30d: {{ cp.price_conf_30d or '—' }})"></i>
+           title="Low-quality forecast ({{ quality }})"></i>
         {% endif %}
       </td>
       <td class="text-center">
-        {% with tendency = cp.tendency %}{% include 'shared/_tendency_icon.html' %}{% endwith %}
+        {% with tendency = price_direction_tendency(cp.price_direction) %}{% include 'shared/_tendency_icon.html' %}{% endwith %}
       </td>
       <td class="text-end">{{ cp.sell_fee_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_per_unit | isk }}</td>
       <td class="text-end">{{ cp.margin_pcent | pcent }}</td>
-      <td class="text-end">{{ cp.sell_volume | vol }}
-        {% if cp.vol_conf_7d == 'low' or cp.vol_conf_30d == 'low' %}
-        <i class="fas fa-exclamation-triangle text-warning ms-1" data-bs-toggle="tooltip"
-           title="Low-confidence volume forecast (7d: {{ cp.vol_conf_7d or '—' }}, 30d: {{ cp.vol_conf_30d or '—' }})"></i>
-        {% endif %}
-      </td>
+      <td class="text-end">{{ cp.sell_volume | vol }}</td>
       <td class="text-end">{{ cp.sold_7d | vol }}</td>
       <td class="text-end">{{ cp.full_batch_amount | vol }}</td>
       <td class="text-end">{{ cp.margin_full_batch | isk }}</td>
