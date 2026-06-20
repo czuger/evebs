@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 class="mb-0">Search items</h2>
+  <form method="get" class="d-flex" role="search">
+    <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm me-2" placeholder="Search item name">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">Search</button>
+  </form>
+</div>
+<p class="text-muted small mb-3">Each space in the query matches any text (SQL wildcard), so "trit ium" finds "Tritanium".</p>
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm">
+    <tr>
+      <th>Item</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td class="item_name">
+        <a href="{{ url_for('items.show', slug=item.slug or item.id) }}">{{ item.name }}</a>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td class="text-center text-muted">
+      {% if q %}No items match "{{ q }}".{% else %}Enter a search above.{% endif %}
+    </td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+{% endblock %}

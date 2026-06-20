@@ -13,6 +13,7 @@ from evebs.models.tables.copy_list import CopyList
 from evebs.models.tables.trade_route_buy import TradeRouteBuy
 from evebs.models.tables.user_sale_order import UserSaleOrder
 from evebs.models.tables.eve_items_saved_list import EveItemsSavedList
+from evebs.models.tables.last_viewed_item import LastViewedItem
 from evebs.models.tables.universe_region import UniverseRegion
 from evebs.models.tables.universe_constellation import UniverseConstellation
 from evebs.models.tables.universe_system import UniverseSystem
@@ -59,6 +60,7 @@ __all__ = [
     'TradeRouteBuy',
     'UserSaleOrder',
     'EveItemsSavedList',
+    'LastViewedItem',
     'UniverseRegion',
     'UniverseConstellation',
     'UniverseSystem',

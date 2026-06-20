@@ -1,14 +1,17 @@
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 from types import SimpleNamespace
 
-from flask import Blueprint as FlaskBlueprint, render_template, abort
-from flask_login import current_user
+from flask import Blueprint as FlaskBlueprint, render_template, request, abort
+from flask_login import current_user, login_required
 from sqlalchemy import func
 
+from config import PER_PAGE
 from evebs.extensions import db
-from evebs.models import EveItem, UniverseSystem, JitaMinPrice, MarketHistory, PublicTradeOrder, UserAsset
+from evebs.models import (EveItem, UniverseSystem, JitaMinPrice, MarketHistory, PublicTradeOrder,
+                          UserAsset, LastViewedItem)
 from evebs.models.tables.associations import user_blueprints
 from evebs.models.tables.blueprint import Blueprint as BlueprintModel
+from evebs.utils import SimplePagination
 
 bp = FlaskBlueprint('items', __name__)
 
@@ -91,11 +94,51 @@ def _manufacturing_context(item):
     )
 
 
+def _record_view(item):
+    """Upsert the current user's view of `item`, bumping its view_count on each visit."""
+    row = LastViewedItem.query.filter_by(user_id=current_user.id, eve_item_id=item.id).first()
+    if row:
+        row.view_count += 1
+        row.viewed_at = datetime.now(UTC)
+    else:
+        db.session.add(LastViewedItem(user_id=current_user.id, eve_item_id=item.id))
+    db.session.commit()
+
+
+@bp.route('/items/search')
+@login_required
+def search():
+    q = request.args.get('q', '', type=str).strip()
+    page = request.args.get('page', 1, type=int)
+    items, pagination = [], None
+    if q:
+        pattern = f"%{q.lower().replace(' ', '%')}%"
+        query = EveItem.query.filter(func.lower(EveItem.name).like(pattern)).order_by(EveItem.name)
+        total = query.count()
+        items = query.limit(PER_PAGE).offset((page - 1) * PER_PAGE).all()
+        pagination = SimplePagination(page, PER_PAGE, total) if total else None
+    return render_template('items/search.html', items=items, q=q, pagination=pagination)
+
+
+@bp.route('/items/last_viewed')
+@login_required
+def last_viewed():
+    page = request.args.get('page', 1, type=int)
+    query = (LastViewedItem.query.filter_by(user_id=current_user.id)
+             .order_by(LastViewedItem.view_count.desc(), LastViewedItem.viewed_at.desc()))
+    total = query.count()
+    rows = query.limit(PER_PAGE).offset((page - 1) * PER_PAGE).all()
+    pagination = SimplePagination(page, PER_PAGE, total) if total else None
+    return render_template('items/last_viewed.html', rows=rows, pagination=pagination)
+
+
 @bp.route('/items/<slug>')
 def show(slug):
     item = EveItem.find_by_slug(slug)
     if item is None:
         abort(404)
+    if current_user.is_authenticated:
+        _record_view(item)
     jita      = UniverseSystem.query.filter_by(id=JITA_SYSTEM_ID, trade_hub=True).first()
     mfg       = _manufacturing_context(item)
     jma_item  = JitaMinPrice.query.get(item.id)

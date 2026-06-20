@@ -349,3 +349,109 @@ class TestItemOwnership:
         assert resp.status_code == 200
         assert b'Invention blueprint owned' in resp.data
 
+
+
+class TestItemSearch:
+    def test_redirects_unauthenticated(self, client):
+        assert client.get('/items/search').status_code == 302
+
+    def test_empty_query_renders_form(self, db, auth_client):
+        client, _ = auth_client
+        resp = client.get('/items/search')
+        assert resp.status_code == 200
+        assert b'Search items' in resp.data
+
+    def test_space_becomes_wildcard(self, db, auth_client):
+        """'trit ium' should match 'Tritanium' (each space -> SQL %)."""
+        client, _ = auth_client
+        make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        make_item(db, item_id=35, slug='pyerite', name='Pyerite')
+        db.session.commit()
+
+        resp = client.get('/items/search?q=trit+ium')
+        assert resp.status_code == 200
+        assert b'Tritanium' in resp.data
+        assert b'Pyerite' not in resp.data
+        assert b'/items/tritanium' in resp.data
+
+    def test_no_match_message(self, db, auth_client):
+        client, _ = auth_client
+        make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        db.session.commit()
+
+        resp = client.get('/items/search?q=zzz')
+        assert resp.status_code == 200
+        assert b'No items match' in resp.data
+
+
+class TestLastViewedItems:
+    def test_redirects_unauthenticated(self, client):
+        assert client.get('/items/last_viewed').status_code == 302
+
+    def test_show_records_view_for_authed_user(self, db, auth_client):
+        from evebs.models import LastViewedItem
+        client, user = auth_client
+        make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        db.session.commit()
+
+        client.get('/items/tritanium')
+        rows = LastViewedItem.query.filter_by(user_id=user.id).all()
+        assert len(rows) == 1
+        assert rows[0].eve_item_id == 34
+
+    def test_revisit_bumps_without_duplicating(self, db, auth_client):
+        from evebs.models import LastViewedItem
+        client, user = auth_client
+        make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        db.session.commit()
+
+        client.get('/items/tritanium')
+        client.get('/items/tritanium')
+        assert LastViewedItem.query.filter_by(user_id=user.id).count() == 1
+
+    def test_anonymous_show_records_nothing(self, db, client):
+        from evebs.models import LastViewedItem
+        make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        db.session.commit()
+
+        client.get('/items/tritanium')
+        assert LastViewedItem.query.count() == 0
+
+    def test_view_count_increments_on_each_view(self, db, auth_client):
+        from evebs.models import LastViewedItem
+        client, user = auth_client
+        make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        db.session.commit()
+
+        client.get('/items/tritanium')
+        client.get('/items/tritanium')
+        client.get('/items/tritanium')
+        row = LastViewedItem.query.filter_by(user_id=user.id, eve_item_id=34).one()
+        assert row.view_count == 3
+
+    def test_no_item_limit(self, db, auth_client):
+        from evebs.models import LastViewedItem
+        client, user = auth_client
+        for i in range(25):
+            make_item(db, item_id=100 + i, slug=f'item-{i}', name=f'Item {i}')
+        db.session.commit()
+
+        for i in range(25):
+            client.get(f'/items/item-{i}')
+
+        assert LastViewedItem.query.filter_by(user_id=user.id).count() == 25
+
+    def test_listing_orders_by_view_count_desc(self, db, auth_client):
+        client, user = auth_client
+        make_item(db, item_id=34, slug='tritanium', name='Tritanium')
+        make_item(db, item_id=35, slug='pyerite', name='Pyerite')
+        db.session.commit()
+
+        client.get('/items/tritanium')          # 1 view
+        client.get('/items/pyerite')            # 2 views
+        client.get('/items/pyerite')
+
+        resp = client.get('/items/last_viewed')
+        assert resp.status_code == 200
+        body = resp.data
+        assert body.index(b'Pyerite') < body.index(b'Tritanium')

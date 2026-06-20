@@ -111,6 +111,7 @@ class User(UserMixin, db.Model):
     user_assets = db.relationship('UserAsset', back_populates='user', cascade='all, delete-orphan')
     bpc_assets_stations = db.relationship('BpcAssetsStation', back_populates='user', cascade='all, delete-orphan')
     eve_items_saved_lists = db.relationship('EveItemsSavedList', back_populates='user', cascade='all, delete-orphan')
+    last_viewed_items = db.relationship('LastViewedItem', back_populates='user', cascade='all, delete-orphan')
 
     @property
     def eve_item_ids(self):

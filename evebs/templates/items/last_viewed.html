@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Last viewed items</h2>
+<p class="text-muted small mb-3">Items you have opened, most viewed first.</p>
+<div class="table-responsive-md">
+  <table class="table table-hover table-sm">
+    <tr>
+      <th>Item</th>
+      <th class="text-end">Views</th>
+      <th>Last viewed</th>
+    </tr>
+    {% for row in rows %}
+    <tr>
+      <td class="item_name">
+        <a href="{{ url_for('items.show', slug=row.eve_item.slug or row.eve_item_id) }}">{{ row.eve_item.name }}</a>
+      </td>
+      <td class="text-end">{{ row.view_count }}</td>
+      <td>{{ row.viewed_at.strftime('%Y-%m-%d %H:%M') if row.viewed_at else '—' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-center text-muted">Nothing viewed yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% if pagination %}{% include 'shared/pagination.html' %}{% endif %}
+{% endblock %}
