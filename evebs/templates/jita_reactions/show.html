@@ -6,24 +6,29 @@
     <button type="submit" class="btn btn-outline-secondary btn-sm">Refresh reaction formulas</button>
   </form>
 </div>
-<p class="text-muted small mb-3">All reactions' profitability at Jita, computed live from current Jita prices and your personal tax settings.</p>
+<p class="text-muted small mb-3">All reactions you can run, valued against the Prophet 5-day Jita price forecast (last day) — costs use your personal <a href="{{ url_for('users.industry_modifications') }}">industry tax settings</a> and fees use your <a href="{{ url_for('users.sales_taxes') }}">sales tax settings</a>.</p>
 <div class="table-responsive-md">
   <table class="table table-hover table-sm">
     <tr>
       <th>Item</th>
       <th class="text-center">Owned</th>
-      <th>Market group</th>
-      <th class="text-end">Reaction cost / item</th>
-      <th class="text-end">Est. sell price / item</th>
+      <th class="text-end">Cost + tax / unit</th>
+      <th class="text-end">Forecast price / unit</th>
       <th class="text-center">Tendency</th>
-      <th class="text-end">Sell tax / item</th>
+      {% set st = user.sales_taxes or {} %}
+      <th class="text-end" data-bs-toggle="tooltip" data-bs-placement="top"
+          title="Broker: {{ st.get('broker_fee_taxes', 0) }}% + Sales tax: {{ st.get('sales_taxes', 0) }}% + Safety: {{ st.get('safety_tax', 0) }}% = {{ st.get('broker_fee_taxes', 0) + st.get('sales_taxes', 0) + st.get('safety_tax', 0) }}%">Sell fee / unit ⓘ</th>
+      <th class="text-end">Margin / unit</th>
+      <th class="text-end">Margin %</th>
+      <th class="text-end">Forecast vol.</th>
       <th class="text-end">Sold (7d)</th>
-      <th class="text-end" data-bs-toggle="tooltip" title="Batch output capped by units sold at Jita in the last 7 days">Benefit per batch</th>
+      <th class="text-end" data-bs-toggle="tooltip" title="Reaction batch capped by the forecast volume">Full batch</th>
+      <th class="text-end">Batch margin</th>
     </tr>
     {% for jr in rows %}
-    {% if jr.benefit > 0 %}
+    {% if jr.margin_full_batch > 0 %}
     <tr class="table-success">
-    {% elif jr.benefit < 0 %}
+    {% elif jr.margin_full_batch < 0 %}
     <tr class="table-danger">
     {% else %}
     <tr class="table-warning">
@@ -43,22 +48,30 @@
         </form>
         {% endif %}
       </td>
-      <td>{{ jr.market_group_name }}</td>
       <td class="text-end">
-        <a href="{{ url_for('production_costs.show', slug=jr.item_slug or jr.item_id) }}" class="text-decoration-none">{{ jr.reaction_cost | isk }}</a>
+        <a href="{{ url_for('production_costs.show', slug=jr.item_slug or jr.item_id) }}" class="text-decoration-none">{{ jr.total_cost_per_unit | isk }}</a>
       </td>
       <td class="text-end">
-        <a href="{{ url_for('market_data.trade_hub_detail', item_id=jr.item_id, trade_hub_id=30000142) }}" class="text-decoration-none">{{ jr.estimated_selling_price | isk }}</a>
+        <a href="{{ url_for('market_forecasts.show', type_id=jr.eve_item_id) }}" class="text-decoration-none">{{ jr.sell_price | isk }}</a>
+        {% set quality = prediction_quality(jr.price_spread_pct) %}
+        {% if quality in ['Uncertain', 'Highly Volatile'] %}
+        <i class="fas fa-exclamation-triangle text-warning ms-1" data-bs-toggle="tooltip"
+           title="Low-quality forecast ({{ quality }})"></i>
+        {% endif %}
       </td>
       <td class="text-center">
-        {% with tendency = jr.tendency %}{% include 'shared/_tendency_icon.html' %}{% endwith %}
+        {% with tendency = price_direction_tendency(jr.price_direction) %}{% include 'shared/_tendency_icon.html' %}{% endwith %}
       </td>
-      <td class="text-end">{{ jr.selling_tax | isk }}</td>
+      <td class="text-end">{{ jr.sell_fee_per_unit | isk }}</td>
+      <td class="text-end">{{ jr.margin_per_unit | isk }}</td>
+      <td class="text-end">{{ jr.margin_pcent | pcent }}</td>
+      <td class="text-end">{{ jr.sell_volume | vol }}</td>
       <td class="text-end">{{ jr.sold_7d | vol }}</td>
-      <td class="text-end">{{ jr.benefit | isk }}</td>
+      <td class="text-end">{{ jr.full_batch_amount | vol }}</td>
+      <td class="text-end">{{ jr.margin_full_batch | isk }}</td>
     </tr>
     {% else %}
-    <tr><td colspan="9" class="text-center text-muted">No reactions found — check that Jita prices are loaded.</td></tr>
+    <tr><td colspan="12" class="text-center text-muted">No reactions found — sync your blueprints and check that Jita forecasts are loaded.</td></tr>
     {% endfor %}
   </table>
 </div>

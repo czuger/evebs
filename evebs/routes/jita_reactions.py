@@ -13,59 +13,56 @@ bp = FlaskBlueprint('jita_reactions', __name__)
 
 JITA_SYSTEM_ID = 30000142
 
-# Per-item: reaction cost = material cost + the user's reaction industry taxes
-# (user_industry_costs); est. sell price = the lowest live Jita sell order (read straight from
-# public_trade_orders, like buy_orders); sell tax = est. price × the user's sales_taxes
-# (broker + sales + safety). Benefit is per batch: LEAST(prod_qtt, sold_7d) × (net sell price −
-# reaction cost) — the batch output is capped by units actually sold at Jita in the last 7 days.
-# tendency compares the +3d price forecast against the current price: up / down beyond ±5%,
-# slow_up / slow_down beyond ±0.1%, otherwise flat.
+# Reaction analog of sell_orders: values each reaction the user can run against the Prophet
+# 5-day Jita forecast (market_prophet_forecasts, region The Forge, confidence 0.95, last
+# forecast day). reaction cost = material cost + the user's reaction industry taxes
+# (user_industry_costs); sell price = forecast avg_predicted; sell fee = price × the user's
+# sales_taxes (broker + sales + safety). Batch margin = LEAST(nb_runs×prod_qtt, forecast volume)
+# × net margin per unit. Tendency comes from the forecast's price_direction; the price quality
+# warning from price_spread_pct. All reactions are shown (not filtered by profitability).
 _SQL = """
-    WITH lowest_sell AS (
-        SELECT DISTINCT ON (eve_item_id)
-            eve_item_id,
-            price AS sell_price
-        FROM public_trade_orders
-        WHERE is_buy_order = FALSE
-          AND universe_system_id = 30000142
-        ORDER BY eve_item_id, price ASC
-    ),
-    sold AS (
-        SELECT eve_item_id, SUM(volume) AS sold_7d
-        FROM sales_finals
-        WHERE universe_system_id = 30000142
-          AND day >= CURRENT_DATE - INTERVAL '7 days'
-        GROUP BY eve_item_id
-    )
     SELECT
         ei.id AS item_id, ei.name AS item_name, ei.slug AS item_slug,
-        uic.blueprint_id AS blueprint_id,
-        COALESCE(mg.name, '') AS market_group_name,
-        uic.mat_cost_per_unit + uic.ind_tax_per_unit          AS reaction_cost,
-        ls.sell_price                                         AS estimated_selling_price,
-        ls.sell_price * :sell_fee                             AS selling_tax,
+        uic.produced_type_id                                  AS eve_item_id,
+        uic.blueprint_id                                      AS blueprint_id,
+        uic.mat_cost_per_unit + uic.ind_tax_per_unit          AS total_cost_per_unit,
+        mpf.avg_predicted                                     AS sell_price,
+        mpf.price_spread_pct                                  AS price_spread_pct,
+        mpf.price_direction                                   AS price_direction,
+        mpf.avg_predicted * :sell_fee                         AS sell_fee_per_unit,
+        mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)
+                                                              AS margin_per_unit,
+        CASE WHEN mpf.avg_predicted > 0
+             THEN (mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+                  / mpf.avg_predicted
+             ELSE 0
+        END                                                   AS margin_pcent,
+        mpf.vol_predicted                                     AS sell_volume,
         COALESCE(s.sold_7d, 0)::bigint                        AS sold_7d,
-        CASE
-            WHEN pf.forecast_7d IS NULL OR ls.sell_price <= 0 THEN 'flat'
-            WHEN pf.forecast_7d > ls.sell_price * 1.05        THEN 'up'
-            WHEN pf.forecast_7d > ls.sell_price * 1.001       THEN 'slow_up'
-            WHEN pf.forecast_7d < ls.sell_price * 0.95        THEN 'down'
-            WHEN pf.forecast_7d < ls.sell_price * 0.999       THEN 'slow_down'
-            ELSE 'flat'
-        END                                                   AS tendency,
-        LEAST(b.prod_qtt, COALESCE(s.sold_7d, 0)) * (ls.sell_price * (1.0 - :sell_fee)
-                      - (uic.mat_cost_per_unit + uic.ind_tax_per_unit)) AS benefit
+        b.nb_runs * b.prod_qtt                                AS full_batch_raw,
+        LEAST(b.nb_runs * b.prod_qtt, mpf.vol_predicted)      AS full_batch_amount,
+        LEAST(b.nb_runs * b.prod_qtt, mpf.vol_predicted)
+            * (mpf.avg_predicted * (1.0 - :sell_fee) - (uic.mat_cost_per_unit + uic.ind_tax_per_unit))
+                                                              AS margin_full_batch
     FROM user_industry_costs uic
     JOIN blueprints b ON b.id = uic.blueprint_id
     JOIN eve_items ei ON ei.id = uic.produced_type_id
-    LEFT JOIN market_groups mg ON mg.id = ei.market_group_id
-    JOIN lowest_sell ls ON ls.eve_item_id = uic.produced_type_id
-    LEFT JOIN sold s ON s.eve_item_id = uic.produced_type_id
-    LEFT JOIN jita_price_forecast_linear_regression pf
-        ON pf.type_id = uic.produced_type_id AND pf.forecast_date = CURRENT_DATE + 3
+    JOIN (
+        SELECT DISTINCT ON (type_id)
+               type_id, avg_predicted, vol_predicted, price_spread_pct, price_direction
+        FROM market_prophet_forecasts
+        WHERE region_id = 10000002 AND confidence = 0.95
+        ORDER BY type_id, forecast_date DESC
+    ) mpf ON mpf.type_id = uic.produced_type_id
+    LEFT JOIN (
+        SELECT eve_item_id, SUM(volume) AS sold_7d
+        FROM sales_finals
+        WHERE universe_system_id = 30000142 AND day >= CURRENT_DATE - INTERVAL '7 days'
+        GROUP BY eve_item_id
+    ) s ON s.eve_item_id = uic.produced_type_id
     WHERE uic.user_id = :user_id
       AND uic.activity_type = 'reaction'
-    ORDER BY benefit DESC
+    ORDER BY margin_full_batch DESC
 """
 
 
@@ -96,7 +93,7 @@ def show():
     owned_bp_ids = {b.id for b in user.blueprints}
 
     return render_template('jita_reactions/show.html', rows=rows, pagination=pagination,
-                           owned_bp_ids=owned_bp_ids)
+                           owned_bp_ids=owned_bp_ids, user=user)
 
 
 @bp.route('/jita_reactions/refresh', methods=['POST'])
