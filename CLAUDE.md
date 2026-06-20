@@ -128,7 +128,7 @@ Eve SSO OAuth flow in `evebs/routes/auth.py`. Credentials from config JSON under
 - **`BlueprintModification`**: Per-user ME/TE bonuses on a blueprint.
 - **`UniverseSystem`**: Solar system. `trade_hub=True` marks market hubs; Jita is system ID `30000142`.
 - **`UniverseRegion` / `UniverseConstellation` / `UniverseSystem` / `UniverseStation` / `UniverseStructure` / `UnknownStructure`**: Full universe hierarchy.
-- **`User`**: Eve character. JSON columns: `buy_order_filtering`, `sell_orders_filtering`, `industry_taxes` (per-activity SCI/SCC/structure tax rates in plain %), `sales_taxes` (broker fee, sales tax, safety margin). Many-to-many with `EveItem` (watched items), `UniverseSystem` (trade hubs), `Blueprint` (owned blueprints).
+- **`User`**: Eve character. JSON columns: `buy_order_filtering`, `sell_orders_filtering`, `industry_modifications` (per-activity SCI/SCC/structure tax rates in plain %, plus `current_industry_station`: the default location for Components-to-buy stock deduction), `sales_taxes` (broker fee, sales tax, safety margin). Many-to-many with `EveItem` (watched items), `UniverseSystem` (trade hubs), `Blueprint` (owned blueprints).
 - **`PublicTradeOrder`**: Live market orders downloaded from ESI.
 - **`SalesFinal`**: Historical completed sales at Jita.
 - **`UserSaleOrder`**: User's own active sell orders.

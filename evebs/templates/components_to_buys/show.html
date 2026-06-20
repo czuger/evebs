@@ -31,7 +31,7 @@
       {% endif %}
     </select>
     {% if selected_station_id %}
-    <a href="{{ url_for('components_to_buys.show') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+    <a href="{{ url_for('components_to_buys.show', station_id='') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
     {% endif %}
   </div>
 </form>

@@ -3,13 +3,29 @@ from flask_login import login_required, current_user
 
 from esi.client import EsiClient
 from evebs.extensions import db
-from evebs.models import UniverseStation, UniverseSystem
+from evebs.models import (
+    UniverseStation, UniverseSystem, UniverseStructure, UnknownStructure, UserAsset,
+)
 
 bp = FlaskBlueprint('users', __name__)
 
 
+def _user_asset_locations(user_id):
+    """The stations / known structures / unknown structures where a user holds assets."""
+    stations = (UniverseStation.query
+                .join(UserAsset, UserAsset.universe_station_id == UniverseStation.id)
+                .filter(UserAsset.user_id == user_id).distinct().all())
+    known_structures = (UniverseStructure.query
+                        .join(UserAsset, UserAsset.universe_structure_id == UniverseStructure.id)
+                        .filter(UserAsset.user_id == user_id).distinct().all())
+    unknown_structures = (UnknownStructure.query
+                          .join(UserAsset, UserAsset.universe_structure_id == UnknownStructure.id)
+                          .filter(UserAsset.user_id == user_id).distinct().all())
+    return stations, known_structures, unknown_structures
+
+
 def _parse_taxes(form):
-    """Build a User.industry_taxes dict from a submitted HTML form.
+    """Build a User.industry_modifications dict from a submitted HTML form.
 
     Each activity section in the settings form uses short field-name prefixes to
     avoid collisions (mfg_ = manufacturing, cpy_ = copying, inv_ = invention,
@@ -106,7 +122,6 @@ def update():
         user.watch_my_prices = request.form.get('watch_my_prices') == 'on'
         user.remove_occuped_places = request.form.get('remove_occuped_places') == 'on'
         user.sales_orders_show_margin_min = int(raw_margin) if raw_margin else None
-        user.industry_taxes = _parse_taxes(request.form)
     except (ValueError, TypeError):
         flash('Invalid input.')
         return redirect(url_for('users.edit'))
@@ -187,21 +202,27 @@ def update_sales_taxes():
     return redirect(url_for('users.sales_taxes'))
 
 
-@bp.route('/users/industry_taxes')
+@bp.route('/users/industry_modifications')
 @login_required
-def industry_taxes():
-    return render_template('users/industry_taxes.html',
-                           title='Industry taxes',
-                           user=current_user)
+def industry_modifications():
+    stations, known_structures, unknown_structures = _user_asset_locations(current_user.id)
+    return render_template('users/industry_modifications.html',
+                           title='Industry modifications',
+                           user=current_user,
+                           stations=stations,
+                           known_structures=known_structures,
+                           unknown_structures=unknown_structures)
 
 
-@bp.route('/users/industry_taxes', methods=['POST'])
+@bp.route('/users/industry_modifications', methods=['POST'])
 @login_required
-def update_industry_taxes():
-    current_user.industry_taxes = _parse_taxes(request.form)
+def update_industry_modifications():
+    mods = _parse_taxes(request.form)
+    mods['current_industry_station'] = request.form.get('current_industry_station', type=int)
+    current_user.industry_modifications = mods
     db.session.commit()
-    flash('Industry taxes updated.')
-    return redirect(url_for('users.industry_taxes'))
+    flash('Industry modifications updated.')
+    return redirect(url_for('users.industry_modifications'))
 
 
 @bp.route('/users/reaction_modifications')

@@ -6,7 +6,7 @@ class UserIndustryCost(db.Model):
 
     One row per (user, blueprint) combination. Computes per-unit manufacturing or
     reaction cost live from JitaMinPrice prices and the user's personal
-    User.industry_taxes settings.
+    User.industry_modifications settings.
 
     Only blueprints where EVERY direct material has a JMA price are included
     (incomplete-price blueprints are silently excluded by the view's HAVING clause).

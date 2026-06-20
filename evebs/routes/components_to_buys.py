@@ -109,7 +109,12 @@ def _compute_components(user) -> list:
 @login_required
 def show():
     user = current_user
-    station_id = request.args.get('station_id', type=int)
+    # A fresh visit (no station_id in the query) defaults to the user's saved industry
+    # station; selecting an option or Clear submits station_id explicitly and overrides it.
+    if 'station_id' in request.args:
+        station_id = request.args.get('station_id', type=int)
+    else:
+        station_id = (user.industry_modifications or {}).get('current_industry_station')
 
     components = _compute_components(user)
 

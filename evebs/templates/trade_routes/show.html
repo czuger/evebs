@@ -5,7 +5,7 @@
   Buy at a hub's lowest sell price, haul one {{ cargo_m3 | int }} m³ cargo hold to another of your
   <a href="{{ url_for('users.trade_hubs') }}">selected trade hubs</a>, then exit by filling a
   <strong>buy order</strong> (instant sale) or placing a <strong>sell order</strong>. Profit uses your
-  <a href="{{ url_for('users.industry_taxes') }}">sales tax settings</a>. Ranked by total profit per trip.
+  <a href="{{ url_for('users.industry_modifications') }}">sales tax settings</a>. Ranked by total profit per trip.
 </p>
 
 {% if hub_count < 2 %}

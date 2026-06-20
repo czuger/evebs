@@ -15,7 +15,7 @@ def _get_tax_block(item):
     """Return the tax dict for this item's activity type.
 
     Falls back to hardcoded defaults when the user is not authenticated or
-    has no industry_taxes configured.
+    has no industry_modifications configured.
     """
     bp_obj = item.blueprint
     if bp_obj is None:
@@ -23,8 +23,8 @@ def _get_tax_block(item):
 
     is_reaction = getattr(bp_obj, 'activity_type', 'manufacturing') == 'reaction'
 
-    if current_user.is_authenticated and current_user.industry_taxes:
-        it = current_user.industry_taxes
+    if current_user.is_authenticated and current_user.industry_modifications:
+        it = current_user.industry_modifications
         if is_reaction:
             block = it.get('reaction', _DEFAULT_RXN_TAXES)
             return block, 'reaction_tax', 'Reaction tax'

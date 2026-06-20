@@ -68,7 +68,7 @@ class User(UserMixin, db.Model):
     # Edited via /users/edit and saved by _parse_taxes() in routes/users.py.
     # Default values represent a quiet high-sec NPC station (5 % SCI, 4 % SCC, 1 % activity).
     # Reaction settings live in their own `reaction_modifications` column (below).
-    industry_taxes = db.Column(db.JSON, nullable=False, default=lambda: {
+    industry_modifications = db.Column(db.JSON, nullable=False, default=lambda: {
         'manufacturing':     {'system_cost_index': 5.0, 'scc_tax': 4.0, 'standard_tax': 1.0, 'capital_tax': 1.0},
         'material_research': {'system_cost_index': 5.0, 'scc_tax': 4.0, 'material_tax': 1.0},
         'time_research':     {'system_cost_index': 5.0, 'scc_tax': 4.0, 'time_tax': 1.0},

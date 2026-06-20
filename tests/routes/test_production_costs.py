@@ -53,7 +53,7 @@ class TestProductionCostsMaterials:
         db.session.commit()
 
         client, user = auth_client
-        user.industry_taxes = {
+        user.industry_modifications = {
             'reaction': {'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 2.0}
         }
         db.session.commit()
@@ -70,7 +70,7 @@ class TestProductionCostsMaterials:
         db.session.commit()
 
         client, user = auth_client
-        user.industry_taxes = {
+        user.industry_modifications = {
             'manufacturing': {'system_cost_index': 3.0, 'scc_tax': 4.0, 'standard_tax': 1.0}
         }
         db.session.commit()

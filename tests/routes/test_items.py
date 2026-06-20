@@ -203,7 +203,7 @@ class TestItemManufacturingContext:
         assert resp.status_code == 200
         assert b'priceHistoryChart' not in resp.data
 
-    def test_reaction_blueprint_with_user_industry_taxes(self, db, auth_client):
+    def test_reaction_blueprint_with_user_industry_modifications(self, db, auth_client):
         system = make_universe_system(db)
         make_trade_hub(db, system)
         mat = make_item(db, item_id=34, slug='full-items', name='Fullerite')
@@ -215,7 +215,7 @@ class TestItemManufacturingContext:
         db.session.commit()
 
         client, user = auth_client
-        user.industry_taxes = {
+        user.industry_modifications = {
             'reaction': {'system_cost_index': 5.0, 'scc_tax': 4.0, 'reaction_tax': 2.0}
         }
         db.session.commit()

@@ -56,8 +56,8 @@ def _manufacturing_context(item):
     unit_mat_cost  = batch_mat_cost / prod_qtt
 
     is_reaction = getattr(bp_obj, 'activity_type', 'manufacturing') == 'reaction'
-    if current_user.is_authenticated and current_user.industry_taxes:
-        it = current_user.industry_taxes
+    if current_user.is_authenticated and current_user.industry_modifications:
+        it = current_user.industry_modifications
         if is_reaction:
             block = it.get('reaction', _DEFAULT_RXN_TAXES)
             act_tax_key, act_tax_label = 'reaction_tax', 'Reaction tax'

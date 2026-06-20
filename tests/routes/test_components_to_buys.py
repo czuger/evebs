@@ -106,3 +106,42 @@ class TestComponentsToBuysCompute:
 
         resp = client.get(f'/components_to_buys?station_id={station.id}')
         assert resp.status_code == 200
+
+
+class TestComponentsToBuysDefaultStation:
+    def _seed(self, db, user):
+        ur = make_universe_region(db, region_id=10000098)
+        uc = make_universe_constellation(db, ur, constellation_id=20000098)
+        system = make_universe_system(db, uc, system_id=30000998, name='DefHub')
+        hub = make_trade_hub(db, system)
+        station = make_universe_station(db, system, station_id=60088888)
+        mat = make_item(db, item_id=38, slug='iso-ctb', name='Isogen')
+        crafted = make_item(db, item_id=39, slug='module-ctb', name='Module CTB')
+        bp = make_blueprint(db, crafted, prod_qtt=5)
+        bp.manufacturing_tree = {'38': {'quantity': 50, 'name': 'Isogen', 'chain': {}}}
+        make_jita_min_price(db, mat, min_sell_price=10.0)
+        make_production_list(db, user, crafted, hub, runs_count=1)
+        make_user_asset(db, user, mat, station=station, quantity=20)
+        return station
+
+    def test_no_arg_uses_default_station_for_deduction(self, db, auth_client):
+        client, user = auth_client
+        station = self._seed(db, user)
+        user.industry_modifications = {**(user.industry_modifications or {}),
+                                       'current_industry_station': station.id}
+        db.session.commit()
+
+        resp = client.get('/components_to_buys')   # no station_id in the query
+        assert resp.status_code == 200
+        assert b'In stock' in resp.data            # deduction columns shown → default applied
+
+    def test_explicit_empty_station_id_overrides_default(self, db, auth_client):
+        client, user = auth_client
+        station = self._seed(db, user)
+        user.industry_modifications = {**(user.industry_modifications or {}),
+                                       'current_industry_station': station.id}
+        db.session.commit()
+
+        resp = client.get('/components_to_buys?station_id=')   # explicit clear
+        assert resp.status_code == 200
+        assert b'In stock' not in resp.data

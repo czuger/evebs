@@ -98,10 +98,10 @@ class TestUserIndustryCosts:
         # The tax summary header should mention percent signs
         assert b'%' in resp.data
 
-    def test_links_to_industry_taxes_settings(self, db, auth_client, seeded):
+    def test_links_to_industry_modifications_settings(self, db, auth_client, seeded):
         client, _ = auth_client
         resp = client.get('/user_industry_costs/manufacturing')
-        assert b'industry_taxes' in resp.data
+        assert b'industry_modifications' in resp.data
 
     def test_pagination_param_accepted(self, auth_client):
         client, _ = auth_client

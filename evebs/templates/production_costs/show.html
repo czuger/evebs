@@ -5,7 +5,7 @@
   Material costs are live Jita prices from <code>jita_min_prices</code>.
   Taxes come from your
   {% if current_user.is_authenticated %}
-  <a href="{{ url_for('users.industry_taxes') }}">industry tax settings</a>.
+  <a href="{{ url_for('users.industry_modifications') }}">industry tax settings</a>.
   {% else %}
   default industry tax settings (sign in to personalise).
   {% endif %}

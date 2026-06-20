@@ -126,34 +126,50 @@ class TestUsersSalesTaxes:
         assert user.sales_taxes['sales_taxes'] == 3.5
 
 
-class TestUsersIndustryTaxes:
+class TestUsersIndustryModifications:
     def test_get_returns_200(self, auth_client):
         client, _ = auth_client
-        resp = client.get('/users/industry_taxes')
+        resp = client.get('/users/industry_modifications')
         assert resp.status_code == 200
 
     def test_post_updates_and_redirects(self, db, auth_client):
         client, user = auth_client
-        resp = client.post('/users/industry_taxes', data={
+        resp = client.post('/users/industry_modifications', data={
             'mfg_sci': '5.0',
             'mfg_scc': '4.0',
             'mfg_std': '1.0',
         })
         assert resp.status_code == 302
         db.session.expire(user)
-        assert user.industry_taxes['manufacturing']['system_cost_index'] == 5.0
+        assert user.industry_modifications['manufacturing']['system_cost_index'] == 5.0
 
     def test_invalid_tax_value_defaults_to_zero(self, db, auth_client):
         client, user = auth_client
-        client.post('/users/industry_taxes', data={'mfg_sci': 'bad_value'})
+        client.post('/users/industry_modifications', data={'mfg_sci': 'bad_value'})
         db.session.expire(user)
-        assert user.industry_taxes['manufacturing']['system_cost_index'] == 0.0
+        assert user.industry_modifications['manufacturing']['system_cost_index'] == 0.0
 
-    def test_industry_taxes_no_longer_holds_reaction(self, db, auth_client):
+    def test_industry_modifications_no_longer_holds_reaction(self, db, auth_client):
         client, user = auth_client
-        client.post('/users/industry_taxes', data={'mfg_sci': '5.0'})
+        client.post('/users/industry_modifications', data={'mfg_sci': '5.0'})
         db.session.expire(user)
-        assert 'reaction' not in user.industry_taxes
+        assert 'reaction' not in user.industry_modifications
+
+    def test_post_stores_current_industry_station(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users/industry_modifications', data={
+            'mfg_sci': '5.0', 'current_industry_station': '60003760',
+        })
+        db.session.expire(user)
+        assert user.industry_modifications['current_industry_station'] == 60003760
+
+    def test_settings_save_does_not_wipe_industry_modifications(self, db, auth_client):
+        """Saving the main Settings page must not clear industry modifications."""
+        client, user = auth_client
+        client.post('/users/industry_modifications', data={'mfg_sci': '7.0'})
+        client.post('/users', data={})
+        db.session.expire(user)
+        assert user.industry_modifications['manufacturing']['system_cost_index'] == 7.0
 
 
 class TestUsersReactionModifications:

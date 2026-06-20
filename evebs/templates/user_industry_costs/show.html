@@ -13,7 +13,7 @@
   </li>
 </ul>
 
-{% set it = user.industry_taxes or {} %}
+{% set it = user.industry_modifications or {} %}
 {% if activity_type == 'manufacturing' %}
   {% set tax_block = it.get('manufacturing', {}) %}
   {% set act_label = 'Standard tax' %}
@@ -28,7 +28,7 @@
   System cost index: <strong>{{ tax_block.get('system_cost_index', 5.0) }} %</strong> ·
   SCC tax: <strong>{{ tax_block.get('scc_tax', 4.0) }} %</strong> ·
   {{ act_label }}: <strong>{{ act_val }} %</strong>
-  — <a href="{{ url_for('users.industry_taxes') }}">Edit</a>
+  — <a href="{{ url_for('users.industry_modifications') }}">Edit</a>
 </p>
 
 <div class="table-responsive-md">
