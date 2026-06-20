@@ -24,27 +24,29 @@ FORGE_REGION_ID = 10000002   # The Forge (Jita) — same id reference_data.py us
 _INSERT_CHUNK = 1000
 
 
-def _insert(rows):
+def _insert(rows, session=None):
     """Insert MarketHistory rows, skipping any (region_id, type_id, date) already
     stored. Dialect-aware (Postgres prod / SQLite dev); chunked for the bind-param limit.
     """
+    session = session or db.session
     if not rows:
         return
-    ins = pg_insert if db.engine.dialect.name == 'postgresql' else sqlite_insert
+    ins = pg_insert if session.get_bind().dialect.name == 'postgresql' else sqlite_insert
     for i in range(0, len(rows), _INSERT_CHUNK):
         stmt = ins(MarketHistory).on_conflict_do_nothing(
             index_elements=['region_id', 'type_id', 'date'])
-        db.session.execute(stmt, rows[i:i + _INSERT_CHUNK])
+        session.execute(stmt, rows[i:i + _INSERT_CHUNK])
 
 
-def download_market_histories(forge_only=False):
+def download_market_histories(forge_only=False, session=None):
     """Download exact daily market history per region/type from ESI and insert it
     verbatim into market_histories. /types enumerates the type_ids per region;
     /history is then fetched per type and each daily record is stored as-is.
 
     forge_only=True restricts to The Forge. Returns {'regions', 'records'}.
     """
-    regions = UniverseRegion.query.all()
+    session = session or db.session
+    regions = session.query(UniverseRegion).all()
     if forge_only:
         regions = [r for r in regions if r.id == FORGE_REGION_ID]
 
@@ -103,8 +105,8 @@ def download_market_histories(forge_only=False):
                 })
 
             t0 = time.perf_counter()
-            _insert(rows)
-            db.session.commit()
+            _insert(rows, session=session)
+            session.commit()
             db_s += time.perf_counter() - t0
 
             total += len(rows)

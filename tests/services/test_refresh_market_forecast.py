@@ -1,4 +1,4 @@
-"""Tests for services/market_forecast_service.py.
+"""Tests for process/refresh_market_forecast.py.
 
 A deterministic `forecaster` is injected so the suite never runs Prophet."""
 from datetime import date, timedelta
@@ -6,7 +6,7 @@ from datetime import date, timedelta
 import pytest
 
 from evebs.models import MarketProphetForecast, MarketProphetForecastErrors
-from process.market_forecast_service import (
+from process.refresh_market_forecast import (
     generate_forecast, run_all, recompute_price_directions, _price_direction, FORECAST_DAYS,
 )
 from tests.factories import make_item, make_market_history

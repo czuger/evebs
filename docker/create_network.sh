@@ -1,1 +1,1 @@
-docker network create app-eve-dominion
+docker network create app-eve

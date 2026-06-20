@@ -12,11 +12,12 @@ logger = logging.getLogger(__name__)
 _TOUCH_CHUNK = 10_000
 
 
-def load_snapshot_for(order_ids: set[int]) -> dict[int, dict]:
+def load_snapshot_for(order_ids: set[int], session=None) -> dict[int, dict]:
     """Return {order_id: row} for the given order_ids only."""
+    session = session or db.session
     if not order_ids:
         return {}
-    rows = db.session.execute(
+    rows = session.execute(
         select(
             PublicTradeOrder.id,
             PublicTradeOrder.order_id,
@@ -116,35 +117,38 @@ def apply_batch(
     loc_fills:      list[dict],
     touch_only_pks: list[int],
     sales_finals:   list[dict],
+    session=None,
 ) -> None:
     """Execute all bulk DB operations for one classified batch."""
+    session = session or db.session
     if to_insert:
-        db.session.execute(
+        session.execute(
             insert(PublicTradeOrder).on_conflict_do_nothing(index_elements=['order_id']),
             to_insert,
         )
     if full_updates:
-        db.session.execute(update(PublicTradeOrder), full_updates)
+        session.execute(update(PublicTradeOrder), full_updates)
     if loc_fills:
-        db.session.execute(update(PublicTradeOrder), loc_fills)
+        session.execute(update(PublicTradeOrder), loc_fills)
     if touch_only_pks:
         for i in range(0, len(touch_only_pks), _TOUCH_CHUNK):
-            db.session.execute(
+            session.execute(
                 update(PublicTradeOrder)
                 .where(PublicTradeOrder.id.in_(touch_only_pks[i:i + _TOUCH_CHUNK]))
                 .values(touched=True)
             )
     if sales_finals:
-        db.session.execute(insert(SalesFinal), sales_finals)
+        session.execute(insert(SalesFinal), sales_finals)
 
 
-def record_sold_out_orders(now: datetime) -> int:
+def record_sold_out_orders(now: datetime, session=None) -> int:
     """Bulk-insert SalesFinal for untouched sell orders that vanished before expiry.
 
     Orders still within their end_time that ESI no longer returns were bought out.
     Orders past their end_time simply expired — no sale occurred.
     """
-    rows = db.session.execute(
+    session = session or db.session
+    rows = session.execute(
         select(
             PublicTradeOrder.order_id,
             PublicTradeOrder.universe_system_id,
@@ -159,7 +163,7 @@ def record_sold_out_orders(now: datetime) -> int:
     ).mappings().all()
 
     if rows:
-        db.session.execute(insert(SalesFinal), [
+        session.execute(insert(SalesFinal), [
             {
                 'day':          now.date(),
                 'universe_system_id': r['universe_system_id'],

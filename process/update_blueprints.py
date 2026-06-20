@@ -49,13 +49,14 @@ def build_item_map() -> dict:
     return item_map
 
 
-def build_price_map() -> dict:
+def build_price_map(session=None) -> dict:
     """Query all JitaMinPrice rows and index min_sell_price by type_id.
 
     Returns:
         Dict mapping int type_id → float min_sell_price.
     """
-    price_map = {jma.id: jma.min_sell_price for jma in JitaMinPrice.query.all()}
+    session = session or db.session
+    price_map = {jma.id: jma.min_sell_price for jma in session.query(JitaMinPrice).all()}
     logger.debug('Jita price map: %d prices loaded.', len(price_map))
     return price_map
 
@@ -278,7 +279,7 @@ def update_invented_from(bp_map: dict, *, dry_run: bool = False) -> int:
     return updated
 
 
-def refresh_blueprint_manufacturing_costs() -> dict:
+def refresh_blueprint_manufacturing_costs(session=None) -> dict:
     """Recompute manufacturing_cost for all blueprints from current Jita prices.
 
     Iterates every Blueprint that has a manufacturing_tree, recomputes the cost
@@ -289,10 +290,11 @@ def refresh_blueprint_manufacturing_costs() -> dict:
         {'updated': int, 'no_price': int} — counts of rows written and rows
         skipped because a required material had no Jita price.
     """
-    price_map = build_price_map()
+    session = session or db.session
+    price_map = build_price_map(session=session)
     updated = no_price = 0
 
-    for bp in Blueprint.query.filter(Blueprint.manufacturing_tree.isnot(None)).all():
+    for bp in session.query(Blueprint).filter(Blueprint.manufacturing_tree.isnot(None)).all():
         if bp.manufacturing_tree is None:
             continue
         cost = compute_cost(bp.manufacturing_tree, price_map)
@@ -302,7 +304,7 @@ def refresh_blueprint_manufacturing_costs() -> dict:
         else:
             updated += 1
 
-    db.session.commit()
+    session.commit()
     logger.info(
         'refresh_blueprint_manufacturing_costs: %d updated, %d skipped (no Jita price).',
         updated, no_price,

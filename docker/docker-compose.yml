@@ -1,11 +1,11 @@
-name: app-eve-dominion
+name: app-eve
 
 services:
-  app-eve-dominion:
+  app-eve:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: app-eve-dominion
+    container_name: app-eve
     volumes:
       - /home/ced/python/evebs:/app
     environment:
@@ -13,23 +13,42 @@ services:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
     networks:
-      - app-eve-dominion
+      - app-eve
 
-  app-eve-dominion-public-orders-daemon-downloader:
+  # One-shot market-data refresh. Not a daemon: it runs one pass and exits. Fired by cron
+  # via `docker start app-eve-public-orders`; a Redis lock skips overlaps.
+  app-eve-public-orders:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: app-eve-dominion-public-orders-daemon-downloader
-    command: ["python", "process/orders_daemon.py"]
+    container_name: app-eve-public-orders
+    command: ["python", "process/refresh_market_data.py"]
     volumes:
       - /home/ced/python/evebs:/app
     environment:
       - FLASK_ENV=production
       - PYTHONUNBUFFERED=1
-    restart: unless-stopped
+    restart: "no"
     networks:
-      - app-eve-dominion
+      - app-eve
+
+  # One-shot Prophet market forecast. Runs one pass and exits. Fired by cron via
+  # `docker start app-eve-markets-forecast`. `-d` downloads fresh market histories first.
+  app-eve-markets-forecast:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: app-eve-markets-forecast
+    command: ["python", "process/refresh_market_forecast.py", "-d"]
+    volumes:
+      - /home/ced/python/evebs:/app
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: "no"
+    networks:
+      - app-eve
 
 networks:
-  app-eve-dominion:
+  app-eve:
     external: true

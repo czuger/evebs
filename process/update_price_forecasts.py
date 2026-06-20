@@ -73,17 +73,18 @@ WHERE COALESCE(l.lin_forecast, j.min_sell_price) IS NOT NULL
 """
 
 
-def refresh_forecast_mvs():
+def refresh_forecast_mvs(session=None):
     """Refresh the dual-window (7d + 30d) linear-regression forecast MVs (price + volume,
     non-concurrent) from sales_finals. Returns the per-MV item counts. Cheap enough to run
-    every orders-daemon pass; does NOT touch the jita_price_forecasts table or Prophet rows."""
-    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_price_forecast_linear_regression'))
-    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_volume_forecast_linear_regression'))
-    db.session.commit()
+    every market-refresh pass; does NOT touch the jita_price_forecasts table or Prophet rows."""
+    session = session or db.session
+    session.execute(text('REFRESH MATERIALIZED VIEW jita_price_forecast_linear_regression'))
+    session.execute(text('REFRESH MATERIALIZED VIEW jita_volume_forecast_linear_regression'))
+    session.commit()
 
-    price_items = db.session.execute(
+    price_items = session.execute(
         text('SELECT COUNT(DISTINCT type_id) FROM jita_price_forecast_linear_regression')).scalar()
-    vol_items = db.session.execute(
+    vol_items = session.execute(
         text('SELECT COUNT(DISTINCT type_id) FROM jita_volume_forecast_linear_regression')).scalar()
     logger.info('forecast MVs refreshed: price %d items, volume %d items.', price_items, vol_items)
     return {'price_items': price_items, 'vol_items': vol_items}

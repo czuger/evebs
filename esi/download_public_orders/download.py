@@ -21,14 +21,16 @@ def download(
     forge_only:  bool = False,
     all_at_once: bool = True,
     regions:     str  = 'hub',
+    session=None,
 ) -> dict:
+    session = session or db.session
     t0 = time.perf_counter()
 
-    hub_map, item_map, regions = load_reference_data(essentials, forge_only, regions)
+    hub_map, item_map, regions = load_reference_data(essentials, forge_only, regions, session=session)
     logger.debug('Reference data loaded: %d hubs | %d items', len(hub_map), len(item_map))
 
-    PublicTradeOrder.query.update({'touched': False})
-    db.session.flush()
+    session.query(PublicTradeOrder).update({'touched': False})
+    session.flush()
 
     item_map_keys  = set(item_map.keys())
     created = updated = touched = 0
@@ -63,13 +65,13 @@ def download(
             pending.append({'order_data': od, 'hub_id': hub_id, 'item_id': item_id})
 
         order_ids = {entry['order_data']['order_id'] for entry in pending}
-        snapshot  = load_snapshot_for(order_ids)
+        snapshot  = load_snapshot_for(order_ids, session=session)
 
         to_insert, full_updates, loc_fills, touch_only_pks, sf_data = classify_orders(
             pending, snapshot
         )
-        apply_batch(to_insert, full_updates, loc_fills, touch_only_pks, sf_data)
-        db.session.commit()
+        apply_batch(to_insert, full_updates, loc_fills, touch_only_pks, sf_data, session=session)
+        session.commit()
 
         n_created = len(to_insert)
         n_updated = len(full_updates) + len(loc_fills)
@@ -89,13 +91,13 @@ def download(
                      region.name, n_created, n_updated, n_touched, len(pending))
 
     now = datetime.utcnow()
-    sales_created += record_sold_out_orders(now)
+    sales_created += record_sold_out_orders(now, session=session)
 
-    deleted_q = PublicTradeOrder.query.filter(PublicTradeOrder.touched.is_(False))
+    deleted_q = session.query(PublicTradeOrder).filter(PublicTradeOrder.touched.is_(False))
     deleted   = deleted_q.count()
     deleted_q.delete()
 
-    db.session.commit()
+    session.commit()
 
     elapsed = time.perf_counter() - t0
     logger.info(

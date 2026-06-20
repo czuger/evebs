@@ -19,13 +19,14 @@ from evebs.extensions import db
 logger = set_logger('update_jita_min_prices')
 
 
-def update_jita_min_prices():
+def update_jita_min_prices(session=None):
+    session = session or db.session
     # Plain (non-concurrent) refresh — see CLAUDE.md. Briefly locks the view but needs no
     # unique index or AUTOCOMMIT connection, and runs fine inside the session transaction.
-    db.session.execute(text('REFRESH MATERIALIZED VIEW jita_min_prices'))
-    db.session.commit()
+    session.execute(text('REFRESH MATERIALIZED VIEW jita_min_prices'))
+    session.commit()
 
-    count = db.session.execute(text('SELECT COUNT(*) FROM jita_min_prices')).scalar()
+    count = session.execute(text('SELECT COUNT(*) FROM jita_min_prices')).scalar()
     logger.info('jita_min_prices refreshed: %d rows.', count)
     return {'rows': count}
 

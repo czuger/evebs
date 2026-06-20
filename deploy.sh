@@ -1,10 +1,3 @@
-RESTART_DAEMON=false
-for arg in "$@"; do
-  case $arg in
-    -d|--daemon) RESTART_DAEMON=true ;;
-  esac
-done
-
 rsync -avz --progress \
   --exclude='__pycache__/' \
   --exclude='*.pyc' \
@@ -30,12 +23,10 @@ rsync -avz --progress \
 ssh nuc150 "cd /home/ced/python/evebs/docker// && bash set_secret_key.bash"
 ssh nuc150 "cd /home/ced/python/evebs/docker// && bash create_network.sh"
 
-ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose down app-eve-dominion "
-ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up app-eve-dominion -d --build"
-if [ "$RESTART_DAEMON" = true ]; then
-  ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose down app-eve-dominion-public-orders-daemon-downloader"
-  ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up app-eve-dominion-public-orders-daemon-downloader -d --build"
-fi
+# The compose project was renamed app-eve-dominion -> app-eve; tear down the old project so
+# its now-orphaned containers (app-eve-dominion, app-eve-dominion-por) are removed.
+ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose down app-eve --remove-orphans"
+ssh nuc150 "cd /home/ced/python/evebs/docker/ && docker compose up app-eve -d --build --remove-orphans"
 
 # Recreating app-twitter gives it a new IP; nginx caches the old upstream IP, so reload
 # it to re-resolve (otherwise /twitter/ returns "Host is unreachable" until next reload).

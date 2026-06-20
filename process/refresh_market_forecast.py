@@ -8,14 +8,20 @@ without running Prophet.
 """
 import argparse
 import logging
+import os
+import sys
 import time
 from datetime import UTC, date, datetime, timedelta
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import pandas as pd
 from prophet import Prophet
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
-from config import set_logger
-from evebs import create_db_app
+from config import Config, set_logger
+from esi.download_market_histories import download_market_histories
 from evebs.extensions import db
 from evebs.models import (
     EveItem, MarketHistory, MarketProphetForecast, MarketProphetForecastErrors,
@@ -57,24 +63,24 @@ def _prophet_fit(ds_list, y_list, periods, interval_width):
     return list(zip(pred['yhat'], pred['yhat_lower'], pred['yhat_upper']))
 
 
-def _clear_existing(region_id, type_id, confidence):
+def _clear_existing(region_id, type_id, confidence, session):
     """Drop any prior forecast rows and error marker for this (region, type)."""
-    MarketProphetForecast.query.filter_by(
+    session.query(MarketProphetForecast).filter_by(
         region_id=region_id, type_id=type_id).delete()
-    MarketProphetForecastErrors.query.filter_by(
+    session.query(MarketProphetForecastErrors).filter_by(
         region_id=region_id, type_id=type_id, confidence=confidence).delete()
 
 
-def _store_error(region_id, type_id, confidence, reason):
+def _store_error(region_id, type_id, confidence, reason, session):
     """Replace this (region, type, confidence)'s forecast with a single error row."""
-    _clear_existing(region_id, type_id, confidence)
-    db.session.add(MarketProphetForecastErrors(
+    _clear_existing(region_id, type_id, confidence, session)
+    session.add(MarketProphetForecastErrors(
         region_id=region_id, type_id=type_id, confidence=confidence, reason=reason))
-    db.session.commit()
+    session.commit()
     return {"status": "error", "reason": reason}
 
 
-def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None):
+def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None, session=None):
     """Generate and persist a 5-day Prophet forecast for one (region, type, confidence).
 
     Every stored row is fully populated; anything that would yield a null is recorded in
@@ -82,9 +88,10 @@ def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None
     On success stores 5 rows and returns {"status": "ok", "inserted": 5}. `forecaster`
     overrides the Prophet fit.
     """
+    session = session or db.session
     fit = forecaster or _prophet_fit
 
-    rows = (MarketHistory.query
+    rows = (session.query(MarketHistory)
             .filter_by(region_id=region_id, type_id=type_id)
             .order_by(MarketHistory.date.asc())
             .all())
@@ -92,12 +99,12 @@ def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None
             if (r.average or 0) > 0 and (r.lowest or 0) > 0
             and (r.highest or 0) > 0 and (r.volume or 0) > 0]
     if len(rows) < MIN_ROWS:
-        return _store_error(region_id, type_id, confidence, 'not_enough_history')
+        return _store_error(region_id, type_id, confidence, 'not_enough_history', session)
 
     # Volume must be forecastable (no null vol fields allowed).
     zero_vol_ratio = sum(1 for r in rows if (r.volume or 0) == 0) / len(rows)
     if zero_vol_ratio > 0.5:
-        return _store_error(region_id, type_id, confidence, 'unreliable_volume')
+        return _store_error(region_id, type_id, confidence, 'unreliable_volume', session)
 
     ds = [r.date for r in rows]
     last_date = rows[-1].date
@@ -115,7 +122,7 @@ def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None
         avg_p = float(avg[i][0])
         vol_p = float(round(vol[i][0]))
         if avg_p == 0 or vol_p == 0:   # would make a *_spread_pct null
-            return _store_error(region_id, type_id, confidence, 'zero_division')
+            return _store_error(region_id, type_id, confidence, 'zero_division', session)
         low_p, high_p = float(low[i][0]), float(high[i][0])
         vol_lo, vol_hi = float(round(vol[i][1])), float(round(vol[i][2]))
         price_spread = high_p - low_p
@@ -130,28 +137,29 @@ def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None
             price_direction=_price_direction(last_price, avg_p),
         ))
 
-    _clear_existing(region_id, type_id, confidence)
-    db.session.bulk_save_objects(new_rows)
-    db.session.commit()
+    _clear_existing(region_id, type_id, confidence, session)
+    session.bulk_save_objects(new_rows)
+    session.commit()
     return {"status": "ok", "inserted": len(new_rows)}
 
 
-def recompute_price_directions(region_id=FORGE_REGION_ID, logger=None):
+def recompute_price_directions(region_id=FORGE_REGION_ID, logger=None, session=None):
     """Recompute price_direction on existing forecasts (no Prophet): per item, compare each
     row's avg_predicted to the most recent market_history average. Returns rows updated."""
-    type_ids = [t for (t,) in db.session.query(MarketProphetForecast.type_id)
+    session = session or db.session
+    type_ids = [t for (t,) in session.query(MarketProphetForecast.type_id)
                 .filter_by(region_id=region_id).distinct()]
     updated = 0
     for type_id in type_ids:
-        last = (MarketHistory.query
+        last = (session.query(MarketHistory)
                 .filter_by(region_id=region_id, type_id=type_id)
                 .order_by(MarketHistory.date.desc()).first())
         last_price = last.average if last else None
-        for row in (MarketProphetForecast.query
+        for row in (session.query(MarketProphetForecast)
                     .filter_by(region_id=region_id, type_id=type_id).all()):
             row.price_direction = _price_direction(last_price, row.avg_predicted)
             updated += 1
-    db.session.commit()
+    session.commit()
     if logger:
         logger.info('market_forecast: recomputed price_direction for %d rows (%d items)',
                     updated, len(type_ids))
@@ -170,11 +178,12 @@ def _fmt_duration(seconds):
 
 
 def run_all(region_id=FORGE_REGION_ID, confidence=CONFIDENCE, forecaster=None,
-            limit=None, logger=None):
+            limit=None, logger=None, session=None):
     """Generate forecasts for every EveItem in `region_id`. Returns a status→count dict.
     A single item's Prophet failure is logged and skipped, not fatal to the batch.
     Logs progress with rate + ETA every 100 items (and on the final item)."""
-    item_ids = [i.id for i in EveItem.query.all()]
+    session = session or db.session
+    item_ids = [i.id for i in session.query(EveItem).all()]
     if limit:
         item_ids = item_ids[:limit]
     total = len(item_ids)
@@ -183,10 +192,10 @@ def run_all(region_id=FORGE_REGION_ID, confidence=CONFIDENCE, forecaster=None,
     for done, type_id in enumerate(item_ids, 1):
         try:
             result = generate_forecast(region_id, type_id, confidence=confidence,
-                                       forecaster=forecaster)
+                                       forecaster=forecaster, session=session)
             key = result.get('status', 'error')
         except (ValueError, RuntimeError) as exc:
-            db.session.rollback()
+            session.rollback()
             key = 'failed'
             if logger:
                 logger.warning('market_forecast: item %s failed: %s', type_id, exc)
@@ -209,14 +218,24 @@ def main():
                         help='Only process the first N items (for testing).')
     parser.add_argument('-p', '--price-direction-only', action='store_true',
                         help='Recompute only price_direction on existing forecasts (no Prophet).')
+    parser.add_argument('-d', '--download-histories', action='store_true',
+                        help='First download fresh market histories from ESI, then forecast.')
     args = parser.parse_args()
 
     logger = set_logger('market_forecast')
-    with create_db_app().app_context():
+    # No Flask app/context: drive the DB through a standalone SQLAlchemy session.
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+    with Session(engine) as session:
+        if args.download_histories:
+            logger.info('market_forecast: downloading market histories first...')
+            result = download_market_histories(
+                forge_only=(args.region == FORGE_REGION_ID), session=session)
+            logger.info('market_forecast: histories downloaded — %s', result)
+
         if args.price_direction_only:
-            recompute_price_directions(args.region, logger=logger)
+            recompute_price_directions(args.region, logger=logger, session=session)
         else:
-            counts = run_all(args.region, limit=args.limit, logger=logger)
+            counts = run_all(args.region, limit=args.limit, logger=logger, session=session)
             logger.info('market_forecast: done — %s', counts)
 
 

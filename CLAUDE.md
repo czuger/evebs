@@ -105,7 +105,7 @@ Downloaders:
 
 Standalone scripts (no longer orchestrated by hourly/daily/weekly wrappers):
 
-- `orders_daemon.py` — long-running daemon; downloads public orders every 15 min, runs `update_jita_min_prices` after each pass. Trade-hub regions every pass; all regions every 4th pass.
+- `refresh_market_data.py` — one-shot market-data refresh (NOT a daemon): one pass of public-order download + `update_jita_min_prices` + blueprint costs + forecast MVs, then exits. Fired by cron via `docker start app-eve-public-orders`; a Redis lock (`refresh_market_data:lock`) skips overlapping runs and a Redis run-counter does trade-hub regions every run, all regions every 4th run. Builds no Flask app/context — it passes a standalone SQLAlchemy `Session` into the download/update functions (which accept an optional `session=`, defaulting to `db.session` for the web app / other scripts).
 - `update_blueprints.py` — upserts `Blueprint` rows from `data/manufacturing_tree.json` and computes `manufacturing_cost` from current Jita prices.
 - `update_jita_min_prices.py` — refreshes the `jita_min_prices` materialized view (P10 Jita sell price per item).
 - `update_price_forecasts.py` — recomputes the `jita_price_forecasts` table (3-day price forecast per item) from `market_histories` (The Forge): volume-weighted SQL linear regression for items with ≥14 days, `jita_min_prices` fallback below that. Also refreshes the `jita_price_forecast_linear_regression` materialized view (7d/30d daily forecasts + confidence).
