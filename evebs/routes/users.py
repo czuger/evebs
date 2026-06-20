@@ -228,15 +228,21 @@ def update_industry_modifications():
 @bp.route('/users/reaction_modifications')
 @login_required
 def reaction_modifications():
+    stations, known_structures, unknown_structures = _user_asset_locations(current_user.id)
     return render_template('users/reaction_modifications.html',
                            title='Reaction modifications',
-                           user=current_user)
+                           user=current_user,
+                           stations=stations,
+                           known_structures=known_structures,
+                           unknown_structures=unknown_structures)
 
 
 @bp.route('/users/reaction_modifications', methods=['POST'])
 @login_required
 def update_reaction_modifications():
-    current_user.reaction_modifications = _parse_reaction_modifications(request.form)
+    mods = _parse_reaction_modifications(request.form)
+    mods['current_reaction_station'] = request.form.get('current_reaction_station', type=int)
+    current_user.reaction_modifications = mods
     db.session.commit()
     flash('Reaction modifications updated.')
     return redirect(url_for('users.reaction_modifications'))

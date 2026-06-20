@@ -33,7 +33,8 @@
             <a class="dropdown-item" href="{{ url_for('invention_lists.edit') }}">Invention list</a>
             <a class="dropdown-item" href="{{ url_for('copy_lists.edit') }}">Copy list</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{{ url_for('components_to_buys.show') }}">Components to buy</a>
+            <a class="dropdown-item" href="{{ url_for('components_to_buys.for_production') }}">Components to buy (production)</a>
+            <a class="dropdown-item" href="{{ url_for('components_to_buys.for_reaction') }}">Components to buy (reaction)</a>
           </div>
         </li>
         <li class="nav-item dropdown">

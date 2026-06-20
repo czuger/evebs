@@ -44,6 +44,40 @@
     </div>
   </div>
 
+  <div class="card mb-3">
+    <div class="card-header fw-semibold">Current reaction station</div>
+    <div class="card-body">
+      {% set cur = rm.get('current_reaction_station') %}
+      <label class="form-label">Reaction station</label>
+      <select name="current_reaction_station" class="form-select">
+        <option value="">-- None --</option>
+        {% if stations %}
+        <optgroup label="Stations">
+          {% for st in stations %}
+          <option value="{{ st.id }}" {% if cur == st.id %}selected{% endif %}>{{ st.name or st.id }}</option>
+          {% endfor %}
+        </optgroup>
+        {% endif %}
+        {% if known_structures %}
+        <optgroup label="Structures">
+          {% for s in known_structures %}
+          <option value="{{ s.id }}" {% if cur == s.id %}selected{% endif %}>{{ s.name }}</option>
+          {% endfor %}
+        </optgroup>
+        {% endif %}
+        {% if unknown_structures %}
+        <optgroup label="Unknown structures">
+          {% for u in unknown_structures %}
+          <option value="{{ u.id }}" {% if cur == u.id %}selected{% endif %}>{{ u.name }}</option>
+          {% endfor %}
+        </optgroup>
+        {% endif %}
+      </select>
+      <div class="form-text">Your default reaction location, used to deduct on-hand stock on
+        <a href="{{ url_for('components_to_buys.for_reaction') }}">Components to buy (reaction)</a>.</div>
+    </div>
+  </div>
+
   <button type="submit" class="btn btn-primary">Save</button>
 </form>
 {% endblock %}

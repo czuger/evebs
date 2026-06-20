@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Components to buy</h2>
-<p class="text-muted small mb-3">Raw materials needed for all your active production runs, with optional deduction of stock already at a chosen station.</p>
+<h2>{{ title }}</h2>
+<p class="text-muted small mb-3">Raw materials needed for your active runs, with optional deduction of stock already at a chosen station.</p>
 
 {% if stations or known_structures or unknown_structures %}
-<form action="{{ url_for('components_to_buys.show') }}" method="get" class="mb-3">
+<form action="{{ url_for(request.endpoint) }}" method="get" class="mb-3">
   <div class="d-flex align-items-center gap-2">
     <select name="station_id" class="form-select" style="max-width:400px" onchange="this.form.submit()">
       <option value="">-- No stock deduction --</option>
@@ -31,7 +31,7 @@
       {% endif %}
     </select>
     {% if selected_station_id %}
-    <a href="{{ url_for('components_to_buys.show', station_id='') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+    <a href="{{ url_for(request.endpoint, station_id='') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
     {% endif %}
   </div>
 </form>
@@ -49,26 +49,37 @@
       <th class="text-end">Total cost</th>
       <th class="text-end">Required volume (m³)</th>
     </tr>
+    {% set totals = namespace(cost=0, vol=0) %}
     {% for c in components %}
     {% set in_stock = asset_qty.get(c.eve_item_id, 0) %}
     {% set need_to_buy = [c.qtt_to_buy - in_stock, 0] | max %}
-    <tr{% if selected_station_id and need_to_buy == 0 %} class="table-success"{% endif %}>
+    {# Cost and volume reflect what's left to buy (need_to_buy), not the full requirement. #}
+    {% set buy_cost = c.total_cost * need_to_buy / c.qtt_to_buy %}
+    {% set buy_vol = c.required_volume * need_to_buy / c.qtt_to_buy %}
+    {% set totals.cost = totals.cost + buy_cost %}
+    {% set totals.vol = totals.vol + buy_vol %}
+    {% set row_class = '' %}
+    {% if selected_station_id and in_stock > 0 %}
+    {% set row_class = 'table-success' if need_to_buy == 0 else 'table-info' %}
+    {% endif %}
+    <tr{% if row_class %} class="{{ row_class }}"{% endif %}>
       <td><a href="{{ url_for('items.show', slug=c.eve_item_id) }}">{{ c.eve_item_name }}</a></td>
       <td class="text-end">{{ c.qtt_to_buy | vol }}</td>
       {% if selected_station_id %}
       <td class="text-end">{{ in_stock | vol }}</td>
       <td class="text-end">{{ need_to_buy | vol }}</td>
       {% endif %}
-      <td class="text-end">{{ c.total_cost | isk }}</td>
-      <td class="text-end">{{ c.required_volume | vol }}</td>
+      <td class="text-end">{{ buy_cost | isk }}</td>
+      <td class="text-end">{{ buy_vol | vol }}</td>
     </tr>
     {% else %}
     <tr><td colspan="{{ 6 if selected_station_id else 4 }}" class="text-center text-muted">Nothing to buy.</td></tr>
     {% endfor %}
     {% if components %}
     <tr class="fw-semibold border-top">
-      <td colspan="{{ 5 if selected_station_id else 3 }}" class="text-end">Total required volume</td>
-      <td class="text-end">{{ components | sum(attribute='required_volume') | vol }}</td>
+      <td colspan="{{ 4 if selected_station_id else 2 }}" class="text-end">Totals</td>
+      <td class="text-end">{{ totals.cost | isk }}</td>
+      <td class="text-end">{{ totals.vol | vol }}</td>
     </tr>
     {% endif %}
   </table>

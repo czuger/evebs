@@ -195,3 +195,11 @@ class TestUsersReactionModifications:
         })
         db.session.expire(user)
         assert user.reaction_modifications['material_consumption'] == 0.0
+
+    def test_post_stores_current_reaction_station(self, db, auth_client):
+        client, user = auth_client
+        client.post('/users/reaction_modifications', data={
+            'rxn_sci': '5', 'current_reaction_station': '60003760',
+        })
+        db.session.expire(user)
+        assert user.reaction_modifications['current_reaction_station'] == 60003760

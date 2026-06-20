@@ -6,20 +6,24 @@ from tests.factories import (
 )
 
 
+PRODUCTION_URL = '/components_to_buys_for_production'
+REACTION_URL = '/components_to_buys_for_reaction'
+
+
 class TestComponentsToBuysShow:
     def test_redirects_unauthenticated(self, client):
-        resp = client.get('/components_to_buys')
-        assert resp.status_code == 302
+        assert client.get(PRODUCTION_URL).status_code == 302
+        assert client.get(REACTION_URL).status_code == 302
 
     def test_returns_200_when_authenticated(self, auth_client):
         client, _ = auth_client
-        resp = client.get('/components_to_buys')
-        assert resp.status_code == 200
+        assert client.get(PRODUCTION_URL).status_code == 200
+        assert client.get(REACTION_URL).status_code == 200
 
     def test_empty_list_renders(self, auth_client):
         client, _ = auth_client
-        resp = client.get('/components_to_buys')
-        assert b'Nothing to buy.' in resp.data
+        assert b'Nothing to buy.' in client.get(PRODUCTION_URL).data
+        assert b'Nothing to buy.' in client.get(REACTION_URL).data
 
 
 class TestComponentsToBuysCompute:
@@ -35,10 +39,10 @@ class TestComponentsToBuysCompute:
         make_production_list(db, user, crafted, hub, runs_count=2)
         db.session.commit()
 
-        resp = client.get('/components_to_buys')
+        resp = client.get(PRODUCTION_URL)
         assert resp.status_code == 200
         assert b'Tritanium' in resp.data
-        assert b'Total required volume' in resp.data
+        assert b'Totals' in resp.data
 
     def test_tech2_blueprint_gets_2pct_material_reduction(self, db, auth_client):
         """A Tech II blueprint (invented) consumes 2% fewer materials; T1 is unchanged."""
@@ -62,7 +66,7 @@ class TestComponentsToBuysCompute:
         make_production_list(db, user, t1, hub, runs_count=2)
         db.session.commit()
 
-        rows = {r.eve_item_id: r for r in _compute_components(user)}
+        rows = {r.eve_item_id: r for r in _compute_components(user, 'production')}
         # T2: ceil(100 * 2 * 0.98) = 196 ; T1: 100 * 2 = 200 ; aggregated across both = 396
         assert rows[34].qtt_to_buy == 396
 
@@ -84,7 +88,7 @@ class TestComponentsToBuysCompute:
         db.session.add(ReactionList(user_id=user.id, eve_item_id=prod.id, runs_count=2))
         db.session.commit()
 
-        rows = {r.eve_item_id: r for r in _compute_components(user)}
+        rows = {r.eve_item_id: r for r in _compute_components(user, 'reaction')}
         # ceil(100 * 2 * (1 + (-2)/100)) = ceil(200 * 0.98) = 196
         assert rows[34].qtt_to_buy == 196
 
@@ -104,8 +108,44 @@ class TestComponentsToBuysCompute:
         make_user_asset(db, user, mat, station=station, quantity=20)
         db.session.commit()
 
-        resp = client.get(f'/components_to_buys?station_id={station.id}')
+        resp = client.get(f'{PRODUCTION_URL}?station_id={station.id}')
         assert resp.status_code == 200
+
+
+class TestComponentsToBuysActivityIsolation:
+    def _seed_one_of_each(self, db, user):
+        from evebs.models import ReactionList
+        system = make_universe_system(db)
+        hub = make_trade_hub(db, system)
+        pmat = make_item(db, item_id=34, slug='trit-iso', name='Tritanium')
+        pcraft = make_item(db, item_id=35, slug='ammo-iso', name='Ammo Iso')
+        pbp = make_blueprint(db, pcraft, blueprint_id=35010, prod_qtt=10)
+        pbp.manufacturing_tree = {'34': {'quantity': 100, 'name': 'Tritanium', 'chain': {}}}
+        make_jita_min_price(db, pmat, min_sell_price=5.0)
+        make_production_list(db, user, pcraft, hub, runs_count=1)
+
+        rmat = make_item(db, item_id=16634, slug='hydro-iso', name='Hydrogen Iso')
+        rprod = make_item(db, item_id=16679, slug='fuller-iso', name='Fullerides Iso')
+        rbp = make_blueprint(db, rprod, blueprint_id=46210, prod_qtt=3000)
+        rbp.activity_type = 'reaction'
+        rbp.manufacturing_tree = {'16634': {'quantity': 100, 'name': 'Hydrogen Iso', 'chain': {}}}
+        make_jita_min_price(db, rmat, min_sell_price=5.0)
+        db.session.add(ReactionList(user_id=user.id, eve_item_id=rprod.id, runs_count=1))
+        db.session.commit()
+
+    def test_production_route_excludes_reaction_materials(self, db, auth_client):
+        client, user = auth_client
+        self._seed_one_of_each(db, user)
+        body = client.get(PRODUCTION_URL).data
+        assert b'Tritanium' in body
+        assert b'Hydrogen Iso' not in body
+
+    def test_reaction_route_excludes_production_materials(self, db, auth_client):
+        client, user = auth_client
+        self._seed_one_of_each(db, user)
+        body = client.get(REACTION_URL).data
+        assert b'Hydrogen Iso' in body
+        assert b'Tritanium' not in body
 
 
 class TestComponentsToBuysDefaultStation:
@@ -124,16 +164,16 @@ class TestComponentsToBuysDefaultStation:
         make_user_asset(db, user, mat, station=station, quantity=20)
         return station
 
-    def test_no_arg_uses_default_station_for_deduction(self, db, auth_client):
+    def test_production_uses_industry_station_default(self, db, auth_client):
         client, user = auth_client
         station = self._seed(db, user)
         user.industry_modifications = {**(user.industry_modifications or {}),
                                        'current_industry_station': station.id}
         db.session.commit()
 
-        resp = client.get('/components_to_buys')   # no station_id in the query
+        resp = client.get(PRODUCTION_URL)   # no station_id in the query
         assert resp.status_code == 200
-        assert b'In stock' in resp.data            # deduction columns shown → default applied
+        assert b'In stock' in resp.data     # deduction columns shown → default applied
 
     def test_explicit_empty_station_id_overrides_default(self, db, auth_client):
         client, user = auth_client
@@ -142,6 +182,72 @@ class TestComponentsToBuysDefaultStation:
                                        'current_industry_station': station.id}
         db.session.commit()
 
-        resp = client.get('/components_to_buys?station_id=')   # explicit clear
+        resp = client.get(f'{PRODUCTION_URL}?station_id=')   # explicit clear
         assert resp.status_code == 200
         assert b'In stock' not in resp.data
+
+    def test_reaction_uses_reaction_station_default(self, db, auth_client):
+        from evebs.models import ReactionList
+        client, user = auth_client
+        ur = make_universe_region(db, region_id=10000097)
+        uc = make_universe_constellation(db, ur, constellation_id=20000097)
+        system = make_universe_system(db, uc, system_id=30000997, name='RxnHub')
+        station = make_universe_station(db, system, station_id=60077777)
+        mat = make_item(db, item_id=16634, slug='hydro-def', name='Hydrogen Def')
+        prod = make_item(db, item_id=16679, slug='fuller-def', name='Fullerides Def')
+        bp = make_blueprint(db, prod, blueprint_id=46211, prod_qtt=3000)
+        bp.activity_type = 'reaction'
+        bp.manufacturing_tree = {'16634': {'quantity': 100, 'name': 'Hydrogen Def', 'chain': {}}}
+        make_jita_min_price(db, mat, min_sell_price=5.0)
+        db.session.add(ReactionList(user_id=user.id, eve_item_id=prod.id, runs_count=1))
+        make_user_asset(db, user, mat, station=station, quantity=20)
+        user.reaction_modifications = {**(user.reaction_modifications or {}),
+                                       'current_reaction_station': station.id}
+        db.session.commit()
+
+        resp = client.get(REACTION_URL)
+        assert resp.status_code == 200
+        assert b'In stock' in resp.data
+
+
+class TestComponentsToBuysStockHighlight:
+    def _seed(self, db, user, stock):
+        """Needs 50 Isogen for one run; `stock` units held at the station."""
+        ur = make_universe_region(db, region_id=10000096)
+        uc = make_universe_constellation(db, ur, constellation_id=20000096)
+        system = make_universe_system(db, uc, system_id=30000996, name='HlHub')
+        hub = make_trade_hub(db, system)
+        station = make_universe_station(db, system, station_id=60066666)
+        mat = make_item(db, item_id=38, slug='iso-hl', name='Isogen HL')
+        crafted = make_item(db, item_id=39, slug='module-hl', name='Module HL')
+        bp = make_blueprint(db, crafted, prod_qtt=5)
+        bp.manufacturing_tree = {'38': {'quantity': 50, 'name': 'Isogen HL', 'chain': {}}}
+        make_jita_min_price(db, mat, min_sell_price=10.0)
+        make_production_list(db, user, crafted, hub, runs_count=1)
+        make_user_asset(db, user, mat, station=station, quantity=stock)
+        db.session.commit()
+        return station
+
+    def test_partial_stock_row_is_blue(self, db, auth_client):
+        client, user = auth_client
+        station = self._seed(db, user, stock=20)        # need 50, have 20 → partial
+        resp = client.get(f'{PRODUCTION_URL}?station_id={station.id}')
+        assert resp.status_code == 200
+        assert b'table-info' in resp.data
+        assert b'table-success' not in resp.data
+
+    def test_full_stock_row_is_green(self, db, auth_client):
+        client, user = auth_client
+        station = self._seed(db, user, stock=50)        # need 50, have 50 → covered
+        resp = client.get(f'{PRODUCTION_URL}?station_id={station.id}')
+        assert resp.status_code == 200
+        assert b'table-success' in resp.data
+        assert b'table-info' not in resp.data
+
+    def test_no_station_no_highlight(self, db, auth_client):
+        client, user = auth_client
+        self._seed(db, user, stock=20)
+        resp = client.get(PRODUCTION_URL)               # no station selected
+        assert resp.status_code == 200
+        assert b'table-info' not in resp.data
+        assert b'table-success' not in resp.data
