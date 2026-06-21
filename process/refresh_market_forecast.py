@@ -2,9 +2,11 @@
 
 `generate_forecast` fits Facebook Prophet on a (region, type)'s daily `average`,
 `lowest` and `volume` series from `market_histories` and stores the next 5 days of
-predictions (with confidence bands) in `market_prophet_forecasts`. The Prophet fit is
-injectable via `forecaster` so callers/tests can supply a deterministic stand-in
-without running Prophet.
+predictions (with confidence bands) in `market_prophet_forecasts`. Only prophet-ready items
+are forecast: the Prophet model is built from the item's precomputed
+`EveItem.prophet_parameters` (see process/compute_prophet_params.py), with an optional log
+transform from runtime_config. The Prophet fit is injectable via `forecaster` so callers/tests
+can supply a deterministic stand-in without running Prophet.
 """
 import argparse
 import logging
@@ -15,6 +17,7 @@ from datetime import UTC, date, datetime, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import numpy as np
 import pandas as pd
 from prophet import Prophet
 from sqlalchemy import create_engine
@@ -53,14 +56,29 @@ def _price_direction(last_price, avg_predicted):
     return 0
 
 
-def _prophet_fit(ds_list, y_list, periods, interval_width):
-    """Fit Prophet and return `periods` future (yhat, yhat_lower, yhat_upper) tuples."""
-    df = pd.DataFrame({'ds': pd.to_datetime(ds_list), 'y': y_list})
-    model = Prophet(interval_width=interval_width)
+def _prophet_fit(ds_list, y_list, periods, params, log_transform=False):
+    """Fit Prophet with the item's stored `params` and return `periods` future
+    (yhat, yhat_lower, yhat_upper) tuples. When `log_transform` is set, the series is fit in
+    log1p space and the predictions are inverted with expm1."""
+    y = np.log1p(y_list) if log_transform else y_list
+    df = pd.DataFrame({'ds': pd.to_datetime(ds_list), 'y': y})
+    model = Prophet(
+        changepoint_prior_scale=params['changepoint_prior_scale'],
+        seasonality_prior_scale=params['seasonality_prior_scale'],
+        seasonality_mode=params['seasonality_mode'],
+        n_changepoints=params['n_changepoints'],
+        changepoint_range=params['changepoint_range'],
+        yearly_seasonality=params['yearly_seasonality'],
+        weekly_seasonality=params['weekly_seasonality'],
+        interval_width=params['interval_width'],
+    )
     model.fit(df)
     future = model.make_future_dataframe(periods=periods)
     pred = model.predict(future).tail(periods)
-    return list(zip(pred['yhat'], pred['yhat_lower'], pred['yhat_upper']))
+    out = list(zip(pred['yhat'], pred['yhat_lower'], pred['yhat_upper']))
+    if log_transform:
+        out = [(float(np.expm1(a)), float(np.expm1(b)), float(np.expm1(c))) for a, b, c in out]
+    return out
 
 
 def _clear_existing(region_id, type_id, confidence, session):
@@ -91,6 +109,12 @@ def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None
     session = session or db.session
     fit = forecaster or _prophet_fit
 
+    item = session.get(EveItem, type_id)
+    if item is None or not item.prophet_ready:
+        return _store_error(region_id, type_id, confidence, 'not_prophet_ready', session)
+    params = item.prophet_params
+    log_transform = item.prophet_runtime.get('log_transform', False)
+
     rows = (session.query(MarketHistory)
             .filter_by(region_id=region_id, type_id=type_id)
             .order_by(MarketHistory.date.asc())
@@ -111,10 +135,10 @@ def generate_forecast(region_id, type_id, confidence=CONFIDENCE, forecaster=None
     last_price = rows[-1].average   # most recent valid market-history average price
     forecast_dates = [last_date + timedelta(days=i) for i in range(1, FORECAST_DAYS + 1)]
 
-    avg = fit(ds, [r.average for r in rows], FORECAST_DAYS, confidence)
-    low = fit(ds, [r.lowest for r in rows], FORECAST_DAYS, confidence)
-    high = fit(ds, [r.highest for r in rows], FORECAST_DAYS, confidence)
-    vol = fit(ds, [r.volume for r in rows], FORECAST_DAYS, confidence)
+    avg = fit(ds, [r.average for r in rows], FORECAST_DAYS, params, log_transform)
+    low = fit(ds, [r.lowest for r in rows], FORECAST_DAYS, params, log_transform)
+    high = fit(ds, [r.highest for r in rows], FORECAST_DAYS, params, log_transform)
+    vol = fit(ds, [r.volume for r in rows], FORECAST_DAYS, params, log_transform)
 
     generated_at = datetime.now(UTC)
     new_rows = []
@@ -179,11 +203,12 @@ def _fmt_duration(seconds):
 
 def run_all(region_id=FORGE_REGION_ID, confidence=CONFIDENCE, forecaster=None,
             limit=None, logger=None, session=None):
-    """Generate forecasts for every EveItem in `region_id`. Returns a status→count dict.
-    A single item's Prophet failure is logged and skipped, not fatal to the batch.
-    Logs progress with rate + ETA every 100 items (and on the final item)."""
+    """Generate forecasts for every prophet-ready EveItem (prophet_parameters.status == 'ok').
+    Returns a status→count dict. A single item's Prophet failure is logged and skipped, not
+    fatal to the batch. Logs progress with rate + ETA every 100 items (and on the final item)."""
     session = session or db.session
-    item_ids = [i.id for i in session.query(EveItem).all()]
+    item_ids = [i for (i,) in session.query(EveItem.id)
+                .filter(EveItem.prophet_parameters['status'].astext == 'ok')]
     if limit:
         item_ids = item_ids[:limit]
     total = len(item_ids)

@@ -14,17 +14,35 @@ from tests.factories import make_item, make_market_history
 REGION = 10000002
 
 
-def fake_fit(ds, y, periods, width):
+def fake_fit(ds, y, periods, params, log_transform=False):
     """Return `periods` deterministic (yhat, lower, upper) tuples off the last value."""
     base = float(y[-1])
     return [(base + i, base + i - 1.0, base + i + 1.0) for i in range(periods)]
 
 
-def _seed(db, item, n, region=REGION, volume=1000):
+_READY_PARAMS = {
+    'status': 'ok', 'computed_at': '2026-01-01T00:00:00+00:00',
+    'data_summary': {'reliability_score': 80.0},
+    'prophet_params': {'changepoint_prior_scale': 0.1, 'seasonality_prior_scale': 5,
+                       'seasonality_mode': 'additive', 'n_changepoints': 25,
+                       'changepoint_range': 0.9, 'yearly_seasonality': False,
+                       'weekly_seasonality': True, 'interval_width': 0.8},
+    'runtime_config': {'log_transform': False, 'forecast_days': 14},
+}
+
+
+def _make_ready(db, item):
+    item.prophet_parameters = {**_READY_PARAMS}
+    db.session.commit()
+
+
+def _seed(db, item, n, region=REGION, volume=1000, ready=True):
     start = date.today() - timedelta(days=n + 1)
     for i in range(n):
         make_market_history(db, item, start + timedelta(days=i + 1), region_id=region,
                             average=100.0 + i, lowest=90.0 + i, volume=volume)
+    if ready:
+        item.prophet_parameters = {**_READY_PARAMS}
     db.session.commit()
 
 
@@ -37,6 +55,13 @@ class TestGenerateForecast:
         # An error row is written; no forecast rows.
         err = MarketProphetForecastErrors.query.filter_by(region_id=REGION, type_id=item.id).one()
         assert err.reason == 'not_enough_history'
+        assert MarketProphetForecast.query.filter_by(region_id=REGION, type_id=item.id).count() == 0
+
+    def test_not_prophet_ready_records_error(self, db):
+        item = make_item(db, item_id=34, slug='trit')
+        _seed(db, item, 40, ready=False)   # plenty of history but no prophet_parameters
+        result = generate_forecast(REGION, item.id, forecaster=fake_fit)
+        assert result == {"status": "error", "reason": "not_prophet_ready"}
         assert MarketProphetForecast.query.filter_by(region_id=REGION, type_id=item.id).count() == 0
 
     def test_forecast_clears_prior_error(self, db):
@@ -127,22 +152,27 @@ class TestRecomputePriceDirections:
 
 
 class TestRunAll:
-    def test_processes_every_item(self, db):
+    def test_processes_only_prophet_ready_items(self, db):
         ok_item = make_item(db, item_id=34, slug='ok-item')
         thin_item = make_item(db, item_id=35, slug='thin-item')
-        _seed(db, ok_item, 40)          # enough history → forecast
-        _seed(db, thin_item, 5)         # too little → status marker
+        skip_item = make_item(db, item_id=36, slug='skip-item')
+        _seed(db, ok_item, 40)              # ready + enough history → forecast
+        _seed(db, thin_item, 5)            # ready but too little history → error marker
+        _seed(db, skip_item, 40, ready=False)  # not prophet-ready → skipped entirely
 
         counts = run_all(region_id=REGION, forecaster=fake_fit)
         assert counts == {'ok': 1, 'error': 1}
         assert MarketProphetForecast.query.filter_by(type_id=ok_item.id).count() == FORECAST_DAYS
         assert MarketProphetForecastErrors.query.filter_by(
             type_id=thin_item.id).one().reason == 'not_enough_history'
+        # The not-ready item is never visited (no forecast and no error row).
+        assert MarketProphetForecast.query.filter_by(type_id=skip_item.id).count() == 0
+        assert MarketProphetForecastErrors.query.filter_by(type_id=skip_item.id).count() == 0
 
     def test_limit(self, db):
         a = make_item(db, item_id=34, slug='a-item')
-        make_item(db, item_id=35, slug='b-item')
+        b = make_item(db, item_id=35, slug='b-item')
         _seed(db, a, 40)
-        db.session.commit()
+        _seed(db, b, 40)
         counts = run_all(region_id=REGION, forecaster=fake_fit, limit=1)
         assert sum(counts.values()) == 1

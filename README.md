@@ -38,3 +38,21 @@ histories and recomputes the Prophet forecasts.
 */15 * * * * docker start app-eve-public-orders
 0    4 * * * docker start app-eve-markets-forecast
 ```
+
+## Market forecasting
+
+Forecasting is a two-step pipeline, both reading The Forge (region 10000002) `market_histories`:
+
+1. **`process/compute_prophet_params.py`** analyses each item's price history (volatility,
+   trend, outliers, data coverage, a 0-100 reliability score) and stores item-tuned Prophet
+   hyper-parameters + a runtime config on `eve_items.prophet_parameters` (JSONB, GIN-indexed).
+   Items with fewer than 30 days of history are marked `insufficient_data` and skipped.
+2. **`process/refresh_market_forecast.py`** (`-d` first downloads fresh histories) fits Prophet
+   for every prophet-ready item using its stored params — applying a log transform when
+   `runtime_config.log_transform` is set — and writes the 5-day forecast to
+   `market_prophet_forecasts`.
+
+```bash
+python process/compute_prophet_params.py     # refresh per-item Prophet params
+python process/refresh_market_forecast.py -d # download histories + recompute forecasts
+```
